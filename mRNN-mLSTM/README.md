@@ -4,7 +4,7 @@
 
 The preview version has been published at https://github.com/Gladys-Zhao/mRNN-mLSTM. 
 
-The official version will be released soon at https://github.com/huawei-noah.
+The official version will be released soon at https://github.com/huawei-noah/noah-research.
 
 ------
 
