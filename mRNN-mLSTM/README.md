@@ -37,14 +37,14 @@ Please refer to the paper for an introduction to datasets and the required refer
   python train.py --dataset 'tree7' --algorithm 'mLSTM'
 ```
 
-** Available datasets **
+**Available datasets**
 
 - ARFIMA series: `arfima`
 - Dow Jones Industrial Average (DJI): `DJI`
 - Metro interstate traffic volume: `traffic`
 - Tree ring: `tree7`
 
-** Available algorithms **
+**Available algorithms**
 
 - vanilla RNN: `RNN`
 - vanilla LSTM: `LSTM`
@@ -69,7 +69,7 @@ Please refer to the paper for an introduction to datasets and the required refer
   python train.py --algorithm 'mLSTM_fixD'
   ```
 
-** Available algorithms **
+**Available algorithms**
 
 - vanilla RNN: `RNN`
 - vanilla LSTM: `LSTM`
