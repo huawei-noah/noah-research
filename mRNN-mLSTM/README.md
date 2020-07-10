@@ -1,16 +1,8 @@
 # Memory-augmented Recurrent Networks (mRNN-mLSTM)
 
-**News** 
-
-The preview version has been published at https://github.com/Gladys-Zhao/mRNN-mLSTM. 
-
-The official version will be released soon at https://github.com/huawei-noah/noah-research.
-
-------
-
 ### Paper
 
-Do RNN and LSTM have Long Memory? ICML 2020. [[arXiv]](https://arxiv.org/abs/2006.03860)
+Do RNN and LSTM have Long Memory? ICML 2020. [[paper]](https://proceedings.icml.cc/static/paper_files/icml/2020/956-Paper.pdf)
 
 By Jingyu Zhao, Feiqing Huang, Jia Lv, Yanjie Duan, Zhen Qin, Guodong Li and Guangjian Tian.
 
@@ -75,3 +67,4 @@ Please refer to the paper for an introduction to datasets and the required refer
 - vanilla LSTM: `LSTM`
 - Memory-augmented RNN with homogeneous memory parameter d: `mRNN_fixD`
 - Memory-augmented LSTM with homogeneous d: `mLSTM_fixD`
+
