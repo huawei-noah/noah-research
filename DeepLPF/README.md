@@ -1,6 +1,10 @@
 # DeepLPF: Deep Local Parametric Filters for Image Enhancement
 
-Repository for the DeepLPF: Deep Local Parametric Filters for Image Enhancement code.
+DeepLPF: Deep Local Parametric Filters for Image Enhancement (CVPR2020)
+
+Paper: [here](https://openaccess.thecvf.com/content_CVPR_2020/papers/Moran_DeepLPF_Deep_Local_Parametric_Filters_for_Image_Enhancement_CVPR_2020_paper.pdf)
+
+![Teaser](https://github.com/noah-research/DeepLPF/teaser.png "Teaser")
 
 **Datasets**  
 
