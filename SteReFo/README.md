@@ -1,7 +1,7 @@
 # SteReFo: Efficient Image Refocusing with Stereo Vision (ICCVW 2019)
 
 Benjamin Busam, Matthieu Hog, Steven McDonagh, Gregory Slabaugh. 
-Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 2019.
+Proceedings of the IEEE/CVF International Conference on Computer Vision Workshop (ICCVW), 2019.
 
 [Paper on CVF](https://openaccess.thecvf.com/content_ICCVW_2019/papers/AIM/Busam_SteReFo_Efficient_Image_Refocusing_with_Stereo_Vision_ICCVW_2019_paper.pdf) 
 
