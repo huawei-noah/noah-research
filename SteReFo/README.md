@@ -1,5 +1,10 @@
 # RefNet
 
+# SteReFo: Efficient Image Refocusing with Stereo Vision 
+
+Paper: [here](https://openaccess.thecvf.com/content_ICCVW_2019/papers/AIM/Busam_SteReFo_Efficient_Image_Refocusing_with_Stereo_Vision_ICCVW_2019_paper.pdf) (ICCVW 2019)
+
+![Teaser](https://github.com/huawei-noah/noah-research/blob/master/SteReFo/teaser.png "Teaser")
 
 
 ## Install
