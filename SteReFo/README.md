@@ -5,7 +5,7 @@ Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 
 
 [Paper on CVF](https://openaccess.thecvf.com/content_ICCVW_2019/papers/AIM/Busam_SteReFo_Efficient_Image_Refocusing_with_Stereo_Vision_ICCVW_2019_paper.pdf) 
 
-![Teaser](https://github.com/huawei-noah/noah-research/blob/master/SteReFo/teaser.png "Teaser")
+![Teaser](https://github.com/huawei-noah/noah-research/blob/master/SteReFo/teaser.jpg "Teaser")
 
 # SteReFo
 
