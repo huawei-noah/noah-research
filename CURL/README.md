@@ -1,4 +1,5 @@
 # CURL: Neural Curve Layers for Global Image Enhancement
+Sean Moran, Steven McDonagh, Gregory Slabaugh
 
 [Paper on arXiv](https://arxiv.org/pdf/1911.13175.pdf) 
 
