@@ -1,9 +1,12 @@
 # CURL: Neural Curve Layers for Global Image Enhancement
 
+[Paper on arXiv](https://arxiv.org/pdf/1911.13175.pdf) 
+
+![Teaser](https://github.com/huawei-noah/noah-research/blob/master/CURL/teaser.png "Teaser")
+
 Repository for the **CURL: Neural Curve Layers for Global Image Enhancement** code.
 
 **Datasets**  
-
 
 *  Samsung S7 dataset: https://elischwartz.github.io/DeepISP/
 *  Adobe5K dataset: https://data.csail.mit.edu/graphics/fivek/
