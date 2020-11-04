@@ -1,2 +1,2 @@
 # Noah Research
-This repository contains some benchmark related code released by Huawei Noah's Ark Lab.
+This repository contains some research related code released by Huawei Noah's Ark Lab.
