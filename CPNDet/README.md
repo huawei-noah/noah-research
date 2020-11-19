@@ -1,10 +1,10 @@
-## Attention ！We failed to open source the trained model!
+## Attention ！We failed to open source the trained model! You may need to train by yourselves.
 
 # [Corner Proposal Network for Anchor-free, Two-stage Object Detection](https://arxiv.org/abs/2007.13816)
 
 by [Kaiwen Duan](https://scholar.google.com/citations?hl=zh-CN&user=TFHRaZUAAAAJ&scilu=&scisig=AMD79ooAAAAAXLv9_7ddy26i4c6z5n9agk05m97faUdN&gmla=AJsN-F78W-h98Pb2H78j6lTKbjdn0fklhe2X_8CCPqRU2fC4KJEIbllhD2c5F0irMR3zDiehKt_SH26N2MHI1HlUMw6qRba9HMbiP3vnQfJqD82FrMAPdlU&sciund=10706678259143520926&gmla=AJsN-F5cOpNUdnI6YrZ9joRa6JE2nP6wFKU1GKVkNIfCmmgjk431Lg2BYCS6wn5WWZxdnzBjLfaUwdUJtvPXo53vfoOQoTGP5fHh2X0cCssVtXm8BI4PaM3_oQvKYtCx7o1wivIt1l49sDK6AZPvHLMxxPbC4GbZ1Q&sciund=10445692451499027349), [Lingxi Xie](http://lingxixie.com/Home.html), [Honggang Qi](http://people.ucas.ac.cn/~hgqi), [Song Bai](http://songbai.site/), [Qingming Huang](https://scholar.google.com/citations?user=J1vMnRgAAAAJ&hl=zh-CN) and [Qi Tian](https://scholar.google.com/citations?user=61b6eYkAAAAJ&hl=zh-CN)
 
-**The code to train and evaluate the proposed CPN is available here. For more technical details, please refer to our [arXiv paper](https://xxx).**
+**The code to train and evaluate the proposed CPN is available here. For more technical details, please refer to our [arXiv paper](https://arxiv.org/abs/2007.13816).**
 
 **We thank [Princeton Vision & Learning Lab](https://github.com/princeton-vl) for providing the original implementation of [CornerNet](https://github.com/princeton-vl/CornerNet). We also refer to some codes from [mmdetection](https://github.com/open-mmlab/mmdetection) and [Objects as Points](https://github.com/xingyizhou/CenterNet), we thank them for providing their implementations.**
 
