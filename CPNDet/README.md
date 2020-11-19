@@ -1,4 +1,4 @@
-## The code will be available soon ！
+## Attention ！We failed to open source the trained model!
 
 # [Corner Proposal Network for Anchor-free, Two-stage Object Detection](https://xxx)
 
