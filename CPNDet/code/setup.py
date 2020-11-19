@@ -1,3 +1,5 @@
+import os
+
 strs = ('pip install mmcv==0.6.2')
 os.system(strs)
 
