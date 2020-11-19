@@ -33,7 +33,7 @@ CPN is a framework for object detection with deep convolutional neural networks.
 ## AP(%) on COCO test-dev and Models  
 
 |                         Backbone                          |                          Input Size                          |  AP  | AP<sub>50</sub> | AP<sub>75</sub> | AP<sub>S</sub> | AP<sub>M</sub> | AP<sub>L</sub> |
-| :-------------------------------------------------------: | :----------------------------------------------------------: | :--: | :-------------: | :-------------: | :------------: | :------------: | :------------: | :-------------------------------------------------------: |
+| :-------------------------------------------------------: | :----------------------------------------------------------: | :--: | :-------------: | :-------------: | :------------: | :------------: | :------------: |
 |                           DLA34                           |                             ori.                             | 41.7 |      58.9       |      44.9       |      20.2      |      44.1      |      56.4      |
 | DLA34  ![](http://latex.codecogs.com/gif.latex?\\ddagger) | <a href="https://www.codecogs.com/eqnedit.php?latex=\leq&space;1.8\times" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\leq&space;1.8\times" title="\leq 1.8\times" /></a> | 44.5 |      62.3       |      48.3       |      25.2      |      46.7      |      58.2      |                                                           |
 |                           HG52                            |                             ori.                             | 43.9 |      61.6       |      47.5       |      23.9      |      46.3      |      57.1      |
