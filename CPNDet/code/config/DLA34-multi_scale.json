@@ -15,7 +15,7 @@
         "opt_algo": "adam",
         "prefetch_size": 6,
 
-        "max_iter": 220000,
+        "max_iter": 270000,
         "stepsize": 200000,
         "snapshot": 5000,
 
