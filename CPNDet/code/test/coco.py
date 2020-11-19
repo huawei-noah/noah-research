@@ -157,8 +157,8 @@ def post_process(db, debug, num_images, weight_exp, merge_bbox, categories,
 #                   ax.text(xmin+1, ymin-3, '{:s}'.format(cat_name), bbox=dict(facecolor= colours[j-1], ec='black', lw=2,alpha=0.5),
 #                           fontsize=15, color='white', weight='bold')
 
-#             #debug_file1 = os.path.join(debug_dir, "{}.pdf".format(db_ind))
-#             #debug_file2 = os.path.join("results/{}.jpg".format(db_ind))
+#             #debug_file1 = os.path.join(validations, "{}.pdf".format(db_ind))
+#             #debug_file2 = os.path.join("validations/{}.jpg".format(db_ind))
 #             #plt.savefig(debug_file1)
 #             #plt.savefig(debug_file2)
 #             plt.close()
