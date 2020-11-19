@@ -1,0 +1,9 @@
+setup.py
+nms_wrapper.egg-info/PKG-INFO
+nms_wrapper.egg-info/SOURCES.txt
+nms_wrapper.egg-info/dependency_links.txt
+nms_wrapper.egg-info/top_level.txt
+src/nms_cpu.cpp
+src/nms_cuda.cpp
+src/nms_kernel.cu
+src/soft_nms_cpu.pyx
