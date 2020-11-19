@@ -127,6 +127,10 @@ We provide the configuration file `config/HG104.json`,  `config/HG52.json` and `
 To use the trained model:
 
 ```
+cd code
+```
+
+```
 python test.py --cfg_file HG104 --testiter 220000 --split <split>
 ```
 
