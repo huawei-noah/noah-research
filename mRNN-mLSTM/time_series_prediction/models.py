@@ -47,15 +47,14 @@ class LSTM(nn.Module):
         time_steps = inputs.shape[0]
         batch_size = inputs.shape[1]
         outputs = torch.Tensor(time_steps, batch_size, self.out_size)
-
+        if hidden_state is None:
+            h_0 = torch.zeros(batch_size, self.h_size)
+            c_0 = torch.zeros(batch_size, self.h_size)
+            hidden_state = (h_0, c_0)
+        else:
+            h_0 = hidden_state[0]
+            c_0 = hidden_state[1]
         for times in range(time_steps):
-            if hidden_state is None:
-                h_0 = torch.zeros(batch_size, self.h_size)
-                c_0 = torch.zeros(batch_size, self.h_size)
-                hidden_state = (h_0, c_0)
-            else:
-                h_0 = hidden_state[0]
-                c_0 = hidden_state[1]
             h_0, c_0 = self.lstm_cell(inputs[times, :], (h_0, c_0))
             outputs[times, :] = self.output(h_0)
         return outputs, (h_0, c_0)
