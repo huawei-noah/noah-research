@@ -91,10 +91,13 @@ class MRNNFixD(nn.Module):
 
     def forward(self, inputs, hidden_state=None):
         time_steps = inputs.size(0)
+        batch_size = inputs.size(1)
         self.d_matrix = 0.5 * F.sigmoid(self.b_d)
         weights_d = self.get_wd(self.d_matrix)
+        outputs = torch.zeros(time_steps, batch_size, self.output_size,
+                              dtype=inputs.dtype, device=inputs.device)
         for times in range(time_steps):
-            outputs, hidden_state = self.mrnn_cell(inputs[times, :], weights_d,
+            outputs[t, :], hidden_state = self.mrnn_cell(inputs[times, :], weights_d,
                                                    hidden_state)
         return outputs, hidden_state
 
@@ -112,7 +115,8 @@ class MRNN(nn.Module):
     def forward(self, inputs, hidden_state=None):
         time_steps = inputs.size(0)
         batch_size = inputs.size(1)
-        outputs = torch.Tensor(time_steps, batch_size, self.output_size)
+        outputs = torch.zeros(time_steps, batch_size, self.output_size,
+                              dtype=inputs.dtype, device=inputs.device)
         for times in range(time_steps):
             outputs[times, :], hidden_state = self.mrnn_cell(inputs[times, :],
                                                              hidden_state)
