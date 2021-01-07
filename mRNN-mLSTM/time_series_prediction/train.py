@@ -72,13 +72,16 @@ def main():
     for i in range(start, end):
         seed = i
         print('seed ----------------------------------', seed)
-        data = np.array(df_data["x"])
-        data = data.reshape(-1, 1)
+        x = np.array(df['x'])
+        y = np.array(df['x'])
+        x = x.reshape(-1, 1)
+        y = y.reshape(-1, 1)
         # normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
-        data = scaler.fit_transform(data)
+        x = scaler.fit_transform(x)
+        y = scaler.fit_transform(y)
         # use this function to prepare the data for modeling
-        data_x, data_y = create_dataset(data)
+        data_x, data_y = create_dataset(x, y)
 
         # split into train and test sets
         train_x, train_y = data_x[0:train_size], data_y[0:train_size]
