@@ -97,7 +97,7 @@ class MRNNFixD(nn.Module):
         outputs = torch.zeros(time_steps, batch_size, self.output_size,
                               dtype=inputs.dtype, device=inputs.device)
         for times in range(time_steps):
-            outputs[t, :], hidden_state = self.mrnn_cell(inputs[times, :], weights_d,
+            outputs[times, :], hidden_state = self.mrnn_cell(inputs[times, :], weights_d,
                                                    hidden_state)
         return outputs, hidden_state
 
