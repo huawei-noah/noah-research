@@ -11,12 +11,12 @@
 import numpy as np
 import torch
 
-def create_dataset(data, look_back=1):
+def create_dataset(data):
     """creat train dataset for time series prediction"""
     data_yp, data_yc = [], []
-    for i in range(len(data) - look_back):
+    for i in range(len(data) - 1):
         data_yp.append(data[i, 0])
-        data_yc.append(data[i + look_back, 0])
+        data_yc.append(data[i + 1, 0])
     return np.array(data_yp), np.array(data_yc)
 
 def padding(data, length, input_size):
