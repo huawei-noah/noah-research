@@ -74,8 +74,8 @@ def main():
         print('seed ----------------------------------', seed)
         x = np.array(df_data ['x'])
         y = np.array(df_data ['x'])
-        x = x.reshape(-1, args.input_size)
-        y = y.reshape(-1, args.output_size)
+        x = x.reshape(-1, FLAGS.input_size)
+        y = y.reshape(-1, FLAGS.output_size)
         # normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         x = scaler.fit_transform(x)
