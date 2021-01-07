@@ -78,7 +78,7 @@ def main():
         scaler = MinMaxScaler(feature_range=(0, 1))
         data = scaler.fit_transform(data)
         # use this function to prepare the data for modeling
-        data_x, data_y = create_dataset(data, look_back=1)
+        data_x, data_y = create_dataset(data)
 
         # split into train and test sets
         train_x, train_y = data_x[0:train_size], data_y[0:train_size]
