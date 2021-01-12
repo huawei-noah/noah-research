@@ -1,5 +1,77 @@
-# HEBO: Heteroscedastic evolutionary bayesian optimisation
+# README
 
-Bayesian optimisation library developped by Huawei Noah's Ark Lab, including solution that won 1st place in [NeurIPS2020 black-box optimization competition for machine learing](https://bbochallenge.com/)
+Bayesian optimsation library developped by Huawei DMnR lab
 
-We're going through internal open source review so please be patient :)
+## Features
+
+- Continuous and categorical design parameters
+- Constrained and multi-objective optimsation
+- Contextual optimsation
+- Multiple surrogate models including GP, RF and BNN 
+- Modular and flexible BO building blocks
+
+## Installation
+
+```bash
+python setup.py develop
+```
+
+## Demo
+
+```python
+import pandas as pd
+import numpy  as np
+from bo.design_space.design_space import DesignSpace
+from bo.optimizers.mace import MACEBO
+
+def obj(params : pd.DataFrame) -> np.ndarray:
+    return ((params.values - 0.37)**2).sum(axis = 1).reshape(-1, 1)
+        
+space = DesignSpace().parse([{'name' : 'x', 'type' : 'num', 'lb' : -3, 'ub' : 3}])
+opt   = MACEBO(space)
+for i in range(5):
+    rec = opt.suggest(n_suggestions = 4)
+    opt.observe(rec, obj(rec))
+    print('After %d iterations, best obj is %.2f' % (i, opt.y.min()))
+```
+
+## Tuning sklearn estimator
+
+```python
+from sklearn.datasets import load_boston
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score, mean_squared_error
+
+from bo.sklearn_tuner import sklearn_tuner
+
+space_cfg = [
+    {'name' : 'max_depth', 'type' : 'int', 'lb' : 1, 'ub' : 20},
+    {'name' : 'min_samples_leaf', 'type' : 'num', 'lb' : 1e-4, 'ub' : 0.5},
+    {'name' : 'max_features', 'type' : 'cat', 'categories' : ['auto', 'sqrt', 'log2']},
+    {'name' : 'bootstrap', 'type' : 'bool'},
+    {'name' : 'min_impurity_decrease', 'type' : 'pow', 'lb' : 1e-4, 'ub' : 1.0},
+    ]
+X, y   = load_boston(return_X_y = True)
+result = sklearn_tuner(RandomForestRegressor, space_cfg, X, y, metric = r2_score, max_iter = 16)
+```
+
+## Documentation
+
+```bash
+cd doc
+make html
+```
+
+You can see the compiled documentation in `doc/build/html/index.html`
+
+## Run test
+
+```bash
+pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.coveragerc
+```
+
+## Reproduce BBOChallenge result
+
+- See `archived_submissions/hebo`, which is the exact submission that winned the NeurIPS2020 Black-Box Optimsation competition
+- Use the `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory
+- The `MACEBO` in `bo.optimizers.mace` is the same optimizer, with same hyper-parameters, but interface has been changed (bayesmark dependency removed)
