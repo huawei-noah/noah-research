@@ -6,7 +6,7 @@ Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and 
 
 Summary             |  Ablation
 :-------------------------:|:-------------------------:
-![](summary_plot2.pdf)  |  ![](summary_ablation2)
+![](summary_plot2.pdf)  |  ![](summary_ablation2.pdf)
 
 # Contributors 
 
