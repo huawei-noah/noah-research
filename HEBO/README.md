@@ -4,6 +4,10 @@
 
 Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The winning submission to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
 
+Summary             |  Ablation
+:-------------------------:|:-------------------------:
+![](summary_plot2.pdf)  |  ![](summary_ablation2)
+
 # Contributors 
 
 Alexander I. Cowen-Rivers, Wenlong Lyu, Zhi Wang, Antoine Grosnit, Rasul Tutunov, Hao Jianye, Jun Wang, Haitham Bou Ammar.
