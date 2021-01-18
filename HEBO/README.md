@@ -2,15 +2,11 @@
 
 # README
 
-Bayesian optimsation library developped by Huawei DMnR lab
+Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The winning submission to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
 
-## Features
+# Contributors 
 
-- Continuous and categorical design parameters
-- Constrained and multi-objective optimsation
-- Contextual optimsation
-- Multiple surrogate models including GP, RF and BNN 
-- Modular and flexible BO building blocks
+Alexander I. Cowen-Rivers, Wenlong Lyu, Zhi Wang, Antoine Grosnit, Rasul Tutunov, Hao Jianye, Jun Wang, Haitham Bou Ammar.
 
 ## Installation
 
@@ -77,3 +73,22 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 - See `archived_submissions/hebo`, which is the exact submission that winned the NeurIPS2020 Black-Box Optimsation competition
 - Use the `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory
 - The `MACEBO` in `bo.optimizers.mace` is the same optimizer, with same hyper-parameters, but interface has been changed (bayesmark dependency removed)
+
+
+## Features
+
+- Continuous, real and categorical design parameters
+- Constrained and multi-objective optimsation
+- Contextual optimsation
+- Multiple surrogate models including GP, RF and BNN 
+- Modular and flexible BO building blocks
+
+
+## Cite
+
+@article{cowen2020hebo,
+  title={HEBO: Heteroscedastic Evolutionary Bayesian Optimisation},
+  author={Cowen-Rivers, Alexander I and Lyu, Wenlong and Wang, Zhi and Tutunov, Rasul and Jianye, Hao and Wang, Jun and Ammar, Haitham Bou},
+  journal={arXiv preprint arXiv:2012.03826},
+  year={2020}
+}
