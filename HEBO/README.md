@@ -1,3 +1,5 @@
+![](hebo.png)
+
 # README
 
 Bayesian optimsation library developped by Huawei DMnR lab
