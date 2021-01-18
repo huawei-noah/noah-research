@@ -64,7 +64,7 @@ cd doc
 make html
 ```
 
-You can see the compiled documentation in `doc/build/html/index.html`
+You can view the compiled documentation in `doc/build/html/index.html`.
 
 ## Test
 
@@ -74,18 +74,18 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 
 ## Reproduce Experimental Results
 
-- See `archived_submissions/hebo`, which is the exact submission that winned the NeurIPS2020 Black-Box Optimsation competition
-- Use the `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory
-- The `MACEBO` in `bo.optimizers.mace` is the same optimizer, with same hyper-parameters, but interface has been changed (bayesmark dependency removed)
+- See `archived_submissions/hebo`, which is the exact submission that won the NeurIPS2020 Black-Box Optimsation Challenge.
+- Use `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory.
+- The `MACEBO` in `bo.optimizers.mace` is the same optimiser, with same hyperparameters but a modified interface (bayesmark dependency removed).
 
 
 ## Features
 
-- Continuous, real and categorical design parameters
-- Constrained and multi-objective optimsation
-- Contextual optimsation
-- Multiple surrogate models including GP, RF and BNN 
-- Modular and flexible BO building blocks
+- Continuous, real and categorical design parameters.
+- Constrained and multi-objective optimsation.
+- Contextual optimsation.
+- Multiple surrogate models including GP, RF and BNN.
+- Modular and flexible Bayesian Optimisation building blocks.
 
 
 ## Cite Us 
