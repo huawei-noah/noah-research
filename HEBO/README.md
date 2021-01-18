@@ -2,7 +2,7 @@
 
 # README
 
-Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The winning submission to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
+Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The <strong> winning submission </strong> to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
 
 Summary             |  Ablation
 :-------------------------:|:-------------------------:
@@ -10,7 +10,7 @@ Summary             |  Ablation
 
 # Contributors 
 
-Alexander I. Cowen-Rivers, Wenlong Lyu, Zhi Wang, Antoine Grosnit, Rasul Tutunov, Hao Jianye, Jun Wang, Haitham Bou Ammar.
+<strong> Alexander I. Cowen-Rivers, Wenlong Lyu, Zhi Wang, Antoine Grosnit, Rasul Tutunov, Hao Jianye, Jun Wang, Haitham Bou Ammar. </strong>
 
 ## Installation
 
@@ -37,7 +37,7 @@ for i in range(5):
     print('After %d iterations, best obj is %.2f' % (i, opt.y.min()))
 ```
 
-## Tuning sklearn estimator
+## Auto Tuning via Sklearn Estimator
 
 ```python
 from sklearn.datasets import load_boston
@@ -66,13 +66,13 @@ make html
 
 You can see the compiled documentation in `doc/build/html/index.html`
 
-## Run test
+## Test
 
 ```bash
 pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.coveragerc
 ```
 
-## Reproduce BBOChallenge result
+## Reproduce Experimental Results
 
 - See `archived_submissions/hebo`, which is the exact submission that winned the NeurIPS2020 Black-Box Optimsation competition
 - Use the `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory
@@ -88,7 +88,7 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 - Modular and flexible BO building blocks
 
 
-## Cite
+## Cite Us 
 
 @article{cowen2020hebo,
   title={HEBO: Heteroscedastic Evolutionary Bayesian Optimisation},
