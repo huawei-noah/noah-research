@@ -81,7 +81,7 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 
 ## Features
 
-- Continuous, real and categorical design parameters.
+- Continuous, integer and categorical design parameters.
 - Constrained and multi-objective optimsation.
 - Contextual optimsation.
 - Multiple surrogate models including GP, RF and BNN.
