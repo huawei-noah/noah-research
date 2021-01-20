@@ -14,7 +14,7 @@ from sklearn.metrics import get_scorer, make_scorer
 from typing import Callable
 
 from bo.design_space.design_space import DesignSpace
-from bo.optimizers.mace import MACEBO
+from bo.optimizers.hebo import HEBO
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -65,7 +65,7 @@ def sklearn_tuner(
     result = sklearn_tuner(RandomForestRegressor, space_cfg, X, y, metric = r2_score, max_iter = 16)
     """
     space = DesignSpace().parse(space_config)
-    opt   = MACEBO(space)
+    opt   = HEBO(space)
     for i in range(max_iter):
         rec     = opt.suggest()
         model   = model_class(**rec.iloc[0].to_dict())
