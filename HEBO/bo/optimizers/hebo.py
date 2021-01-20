@@ -23,7 +23,7 @@ from .abstract_optimizer import AbstractOptimizer
 
 torch.set_num_threads(min(1, torch.get_num_threads()))
 
-class MACEBO(AbstractOptimizer):
+class HEBO(AbstractOptimizer):
     support_parallel_opt  = True
     support_combinatorial = True
     support_contextual    = True
