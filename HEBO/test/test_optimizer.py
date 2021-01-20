@@ -50,7 +50,7 @@ def test_opt(model_name, opt_cls):
         if opt.y.shape[0] > 11:
             break
 
-@pytest.mark.parametrize('opt_cls', [BO, MACEBO, GeneralBO], ids = ['bo', 'mace', 'general'])
+@pytest.mark.parametrize('opt_cls', [BO, HEBO, GeneralBO], ids = ['bo', 'hebo', 'general'])
 def test_contextual_opt(opt_cls):
     space = DesignSpace().parse([
         {'name' : 'x0', 'type' : 'int', 'lb' : 0, 'ub' : 7},
