@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from bo.optimizers.mace import MACEBO
+from bo.optimizers.hebo import HEBO
 from bo.optimizers.bo import BO
 from bo.optimizers.general import GeneralBO
 from bo.optimizers.util import parse_space_from_bayesmark
@@ -33,7 +33,7 @@ def obj(x : pd.DataFrame) -> np.ndarray:
     return x['x0'].values.astype(float).reshape(-1, 1) ** 2
 
 @pytest.mark.parametrize('model_name', ['gp', 'gpy', 'rf', 'deep_ensemble', 'gpy_mlp']) 
-@pytest.mark.parametrize('opt_cls', [BO, MACEBO, GeneralBO], ids = ['bo', 'mace', 'general'])
+@pytest.mark.parametrize('opt_cls', [BO, HEBO, GeneralBO], ids = ['bo', 'hebo', 'general'])
 def test_opt(model_name, opt_cls):
     space = DesignSpace().parse([
         {'name' : 'x0', 'type' : 'num', 'lb' : -3, 'ub' : 7},
