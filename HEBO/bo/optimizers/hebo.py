@@ -27,13 +27,14 @@ class HEBO(AbstractOptimizer):
     support_parallel_opt  = True
     support_combinatorial = True
     support_contextual    = True
-    def __init__(self, space, model_name = 'gpy', rand_sample = None):
+    def __init__(self, space, model_name = 'gpy', rand_sample = None, es='nsga2'):
         """
         model_name : surrogate model to be used
         rand_iter  : iterations to perform random sampling
         """
         super().__init__(space)
         self.space       = space
+        self.es = es
         self.X           = pd.DataFrame(columns = self.space.para_names)
         self.y           = np.zeros((0, 1))
         self.model_name  = model_name
@@ -119,7 +120,7 @@ class HEBO(AbstractOptimizer):
             acq = MACE(model, py_best, kappa = kappa) # LCB < py_best
             mu  = Mean(model)
             sig = Sigma(model, linear_a = -1.)
-            opt = EvolutionOpt(self.space, acq, pop = 100, iters = 100, verbose = False)
+            opt = EvolutionOpt(self.space, acq, pop = 100, iters = 100, verbose = False, es=self.es)
             rec = opt.optimize(initial_suggest = best_x, fix_input = fix_input).drop_duplicates()
             rec = rec[self.check_unique(rec)]
 
