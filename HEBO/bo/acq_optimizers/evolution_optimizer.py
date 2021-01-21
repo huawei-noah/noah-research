@@ -21,6 +21,7 @@ from pymoo.configuration import Configuration
 from ..design_space.design_space import DesignSpace
 from ..acquisitions.acq import Acquisition
 Configuration.show_compile_hint = False
+from pymoo.factory import get_algorithm
 
 class BOProblem(Problem):
     def __init__(self,
@@ -55,9 +56,10 @@ class BOProblem(Problem):
 class EvolutionOpt:
     def __init__(self,
             design_space : DesignSpace,
-            acq          : Acquisition,
+            acq          : Acquisition, es,
             **conf):
         self.space      = design_space
+        self.es         = es 
         self.acq        = acq
         self.pop        = conf.get('pop', 100)
         self.iter       = conf.get('iters',500)
@@ -112,11 +114,15 @@ class EvolutionOpt:
         init_pop  = self.get_init_pop(initial_suggest)
         mutation  = self.get_mutation()
         crossover = self.get_crossover()
-        if self.acq.num_obj > 1:
-            algo = NSGA2(pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-        else:
-            algo = GA(pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-        res   = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
+        try:
+          algo = get_algorithm(self.es, pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
+          res   = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
+        except:
+          if self.acq.num_obj > 1:
+              algo = get_algorithm('nsga2', pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
+          else:
+              algo = get_algorithm('ga', pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
+          res   = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
         opt_x = res.X.reshape(-1, len(lb)).astype(float)
         
         opt_xcont = torch.from_numpy(opt_x[:, :self.space.num_numeric])
