@@ -88,7 +88,11 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 - Modular and flexible Bayesian Optimisation building blocks.
 
 
-## Cite Us 
+## Cite Us
+
+Cowen-Rivers, Alexander I., et al. "HEBO: Heteroscedastic Evolutionary Bayesian Optimisation." arXiv preprint arXiv:2012.03826 (2020).
+
+## BibTex
 
 @article{cowen2020hebo,
   title={HEBO: Heteroscedastic Evolutionary Bayesian Optimisation},
