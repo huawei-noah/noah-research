@@ -14,6 +14,11 @@ class CategoricalPara(Parameter):
     def __init__(self, param):
         super().__init__(param)
         self.categories = np.array(list(param['categories']))
+        assert(self.categories.ndim == 1)
+        try:
+            self._categories_dict = {k:v for v, k in enumerate(self.categories)}
+        except TypeError: # there are unhashable types
+            self._categories_dict = None
         self.lb         = 0
         self.ub         = len(self.categories) - 1
 
@@ -22,7 +27,13 @@ class CategoricalPara(Parameter):
         return np.random.choice(self.categories, num, replace = True)
 
     def transform(self, x : np.ndarray):
-        return x.astype(float)
+        if self._categories_dict:
+            # if all objects are hashable, we can use a dict instead for faster transform
+            ret = np.array(list(map(lambda a: self._categories_dict[a], x)))
+        else:
+            # otherwise, we fall back to searching in an array
+            ret = np.array(list(map(lambda a: np.where(self.categories == a)[0][0], x)))
+        return ret.astype(float)
 
     def inverse_transform(self, x):
         return self.categories[x.round().astype(int)]
