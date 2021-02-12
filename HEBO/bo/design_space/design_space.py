@@ -16,12 +16,14 @@ from .integer_param     import IntegerPara
 from .pow_param         import PowPara
 from .categorical_param import CategoricalPara
 from .bool_param        import BoolPara
+from .pow_integer_param         import PowIntegerPara
 
 class DesignSpace:
     def __init__(self):
         self.para_types = {}
         self.register_para_type('num', NumericPara)
         self.register_para_type('pow', PowPara)
+        self.register_para_type('pow_int', PowIntegerPara)
         self.register_para_type('int', IntegerPara)
         self.register_para_type('cat', CategoricalPara)
         self.register_para_type('bool', BoolPara)
