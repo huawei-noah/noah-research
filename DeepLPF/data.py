@@ -5,7 +5,7 @@ This is a PyTorch implementation of the CVPR 2020 paper:
 
 Please cite the paper if you use this code
 
-Tested with Pytorch 0.3.1, Python 3.5
+Tested with Pytorch 1.7.1, Python 3.7.9
 
 Authors: Sean Moran (sean.j.moran@gmail.com), 
          Pierre Marza (pierre.marza@gmail.com)
@@ -257,7 +257,7 @@ class Adobe5kDataLoader(DataLoader):
                                              # output data folder
 
                         output_img_filepath = file
-        
+
                         self.data_dict[idx_tmp]['output_img'] = root + \
                             "/" + output_img_filepath
 
