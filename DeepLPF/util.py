@@ -1,8 +1,3 @@
-#Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
-
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
-
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 # -*- coding: utf-8 -*-
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -19,7 +14,7 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
 import matplotlib
 matplotlib.use('agg')
 import os
-from skimage.measure import compare_ssim as ssim
+from skimage.metrics import structural_similarity as ssim
 import os.path
 import torch.nn.functional as F
 from skimage import io, color
@@ -53,8 +48,9 @@ import unet
 from abc import ABCMeta, abstractmethod
 import imageio
 import cv2
+import sys
 from skimage.transform import resize
-np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=sys.maxsize)
 
 
 class ImageProcessing(object):
@@ -74,7 +70,7 @@ class ImageProcessing(object):
         img = img.view(-1, 3)
 
         img = (img / 12.92) * img.le(0.04045).float() + (((torch.clamp(img,
-                                                                       min=0.0001) + 0.055) / 1.055) ** 2.4) * img.gt(0.04045).float()
+                                                                       min=0.000001) + 0.055) / 1.055) ** 2.4) * img.gt(0.04045).float()
 
         rgb_to_xyz = Variable(torch.FloatTensor([  # X        Y          Z
                                                 [0.412453, 0.212671,
