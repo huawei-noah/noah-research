@@ -16,9 +16,9 @@ To get this code working on your system / problem you will need to edit the
 data loading functions, as follows:
 
 1. main.py, change the paths for the data directories to point to your data
-directory (anything with "/aiml/data")
+directory
 
-2. data.py, lines 216, 224, change the folder names of the data input and
+2. data.py, lines 248, 256, change the folder names of the data input and
 output directories to point to your folder names
 '''
 import model
