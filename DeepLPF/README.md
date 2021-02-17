@@ -1,85 +1,79 @@
-# DeepLPF: Deep Local Parametric Filters for Image Enhancement
+# DeepLPF: Deep Local Parametric Filters for Image Enhancement (CVPR 2020)
 
-DeepLPF: Deep Local Parametric Filters for Image Enhancement (CVPR2020)
+[Sean Moran](http://www.seanjmoran.com), Pierre Marza, Steven McDonagh, [Sarah Parisot](https://parisots.github.io/), [Greg Slabaugh](http://gregslabaugh.net/)
 
-Paper: [here](https://openaccess.thecvf.com/content_CVPR_2020/papers/Moran_DeepLPF_Deep_Local_Parametric_Filters_for_Image_Enhancement_CVPR_2020_paper.pdf)
+Huawei Noah's Ark Lab
 
-![Teaser](https://github.com/huawei-noah/noah-research/blob/master/DeepLPF/teaser.png "Teaser")
+### [[Paper]](https://arxiv.org/abs/2003.13985) 
+### [[Video]](https://www.youtube.com/watch?v=Sxach3FM6FY) 
+### [[Supplementary]](http://www.seanjmoran.com/pdfs/DeepLPF_supplementary.pdf) 
 
-**Datasets**  
+<p align="center">
+<img src="./images/teaser.png" width="80%"/>
+</p>
+Repository for the paper DeepLPF: Deep Local Parametric Filters for Image Enhancement. Here you will find a link to the code and information on the datasets. Please raise a Github issue if you need assistance of have any questions on the research. 
+<p></p>
 
+### Requirements
 
-*  Seeing in the Dark (SID) dataset: https://github.com/cchen156/Learning-to-See-in-the-Dark
-*  Adobe5K dataset: https://data.csail.mit.edu/graphics/fivek/
+_requirements.txt_ contains the Python packages used by the code.
 
-**Dataset Preprocessing**
+### How to train DeepLPF and use the model for inference
 
-* __Adobe-DPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). After downloading this dataset you will need to use Lightroom to pre-process the images according to the procedure outlined in the DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer). Please see the issue [here](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636) for instructions. Artist C retouching is used as the groundtruth/target. Feel free to raise a Gitlab issue if you need assistance with this (or indeed the Adobe-UPE dataset below). You can also find the training, validation and testing dataset splits for Adobe-DPE in the following [file](https://www.cmlab.csie.ntu.edu.tw/project/Deep-Photo-Enhancer/%5BExperimental_Code_Data%5D_Deep-Photo-Enhancer.zip). 
+#### Training DeepLPF
+
+Instructions:
+
+To get this code working on your system / problem you will need to edit the data loading functions, as follows:
+
+1. main.py, change the paths for the data directories to point to your data directory
+2. data.py, lines 228, 236, change the folder names of the data input and output directories to point to your folder names
+
+To train, run the command:
+
+```
+python3 main.py
+```
+
+<p align="center">
+<img src="./images/deeplpf_training_loss.png" width="80%"/>
+</p>
+
+#### Inference - Using Pre-trained Models for Prediction
+
+The directory _pretrained_models_ contains a set of four DeepLPF pre-trained models on the Adobe5K_DPE dataset, each model output from different epochs. The model with the highest validation dataset PSNR (24.40 dB) is at epoch 99:
+
+* deeplpf_validpsnr_24.40217225909678_validloss_0.02979421615600586_testpsnr_24.86015350359045_testloss_0.027900682762265205_epoch_99_model.pt
+
+To use this model for inference:
+
+1. Place the images you wish to infer in a directory e.g. ./adobe5k_dpe/deeplpf_example_test_input/. Make sure the directory path has the word "input" somewhere in the path.
+2. Place the images you wish to use as groundtruth in a directory e.g. ./adobe5k_dpe/deeplpf_example_test_output/. Make sure the directory path has the word "output" somewhere in the path.
+3. Place the names of the images (without extension) in a text file in the directory above the directory containing the images i.e. ./adobe5k_dpe/ e.g. ./adobe5k_dpe/images_inference.txt
+4. Run the command and the results will appear in a timestamped directory in the same directory as main.py:
+
+```
+python3 main.py --inference_img_dirpath=./adobe5k_dpe/ --checkpoint_filepath=./pretrained_models/deeplpf_validpsnr_24.40217225909678_validloss_0.02979421615600586_testpsnr_24.86015350359045_testloss_0.027900682762265205_epoch_99_model.pt
+```
+
+### Bibtex
+
+```
+@InProceedings{Moran_2020_CVPR,
+author = {Moran, Sean and Marza, Pierre and McDonagh, Steven and Parisot, Sarah and Slabaugh, Gregory},
+title = {DeepLPF: Deep Local Parametric Filters for Image Enhancement},
+booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+month = {June},
+year = {2020}
+}
+```
+
+### Datasets
+
+* Contact [Sean Moran](sean.j.moran@gmail.com) if you wish to download the Adobe5K pre-processed dataset (i.e. Adobe-DPE) according to the pre-processing procedure outline in the DeepPhotoEnhancer paper.
+
+* __Adobe-DPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). After downloading this dataset you will need to use Lightroom to pre-process the images according to the procedure outlined in the DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer). Please see the issue [here](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636) for instructions. Artist C retouching is used as the groundtruth/target. Feel free to raise a Gitlab issue if you need assistance with this (or indeed the Adobe-UPE dataset below). You can also find the training, validation and testing dataset splits for Adobe-DPE in the following [file](https://www.cmlab.csie.ntu.edu.tw/project/Deep-Photo-Enhancer/%5BExperimental_Code_Data%5D_Deep-Photo-Enhancer.zip). The splits can also be found the the [adobe5k_dpe](./adobe5k_dpe/) directory in this repository (note these are a best guess at what the orginal splits from the DPE authors might be).
 
 * __Adobe-UPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). As above, you will need to use Lightroom to pre-process the images according to the procedure outlined in the Underexposed Photo Enhancement Using Deep Illumination Estimation (DeepUPE) [paper](https://github.com/wangruixing/DeepUPE) and detailed in the issue [here](https://github.com/wangruixing/DeepUPE/issues/26). Artist C retouching is used as the groundtruth/target. You can find the test images for the Adobe-UPE dataset at this [link](https://drive.google.com/file/d/1HZnNgptNxjKJAhekz2K5yh0mW0yKIws2/view?usp=sharing).
-
-**Training**  
-
-```
-python main.py --valid_every=25 --num_epoch=10000 
-
-valid_every: number of epochs to dump the testing and validation dataset metrics 
-num_epoch: total number of training epochs 
-
-```
-
-For DeepLPF at 25 epochs, on Adobe5k_DPE dataset, you should get the following result: 
-
-Validation dataset PSNR: 22.57 dB 
-
-Test dataset PSNR: 22.48 dB  
-
-Output is written to a corresponding data directory subdirectory eg:
-
-```
-/Adobe5k/log_<timestamp>/
-```
-
-**Inference**  
-
-For inference, create a directory e.g. inference_imgs containing two sub-directories called "input" and "output": 
-
-```
-/inference_imgs/input 
-
-/inference_imgs/output 
-```
-
-Place the input images into to the input directory (i.e. those images you wish to inference) and put the groundtruth images in the output directory. 
-
-In the inference_imgs directory create a text file called "images_inference.txt" and list the image names to be inferenced one per line, without any path of file extension e.g. if the image is a5000.tif you would create a file with one line with the entry: 
-
-```
-a5000 
-```
-
-To run inference use the following command: 
-
-```
-python main.py  --checkpoint_filepath= ---inference_img_dirpath= 
-
-checkpoint_filepath: location of checkpoint file 
-inference_img_dirpath: location of image directory 
-
-```
-
-For example: 
-
-```
-python main.py  --inference_img_dirpath="/aiml/data/inference_imgs/" --checkpoint_filepath="/aiml/data/deeplpf_validpsnr_23.512562908388936_validloss_0.03257064148783684_testpsnr_23.772689725002834_testloss_0.03129354119300842_epoch_399_model.pt" 
-```
-
-Output is written to a corresponding data directory subdir eg:
-
-```
-/Adobe5k/log_<timestamp>/
-
-```
-
 
 Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved. THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.

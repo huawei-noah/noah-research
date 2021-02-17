@@ -1,8 +1,3 @@
-#Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
-
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
-
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 # -*- coding: utf-8 -*-
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -31,6 +26,7 @@ import time
 import torch
 import torch.nn as nn
 import traceback
+import sys
 import torchvision.transforms as transforms
 from torch.autograd import Variable
 from torchvision.datasets import ImageFolder
@@ -56,11 +52,11 @@ from skimage import io, color
 from math import exp
 import torch.nn.functional as F
 import os.path
-from skimage.measure import compare_ssim as ssim
+from skimage.metrics import structural_similarity as ssim
 import glob
 import os
 print(torch.__version__)
-np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=sys.maxsize)
 
 
 class DeepLPFLoss(nn.Module):
@@ -155,6 +151,7 @@ class DeepLPFLoss(nn.Module):
 
         return ssim_map.mean(), cs
 
+
     def compute_msssim(self, img1, img2):
         """Computes the multi scale structural similarity index between two images. This function is differentiable.
         Code adapted from: https://github.com/Po-Hsun-Su/pytorch-ssim/blob/master/pytorch_ssim/__init__.py
@@ -165,46 +162,45 @@ class DeepLPFLoss(nn.Module):
         :rtype: float
 
         """
-        if img1.size() != img2.size():
-            raise RuntimeError('Input images must have the same shape (%s vs. %s).' % (
-                img1.size(), img2.size()))
-        if len(img1.size()) != 4:
-            raise RuntimeError(
-                'Input images must have four dimensions, not %d' % len(img1.size()))
+        if img1.shape[2]!=img2.shape[2]:
+                img1=img1.transpose(2,3)
 
-        if type(img1) is not Variable or type(img2) is not Variable:
-            raise RuntimeError(
-                'Input images must be Variables, not %s' % img1.__class__.__name__)
+        if img1.shape != img2.shape:
+            raise RuntimeError('Input images must have the same shape (%s vs. %s).',
+                       img1.shape, img2.shape)
+        if img1.ndim != 4:
+            raise RuntimeError('Input images must have four dimensions, not %d',
+                       img1.ndim)
 
-        weights = Variable(torch.FloatTensor(
-            [0.0448, 0.2856, 0.3001, 0.2363, 0.1333]))
-        # weights = Variable(torch.FloatTensor([1.0, 1.0, 1.0, 1.0, 1.0]))
-        if img1.is_cuda:
-            weights = weights.cuda(img1.get_device())
-
+        device = img1.device
+        weights = torch.FloatTensor([0.0448, 0.2856, 0.3001, 0.2363, 0.1333]).to(device)
         levels = weights.size()[0]
-        mssim = []
+        ssims = []
         mcs = []
         for _ in range(levels):
-            sim, cs = self.compute_ssim(img1, img2)
-            mssim.append(sim)
+            ssim, cs = self.compute_ssim(img1, img2)
+
+            # Relu normalize (not compliant with original definition)
+            ssims.append(ssim)
             mcs.append(cs)
 
             img1 = F.avg_pool2d(img1, (2, 2))
             img2 = F.avg_pool2d(img2, (2, 2))
 
-        img1 = img1.contiguous()
-        img2 = img2.contiguous()
+        ssims = torch.stack(ssims)
+        mcs = torch.stack(mcs)
 
-        mssim = torch.cat(mssim)
-        mcs = torch.cat(mcs)
-
-        mssim = (mssim + 1) / 2
+        # Simple normalize (not compliant with original definition)
+        # TODO: remove support for normalize == True (kept for backward support)
+        ssims = (ssims + 1) / 2
         mcs = (mcs + 1) / 2
 
-        prod = (torch.prod(mcs[0:levels - 1] ** weights[0:levels - 1])
-                * (mssim[levels - 1] ** weights[levels - 1]))
-        return prod
+        pow1 = mcs ** weights
+        pow2 = ssims ** weights
+
+        # From Matlab implementation https://ece.uwaterloo.ca/~z70wang/research/iwssim/
+        output = torch.prod(pow1[:-1] * pow2[-1])
+        return output
 
     def forward(self, predicted_img_batch, target_img_batch):
         """Forward function for the DeepLPF loss
@@ -215,6 +211,9 @@ class DeepLPFLoss(nn.Module):
         :rtype: float
 
         """
+        if predicted_img_batch.shape[2]!=target_img_batch.shape[2]:
+                target_img_batch=target_img_batch.transpose(2,3)
+
         num_images = target_img_batch.shape[0]
         target_img_batch = target_img_batch
 
@@ -245,7 +244,6 @@ class DeepLPFLoss(nn.Module):
 
         l1_loss_value = l1_loss_value/num_images
         ssim_loss_value = ssim_loss_value/num_images
-
         deeplpf_loss = l1_loss_value + 1e-3*ssim_loss_value
         return deeplpf_loss
 
@@ -299,7 +297,7 @@ class CubicFilter(nn.Module):
         self.cubic_layer8 = GlobalPoolingBlock(2)
         self.fc_cubic = torch.nn.Linear(
             num_out_channels, 60)  # cubic
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear')
+        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
         self.dropout = nn.Dropout(0.5)
 
     def get_cubic_mask(self, feat, img):
@@ -408,7 +406,7 @@ class GraduatedFilter(nn.Module):
         self.graduated_layer8 = GlobalPoolingBlock(2)
         self.fc_graduated = torch.nn.Linear(
             num_out_channels, 24)
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear')
+        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
         self.dropout = nn.Dropout(0.5)
         self.bin_layer = BinaryLayer()
 
@@ -492,6 +490,7 @@ class GraduatedFilter(nn.Module):
         """
         #######################################################
         ####################### Graduated #####################
+        eps = 1e-10
 
         x_axis = Variable(torch.arange(
             img.shape[2]).view(-1, 1).repeat(1, img.shape[3]).cuda()) / img.shape[2]
@@ -501,6 +500,7 @@ class GraduatedFilter(nn.Module):
         feat_graduated = torch.cat((feat, img), 1)
         feat_graduated = self.upsample(feat_graduated)
 
+        # The following layers calculate the parameters of the graduated filters that we use for image enhancement
         x = self.graduated_layer1(feat_graduated)
         x = self.graduated_layer2(x)
         x = self.graduated_layer3(x)
@@ -514,85 +514,89 @@ class GraduatedFilter(nn.Module):
         G = self.fc_graduated(x)
 
         # Classification values (above or below the line)
-        G[0, 21] = ((self.bin_layer(G[0, 21]))+1)/2
-        G[0, 22] = ((self.bin_layer(G[0, 22]))+1)/2
-        G[0, 23] = ((self.bin_layer(G[0, 23]))+1)/2
+        above_or_below_line1 = ((self.bin_layer(G[0, 0]))+1)/2
+        above_or_below_line2 = ((self.bin_layer(G[0, 1]))+1)/2
+        above_or_below_line3 = ((self.bin_layer(G[0, 2]))+1)/2
 
-        slope1 = G[0, 0].clone()
-        slope2 = G[0, 6].clone()
-        slope3 = G[0, 12].clone()
+        slope1 = G[0, 3].clone()
+        slope2 = G[0, 4].clone()
+        slope3 = G[0, 5].clone()
 
-        G[0, 1] = self.tanh01(G[0, 1]) + 1e-10
-        G[0, 7] = self.tanh01(G[0, 7]) + 1e-10
-        G[0, 13] = self.tanh01(G[0, 13]) + 1e-10
+        y_axis_dist1 = self.tanh01(G[0, 6]) + eps
+        y_axis_dist2 = self.tanh01(G[0, 7]) + eps
+        y_axis_dist3 = self.tanh01(G[0, 8]) + eps
 
-        G[0, 2] = torch.clamp(self.tanh01(G[0, 2]), G[0, 1].data[0], 1.0)
-        G[0, 8] = torch.clamp(self.tanh01(G[0, 8]), G[0, 7].data[0], 1.0)
-        G[0, 14] = torch.clamp(self.tanh01(G[0, 14]), G[0, 13].data[0], 1.0)
+        y_axis_dist1 = torch.clamp(self.tanh01(G[0, 9]), y_axis_dist1.data, 1.0)
+        y_axis_dist2 = torch.clamp(self.tanh01(G[0, 10]), y_axis_dist2.data, 1.0)
+        y_axis_dist3 = torch.clamp(self.tanh01(G[0, 11]), y_axis_dist3.data, 1.0)
 
-        G[0, 18] = torch.clamp(self.tanh01(G[0, 18]), 0, G[0, 1].data[0])
-        G[0, 19] = torch.clamp(self.tanh01(G[0, 19]), 0, G[0, 7].data[0])
-        G[0, 20] = torch.clamp(self.tanh01(G[0, 20]), 0, G[0, 13].data[0])
+        y_axis_dist4= torch.clamp(self.tanh01(G[0, 12]), 0, y_axis_dist1.data)
+        y_axis_dist5 = torch.clamp(self.tanh01(G[0, 13]), 0, y_axis_dist2.data)
+        y_axis_dist6 = torch.clamp(self.tanh01(G[0, 14]), 0, y_axis_dist3.data)
 
         # Scales
         max_scale = 2
         min_scale = 0
 
-        G[0, 3] = self.tanh01(G[0, 3]) * max_scale
-        G[0, 4] = self.tanh01(G[0, 4]) * max_scale
-        G[0, 5] = self.tanh01(G[0, 5]) * max_scale
+        scale_factor1 = self.tanh01(G[0, 15]) * max_scale
+        scale_factor2 = self.tanh01(G[0, 16]) * max_scale
+        scale_factor3 = self.tanh01(G[0, 17]) * max_scale
 
-        G[0, 9] = self.tanh01(G[0, 9]) * max_scale
-        G[0, 10] = self.tanh01(G[0, 10]) * max_scale
-        G[0, 11] = self.tanh01(G[0, 11]) * max_scale
+        scale_factor4 = self.tanh01(G[0, 18]) * max_scale
+        scale_factor5 = self.tanh01(G[0, 19]) * max_scale
+        scale_factor6 = self.tanh01(G[0, 20]) * max_scale
 
-        G[0, 15] = self.tanh01(G[0, 15]) * max_scale
-        G[0, 16] = self.tanh01(G[0, 16]) * max_scale
-        G[0, 17] = self.tanh01(G[0, 17]) * max_scale
+        scale_factor7 = self.tanh01(G[0, 21]) * max_scale
+        scale_factor8 = self.tanh01(G[0, 22]) * max_scale
+        scale_factor9= self.tanh01(G[0, 23]) * max_scale
 
         slope1_angle = torch.atan(slope1)
         slope2_angle = torch.atan(slope2)
         slope3_angle = torch.atan(slope3)
 
-        d1 = self.tanh01(G[0, 2]*torch.cos(slope1_angle))
-        d2 = self.tanh01(G[0, 18]*torch.cos(slope1_angle))
-        d3 = self.tanh01(G[0, 8]*torch.cos(slope2_angle))
-        d4 = self.tanh01(G[0, 19]*torch.cos(slope2_angle))
-        d5 = self.tanh01(G[0, 14]*torch.cos(slope3_angle))
-        d6 = self.tanh01(G[0, 20]*torch.cos(slope3_angle))
+        # Distances between central line and two outer lines 
+        d1 = self.tanh01(y_axis_dist1*torch.cos(slope1_angle))
+        d2 = self.tanh01(y_axis_dist4*torch.cos(slope1_angle))
+        d3 = self.tanh01(y_axis_dist2*torch.cos(slope2_angle))
+        d4 = self.tanh01(y_axis_dist5*torch.cos(slope2_angle))
+        d5 = self.tanh01(y_axis_dist3*torch.cos(slope3_angle))
+        d6 = self.tanh01(y_axis_dist6*torch.cos(slope3_angle))
 
-        top_line1 = self.tanh01(y_axis - (slope1 * x_axis + G[0, 1] + d1))
-        top_line2 = self.tanh01(y_axis - (slope2 * x_axis + G[0, 7] + d3))
-        top_line3 = self.tanh01(y_axis - (slope3 * x_axis + G[0, 13] + d5))
+        top_line1 = self.tanh01(y_axis - (slope1 * x_axis + y_axis_dist1 + d1))
+        top_line2 = self.tanh01(y_axis - (slope2 * x_axis + y_axis_dist2 + d3))
+        top_line3 = self.tanh01(y_axis - (slope3 * x_axis + y_axis_dist3 + d5))
 
+        '''
+        The following are the scale factors for each of the 9 graduated filters
+        '''
         mask_scale1 = self.get_inverted_mask(
-            G[0, 3], G[0, 21], d1, d2, max_scale, top_line1)
+            scale_factor1, above_or_below_line1, d1, d2, max_scale, top_line1)
         mask_scale2 = self.get_inverted_mask(
-            G[0, 4], G[0, 21], d1, d2, max_scale, top_line1)
+            scale_factor2, above_or_below_line1, d1, d2, max_scale, top_line1)
         mask_scale3 = self.get_inverted_mask(
-            G[0, 5], G[0, 21], d1, d2, max_scale, top_line1)
+            scale_factor3, above_or_below_line1, d1, d2, max_scale, top_line1)
 
         mask_scale_1 = torch.cat(
             (mask_scale1, mask_scale2, mask_scale3), dim=0)
         mask_scale_1 = torch.clamp(mask_scale_1.unsqueeze(0), 0, max_scale)
 
         mask_scale4 = self.get_inverted_mask(
-            G[0, 9], G[0, 22], d3, d4, max_scale, top_line2)
+            scale_factor4, above_or_below_line2, d3, d4, max_scale, top_line2)
         mask_scale5 = self.get_inverted_mask(
-            G[0, 10], G[0, 22], d3, d4, max_scale, top_line2)
+            scale_factor5, above_or_below_line2, d3, d4, max_scale, top_line2)
         mask_scale6 = self.get_inverted_mask(
-            G[0, 11], G[0, 22], d3, d4, max_scale, top_line2)
+            scale_factor6, above_or_below_line2, d3, d4, max_scale, top_line2)
 
         mask_scale_4 = torch.cat(
             (mask_scale4, mask_scale5, mask_scale6), dim=0)
         mask_scale_4 = torch.clamp(mask_scale_4.unsqueeze(0), 0, max_scale)
 
         mask_scale7 = self.get_inverted_mask(
-            G[0, 15], G[0, 23], d5, d6, max_scale, top_line3)
+            scale_factor7, above_or_below_line3, d5, d6, max_scale, top_line3)
         mask_scale8 = self.get_inverted_mask(
-            G[0, 16], G[0, 23], d5, d6, max_scale, top_line3)
+            scale_factor8, above_or_below_line3, d5, d6, max_scale, top_line3)
         mask_scale9 = self.get_inverted_mask(
-            G[0, 17], G[0, 23], d5, d6, max_scale, top_line3)
+            scale_factor9, above_or_below_line3, d5, d6, max_scale, top_line3)
 
         mask_scale_7 = torch.cat(
             (mask_scale7, mask_scale8, mask_scale9), dim=0)
@@ -627,7 +631,7 @@ class EllipticalFilter(nn.Module):
         self.elliptical_layer8 = GlobalPoolingBlock(2)
         self.fc_elliptical = torch.nn.Linear(
             num_out_channels, 24)  # elliptical
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear')
+        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
         self.dropout = nn.Dropout(0.5)
 
     def tanh01(self, x):
@@ -655,7 +659,7 @@ class EllipticalFilter(nn.Module):
         return (cond * x_1) + ((1 - cond) * x_2)
 
     def get_mask(self, x_axis, y_axis, shift_x=0, shift_y=0, semi_axis_x=1, semi_axis_y=1, alpha=0,
-                 scale_factor=2, max_scale=2, eps=1e-8, radius=1):
+                 scale_factor=2, max_scale=2, eps=1e-7, radius=1):
         """Gets the elliptical scaling mask according to the equation of a
         rotated ellipse
 
@@ -663,8 +667,14 @@ class EllipticalFilter(nn.Module):
         :rtype: Tensor
 
         """
-        mask_scale = self.where((((((x_axis - shift_x)*torch.cos(alpha) + (y_axis - shift_y)*torch.sin(alpha)) ** 2) / ((semi_axis_x)**2)) + ((((x_axis - shift_x)*torch.sin(alpha) - (y_axis - shift_y)*torch.cos(alpha)) ** 2) / ((semi_axis_y)**2)) + eps) < 1,
+        # Check whether a point is inside our outside of the ellipse and set the scaling factor accordingly
+        ellipse_equation_part1 = (((x_axis - shift_x)*torch.cos(alpha) + (y_axis - shift_y)*torch.sin(alpha)) ** 2) / ((semi_axis_x)**2)
+        ellipse_equation_part2 = (((x_axis - shift_x)*torch.sin(alpha) - (y_axis - shift_y)*torch.cos(alpha)) ** 2) / ((semi_axis_y)**2)
+
+        # Set the scaling factors to decay with radius inside the ellipse
+        mask_scale = self.where(ellipse_equation_part1+ellipse_equation_part2 < 1,
                                 (torch.sqrt((x_axis - shift_x) ** 2 + (y_axis - shift_y) ** 2 + eps) * (1 - scale_factor)) / radius + scale_factor, 1)
+
         mask_scale = torch.clamp(mask_scale.unsqueeze(0), 0, max_scale)
 
         return mask_scale
@@ -679,13 +689,19 @@ class EllipticalFilter(nn.Module):
         :rtype: Tensor
 
         """
-        eps = 1e-10
+
+        # The two eps parameters are used to avoid numerical issues in the learning
+        eps2 = 1e-7
+        eps1 = 1e-10
+
+        # max_scale is the maximum an ellipse can scale the image R,G,B values by
         max_scale = 2
         min_scale = 0
 
         feat_elliptical = torch.cat((feat, img), 1)
         feat_elliptical = self.upsample(feat_elliptical)
 
+        # The following layers calculate the parameters of the ellipses that we use for image enhancement
         x = self.elliptical_layer1(feat_elliptical)
         x = self.elliptical_layer2(x)
         x = self.elliptical_layer3(x)
@@ -698,6 +714,10 @@ class EllipticalFilter(nn.Module):
         x = self.dropout(x)
         G = self.fc_elliptical(x)
 
+        # The next code implements a rotated ellipse according to:
+        # https://math.stackexchange.com/questions/426150/what-is-the-general-equation-of-the-ellipse-that-is-not-in-the-origin-and-rotate
+        
+        # Normalised coordinates for x and y-axes, we instantiate the ellipses in these coordinates
         x_axis = Variable(torch.arange(
             img.shape[2]).view(-1, 1).repeat(1, img.shape[3]).cuda()) / img.shape[2]
         y_axis = Variable(torch.arange(img.shape[3]).repeat(
@@ -707,123 +727,121 @@ class EllipticalFilter(nn.Module):
         right_x = (img.shape[2] - 1) / img.shape[2]
         left_x = 0
 
-        G[0, 0] = self.tanh01(G[0, 0]) + eps
-        G[0, 8] = self.tanh01(G[0, 8]) + eps
-        G[0, 16] = self.tanh01(G[0, 16]) + eps
+        # Centre of ellipse, x-coordinate
+        x_coord1 = self.tanh01(G[0, 0]) + eps1
+        x_coord2 = self.tanh01(G[0, 1]) + eps1
+        x_coord3 = self.tanh01(G[0, 2]) + eps1
 
         # y coordinate - k coordinate
         right_y = (img.shape[3] - 1) // img.shape[3]
         left_y = 0
 
-        G[0, 1] = self.tanh01(G[0, 1]) + eps
-        G[0, 9] = self.tanh01(G[0, 9]) + eps
-        G[0, 17] = self.tanh01(G[0, 17]) + eps
+        # Centre of ellipse, y-coordinate
+        y_coord1 = self.tanh01(G[0, 3]) + eps1 
+        y_coord2 = self.tanh01(G[0, 4]) + eps1
+        y_coord3 = self.tanh01(G[0, 5]) + eps1
 
-        # a value
-        G[0, 2] = self.tanh01(G[0, 2]) + eps
-        G[0, 10] = self.tanh01(G[0, 10]) + eps
-        G[0, 18] = self.tanh01(G[0, 18]) + eps
+        # a value of ellipse
+        a1 = self.tanh01(G[0, 6]) + eps1
+        a2 = self.tanh01(G[0, 7]) + eps1
+        a3 = self.tanh01(G[0, 8]) + eps1
 
         # b value
-        G[0, 3] = self.tanh01(G[0, 3]) + eps  # * (right_x - left_x) + left_x
-        G[0, 11] = self.tanh01(G[0, 11]) + eps
-        G[0, 19] = self.tanh01(G[0, 19]) + eps
+        b1 = self.tanh01(G[0, 9]) + eps1
+        b2 = self.tanh01(G[0, 10]) + eps1
+        b3 = self.tanh01(G[0, 11]) + eps1
 
-        # A value
-        G[0, 4] = self.tanh01(G[0, 4]) * math.pi + eps
-        G[0, 12] = self.tanh01(G[0, 12]) * math.pi + eps
-        G[0, 20] = self.tanh01(G[0, 20]) * math.pi + eps
+        # A value is angle to the x-axis
+        A1 = self.tanh01(G[0, 12]) * math.pi + eps1
+        A2 = self.tanh01(G[0, 13]) * math.pi + eps1
+        A3 = self.tanh01(G[0, 14]) * math.pi + eps1
 
         '''
-        The following are the scale factors for each ellipse
+        The following are the scale factors for each of the 9 ellipses
         '''
-        G[0, 5] = self.tanh01(G[0, 5]) * max_scale + eps
-        G[0, 6] = self.tanh01(G[0, 6]) * max_scale + eps
-        G[0, 7] = self.tanh01(G[0, 7]) * max_scale + eps
+        scale1 = self.tanh01(G[0, 15]) * max_scale + eps1 
+        scale2 = self.tanh01(G[0, 16]) * max_scale + eps1
+        scale3 = self.tanh01(G[0, 17]) * max_scale + eps1
 
-        G[0, 13] = self.tanh01(G[0, 13]) * max_scale + eps
-        G[0, 14] = self.tanh01(G[0, 14]) * max_scale + eps
-        G[0, 15] = self.tanh01(G[0, 15]) * max_scale + eps
+        scale4  = self.tanh01(G[0, 18]) * max_scale + eps1
+        scale5 = self.tanh01(G[0, 19]) * max_scale + eps1
+        scale6 = self.tanh01(G[0, 20]) * max_scale + eps1
 
-        G[0, 21] = self.tanh01(G[0, 21]) * max_scale + eps
-        G[0, 22] = self.tanh01(G[0, 22]) * max_scale + eps
-        G[0, 23] = self.tanh01(G[0, 23]) * max_scale + eps
+        scale7 = self.tanh01(G[0, 21]) * max_scale + eps1
+        scale8 = self.tanh01(G[0, 22]) * max_scale + eps1
+        scale9 = self.tanh01(G[0, 23]) * max_scale + eps1
 
-        angle_1 = torch.acos(torch.clamp((y_axis-G[0, 1]) / (torch.sqrt(
-            (x_axis-G[0, 0])**2 + (y_axis-G[0, 1])**2 + eps) + eps), -1+1e-7, 1-1e-7)) - G[0, 4]
-        angle_2 = torch.acos(torch.clamp((y_axis-G[0, 9]) / (torch.sqrt((x_axis-G[0, 8]) ** 2 + (
-            y_axis-G[0, 9]) ** 2 + eps) + eps), -1+1e-7, 1-1e-7)) - G[0, 12]
-        angle_3 = torch.acos(torch.clamp((y_axis-G[0, 17]) / (torch.sqrt((x_axis-G[0, 16]) ** 2 + (
-            y_axis-G[0, 17]) ** 2 + eps) + eps), -1+1e-7, 1-1e-7)) - G[0, 20]
+        ############ Angle of orientation of the ellipses with respect to the y semi-axis
+        angle_1 = torch.acos(torch.clamp((y_axis-y_coord1) / 
+            (torch.sqrt((x_axis-x_coord1)**2 + (y_axis-y_coord1)**2 + eps1)), -1+eps2, 1-eps2))-A1
 
-        radius_1 = ((G[0, 2]*G[0, 3]) / (torch.sqrt((G[0, 2]**2)*(torch.sin(angle_1)
-                                                                  ** 2) + (G[0, 3]**2)*(torch.cos(angle_1)**2) + eps) + eps)) + eps
-        radius_2 = ((G[0, 10] * G[0, 11]) / (torch.sqrt((G[0, 10] ** 2) * (torch.sin(angle_2)
-                                                                           ** 2) + (G[0, 11] ** 2) * (torch.cos(angle_2) ** 2) + eps) + eps)) + eps
-        radius_3 = ((G[0, 18] * G[0, 19]) / (torch.sqrt((G[0, 18] ** 2) * (torch.sin(angle_3)
-                                                                           ** 2) + (G[0, 19] ** 2) * (torch.cos(angle_3) ** 2) + eps) + eps)) + eps
+        angle_2 = torch.acos(torch.clamp((y_axis-y_coord2) / 
+            (torch.sqrt((x_axis-x_coord2) ** 2 + (y_axis-y_coord2)**2 + eps1)), -1+eps2, 1-eps2))-A2
+        
+        angle_3 = torch.acos(torch.clamp((y_axis-y_coord3) / 
+            (torch.sqrt((x_axis-x_coord3) ** 2 + (y_axis-y_coord3)**2 + eps1)), -1+eps2, 1-eps2))-A3
 
+        ############ Radius of the ellipses
+        # https://math.stackexchange.com/questions/432902/how-to-get-the-radius-of-an-ellipse-at-a-specific-angle-by-knowing-its-semi-majo
+        radius_1 = (a1*b1)/torch.sqrt((a1**2)*(torch.sin(angle_1)**2)+(b1**2)*(torch.cos(angle_1)**2) + eps1)
+
+        radius_2 = (a2*b2)/torch.sqrt((a2**2)*(torch.sin(angle_2)**2)+(b2**2)*(torch.cos(angle_2)**2) + eps1)
+
+        radius_3 = (a3*b3)/torch.sqrt((a3**2)*(torch.sin(angle_3)**2)+(b3**2)*(torch.cos(angle_3)**2) + eps1)
+
+        
+        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
         mask_scale1 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 0], shift_y=G[0, 1], semi_axis_x=G[0,
-                                                                                    2], semi_axis_y=G[0, 3], alpha=G[0, 4], scale_factor=G[0, 5],
+                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale1,
                                     radius=radius_1)
 
         mask_scale2 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 0], shift_y=G[0, 1], semi_axis_x=G[0,
-                                                                                    2], semi_axis_y=G[0, 3], alpha=G[0, 4], scale_factor=G[0, 6],
+                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale2,
                                     radius=radius_1)
 
         mask_scale3 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 0], shift_y=G[0, 1], semi_axis_x=G[0,
-                                                                                    2], semi_axis_y=G[0, 3], alpha=G[0, 4], scale_factor=G[0, 7],
+                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale3,
                                     radius=radius_1)
 
         mask_scale_1 = torch.cat(
             (mask_scale1, mask_scale2, mask_scale3), dim=0)
         mask_scale_1_rad = torch.clamp(mask_scale_1.unsqueeze(0), 0, max_scale)
 
-        ############
-
+        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
         mask_scale4 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 8], shift_y=G[0, 9], semi_axis_x=G[0,
-                                                                                    10], semi_axis_y=G[0, 11], alpha=G[0, 12], scale_factor=G[0, 13],
+                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b2, alpha=angle_2, scale_factor=scale4,
                                     radius=radius_2)
 
         mask_scale5 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 8], shift_y=G[0, 9], semi_axis_x=G[0,
-                                                                                    10], semi_axis_y=G[0, 11], alpha=G[0, 12], scale_factor=G[0, 14],
+                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b2, alpha=angle_2, scale_factor=scale5,
                                     radius=radius_2)
 
         mask_scale6 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 8], shift_y=G[0, 9], semi_axis_x=G[0,
-                                                                                    10], semi_axis_y=G[0, 11], alpha=G[0, 12], scale_factor=G[0, 15],
+                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b3, alpha=angle_2, scale_factor=scale6,
                                     radius=radius_2)
 
         mask_scale_4 = torch.cat(
             (mask_scale4, mask_scale5, mask_scale6), dim=0)
         mask_scale_4_rad = torch.clamp(mask_scale_4.unsqueeze(0), 0, max_scale)
 
-        ############
-
+        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
         mask_scale7 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 16], shift_y=G[0, 17], semi_axis_x=G[0,
-                                                                                      18], semi_axis_y=G[0, 19], alpha=G[0, 20], scale_factor=G[0, 21],
+                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale7,
                                     radius=radius_3)
 
         mask_scale8 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 16], shift_y=G[0, 17], semi_axis_x=G[0,
-                                                                                      18], semi_axis_y=G[0, 19], alpha=G[0, 20], scale_factor=G[0, 22],
+                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale8,
                                     radius=radius_3)
 
         mask_scale9 = self.get_mask(x_axis, y_axis,
-                                    shift_x=G[0, 16], shift_y=G[0, 17], semi_axis_x=G[0,
-                                                                                      18], semi_axis_y=G[0, 19], alpha=G[0, 20], scale_factor=G[0, 23],
+                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale9,
                                     radius=radius_3)
 
         mask_scale_7 = torch.cat(
             (mask_scale7, mask_scale8, mask_scale9), dim=0)
         mask_scale_7_rad = torch.clamp(mask_scale_7.unsqueeze(0), 0, max_scale)
 
+        ############ Mix the ellipses together by multiplication
         mask_scale_elliptical = torch.clamp(
             mask_scale_1_rad * mask_scale_4_rad * mask_scale_7_rad, 0, max_scale)
 
@@ -952,6 +970,7 @@ class DeepLPFParameterPrediction(nn.Module):
         self.cubic_filter = CubicFilter()
         self.graduated_filter = GraduatedFilter()
         self.elliptical_filter = EllipticalFilter()
+      
 
     def forward(self, x):
         """DeepLPF combined architecture fusing cubic, graduated and elliptical filters
@@ -970,20 +989,20 @@ class DeepLPFParameterPrediction(nn.Module):
         torch.cuda.empty_cache()
         shape = x.shape
 
-        img_clamped = torch.clamp(img, 0, 1)
-
         img_cubic = self.cubic_filter.get_cubic_mask(feat, img)
+       
         mask_scale_graduated = self.graduated_filter.get_graduated_mask(
             feat, img)
         mask_scale_elliptical = self.elliptical_filter.get_elliptical_mask(
             feat, img)
-
+       
         mask_scale_fuse = torch.clamp(
             mask_scale_graduated+mask_scale_elliptical, 0, 2)
-        img_fuse = torch.clamp(img_cubic * mask_scale_fuse, 0, 1)
 
+        img_fuse = torch.clamp(img_cubic*mask_scale_fuse, 0, 1)
+        
         img = torch.clamp(img_fuse+img, 0, 1)
-
+        
         return img
 
 
@@ -999,7 +1018,7 @@ class DeepLPFNet(nn.Module):
         super(DeepLPFNet, self).__init__()
         self.backbonenet = unet.UNetModel()
         self.deeplpfnet = DeepLPFParameterPrediction()
-
+        
     def forward(self, img):
         """Neural network forward function
 
@@ -1010,5 +1029,5 @@ class DeepLPFNet(nn.Module):
         """
         feat = self.backbonenet(img)
         img = self.deeplpfnet(feat)
-
+        
         return img

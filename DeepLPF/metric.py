@@ -1,8 +1,3 @@
-#Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
-
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
-
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 # -*- coding: utf-8 -*-
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -55,11 +50,12 @@ from skimage import io, color
 from math import exp
 import torch.nn.functional as F
 import os.path
-from skimage.measure import compare_ssim as ssim
+from skimage.metrics import structural_similarity as ssim
 import glob
 import os
 import model
-np.set_printoptions(threshold=np.nan)
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 
 
 class Evaluator():
@@ -106,86 +102,88 @@ class Evaluator():
         net.eval()
         net.cuda()
 
-        for batch_num, data in enumerate(self.data_loader, 0):
+        with torch.no_grad():
+            for batch_num, data in enumerate(self.data_loader, 0):
 
-            input_img_batch, output_img_batch, name = Variable(data['input_img'], requires_grad=False,
-                                                               volatile=True).cuda(), Variable(data['output_img'],
-                                                                                               requires_grad=False,
-                                                                                               volatile=True).cuda(), \
-                data['name']
-            input_img_batch = input_img_batch.unsqueeze(0)
+                input_img_batch, output_img_batch, name = Variable(data['input_img'], requires_grad=False).cuda(), Variable(data['output_img'],
+                                                                                                   requires_grad=False).cuda(), \
+                    data['name']
+                input_img_batch = input_img_batch.unsqueeze(0)
 
-            for i in range(0, input_img_batch.shape[0]):
+                for i in range(0, input_img_batch.shape[0]):
 
-                img = input_img_batch[i, :, :, :]
-                img = torch.clamp(img, 0, 1)
+                    img = input_img_batch[i, :, :, :]
+                    img = torch.clamp(img, 0, 1)
 
-                net_output_img_example = net(img)
+                    net_output_img_example = net(img)
 
-                loss = self.criterion(net_output_img_example[:, 0:3, :, :],
-                                      output_img_batch[:, 0:3, :, :])
+                    if net_output_img_example.shape[2]!=output_img_batch.shape[2]:
+                        net_output_img_example=net_output_img_example.transpose(2,3)
 
-                input_img_example = (input_img_batch.cpu(
-                ).data[0, 0:3, :, :].numpy() * 255).astype('uint8')
+                    loss = self.criterion(net_output_img_example[:, 0:3, :, :],
+                                          output_img_batch[:, 0:3, :, :])
 
-                output_img_batch_numpy = output_img_batch.squeeze(
-                    0).data.cpu().numpy()
-                output_img_batch_numpy = ImageProcessing.swapimdims_3HW_HW3(
-                    output_img_batch_numpy)
-                output_img_batch_rgb = output_img_batch_numpy
-                output_img_batch_rgb = ImageProcessing.swapimdims_HW3_3HW(
-                    output_img_batch_rgb)
-                output_img_batch_rgb = np.expand_dims(
-                    output_img_batch_rgb, axis=0)
+                    input_img_example = (input_img_batch.cpu(
+                    ).data[0, 0:3, :, :].numpy() * 255).astype('uint8')
 
-                net_output_img_example_numpy = net_output_img_example.squeeze(
-                    0).data.cpu().numpy()
-                net_output_img_example_numpy = ImageProcessing.swapimdims_3HW_HW3(
-                    net_output_img_example_numpy)
-                net_output_img_example_rgb = net_output_img_example_numpy
-                net_output_img_example_rgb = ImageProcessing.swapimdims_HW3_3HW(
-                    net_output_img_example_rgb)
-                net_output_img_example_rgb = np.expand_dims(
-                    net_output_img_example_rgb, axis=0)
-                net_output_img_example_rgb = np.clip(
-                    net_output_img_example_rgb, 0, 1)
+                    output_img_batch_numpy = output_img_batch.squeeze(
+                        0).data.cpu().numpy()
+                    output_img_batch_numpy = ImageProcessing.swapimdims_3HW_HW3(
+                        output_img_batch_numpy)
+                    output_img_batch_rgb = output_img_batch_numpy
+                    output_img_batch_rgb = ImageProcessing.swapimdims_HW3_3HW(
+                        output_img_batch_rgb)
+                    output_img_batch_rgb = np.expand_dims(
+                        output_img_batch_rgb, axis=0)
 
-                running_loss += loss.data[0]
-                examples += batch_size
-                num_batches += 1
+                    net_output_img_example_numpy = net_output_img_example.squeeze(
+                        0).data.cpu().numpy()
+                    net_output_img_example_numpy = ImageProcessing.swapimdims_3HW_HW3(
+                        net_output_img_example_numpy)
+                    net_output_img_example_rgb = net_output_img_example_numpy
+                    net_output_img_example_rgb = ImageProcessing.swapimdims_HW3_3HW(
+                        net_output_img_example_rgb)
+                    net_output_img_example_rgb = np.expand_dims(
+                        net_output_img_example_rgb, axis=0)
+                    net_output_img_example_rgb = np.clip(
+                        net_output_img_example_rgb, 0, 1)
 
-                psnr_example = ImageProcessing.compute_psnr(output_img_batch_rgb.astype(np.float32),
-                                                            net_output_img_example_rgb.astype(np.float32), 1.0)
-                ssim_example = ImageProcessing.compute_ssim(output_img_batch_rgb.astype(np.float32),
-                                                            net_output_img_example_rgb.astype(np.float32))
+                    running_loss += loss.data[0]
+                    examples += batch_size
+                    num_batches += 1
 
-                psnr_avg += psnr_example
-                ssim_avg += ssim_example
-                
-                if batch_num > 30:
-                    '''
-                    We save only the first 30 images down for time saving
-                    purposes
-                    '''
-                    continue
-                else:
+                    psnr_example = ImageProcessing.compute_psnr(output_img_batch_rgb.astype(np.float32),
+                                                                net_output_img_example_rgb.astype(np.float32), 1.0)
+                    ssim_example = ImageProcessing.compute_ssim(output_img_batch_rgb.astype(np.float32),
+                                                                net_output_img_example_rgb.astype(np.float32))
 
-                    output_img_example = (
-                        output_img_batch_rgb[0, 0:3, :, :] * 255).astype('uint8')
-                    net_output_img_example = (
-                        net_output_img_example_rgb[0, 0:3, :, :] * 255).astype('uint8')
+                    psnr_avg += psnr_example
+                    ssim_avg += ssim_example
+                    
+                    if batch_num > 30:
+                        '''
+                        We save only the first 30 images down for time saving
+                        purposes
+                        '''
+                        continue
+                    else:
 
-                    plt.imsave(out_dirpath + "/" + name[0].split(".")[0] + "_" + self.split_name.upper() + "_" + str(epoch + 1) + "_" + str(
-                        examples) + "_PSNR_" + str("{0:.3f}".format(psnr_example)) + "_SSIM_" + str(
-                        "{0:.3f}".format(ssim_example)) + ".jpg",
-                        ImageProcessing.swapimdims_3HW_HW3(net_output_img_example))
+                        output_img_example = (
+                            output_img_batch_rgb[0, 0:3, :, :] * 255).astype('uint8')
+                        net_output_img_example = (
+                            net_output_img_example_rgb[0, 0:3, :, :] * 255).astype('uint8')
 
-                del net_output_img_example_numpy
-                del net_output_img_example_rgb
-                del output_img_batch_rgb
-                del output_img_batch_numpy
-                del input_img_example
-                del output_img_batch
+                        plt.imsave(out_dirpath + "/" + name[0].split(".")[0] + "_" + self.split_name.upper() + "_" + str(epoch + 1) + "_" + str(
+                            examples) + "_PSNR_" + str("{0:.3f}".format(psnr_example)) + "_SSIM_" + str(
+                            "{0:.3f}".format(ssim_example)) + ".jpg",
+                            ImageProcessing.swapimdims_3HW_HW3(net_output_img_example))
+
+                    del net_output_img_example_numpy
+                    del net_output_img_example_rgb
+                    del output_img_batch_rgb
+                    del output_img_batch_numpy
+                    del input_img_example
+                    del output_img_batch
 
         psnr_avg = psnr_avg / num_batches
         ssim_avg = ssim_avg / num_batches

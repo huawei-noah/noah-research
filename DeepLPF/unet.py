@@ -1,8 +1,3 @@
-#Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
-
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
-
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 # -*- coding: utf-8 -*-
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -88,14 +83,14 @@ class UNet(nn.Module):
         x = self.dconv_down5(x)
 
         x = self.up_conv1x1_1(self.upsample(x))
-
+        
         if x.shape[3] != conv4.shape[3] and x.shape[2] != conv4.shape[2]:
             x = torch.nn.functional.pad(x, (1, 0, 0, 1))
         elif x.shape[2] != conv4.shape[2]:
             x = torch.nn.functional.pad(x, (0, 0, 0, 1))
         elif x.shape[3] != conv4.shape[3]:
             x = torch.nn.functional.pad(x, (1, 0, 0, 0))
-
+        
         x = torch.cat([x, conv4], dim=1)
 
         x = self.dconv_up4(x)
@@ -195,7 +190,7 @@ class UNetModel(nn.Module):
         self.final_conv = nn.Conv2d(3, 64, 3, 1, 0, 1)
         self.refpad = nn.ReflectionPad2d(1)
 
-    def forward(self, image):
+    def forward(self, img):
         """UNet model definition
 
         :param image: input image
@@ -204,5 +199,5 @@ class UNetModel(nn.Module):
 
         """
 
-        output_image = self.unet(image)
-        return self.final_conv(self.refpad(output_image))
+        output_img = self.unet(img)
+        return self.final_conv(self.refpad(output_img))
