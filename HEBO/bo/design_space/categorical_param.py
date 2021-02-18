@@ -8,28 +8,35 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
 from .param import Parameter
 
 class CategoricalPara(Parameter):
     def __init__(self, param):
         super().__init__(param)
-        self.categories = list(map(str, param['categories']))
-        self.encoder    = LabelEncoder().fit(self.categories)
-        self.lb         = min(self.encoder.transform(self.categories))
-        self.ub         = max(self.encoder.transform(self.categories))
-        assert self.lb == 0
-        assert self.ub == len(self.categories) - 1
+        self.categories = np.array(list(param['categories']))
+        assert(self.categories.ndim == 1)
+        try:
+            self._categories_dict = {k:v for v, k in enumerate(self.categories)}
+        except TypeError: # there are unhashable types
+            self._categories_dict = None
+        self.lb         = 0
+        self.ub         = len(self.categories) - 1
 
     def sample(self, num = 1):
         assert(num > 0)
-        return self.encoder.inverse_transform(np.random.randint(self.lb, self.ub + 1, num))
+        return np.random.choice(self.categories, num, replace = True)
 
     def transform(self, x : np.ndarray):
-        return self.encoder.transform(x.astype(str).reshape(-1))
+        if self._categories_dict:
+            # if all objects are hashable, we can use a dict instead for faster transform
+            ret = np.array(list(map(lambda a: self._categories_dict[a], x)))
+        else:
+            # otherwise, we fall back to searching in an array
+            ret = np.array(list(map(lambda a: np.where(self.categories == a)[0][0], x)))
+        return ret.astype(float)
 
     def inverse_transform(self, x):
-        return self.encoder.inverse_transform(x.round().astype(int).reshape(-1))
+        return self.categories[x.round().astype(int)]
 
     @property
     def is_numeric(self):
