@@ -43,3 +43,7 @@ class PowPara(Parameter):
     @property
     def is_discrete(self):
         return False
+
+    @property
+    def is_discrete_after_transform(self):
+        return False

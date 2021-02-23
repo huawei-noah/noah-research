@@ -43,6 +43,11 @@ class Parameter(ABC):
         pass
 
     @property
+    @abstractmethod
+    def is_discrete_after_transform(self) -> bool:
+        pass
+
+    @property
     def is_categorical(self) -> bool:
         return not self.is_numeric
 
@@ -56,4 +61,3 @@ class Parameter(ABC):
     @abstractmethod
     def opt_ub(self) -> float:
         pass
-

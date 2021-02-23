@@ -39,6 +39,10 @@ class BoolPara(Parameter):
         return True
 
     @property
+    def is_discrete_after_transform(self):
+        return True
+
+    @property
     def opt_lb(self):
         return self.lb
 

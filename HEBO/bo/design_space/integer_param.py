@@ -42,3 +42,7 @@ class IntegerPara(Parameter):
     @property
     def is_discrete(self):
         return True
+
+    @property
+    def is_discrete_after_transform(self):
+        return True
