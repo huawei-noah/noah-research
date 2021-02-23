@@ -56,7 +56,8 @@ class BOProblem(Problem):
 class EvolutionOpt:
     def __init__(self,
             design_space : DesignSpace,
-            acq          : Acquisition, es,
+            acq          : Acquisition,
+            es           : str = None, 
             **conf):
         self.space      = design_space
         self.es         = es 
@@ -65,6 +66,9 @@ class EvolutionOpt:
         self.iter       = conf.get('iters',500)
         self.verbose    = conf.get('verbose', False)
         assert(self.acq.num_obj > 0)
+
+        if self.es is None:
+            self.es = 'nsga2' if self.acq.num_obj > 1 else 'ga'
 
     def get_init_pop(self, initial_suggest : pd.DataFrame = None) -> np.ndarray:
         # init_pop = self.space.sample(self.pop)
@@ -82,7 +86,7 @@ class EvolutionOpt:
     def get_mutation(self):
         mask = []
         for name in (self.space.numeric_names + self.space.enum_names):
-            if self.space.paras[name].is_discrete:
+            if self.space.paras[name].is_discrete_after_transform:
                 mask.append('int')
             else:
                 mask.append('real')
@@ -96,7 +100,7 @@ class EvolutionOpt:
     def get_crossover(self):
         mask = []
         for name in (self.space.numeric_names + self.space.enum_names):
-            if self.space.paras[name].is_discrete:
+            if self.space.paras[name].is_discrete_after_transform:
                 mask.append('int')
             else:
                 mask.append('real')
@@ -114,16 +118,9 @@ class EvolutionOpt:
         init_pop  = self.get_init_pop(initial_suggest)
         mutation  = self.get_mutation()
         crossover = self.get_crossover()
-        try:
-          algo = get_algorithm(self.es, pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-          res   = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
-        except:
-          if self.acq.num_obj > 1:
-              algo = get_algorithm('nsga2', pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-          else:
-              algo = get_algorithm('ga', pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-          res   = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
-        opt_x = res.X.reshape(-1, len(lb)).astype(float)
+        algo      = get_algorithm(self.es, pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
+        res       = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
+        opt_x     = res.X.reshape(-1, len(lb)).astype(float)
         
         opt_xcont = torch.from_numpy(opt_x[:, :self.space.num_numeric])
         opt_xenum = torch.from_numpy(opt_x[:, self.space.num_numeric:])
