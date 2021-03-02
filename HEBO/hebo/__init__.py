@@ -13,3 +13,5 @@ from . import design_space
 from . import models
 from . import optimizers
 from . import sklearn_tuner
+
+__version__ = "0.2.0"
