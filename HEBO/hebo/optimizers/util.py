@@ -7,7 +7,7 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from bo.design_space.design_space import DesignSpace
+from hebo.design_space.design_space import DesignSpace
 def parse_space_from_bayesmark(api_config) -> DesignSpace:
     """
     Parse design space of bayesmark (https://github.com/uber/bayesmark)

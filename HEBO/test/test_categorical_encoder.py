@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 import pytest
 
-from bo.models.layers import OneHotTransform, EmbTransform
+from hebo.models.layers import OneHotTransform, EmbTransform
 
 def test_encoders():
     layer1 = EmbTransform([5, 5], emb_sizes = [1, 1])

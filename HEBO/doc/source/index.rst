@@ -19,8 +19,8 @@ Quick start
     import pandas as pd
     import numpy  as np
 
-    from bo.design_space.design_space import DesignSpace
-    from bo.optimizers.mace import MACEBO
+    from hebo.design_space.design_space import DesignSpace
+    from hebo.optimizers.mace import MACEBO
 
     def obj(params : pd.DataFrame) -> np.ndarray:
         return ((params.values - 0.37)**2).sum(axis = 1).reshape(-1, 1)
@@ -41,7 +41,7 @@ Tuning sklearn estimators
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.metrics import r2_score, mean_squared_error
 
-    from bo.sklearn_tuner import sklearn_tuner
+    from hebo.sklearn_tuner import sklearn_tuner
 
     space_cfg = [
         {'name' : 'max_depth', 'type' : 'int', 'lb' : 1, 'ub' : 20},

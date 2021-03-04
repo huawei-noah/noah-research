@@ -13,8 +13,8 @@ from sklearn.model_selection import cross_val_predict, KFold
 from sklearn.metrics import get_scorer, make_scorer
 from typing import Callable
 
-from bo.design_space.design_space import DesignSpace
-from bo.optimizers.hebo import HEBO
+from hebo.design_space.design_space import DesignSpace
+from hebo.optimizers.hebo import HEBO
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -52,7 +52,7 @@ def sklearn_tuner(
     from sklearn.datasets import load_boston
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.metrics import r2_score, mean_squared_error
-    from bo.sklearn_tuner import sklearn_tuner
+    from hebo.sklearn_tuner import sklearn_tuner
 
     space_cfg = [
             {'name' : 'max_depth',        'type' : 'int', 'lb' : 1, 'ub' : 20},

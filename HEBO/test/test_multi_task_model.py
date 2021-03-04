@@ -17,8 +17,8 @@ import numpy as np
 from torch import FloatTensor
 from sklearn.metrics import r2_score
 
-from bo.models.base_model import BaseModel
-from bo.models.model_factory import get_model, model_dict
+from hebo.models.base_model import BaseModel
+from hebo.models.model_factory import get_model, model_dict
 
 def rand_dataset(num_out : int) -> (FloatTensor, FloatTensor):
     X = torch.randn(10, 2)

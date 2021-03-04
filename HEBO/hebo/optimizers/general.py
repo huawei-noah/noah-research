@@ -11,10 +11,10 @@ import numpy  as np
 import pandas as pd
 import torch
 
-from bo.design_space.design_space import DesignSpace
-from bo.models.model_factory import get_model, model_dict
-from bo.acquisitions.acq import GeneralAcq
-from bo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.design_space.design_space import DesignSpace
+from hebo.models.model_factory import get_model, model_dict
+from hebo.acquisitions.acq import GeneralAcq
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
 
 from .abstract_optimizer import AbstractOptimizer
 

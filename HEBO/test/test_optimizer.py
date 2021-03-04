@@ -17,17 +17,17 @@ import numpy as np
 import pandas as pd
 import torch
 
-from bo.optimizers.hebo import HEBO
-from bo.optimizers.bo import BO
-from bo.optimizers.general import GeneralBO
-from bo.optimizers.util import parse_space_from_bayesmark
+from hebo.optimizers.hebo import HEBO
+from hebo.optimizers.bo import BO
+from hebo.optimizers.general import GeneralBO
+from hebo.optimizers.util import parse_space_from_bayesmark
 
-from bo.design_space.design_space      import DesignSpace
-from bo.design_space.numeric_param     import NumericPara
-from bo.design_space.integer_param     import IntegerPara
-from bo.design_space.pow_param         import PowPara
-from bo.design_space.categorical_param import CategoricalPara
-from bo.design_space.bool_param        import BoolPara
+from hebo.design_space.design_space      import DesignSpace
+from hebo.design_space.numeric_param     import NumericPara
+from hebo.design_space.integer_param     import IntegerPara
+from hebo.design_space.pow_param         import PowPara
+from hebo.design_space.categorical_param import CategoricalPara
+from hebo.design_space.bool_param        import BoolPara
 
 def obj(x : pd.DataFrame) -> np.ndarray:
     return x['x0'].values.astype(float).reshape(-1, 1) ** 2

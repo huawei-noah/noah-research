@@ -14,10 +14,10 @@ import torch
 from torch.quasirandom import SobolEngine
 from sklearn.preprocessing import power_transform
 
-from bo.design_space.design_space import DesignSpace
-from bo.models.model_factory import get_model
-from bo.acquisitions.acq import MACE, Mean, Sigma
-from bo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.design_space.design_space import DesignSpace
+from hebo.models.model_factory import get_model
+from hebo.acquisitions.acq import MACE, Mean, Sigma
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
 
 from .abstract_optimizer import AbstractOptimizer
 

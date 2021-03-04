@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest
 import torch
 import torch.nn as nn
-from bo.models.scalers import TorchStandardScaler, TorchMinMaxScaler, TorchIdentityScaler
+from hebo.models.scalers import TorchStandardScaler, TorchMinMaxScaler, TorchIdentityScaler
 
 @pytest.mark.parametrize('scaler',
         [TorchIdentityScaler(), TorchStandardScaler(), TorchMinMaxScaler((-3, 7))],

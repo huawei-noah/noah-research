@@ -10,9 +10,9 @@
 import sys, os
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
-from bo.acq_optimizers.evolution_optimizer import EvolutionOpt
-from bo.acquisitions.acq import  Acquisition 
-from bo.design_space.design_space import DesignSpace 
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.acquisitions.acq import  Acquisition 
+from hebo.design_space.design_space import DesignSpace 
 
 import pytest
 from pytest import approx

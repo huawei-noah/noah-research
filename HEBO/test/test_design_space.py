@@ -13,12 +13,12 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest
 from pytest import approx
 
-from bo.design_space.design_space      import DesignSpace
-from bo.design_space.numeric_param     import NumericPara
-from bo.design_space.integer_param     import IntegerPara
-from bo.design_space.pow_param         import PowPara
-from bo.design_space.categorical_param import CategoricalPara
-from bo.design_space.bool_param        import BoolPara
+from hebo.design_space.design_space      import DesignSpace
+from hebo.design_space.numeric_param     import NumericPara
+from hebo.design_space.integer_param     import IntegerPara
+from hebo.design_space.pow_param         import PowPara
+from hebo.design_space.categorical_param import CategoricalPara
+from hebo.design_space.bool_param        import BoolPara
 
 def test_design_space():
     space = DesignSpace().parse([

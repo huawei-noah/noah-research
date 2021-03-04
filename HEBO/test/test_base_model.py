@@ -17,8 +17,8 @@ import numpy as np
 from torch import FloatTensor
 from sklearn.metrics import r2_score
 
-from bo.models.base_model import BaseModel
-from bo.models.model_factory import get_model, get_model_class, model_dict
+from hebo.models.base_model import BaseModel
+from hebo.models.model_factory import get_model, get_model_class, model_dict
 
 def check_overfitted(y_true : FloatTensor, py_pred : FloatTensor, ps2_pred : FloatTensor) -> bool:
     y  = y_true.numpy().reshape(-1)

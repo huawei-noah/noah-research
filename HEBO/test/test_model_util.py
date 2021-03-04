@@ -13,7 +13,7 @@ import pytest
 import numpy as np
 import torch
 import torch.nn as nn
-from bo.models.util import filter_nan
+from hebo.models.util import filter_nan
 
 def test_filter():
     x       = torch.randn(10, 1)

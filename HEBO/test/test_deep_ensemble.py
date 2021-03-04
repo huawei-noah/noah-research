@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest
 import torch
 
-from bo.models.nn.deep_ensemble import BaseNet, DeepEnsemble
+from hebo.models.nn.deep_ensemble import BaseNet, DeepEnsemble
 from sklearn.metrics import r2_score
 
 @pytest.mark.parametrize('num_cont',  [0, 1])

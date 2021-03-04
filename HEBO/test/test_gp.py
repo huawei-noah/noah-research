@@ -13,7 +13,7 @@ import pytest
 import torch
 
 from pytest import approx
-from bo.models.gp.gp import GP
+from hebo.models.gp.gp import GP
 
 def test_noise_free():
     X = torch.randn(10, 3)

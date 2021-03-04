@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 from abc import ABC, abstractmethod
 
-from bo.design_space.design_space import DesignSpace
+from hebo.design_space.design_space import DesignSpace
 
 class AbstractOptimizer(ABC):
     support_parallel_opt    = False
