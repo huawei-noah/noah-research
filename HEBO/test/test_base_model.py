@@ -24,9 +24,9 @@ def check_overfitted(y_true : FloatTensor, py_pred : FloatTensor, ps2_pred : Flo
     y  = y_true.numpy().reshape(-1)
     py = py_pred.numpy().reshape(-1)
     ps = ps2_pred.sqrt().numpy().reshape(-1)
-    assert r2_score(y, py) > 0.7
-    assert (py + 3 * ps >= y).sum() > 0.9 * y.size
-    assert (py - 3 * ps <= y).sum() > 0.9 * y.size
+    assert r2_score(y, py) > 0.5
+    assert (py + 3 * ps >= y).sum() > 0.8 * y.size
+    assert (py - 3 * ps <= y).sum() > 0.8 * y.size
 
 @pytest.fixture(params = list(model_dict.keys()))
 def model_name(request):
@@ -52,7 +52,7 @@ def test_fit_with_cont_enum(model_name):
         py, ps2 = model.predict(Xc, Xe)
         check_overfitted(y, py, ps2)
         samp = model.sample_y(Xc, Xe, 50).mean(axis = 0)
-        assert r2_score(y.numpy(), samp.numpy()) > 0.8
+        assert r2_score(y.numpy(), samp.numpy()) > 0.5
 
 def test_fit_with_cont_only(model_name):
     Xc = torch.randn(50, 1)
@@ -86,7 +86,7 @@ def test_thompson_sampling(model_name):
         if model.support_ts:
             f  = model.sample_f()
             py = f(Xc, Xe)
-            assert(r2_score(y.numpy(), py.numpy()) > 0.7)
+            assert(r2_score(y.numpy(), py.numpy()) > 0.5)
         else:
             with pytest.raises(NotImplementedError):
                 f = model.sample_f()

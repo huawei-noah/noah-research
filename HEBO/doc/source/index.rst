@@ -75,6 +75,7 @@ Features
    optimisation
    sklearn_tuner
    mo_constrained.ipynb
+   alebo_demo.ipynb
    custom
 
 .. Indices and tables
