@@ -13,13 +13,15 @@ from .gp.gpy_wgp import GPyGP
 from .gp.gpy_mlp import GPyMLPGP
 from .rf.rf import RF
 from .nn.deep_ensemble import DeepEnsemble
+from .boosting.catboost import CatBoost
 
 model_dict = {
         'gp'  : GP,
         'gpy' : GPyGP,
         'gpy_mlp' : GPyMLPGP, 
         'rf'  : RF,
-        'deep_ensemble' : DeepEnsemble
+        'deep_ensemble' : DeepEnsemble,
+        'catboost': CatBoost
         }
 
 def get_model(model_name : str, *params, **conf) -> BaseModel:

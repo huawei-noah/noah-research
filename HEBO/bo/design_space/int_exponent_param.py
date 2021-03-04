@@ -11,23 +11,27 @@ import sys
 import numpy as np
 from .param import Parameter
 
-class PowIntegerPara(Parameter):
+class IntExponentPara(Parameter):
     def __init__(self, param_dict):
+        """
+        Integer value, search in log-scale, and the exponent must be integer.
+        For example, parameter whose values must be one of [32, 64, 128, 512, 1024]
+        """
         super().__init__(param_dict)
-        self.base = param_dict.get('base', 10.)
-        self.lb   = np.log(param_dict['lb']) / np.log(self.base)
-        self.ub   = np.log(param_dict['ub']) / np.log(self.base)
-        assert param_dict['lb'] >= 1
+        self.base = param_dict['base']
+        self.lb   = np.round(np.log(param_dict['lb']) / np.log(self.base))
+        self.ub   = np.round(np.log(param_dict['ub']) / np.log(self.base))
 
     def sample(self, num = 1):
         assert(num > 0)
-        return (self.base ** np.random.uniform(self.lb, self.ub, num)).round().astype(int)
+        exponent = np.random.randint(self.lb, self.ub + 1, num)
+        return self.base ** exponent
 
     def transform(self, x):
-        return np.log(x) / np.log(self.base)
+        return (np.log(x) / np.log(self.base))
 
     def inverse_transform(self, x):
-        return (self.base ** x).round().astype(int)
+        return (self.base ** x).astype(int)
 
     @property
     def is_numeric(self):
@@ -47,4 +51,4 @@ class PowIntegerPara(Parameter):
 
     @property
     def is_discrete_after_transform(self):
-        return False
+        return True

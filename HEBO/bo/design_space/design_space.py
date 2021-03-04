@@ -16,7 +16,9 @@ from .integer_param     import IntegerPara
 from .pow_param         import PowPara
 from .categorical_param import CategoricalPara
 from .bool_param        import BoolPara
-from .pow_integer_param         import PowIntegerPara
+from .pow_integer_param import PowIntegerPara
+from .int_exponent_param import IntExponentPara
+from .step_int import StepIntPara
 
 class DesignSpace:
     def __init__(self):
@@ -24,19 +26,15 @@ class DesignSpace:
         self.register_para_type('num', NumericPara)
         self.register_para_type('pow', PowPara)
         self.register_para_type('pow_int', PowIntegerPara)
+        self.register_para_type('int_exponent', IntExponentPara)
         self.register_para_type('int', IntegerPara)
+        self.register_para_type('step_int', StepIntPara)
         self.register_para_type('cat', CategoricalPara)
         self.register_para_type('bool', BoolPara)
-        self.paras      = {}
-        self.para_names = []
-
-    @property
-    def numeric_names(self):
-        return [p for p in self.para_names if self.paras[p].is_numeric]
-
-    @property
-    def enum_names(self):
-        return [p for p in self.para_names if self.paras[p].is_categorical]
+        self.paras         = {}
+        self.para_names    = []
+        self.numeric_names = []
+        self.enum_names    = []
 
     @property
     def num_paras(self):
@@ -51,11 +49,18 @@ class DesignSpace:
         return len(self.enum_names)
 
     def parse(self, rec):
+        self.para_config = rec
+        self.paras       = {}
+        self.para_names  = []
         for item in rec:
             assert(item['type'] in self.para_types)
             param = self.para_types[item['type']](item)
             self.paras[param.name] = param
-            self.para_names.append(param.name)
+            if param.is_categorical:
+                self.enum_names.append(param.name)
+            else:
+                self.numeric_names.append(param.name)
+        self.para_names = self.numeric_names + self.enum_names
         return self
 
     def register_para_type(self, type_name, para_class):

@@ -120,7 +120,12 @@ class EvolutionOpt:
         crossover = self.get_crossover()
         algo      = get_algorithm(self.es, pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
         res       = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
-        opt_x     = res.X.reshape(-1, len(lb)).astype(float)
+        if res.X is not None:
+            opt_x = res.X.reshape(-1, len(lb)).astype(float)
+        else:
+            opt_x = np.array([p.X for p in res.pop]).astype(float)
+            if self.acq.num_obj == 1:
+                opt_x = opt_x[[np.random.choice(opt_x.shape[0])]]
         
         opt_xcont = torch.from_numpy(opt_x[:, :self.space.num_numeric])
         opt_xenum = torch.from_numpy(opt_x[:, self.space.num_numeric:])

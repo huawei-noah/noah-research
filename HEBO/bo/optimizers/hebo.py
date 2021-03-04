@@ -27,19 +27,20 @@ class HEBO(AbstractOptimizer):
     support_parallel_opt  = True
     support_combinatorial = True
     support_contextual    = True
-    def __init__(self, space, model_name = 'gpy', rand_sample = None, es='nsga2'):
+    def __init__(self, space, model_name = 'gpy', rand_sample = None, acq_cls = MACE, es = 'nsga2'):
         """
         model_name : surrogate model to be used
         rand_iter  : iterations to perform random sampling
         """
         super().__init__(space)
         self.space       = space
-        self.es = es
+        self.es          = es
         self.X           = pd.DataFrame(columns = self.space.para_names)
         self.y           = np.zeros((0, 1))
         self.model_name  = model_name
         self.rand_sample = 1 + self.space.num_paras if rand_sample is None else max(2, rand_sample)
         self.sobol       = SobolEngine(self.space.num_paras, scramble = False)
+        self.acq_cls     = acq_cls
 
     def quasi_sample(self, n, fix_input = None): 
         samp    = self.sobol.draw(n)
@@ -117,7 +118,8 @@ class HEBO(AbstractOptimizer):
             # kappa = np.sqrt(upsi * 2 * np.log(iter **  (2.0 + self.X.shape[1] / 2.0) * 3 * np.pi**2 / (3 * delta)))
             kappa = np.sqrt(upsi * 2 * ((2.0 + self.X.shape[1] / 2.0) * np.log(iter) + np.log(3 * np.pi**2 / (3 * delta))))
 
-            acq = MACE(model, py_best, kappa = kappa) # LCB < py_best
+            acq = self.acq_cls(model, py_best, kappa = kappa) # LCB < py_best
+            assert acq.num_obj > 1
             mu  = Mean(model)
             sig = Sigma(model, linear_a = -1.)
             opt = EvolutionOpt(self.space, acq, pop = 100, iters = 100, verbose = False, es=self.es)
