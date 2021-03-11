@@ -1,5 +1,7 @@
-# TNT
+# Transformer in Transformer (TNT)
 The code will be available as soon. Please create issues if you have any question.
+
+- Paper link: [[arXiv]](https://arxiv.org/abs/2103.00112)
 
 - Citation
 ```
@@ -14,4 +16,5 @@ The code will be available as soon. Please create issues if you have any questio
 ```
 
 - Third-party implementations
-1. https://github.com/lucidrains/transformer-in-transformer
+1. Pytorch: https://github.com/lucidrains/transformer-in-transformer
+2. JAX/FLAX: https://github.com/NZ99/transformer_in_transformer_flax
