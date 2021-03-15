@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
+
 #This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
+
 #This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -30,6 +32,7 @@ import datetime
 import math
 import numpy as np
 import copy
+from PIL import Image
 import torch.optim as optim
 import shutil
 import argparse
@@ -158,8 +161,8 @@ class ImageProcessing(object):
         :rtype: multi-dimensional numpy array
 
         """
-        img = ImageProcessing.normalise_image(
-            imread(img_filepath), normaliser)  # NB: imread normalises to 0-1
+        img = ImageProcessing.normalise_image(np.array(Image.open(img_filepath)), normaliser)  # NB: imread normalises to 0-1
+
         return img
 
     @staticmethod
