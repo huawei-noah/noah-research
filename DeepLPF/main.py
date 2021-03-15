@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
+
 #This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
+
 #This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
@@ -134,7 +136,7 @@ def main():
                                     is_inference=True)
 
         inference_data_loader = torch.utils.data.DataLoader(inference_dataset, batch_size=1, shuffle=False,
-                                                            num_workers=10)
+                                                            num_workers=6)
 
         '''
         Performs inference on all the images in inference_img_dirpath
@@ -172,12 +174,12 @@ def main():
         testing_dataset = Dataset(data_dict=testing_data_dict, normaliser=1,is_valid=True)
 
         training_data_loader = torch.utils.data.DataLoader(training_dataset, batch_size=1, shuffle=True,
-                                                       num_workers=10)
+                                                       num_workers=6)
         testing_data_loader = torch.utils.data.DataLoader(testing_dataset, batch_size=1, shuffle=False,
-                                                      num_workers=10)
+                                                      num_workers=6)
         validation_data_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=1,
                                                          shuffle=False,
-                                                         num_workers=10)
+                                                         num_workers=6)
         net = model.DeepLPFNet()
         net.cuda(0)
 
