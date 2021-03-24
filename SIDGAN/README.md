@@ -6,7 +6,7 @@ Huawei Noah's Ark Lab
 
 ### [[Paper @ CVF]](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123580103.pdf) 
 ### [[Video (10 Minutes)]](https://youtu.be/-MwiYBXdtD4) 
-### [[Video (1 Minute)]](https://youtu.be/mF_ZX0yfMkk)
+<!-- ### [[Video (1 Minute)]](https://youtu.be/mF_ZX0yfMkk) -->
 ### [[Supplementary @ CVF]](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123580103-supp.zip) 
 
 <p align="center">
