@@ -22,13 +22,13 @@ instructions coming soon.
 ### Bibtex
 
 ```
-@misc{triantafyllidou2020low,
-    title={Low Light Video Enhancement using Synthetic Data Produced with an Intermediate Domain Mapping},
-    author={Danai Triantafyllidou and Sean Moran and Steven McDonagh and Sarah Parisot and Gregory Slabaugh},
-    year={2020},
-    eprint={2007.09187},
-    archivePrefix={arXiv},
-    primaryClass={eess.IV}
+@inproceedings{triantafyllidou2020low,
+  title={Low Light Video Enhancement using Synthetic Data Produced with an Intermediate Domain Mapping},
+  author={Triantafyllidou, Danai and Moran, Sean and McDonagh, Steven and Parisot, Sarah and Slabaugh, Gregory},
+  booktitle={European Conference on Computer Vision},
+  pages={103--119},
+  year={2020},
+  organization={Springer}
 }
 ```
 
