@@ -1,4 +1,4 @@
-# SIDGAN: Low Light Video Enhancement using Synthetic Data Produced with an Intermediate Domain Mapping (Paper accepted to ECCV 2020)
+# SIDGAN: Low Light Video Enhancement using Synthetic Data Produced with an Intermediate Domain Mapping (ECCV 2020)
 
 Danai Triantafyllidou, [Sean Moran](http://www.seanjmoran.com), [Steven McDonagh](https://smcdonagh.github.io/), [Sarah Parisot](https://parisots.github.io/), [Greg Slabaugh](http://gregslabaugh.net/)
 
