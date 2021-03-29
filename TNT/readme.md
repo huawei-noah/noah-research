@@ -2,6 +2,7 @@
 The code will be available as soon. Please create issues if you have any question.
 
 - Paper link: [[arXiv]](https://arxiv.org/abs/2103.00112)
+- Official MindSpore code: https://gitee.com/mindspore/mindspore/tree/master/model_zoo/research/cv/TNT
 
 - Citation
 ```
