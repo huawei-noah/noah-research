@@ -1,10 +1,10 @@
 # Transformer in Transformer (TNT)
-The code will be available as soon. Please create issues if you have any question.
+By Kai Han, An Xiao, Enhua Wu, Jianyuan Guo, Chunjing Xu, Yunhe Wang. [[arXiv]](https://arxiv.org/abs/2103.00112)
 
-- Paper link: [[arXiv]](https://arxiv.org/abs/2103.00112)
-- Official MindSpore code: https://gitee.com/mindspore/mindspore/tree/master/model_zoo/research/cv/TNT and pretrained weights on Oxford-IIIT Pets dataset: https://www.mindspore.cn/resources/hub/details?noah-cvlab/gpu/1.1/tnt_v1.0_oxford_pets
+## MindSpore Code
+- **Official MindSpore code**: https://gitee.com/mindspore/mindspore/tree/master/model_zoo/research/cv/TNT and pretrained weights on Oxford-IIIT Pets dataset: https://www.mindspore.cn/resources/hub/details?noah-cvlab/gpu/1.1/tnt_v1.0_oxford_pets
 
-- Citation
+## Citation
 ```
 @misc{han2021transformer,
       title={Transformer in Transformer}, 
@@ -16,6 +16,6 @@ The code will be available as soon. Please create issues if you have any questio
 }
 ```
 
-- Third-party implementations
-1. Pytorch with ImageNet pretrained models: https://www.github.com/rwightman/pytorch-image-models/tree/master/timm/models/tnt.py
+## Third-party implementations
+1. Pytorch with **ImageNet pretrained models**: https://www.github.com/rwightman/pytorch-image-models/tree/master/timm/models/tnt.py
 2. JAX/FLAX: https://github.com/NZ99/transformer_in_transformer_flax
