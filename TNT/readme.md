@@ -17,5 +17,5 @@ The code will be available as soon. Please create issues if you have any questio
 ```
 
 - Third-party implementations
-1. Pytorch: https://github.com/lucidrains/transformer-in-transformer
+1. Pytorch with ImageNet pretrained models: https://www.github.com/rwightman/pytorch-image-models/tree/master/timm/models/tnt.py
 2. JAX/FLAX: https://github.com/NZ99/transformer_in_transformer_flax
