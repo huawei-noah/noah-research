@@ -1,3 +1,5 @@
+"""Utils for surrogate model."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -7,19 +9,27 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import torch
-from torch import FloatTensor, LongTensor
+import numpy as np
+from mindspore import Tensor
+import hebo.mindspore as hebo_ms
 
-def filter_nan(x : FloatTensor, xe : LongTensor, y : FloatTensor, keep_rule = 'any') -> (FloatTensor, LongTensor, FloatTensor):
-    assert x  is None or torch.isfinite(x).all()
-    assert xe is None or torch.isfinite(xe).all()
-    assert torch.isfinite(y).any(), "No valid data in the dataset"
+
+def filter_nan(x_: Tensor, xe_: Tensor, y_: Tensor,
+               keep_rule='any') -> (Tensor, Tensor, Tensor):
+    """Filter out nan's."""
+    x = x_.asnumpy() if x_ is not None else np.zeros((y_.shape[0], 0))
+    xe = xe_.asnumpy() if xe_ is not None else np.zeros((y_.shape[0], 0))
+    y = y_.asnumpy()
+
+    assert np.isfinite(x).all()
+    assert np.isfinite(xe).all()
+    assert np.isfinite(y).any(), "No valid data in the dataset"
 
     if keep_rule == 'any':
-        valid_id = torch.isfinite(y).any(dim = 1)
+        valid_id = np.isfinite(y).any(axis=1)
     else:
-        valid_id = torch.isfinite(y).all(dim = 1)
-    x_filtered  = x[valid_id]  if x  is not None else None
-    xe_filtered = xe[valid_id] if xe is not None else None
-    y_filtered  = y[valid_id]
+        valid_id = np.isfinite(y).all(axis=1)
+    x_filtered = hebo_ms.from_numpy(x[valid_id]) if x is not None else None
+    xe_filtered = hebo_ms.from_numpy(xe[valid_id]) if xe is not None else None
+    y_filtered = hebo_ms.from_numpy(y[valid_id])
     return x_filtered, xe_filtered, y_filtered

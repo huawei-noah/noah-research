@@ -1,3 +1,5 @@
+"""Abstract Optimizer class."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -13,29 +15,31 @@ from abc import ABC, abstractmethod
 
 from hebo.design_space.design_space import DesignSpace
 
+
 class AbstractOptimizer(ABC):
-    support_parallel_opt    = False
-    support_constraint      = False
+    """Base class for all Bayesmark like optimizers."""
+
+    support_parallel_opt = False
+    support_constraint = False
     support_multi_objective = False
-    support_combinatorial   = False
-    support_contextual      = False
-    def __init__(self, space : DesignSpace):
+    support_combinatorial = False
+    support_contextual = False
+
+    def __init__(self, space: DesignSpace):
         self.space = space
 
-    def suggest(self, n_suggestions = 1, fix_input : dict = None):
-        """
-        Perform optimisation and give recommendation using data observed so far
+    def suggest(self, n_suggestions=1, fix_input: dict = None):
+        """Perform optimisation and give recommendation using data observed so far.
+
         ---------------------
         n_suggestions:  number of recommendations in this iteration
 
         fix_input:      parameters NOT to be optimized, but rather fixed, this
                         can be used for contextual BO, where you can set the contex as a design
-                        parameter and fix it during optimisation
+                        parameter and fix it during optimisation.
         """
         pass
 
-    def observe(self, x : pd.DataFrame, y : np.ndarray):
-        """
-        Observe new data
-        """
+    def observe(self, x: pd.DataFrame, y: np.ndarray):
+        """Observe new data."""
         pass

@@ -7,21 +7,25 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys, os
-sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
-import torch
-import torch.nn as nn
-import pytest
-
 from hebo.models.layers import OneHotTransform, EmbTransform
+import hebo.mindspore as hebo_ms
+import pytest
+from mindspore import Tensor
+import mindspore.nn as nn
+import mindspore as ms
+import numpy as np
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
+
 
 def test_encoders():
-    layer1 = EmbTransform([5, 5], emb_sizes = [1, 1])
-    layer2 = EmbTransform([5, 5], emb_sizes = [2, 2])
+    layer1 = EmbTransform([5, 5], emb_sizes=[1, 1])
+    layer2 = EmbTransform([5, 5], emb_sizes=[2, 2])
     layer3 = OneHotTransform([5, 5])
-    layer4 = EmbTransform([5, 5]) 
+    layer4 = EmbTransform([5, 5])
 
-    xe     = torch.randint(5, (10, 2))
+    xe = Tensor(np.random.randint(0, 5, (10, 2)))
     assert(layer1(xe).shape[1] == 2)
     assert(layer1.num_out == 2)
 
@@ -33,21 +37,16 @@ def test_encoders():
     assert(layer3(xe).shape[1] == 10)
     assert(layer3.num_out == 10)
 
-    assert(torch.all((layer3(xe) == 0) | (layer3(xe) == 1)))
-    assert(torch.all(layer3(xe).sum(dim = 1) == xe.shape[1]))
+    or_op = ms.ops.LogicalOr()
+    assert or_op(layer3(xe) == 0, layer3(xe) == 1).all()
+    assert (hebo_ms.sum(layer3(xe), axis=1) == xe.shape[1]).all()
 
-    model1 = nn.Sequential(
-            OneHotTransform([5, 5]), 
-            nn.Linear(10, 1))
-    model2 = nn.Sequential(
-            EmbTransform([5, 5], emb_sizes = [2, 2]), 
-            nn.Linear(4, 1))
+    model1 = nn.SequentialCell([
+        OneHotTransform([5, 5]),
+        nn.Dense(10, 1)
+    ])
+    model2 = nn.SequentialCell([
+        EmbTransform([5, 5], emb_sizes=[2, 2]),
+        nn.Dense(4, 1)
+    ])
     assert(model1(xe).shape == model2(xe).shape)
-
-    with pytest.raises((RuntimeError, IndexError)):
-        xe = torch.randint(50, (100, 2))
-        layer1(xe)
-
-    with pytest.raises(RuntimeError):
-        xe = torch.randint(50, (100, 2))
-        layer3(xe)
