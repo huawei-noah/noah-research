@@ -2,6 +2,6 @@ numpy>=1.15
 pandas>=1.0.1
 pymoo>=0.4.1
 scikit-learn>=0.22
-GPy>=1.9.9
+GPy==1.9.9
 pyDOE2
-mindspore==1.2.0
+mindspore>=1.2.0

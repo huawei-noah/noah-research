@@ -10,17 +10,18 @@
 
 import setuptools
 
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
+# with open('README.md', 'r') as fh:
+#     long_description = fh.read()
     
 with open('requirements.txt', 'r') as f:
     required = f.read().splitlines()
 
 setuptools.setup(
-        name        = 'HEBO',
+        name        = 'HEBO-mindspore',
         version     = '0.2.0', # also needs to be changed in hebo/__init__.py
         packages    = setuptools.find_packages(),
         description = 'Heteroscedastic evolutionary bayesian optimisation',
-        long_description = long_description,
+        # long_description = long_description,
         install_requires = required,
+        url='https://github.com/huawei-noah/noah-research/tree/mindspore/HEBO_mindspore'
         )
