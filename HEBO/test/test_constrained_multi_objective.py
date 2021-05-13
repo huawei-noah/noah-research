@@ -20,11 +20,11 @@ class DummyModel:
         self.num_obj = num_obj
         self.num_constr = num_constr
         self.num_out = num_obj + num_constr
-
+    
     @property
     def noise(self) -> Tensor:
         return hebo_ms.zeros((self.num_out))
-
+    
     def predict(self, x, xe):
         num_data = x.shape[0]
         py = hebo_ms.zeros((num_data, self.num_out))

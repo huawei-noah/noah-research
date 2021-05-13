@@ -22,7 +22,7 @@ def parse_space_from_bayesmark(api_config) -> DesignSpace:
         param_space = param_conf.get('space', None)
         param_range = param_conf.get("range", None)
         param_values = param_conf.get("values", None)
-
+        
         bo_param_conf = {'name': param_name}
         if param_type == 'int':  # ignore 'log' space # TODO: support log-scale int
             bo_param_conf['type'] = 'int'

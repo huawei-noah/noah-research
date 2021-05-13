@@ -11,9 +11,9 @@ from hebo.optimizers.util import parse_space_from_bayesmark
 
 class HEBOOptimizer(AbstractOptimizer):
     """HEBO Black Box Optimizer Observe, Suggest class."""
-
+    
     primary_import = "bayesmark"
-
+    
     def __init__(self, api_config):
         """Build wrapper class to use random search function in benchmark.
 
@@ -28,7 +28,7 @@ class HEBOOptimizer(AbstractOptimizer):
         space = parse_space_from_bayesmark(api_config)
         # 4 iterations of random search with `n_suggestions = 8`
         self.opt = HEBO(space, rand_sample=32, verbose=True)
-
+    
     def suggest(self, n_suggestions=1):
         """Suggest n_suggestions params."""
         print('Start optimization', flush=True)
@@ -39,7 +39,7 @@ class HEBOOptimizer(AbstractOptimizer):
                 if self.api_config[name]['type'] == 'int':
                     guess[name] = int(guess[name])
         return x_guess
-
+    
     def observe(self, X, y):
         """Observe parameters X and black-box evaluations y. Where X.shape[0]==y.shape[0]."""
         self.opt.observe(pd.DataFrame(X), np.array(y).reshape(-1, 1))

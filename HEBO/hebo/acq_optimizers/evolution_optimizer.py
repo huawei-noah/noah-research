@@ -26,12 +26,13 @@ from pymoo.operators.mixed_variable_operator import MixedVariableMutation, Mixed
 from pymoo.optimize import minimize
 from pymoo.model.problem import Problem
 from pymoo.configuration import Configuration
+
 Configuration.show_compile_hint = False
 
 
 class BOProblem(Problem):
     """BO problem specification."""
-
+    
     def __init__(self,
                  lb: np.ndarray,
                  ub: np.ndarray,
@@ -43,7 +44,7 @@ class BOProblem(Problem):
         self.acq = acq
         self.space = space
         self.fix = fix  # NOTE: use self.fix to enable contextual BO
-
+    
     def _evaluate(self, x: np.ndarray, out: dict, *args, **kwargs):
         """Evaluate acq value of input."""
         num_x = x.shape[0]
@@ -56,19 +57,19 @@ class BOProblem(Problem):
             for k, v in self.fix.items():
                 df_x[k] = v
         xcont, xenum = self.space.transform(df_x)
-
+        
         acq_eval = self.acq(
             xcont,
             xenum).asnumpy().reshape(num_x, self.acq.num_obj + self.acq.num_constr)
         out['F'] = acq_eval[:, :self.acq.num_obj]
-
+        
         if self.acq.num_constr > 0:
             out['G'] = acq_eval[:, -1 * self.acq.num_constr:]
 
 
 class EvolutionOpt:
     """Evolutionary Optimiser."""
-
+    
     def __init__(self,
                  design_space: DesignSpace,
                  acq: Acquisition,
@@ -82,11 +83,11 @@ class EvolutionOpt:
         self.verbose = conf.get('verbose', False)
         self.repair = conf.get('repair', None)
         self.lhs_init = conf.get('lhs_init', True)
-        assert(self.acq.num_obj > 0)
-
+        assert (self.acq.num_obj > 0)
+        
         if self.es is None:
             self.es = 'nsga2' if self.acq.num_obj > 1 else 'ga'
-
+    
     def get_init_pop(self, initial_suggest: pd.DataFrame = None) -> np.ndarray:
         """Return init pop."""
         if not self.lhs_init:
@@ -94,7 +95,7 @@ class EvolutionOpt:
         else:
             lhs_samp = lhs(self.space.num_paras, self.pop)
             lhs_samp = lhs_samp * \
-                (self.space.opt_ub - self.space.opt_lb).asnumpy() + self.space.opt_lb.asnumpy()
+                       (self.space.opt_ub - self.space.opt_lb).asnumpy() + self.space.opt_lb.asnumpy()
             x = lhs_samp[:, :self.space.num_numeric]
             xe = lhs_samp[:, self.space.num_numeric:].astype(int)
             for i, n in enumerate(self.space.numeric_names):
@@ -108,7 +109,7 @@ class EvolutionOpt:
                 [initial_suggest, init_pop], axis=0).head(self.pop)
         x, xe = self.space.transform(init_pop)
         return np.hstack([x.asnumpy(), xe.asnumpy().astype(float)])
-
+    
     def get_mutation(self):
         """Return mutation."""
         mask = []
@@ -117,13 +118,13 @@ class EvolutionOpt:
                 mask.append('int')
             else:
                 mask.append('real')
-
+        
         mutation = MixedVariableMutation(mask, {
             'real': get_mutation('real_pm', eta=20),
             'int': get_mutation('int_pm', eta=20)
         })
         return mutation
-
+    
     def get_crossover(self):
         """Return crossover."""
         mask = []
@@ -132,13 +133,13 @@ class EvolutionOpt:
                 mask.append('int')
             else:
                 mask.append('real')
-
+        
         crossover = MixedVariableCrossover(mask, {
             'real': get_crossover('real_sbx', eta=15, prob=0.9),
             'int': get_crossover('int_sbx', eta=15, prob=0.9)
         })
         return crossover
-
+    
     def optimize(self, initial_suggest: pd.DataFrame = None,
                  fix_input: dict = None) -> pd.DataFrame:
         """Maximise acq functions."""
@@ -162,7 +163,7 @@ class EvolutionOpt:
             opt_x = np.array([p.X for p in res.pop]).astype(float)
             if self.acq.num_obj == 1:
                 opt_x = opt_x[[np.random.choice(opt_x.shape[0])]]
-
+        
         opt_xcont = hebo_ms.from_numpy(
             opt_x[:, :self.space.num_numeric].astype(float))
         opt_xenum = hebo_ms.from_numpy(

@@ -16,6 +16,7 @@ from pytest import approx
 import pytest
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 
@@ -23,18 +24,18 @@ class ToyExample(Acquisition):
     def __init__(self, constr_v=1.0):
         super().__init__(None)
         self.constr_v = constr_v
-
+    
     @property
     def num_obj(self):
         return 1
-
+    
     @property
     def num_constr(self):
         return 1
-
+    
     def eval(self, x, xe):
         # minimize L2norm(x) s.t. L2norm(x) > constr_v
-        out = hebo_ms.sum(x**2, axis=1, keep_dims=True)
+        out = hebo_ms.sum(x ** 2, axis=1, keep_dims=True)
         constr = self.constr_v - out
         return ms.ops.Concat(axis=1)([out, constr])
 
@@ -42,19 +43,19 @@ class ToyExample(Acquisition):
 class ToyExampleMO(Acquisition):
     def __init__(self):
         super().__init__(None)
-
+    
     @property
     def num_obj(self):
         return 2
-
+    
     @property
     def num_constr(self):
         return 0
-
+    
     def eval(self, x, xe):
         # minimize L2norm(x) s.t. L2norm(x) > 1.0
-        o1 = hebo_ms.sum(x**2, axis=1, keep_dims=True)
-        o2 = hebo_ms.sum((x - 1)**2, axis=1, keep_dims=True)
+        o1 = hebo_ms.sum(x ** 2, axis=1, keep_dims=True)
+        o2 = hebo_ms.sum((x - 1) ** 2, axis=1, keep_dims=True)
         return ms.ops.Concat(axis=1)([o1, o2])
 
 
@@ -70,7 +71,7 @@ def test_opt(constr_v, lhs_init):
     rec = opt.optimize(initial_suggest=space.sample(3))
     x, xe = space.transform(rec)
     if constr_v < 100:
-        assert(approx(1.0, 1e-2) == acq(x, xe)[:, 0].squeeze().asnumpy())
+        assert (approx(1.0, 1e-2) == acq(x, xe)[:, 0].squeeze().asnumpy())
 
 
 def test_opt_fix():
@@ -93,8 +94,8 @@ def test_opt_int():
     acq = ToyExample()
     opt = EvolutionOpt(space, acq, pop=10, iters=100)
     rec = opt.optimize()
-    assert(approx(1.0, 1e-2) == acq(*space.transform(rec))
-           [:, 0].squeeze().asnumpy())
+    assert (approx(1.0, 1e-2) == acq(*space.transform(rec))
+    [:, 0].squeeze().asnumpy())
 
 
 def test_mo():
@@ -105,4 +106,4 @@ def test_mo():
     acq = ToyExampleMO()
     opt = EvolutionOpt(space, acq, pop=10, iters=100)
     rec = opt.optimize()
-    assert(rec.shape[0] == 10)
+    assert (rec.shape[0] == 10)

@@ -11,29 +11,30 @@ import pandas as pd
 import numpy  as np
 from abc import ABC, abstractmethod
 
+
 class Parameter(ABC):
     def __init__(self, param_dict):
         self.param_dict = param_dict
-        self.name       = param_dict['name']
+        self.name = param_dict['name']
         pass
-
+    
     @abstractmethod
-    def sample(self, num = 1) -> pd.DataFrame:
+    def sample(self, num=1) -> pd.DataFrame:
         pass
-
+    
     @abstractmethod
-    def transform(self, x : np.array) -> np.array:
+    def transform(self, x: np.array) -> np.array:
         pass
-
+    
     @abstractmethod
-    def inverse_transform(self, x : np.array) -> np.array:
+    def inverse_transform(self, x: np.array) -> np.array:
         pass
-
+    
     @property
     @abstractmethod
     def is_numeric(self) -> bool:
         pass
-
+    
     @property
     @abstractmethod
     def is_discrete(self) -> bool:
@@ -41,19 +42,17 @@ class Parameter(ABC):
         Integer and categorical variable
         """
         pass
-
+    
     @property
     def is_categorical(self) -> bool:
         return not self.is_numeric
-
-
+    
     @property
     @abstractmethod
     def opt_lb(self) -> float:
         pass
-
+    
     @property
     @abstractmethod
     def opt_ub(self) -> float:
         pass
-

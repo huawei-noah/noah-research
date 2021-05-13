@@ -15,6 +15,7 @@ import numpy as np
 import pytest
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 
@@ -47,19 +48,19 @@ def test_identity_same(scaler):
     scaler = scaler.fit(x)
     xx = scaler.inverse_transform(scaler.transform(x))
     res = (x - xx).abs()
-    assert(hebo_ms.sum(res) < 1e-4)
-
+    assert (hebo_ms.sum(res) < 1e-4)
+    
     xrand = hebo_ms.randn(10, 3)
     res = (xrand - scaler.inverse_transform(scaler.transform(xrand))).abs()
-    assert(hebo_ms.sum(res) < 1e-4)
+    assert (hebo_ms.sum(res) < 1e-4)
 
 
 def test_standard_scaler():
     x = hebo_ms.randn(10, 3) * 5 + 4
     scaler = MindSporeStandardScaler().fit(x)
     x_tr = scaler.transform(x)
-    assert((x_tr.asnumpy().mean(axis=0) - 0).sum() < 1e-6)
-    assert((x_tr.asnumpy().std(axis=0) - 1).sum() < 1e-6)
+    assert ((x_tr.asnumpy().mean(axis=0) - 0).sum() < 1e-6)
+    assert ((x_tr.asnumpy().std(axis=0) - 1).sum() < 1e-6)
 
 
 @pytest.mark.parametrize('scaler',
@@ -73,16 +74,16 @@ def test_invalid(scaler):
     scaler.fit(x)
     x_tr = scaler.transform(x)
     if isinstance(scaler, MindSporeStandardScaler):
-        assert((x_tr[:, 1:].asnumpy().mean(axis=0) - 0).sum() < 1e-6)
-        assert((x_tr[:, 1:].asnumpy().std(axis=0) - 1).sum() < 1e-6)
+        assert ((x_tr[:, 1:].asnumpy().mean(axis=0) - 0).sum() < 1e-6)
+        assert ((x_tr[:, 1:].asnumpy().std(axis=0) - 1).sum() < 1e-6)
 
 
 def test_min_max_scaler():
     x = hebo_ms.randn(10, 3) * 5 + 4
     scaler = MindSporeMinMaxScaler().fit(x)
     x_tr = scaler.transform(x)
-    assert((x_tr.asnumpy().min(axis=0) - scaler.range_lb).sum() < 1e-6)
-    assert((x_tr.asnumpy().max(axis=0) - scaler.range_ub).sum() < 1e-6)
+    assert ((x_tr.asnumpy().min(axis=0) - scaler.range_lb).sum() < 1e-6)
+    assert ((x_tr.asnumpy().max(axis=0) - scaler.range_ub).sum() < 1e-6)
 
 
 @pytest.mark.parametrize('scaler',
@@ -98,4 +99,4 @@ def test_one_sample(scaler):
     scaler = scaler.fit(x)
     xx = scaler.inverse_transform(scaler.transform(x))
     res = (x - xx).abs()
-    assert(hebo_ms.sum(res) < 1e-4)
+    assert (hebo_ms.sum(res) < 1e-4)

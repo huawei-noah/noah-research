@@ -21,6 +21,7 @@ from pytest import approx
 import pytest
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 
@@ -58,7 +59,7 @@ def test_contextual_opt(opt_cls):
         n_suggestions = 8 if opt.support_parallel_opt else 1
         rec = opt.suggest(n_suggestions=n_suggestions, fix_input={'x0': 3})
         y = (rec[['x0', 'x1']].values ** 2).sum(axis=1, keepdims=True)
-        assert((rec['x0'] == 3).all())
+        assert ((rec['x0'] == 3).all())
         opt.observe(rec, y)
 
 
@@ -77,18 +78,18 @@ def test_bayesmark_parser():
          'use_dropout': {'type': 'bool'},
          'dummy': {'type': 'real', 'space': 'linear', 'range': (4.1, 9.2)}}
     space = parse_space_from_bayesmark(api_config)
-    assert(isinstance(space.paras['hidden_layer_sizes'], IntegerPara))
-    assert(isinstance(space.paras['alpha'], PowPara))
-    assert(isinstance(space.paras['batch_size'], IntegerPara))
-    assert(isinstance(space.paras['learning_rate_init'], PowPara))
-    assert(isinstance(space.paras['tol'], PowPara))
-    assert(isinstance(space.paras['validation_fraction'], PowPara))
-    assert(isinstance(space.paras['beta_1'], PowPara))
-    assert(isinstance(space.paras['beta_2'], PowPara))
-    assert(isinstance(space.paras['epsilon'], PowPara))
-    assert(isinstance(space.paras['activation'], CategoricalPara))
-    assert(isinstance(space.paras['use_dropout'], BoolPara))
-
+    assert (isinstance(space.paras['hidden_layer_sizes'], IntegerPara))
+    assert (isinstance(space.paras['alpha'], PowPara))
+    assert (isinstance(space.paras['batch_size'], IntegerPara))
+    assert (isinstance(space.paras['learning_rate_init'], PowPara))
+    assert (isinstance(space.paras['tol'], PowPara))
+    assert (isinstance(space.paras['validation_fraction'], PowPara))
+    assert (isinstance(space.paras['beta_1'], PowPara))
+    assert (isinstance(space.paras['beta_2'], PowPara))
+    assert (isinstance(space.paras['epsilon'], PowPara))
+    assert (isinstance(space.paras['activation'], CategoricalPara))
+    assert (isinstance(space.paras['use_dropout'], BoolPara))
+    
     with pytest.raises(AssertionError):
         api_config = {
             'hidden_layer_sizes': {

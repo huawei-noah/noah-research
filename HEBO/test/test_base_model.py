@@ -18,6 +18,7 @@ from pytest import approx
 import pytest
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 
@@ -39,7 +40,7 @@ def model_name(request):
 
 
 def test_is_basic_model(model_name):
-    assert(issubclass(type(get_model(model_name, 1, 0, 1)), BaseModel))
+    assert (issubclass(type(get_model(model_name, 1, 0, 1)), BaseModel))
 
 
 def test_model_can_be_initialized(model_name):
@@ -54,7 +55,7 @@ def test_fit_with_cont_enum(model_name):
     y = np.zeros((50, 1))
     y[Xe.squeeze() == 1] = Xc[Xe.squeeze() == 1]
     y[Xe.squeeze() == 0] = -1 * Xc[Xe.squeeze() == 0]
-
+    
     Xc = Tensor(Xc, ms.float32)
     Xe = Tensor(Xe, ms.int32)
     y = Tensor(y, ms.float32)
@@ -93,11 +94,11 @@ def test_thompson_sampling(model_name):
     y = Xc ** 2
     model = get_model(model_name, 1, 0, 1, num_epochs=30)
     model.fit(Xc, Xe, y + 1e-2 * hebo_ms.randn(*y.shape))
-
+    
     if model.support_ts:
         f = model.sample_f()
         py = f(Xc, Xe)
-        assert(r2_score(y.asnumpy(), py.asnumpy()) > 0.5)
+        assert (r2_score(y.asnumpy(), py.asnumpy()) > 0.5)
     else:
         with pytest.raises(NotImplementedError):
             f = model.sample_f()
@@ -121,9 +122,9 @@ def test_noise(model_name):
     y = Xc + 0.01 * hebo_ms.randn(50, 1)
     model = get_model(model_name, 1, 0, 1, num_epochs=1)
     model.fit(Xc, Xe, y)
-    assert model.noise.shape == (model.num_out, )
+    assert model.noise.shape == (model.num_out,)
     assert super(type(model), model).noise.shape == (model.num_out,)
-    assert((model.noise >= 0).all())
+    assert ((model.noise >= 0).all())
 
 
 def test_warm_start(model_name):
@@ -140,12 +141,12 @@ def test_warm_start(model_name):
     if model.support_warm_start:
         model.fit(Xc, None, y)
         py, ps2 = model.predict(Xc, None)
-        err1 = ((py - y)**2).mean()
-
+        err1 = ((py - y) ** 2).mean()
+        
         model.fit(Xc, None, y)
         py, ps2 = model.predict(Xc, None)
-        err2 = ((py - y)**2).mean()
-        assert(err2 < err1)
+        err2 = ((py - y) ** 2).mean()
+        assert (err2 < err1)
     else:
         pytest.skip('Model %s does not support warm start' % model_name)
 
@@ -156,13 +157,13 @@ def test_fit_with_nan(model_name):
     y[0] = np.nan
     x = Tensor(x, ms.float32)
     y = Tensor(y, ms.float32)
-
+    
     model = get_model(model_name, 1, 0, 1, num_epochs=5)
     try:
         model.fit(x, None, y)
     except BaseException:
         assert False, "Model won't fit with NaN"
-
+    
     py, ps2 = model.predict(x, None)
-    assert(hebo_ms.isfinite(py).all())
-    assert(hebo_ms.isfinite(ps2).all())
+    assert (hebo_ms.isfinite(py).all())
+    assert (hebo_ms.isfinite(ps2).all())

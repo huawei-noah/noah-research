@@ -20,11 +20,11 @@ def filter_nan(x_: Tensor, xe_: Tensor, y_: Tensor,
     x = x_.asnumpy() if x_ is not None else np.zeros((y_.shape[0], 0))
     xe = xe_.asnumpy() if xe_ is not None else np.zeros((y_.shape[0], 0))
     y = y_.asnumpy()
-
+    
     assert np.isfinite(x).all()
     assert np.isfinite(xe).all()
     assert np.isfinite(y).any(), "No valid data in the dataset"
-
+    
     if keep_rule == 'any':
         valid_id = np.isfinite(y).any(axis=1)
     else:

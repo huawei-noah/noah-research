@@ -18,12 +18,12 @@ import hebo.mindspore as hebo_ms
 
 class BaseModel(ABC):
     """Base class for probabilistic regression models."""
-
+    
     support_ts = False
     support_grad = False
     support_multi_output = False
     support_warm_start = False
-
+    
     def __init__(self,
                  num_cont: int,
                  num_enum: int,
@@ -34,17 +34,17 @@ class BaseModel(ABC):
         self.num_enum = num_enum
         self.num_out = num_out
         self.conf = conf
-        assert(self.num_cont >= 0)
-        assert(self.num_enum >= 0)
-        assert(self.num_out > 0)
-        assert(self.num_cont + self.num_enum > 0)
+        assert (self.num_cont >= 0)
+        assert (self.num_enum >= 0)
+        assert (self.num_out > 0)
+        assert (self.num_cont + self.num_enum > 0)
         if self.num_enum > 0:
             assert 'num_uniqs' in self.conf
             assert isinstance(self.conf['num_uniqs'], type([]))
             assert len(self.conf['num_uniqs']) == self.num_enum
         if not self.support_multi_output:
             assert self.num_out == 1, "Model only support single-output"
-
+    
     @abstractmethod
     def fit(self,
             Xc: Tensor,
@@ -52,7 +52,7 @@ class BaseModel(ABC):
             y: Tensor):
         """Fit surrogate model."""
         pass
-
+    
     @abstractmethod
     def predict(self,
                 Xc: Tensor,
@@ -62,7 +62,7 @@ class BaseModel(ABC):
         Return py and ps2 where py is the mean and ps2 predictive variance.
         """
         pass
-
+    
     @property
     def noise(self) -> Tensor:
         """Return estimated noise variance.
@@ -73,12 +73,12 @@ class BaseModel(ABC):
         Should return a (self.n_out, ) float tensor.
         """
         return hebo_ms.zeros(self.num_out)
-
+    
     def sample_f(self):
         """Thompson Sampling."""
         # Thompson sampling
         raise NotImplementedError("Thompson sampling is not supported")
-
+    
     def sample_y(self, Xc: Tensor, Xe: Tensor, n_samples: int) -> Tensor:
         """Sample y's."""
         py, ps2 = self.predict(Xc, Xe)

@@ -16,25 +16,25 @@ from .param import Parameter
 
 class BoolPara(Parameter):
     """Bool Parameter class."""
-
+    
     def __init__(self, param):
         super().__init__(param)
         self.lb = 0
         self.ub = 1
-
+    
     def sample(self, num=1):
         """Sample True or False."""
-        assert(num > 0)
+        assert (num > 0)
         return np.random.choice([True, False], num, replace=True)
-
+    
     def transform(self, x):
         """Transform to float 0 or 1."""
         return x.astype(float)
-
+    
     def inverse_transform(self, x):
         """Inverse transform float to true or false."""
         return x > 0.5
-
+    
     @property
     def is_numeric(self):
         """Return if numeric."""
@@ -42,22 +42,22 @@ class BoolPara(Parameter):
         # dimensions if catecorical variables are procecessed via one-hot or
         # embedding
         return True
-
+    
     @property
     def is_discrete(self):
         """Return discrete."""
         return True
-
+    
     @property
     def is_discrete_after_transform(self):
         """Return true after inv transform."""
         return True
-
+    
     @property
     def opt_lb(self):
         """Return lower bound."""
         return self.lb
-
+    
     @property
     def opt_ub(self):
         """Return upper bound."""

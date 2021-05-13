@@ -17,6 +17,7 @@ from pytest import approx
 import pytest
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 
@@ -46,14 +47,14 @@ def test_design_space():
     assert space.num_paras == 8
     assert space.num_numeric == 7
     assert space.num_categorical == 1
-
+    
     samp = space.sample(10)
     x, xe = space.transform(samp)
     x_, xe_ = space.transform(space.inverse_transform(x, xe))
     assert (x - x_).abs().asnumpy().max() < 1e-4
-
+    
     assert (space.opt_lb <= space.opt_ub).all()
-
+    
     assert not space.paras['x0'].is_discrete
     assert space.paras['x1'].is_discrete
     assert not space.paras['x2'].is_discrete
@@ -62,7 +63,7 @@ def test_design_space():
     assert space.paras['x5'].is_discrete
     assert space.paras['x6'].is_discrete
     assert space.paras['x7'].is_discrete
-
+    
     assert not space.paras['x0'].is_discrete_after_transform
     assert space.paras['x1'].is_discrete_after_transform
     assert not space.paras['x2'].is_discrete_after_transform
@@ -71,13 +72,13 @@ def test_design_space():
     assert not space.paras['x5'].is_discrete_after_transform
     assert space.paras['x6'].is_discrete_after_transform
     assert space.paras['x7'].is_discrete_after_transform
-
+    
     for name, para in space.paras.items():
         assert para.is_discrete == (
             not isinstance(
                 para.sample(1).tolist()[0],
                 float))
-
+        
         if para.is_discrete_after_transform:
             samp = para.sample(5)
             x = para.transform(samp)

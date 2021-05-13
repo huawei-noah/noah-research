@@ -18,16 +18,16 @@ from hebo.design_space.design_space import DesignSpace
 
 class AbstractOptimizer(ABC):
     """Base class for all Bayesmark like optimizers."""
-
+    
     support_parallel_opt = False
     support_constraint = False
     support_multi_objective = False
     support_combinatorial = False
     support_contextual = False
-
+    
     def __init__(self, space: DesignSpace):
         self.space = space
-
+    
     def suggest(self, n_suggestions=1, fix_input: dict = None):
         """Perform optimisation and give recommendation using data observed so far.
 
@@ -39,7 +39,7 @@ class AbstractOptimizer(ABC):
                         parameter and fix it during optimisation.
         """
         pass
-
+    
     def observe(self, x: pd.DataFrame, y: np.ndarray):
         """Observe new data."""
         pass

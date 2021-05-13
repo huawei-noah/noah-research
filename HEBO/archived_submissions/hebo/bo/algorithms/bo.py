@@ -10,26 +10,27 @@
 from ..design_space.design_space import DesignSpace
 from ..
 
+
 class BayesianOptimization:
     def __init__(space, func, **conf):
-        self.space     = space
-        self.func      = func
-        self.conf      = conf
-        self.rand_init = conf.get('rand_init',  1 + self.space.num_paras)
-        self.max_iter  = conf.get('max_iter', 10 * self.space.num_paras)
-
+        self.space = space
+        self.func = func
+        self.conf = conf
+        self.rand_init = conf.get('rand_init', 1 + self.space.num_paras)
+        self.max_iter = conf.get('max_iter', 10 * self.space.num_paras)
+    
     def optimize(self):
-        df_x   = self.space.sample(self.rand_init)
-        df_y   = self.func(df_x)
-        assert(df_y.shape[1] == 1)
+        df_x = self.space.sample(self.rand_init)
+        df_y = self.func(df_x)
+        assert (df_y.shape[1] == 1)
         for i in range(self.max_iter):
             model = GP(self.space.num_numeric, self.space.num_enum, 1, **self.conf)
             model.fit(*self.space.transform(df_x), torch.FloatTensor(df_y.values))
-            acq     = LCB(model, kappa = 3)
-            opt     = EvolutionOpt(self.space, [acq], **self.conf)
+            acq = LCB(model, kappa=3)
+            opt = EvolutionOpt(self.space, [acq], **self.conf)
             best_id = np.argmin(df_y.values.squeeze())
-            best_x  = df_x.iloc[[best_id]]
-            rec_x   = opt.optimize(initial_suggest = best_x)
-            rec_y   = self.func(rec_x)
-            df_x    = df_x.append(rec_x, ignore_index = True)
-            df_y    = df_y.append(rec_y, ignore_index = True)
+            best_x = df_x.iloc[[best_id]]
+            rec_x = opt.optimize(initial_suggest=best_x)
+            rec_y = self.func(rec_x)
+            df_x = df_x.append(rec_x, ignore_index=True)
+            df_y = df_y.append(rec_y, ignore_index=True)

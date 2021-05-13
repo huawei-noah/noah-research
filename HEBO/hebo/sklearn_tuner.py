@@ -19,6 +19,7 @@ from hebo.design_space.design_space import DesignSpace
 from hebo.optimizers.hebo import HEBO
 
 import warnings
+
 warnings.filterwarnings('ignore')
 
 

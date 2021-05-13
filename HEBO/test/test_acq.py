@@ -14,8 +14,8 @@ import pytest
 import mindspore as ms
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
+sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 X = Tensor(np.random.randn(10, 1), ms.float32)
 y = X

@@ -22,7 +22,7 @@ from ..util import filter_nan
 
 class RF(BaseModel):
     """RF."""
-
+    
     def __init__(self, num_cont, num_enum, num_out, **conf):
         super().__init__(num_cont, num_enum, num_out, **conf)
         self.n_estimators = self.conf.get('n_estimators', 100)
@@ -31,7 +31,7 @@ class RF(BaseModel):
         if self.num_enum > 0:
             self.one_hot = OneHotTransform(self.conf['num_uniqs'])
         self.cat = ms.ops.Concat(axis=-1)
-
+    
     def xtrans(self, Xc: Tensor, Xe: Tensor) -> np.ndarray:
         """xtrans."""
         if self.num_enum == 0:
@@ -41,7 +41,7 @@ class RF(BaseModel):
             if Xc is None:
                 Xc = hebo_ms.zeros((Xe.shape[0], 0))
             return self.cat([Xc, Xe_one_hot]).asnumpy()
-
+    
     def fit(self, Xc: ms.Tensor, Xe: ms.Tensor, y: ms.Tensor):
         """fit."""
         Xc, Xe, y = filter_nan(Xc, Xe, y, 'all')
@@ -50,12 +50,12 @@ class RF(BaseModel):
         self.rf.fit(Xtr, ytr)
         mse = np.mean((self.rf.predict(Xtr).reshape(-1) - ytr) ** 2).reshape(self.num_out)
         self.est_noise = ms.Tensor(mse)
-
+    
     @property
     def noise(self):
         """noise."""
         return self.est_noise
-
+    
     def predict(self, Xc: ms.Tensor, Xe: ms.Tensor):
         """predict."""
         X = self.xtrans(Xc, Xe)

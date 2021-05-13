@@ -28,11 +28,11 @@ from .abstract_optimizer import AbstractOptimizer
 
 class HEBO(AbstractOptimizer):
     """HEBO Optimizer class."""
-
+    
     support_parallel_opt = True
     support_combinatorial = True
     support_contextual = True
-
+    
     def __init__(
             self,
             space,
@@ -53,10 +53,10 @@ class HEBO(AbstractOptimizer):
         self.y = np.zeros((0, 1))
         self.model_name = model_name
         self.rand_sample = 1 + \
-            self.space.num_paras if rand_sample is None else max(2, rand_sample)
+                           self.space.num_paras if rand_sample is None else max(2, rand_sample)
         self.acq_cls = acq_cls
         self.verbose = verbose
-
+    
     def quasi_sample(self, n, fix_input=None) -> pd.DataFrame:
         """Quasi-random sampling function."""
         samp = lhs(self.space.num_paras, n)
@@ -73,7 +73,7 @@ class HEBO(AbstractOptimizer):
             for k, v in fix_input.items():
                 df_samp[k] = v
         return df_samp
-
+    
     @property
     def model_config(self):
         """Add additional arguments for surrogate model."""
@@ -97,7 +97,7 @@ class HEBO(AbstractOptimizer):
             cfg['num_uniqs'] = [len(self.space.paras[name].categories)
                                 for name in self.space.enum_names]
         return cfg
-
+    
     def suggest(self, n_suggestions=1, fix_input=None):
         """Suggest params."""
         if self.X.shape[0] < self.rand_sample:
@@ -139,7 +139,7 @@ class HEBO(AbstractOptimizer):
                     1,
                     **self.model_config)
                 model.fit(X, Xe, y)
-
+            
             best_id = np.argmin(self.y.squeeze())
             best_x = self.X.iloc[[best_id]]
             _ = self.y.min()
@@ -147,12 +147,12 @@ class HEBO(AbstractOptimizer):
             py_best = py_best.asnumpy().squeeze()
             ps2_best = ps2_best.asnumpy().squeeze()
             _ = np.sqrt(ps2_best)
-
+            
             iter = max(1, self.X.shape[0] // n_suggestions)
             upsi = 0.5
             delta = 0.01
             # kappa = np.sqrt(upsi * 2 * np.log(iter **  (2.0 + self.X.shape[1] / 2.0) * 3 * np.pi**2 / (3 * delta)))
-            kappa_sq = ((2.0 + self.X.shape[1] / 2.0) * np.log(iter) + np.log(3 * np.pi**2 / (3 * delta)))
+            kappa_sq = ((2.0 + self.X.shape[1] / 2.0) * np.log(iter) + np.log(3 * np.pi ** 2 / (3 * delta)))
             kappa = np.sqrt(upsi * 2 * kappa_sq)
             acq = self.acq_cls(model, py_best, kappa=kappa)  # LCB < py_best
             assert acq.num_obj > 1
@@ -169,7 +169,7 @@ class HEBO(AbstractOptimizer):
                 initial_suggest=best_x,
                 fix_input=fix_input).drop_duplicates()
             rec = rec[self.check_unique(rec)]
-
+            
             cnt = 0
             while rec.shape[0] < n_suggestions:
                 rand_rec = self.quasi_sample(
@@ -185,10 +185,10 @@ class HEBO(AbstractOptimizer):
                 rand_rec = self.quasi_sample(
                     n_suggestions - rec.shape[0], fix_input)
                 rec = rec.append(rand_rec, ignore_index=True)
-
+            
             select_id = np.random.choice(
                 rec.shape[0], n_suggestions, replace=False).tolist()
-
+            
             py_all = mu(*self.space.transform(rec)).squeeze().asnumpy()
             ps_all = -1 * sig(*self.space.transform(rec)).squeeze().asnumpy()
             best_pred_id = np.argmin(py_all)
@@ -199,15 +199,15 @@ class HEBO(AbstractOptimizer):
                 select_id[1] = best_pred_id
             if n_suggestions == 1:
                 select_id = np.random.choice([select_id[0], best_pred_id, best_unce_id], 1, p=[
-                                             6 / 8, 1 / 8, 1 / 8]).tolist()
+                    6 / 8, 1 / 8, 1 / 8]).tolist()
             rec_selected = rec.iloc[select_id].copy()
             return rec_selected
-
+    
     def check_unique(self, rec: pd.DataFrame) -> [bool]:
         """Check if parameter sets are unique."""
         return (~pd.concat([self.X, rec], axis=0).duplicated().tail(
             rec.shape[0]).values).tolist()
-
+    
     def observe(self, X, y):
         """Feed an observation back.
 

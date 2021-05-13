@@ -14,13 +14,14 @@ from .gp.gpy_wgp import GPyGP
 from .gp.gpy_mlp import GPyMLPGP
 
 model_dict = {
-        'gp'  : GP,
-        'rf'  : RF,
-        'gpy' : GPyGP, 
-        'gpy_mlp' : GPyMLPGP
-        }
+    'gp': GP,
+    'rf': RF,
+    'gpy': GPyGP,
+    'gpy_mlp': GPyMLPGP
+}
 
-def get_model(model_name : str, *params, **conf) -> BaseModel:
+
+def get_model(model_name: str, *params, **conf) -> BaseModel:
     assert model_name in model_dict, "model name %s not in model_dict"
     model_class = model_dict[model_name]
     return model_class(*params, **conf)

@@ -15,11 +15,11 @@ from .param import Parameter
 
 class CategoricalPara(Parameter):
     """Categorical Parameter."""
-
+    
     def __init__(self, param):
         super().__init__(param)
         self.categories = np.array(list(param['categories']))
-        assert(self.categories.ndim == 1)
+        assert (self.categories.ndim == 1)
         try:
             self._categories_dict = {
                 k: v for v, k in enumerate(
@@ -28,12 +28,12 @@ class CategoricalPara(Parameter):
             self._categories_dict = None
         self.lb = 0
         self.ub = len(self.categories) - 1
-
+    
     def sample(self, num=1):
         """Sample."""
-        assert(num > 0)
+        assert (num > 0)
         return np.random.choice(self.categories, num, replace=True)
-
+    
     def transform(self, x: np.ndarray):
         """Transform."""
         if self._categories_dict:
@@ -45,31 +45,31 @@ class CategoricalPara(Parameter):
             ret = np.array(
                 list(map(lambda a: np.where(self.categories == a)[0][0], x)))
         return ret.astype(float)
-
+    
     def inverse_transform(self, x):
         """Reverse from float to categorical."""
         return self.categories[x.round().astype(int)]
-
+    
     @property
     def is_numeric(self):
         """Is Numeric?."""
         return False
-
+    
     @property
     def is_discrete(self):
         """Is Discrete?."""
         return True
-
+    
     @property
     def is_discrete_after_transform(self):
         """Is Discrete Post Transform?."""
         return True
-
+    
     @property
     def opt_lb(self):
         """Lower bound."""
         return self.lb
-
+    
     @property
     def opt_ub(self):
         """Upper bound."""
