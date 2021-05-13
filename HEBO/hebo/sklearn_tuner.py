@@ -1,3 +1,5 @@
+"""Sklearn Tuner API for easy integration with sklearn models and cv."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -7,30 +9,31 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import cross_val_predict, KFold
-from sklearn.metrics import get_scorer, make_scorer
+import warnings
 from typing import Callable
 
+import numpy as np
+import pandas as pd
 from hebo.design_space.design_space import DesignSpace
 from hebo.optimizers.hebo import HEBO
+from sklearn.model_selection import cross_val_predict
 
-import warnings
 warnings.filterwarnings('ignore')
 
+
 def sklearn_tuner(
-        model_class, 
-        space_config : [dict], 
-        X : np.ndarray,
-        y : np.ndarray,
-        metric : Callable, 
-        greater_is_better : bool = True, 
-        n_splits = 5,
-        max_iter = 16, 
-        report   = False
-        ) -> (dict, pd.DataFrame):
-    """Tuning sklearn estimator
+        model_class,
+        space_config: [dict],
+        X: np.ndarray,
+        y: np.ndarray,
+        metric: Callable,
+        greater_is_better: bool = True,
+        cv=None,
+        max_iter=16,
+        report=False,
+        hebo_cfg=None,
+) -> (dict, pd.DataFrame):
+    """Tuning sklearn estimator.
 
     Parameters:
     -------------------
@@ -39,7 +42,7 @@ def sklearn_tuner(
     X, y: data used to for cross-valiation
     metrics: metric function in sklearn.metrics
     greater_is_better: whether a larger metric value is better
-    n_splits: split data into `n_splits` parts for cross validation
+    cv: the 'cv' parameter in `cross_val_predict`
     max_iter: number of trials
 
     Returns:
@@ -64,18 +67,20 @@ def sklearn_tuner(
     X, y   = load_boston(return_X_y = True)
     result = sklearn_tuner(RandomForestRegressor, space_cfg, X, y, metric = r2_score, max_iter = 16)
     """
+    if hebo_cfg is None:
+        hebo_cfg = {}
     space = DesignSpace().parse(space_config)
-    opt   = HEBO(space)
+    opt = HEBO(space, **hebo_cfg)
     for i in range(max_iter):
-        rec     = opt.suggest()
-        model   = model_class(**rec.iloc[0].to_dict())
-        pred    = cross_val_predict(model, X, y, cv = KFold(n_splits = n_splits, shuffle = True))
+        rec = opt.suggest()
+        model = model_class(**rec.iloc[0].to_dict())
+        pred = cross_val_predict(model, X, y, cv=cv)
         score_v = metric(y, pred)
-        sign    = -1. if greater_is_better else 1.0
+        sign = -1. if greater_is_better else 1.0
         opt.observe(rec, np.array([sign * score_v]))
         print('Iter %d, best metric: %g' % (i, sign * opt.y.min()))
-    best_id   = np.argmin(opt.y.reshape(-1))
-    best_hyp  = opt.X.iloc[best_id]
+    best_id = np.argmin(opt.y.reshape(-1))
+    best_hyp = opt.X.iloc[best_id]
     df_report = opt.X.copy()
     df_report['metric'] = sign * opt.y
     if report:

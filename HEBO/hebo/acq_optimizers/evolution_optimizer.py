@@ -1,3 +1,5 @@
+"""Evolutionary optimiser for acq functions."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -24,19 +26,22 @@ Configuration.show_compile_hint = False
 from pymoo.factory import get_algorithm
 
 class BOProblem(Problem):
+    """BO problem specification."""
+    
     def __init__(self,
-            lb    : np.ndarray,
-            ub    : np.ndarray,
-            acq   : Acquisition,
-            space : DesignSpace, 
-            fix   : dict = None 
-            ):
-        super().__init__(len(lb), xl = lb, xu = ub, n_obj = acq.num_obj, n_constr = acq.num_constr)
-        self.acq   = acq
+                 lb: np.ndarray,
+                 ub: np.ndarray,
+                 acq: Acquisition,
+                 space: DesignSpace,
+                 fix: dict = None
+                 ):
+        super().__init__(len(lb), xl=lb, xu=ub, n_obj=acq.num_obj, n_constr=acq.num_constr)
+        self.acq = acq
         self.space = space
-        self.fix   = fix # NOTE: use self.fix to enable contextual BO
-
-    def _evaluate(self, x : np.ndarray, out : dict, *args, **kwargs):
+        self.fix = fix  # NOTE: use self.fix to enable contextual BO
+    
+    def _evaluate(self, x: np.ndarray, out: dict, *args, **kwargs):
+        """Evaluate acq value of input."""
         num_x = x.shape[0]
         xcont = torch.from_numpy(x[:, :self.space.num_numeric].astype(float))
         xenum = torch.from_numpy(x[:, self.space.num_numeric:].astype(float))
@@ -53,73 +58,88 @@ class BOProblem(Problem):
             if self.acq.num_constr > 0:
                 out['G'] = acq_eval[:, -1 * self.acq.num_constr:]
 
-class EvolutionOpt:
-    def __init__(self,
-            design_space : DesignSpace,
-            acq          : Acquisition,
-            es           : str = None, 
-            **conf):
-        self.space      = design_space
-        self.es         = es 
-        self.acq        = acq
-        self.pop        = conf.get('pop', 100)
-        self.iter       = conf.get('iters',500)
-        self.verbose    = conf.get('verbose', False)
-        assert(self.acq.num_obj > 0)
 
+class EvolutionOpt:
+    """Evolutionary Optimiser."""
+    
+    def __init__(self,
+                 design_space: DesignSpace,
+                 acq: Acquisition,
+                 es: str = None,
+                 **conf):
+        self.space = design_space
+        self.es = es
+        self.acq = acq
+        self.pop = conf.get('pop', 100)
+        self.iter = conf.get('iters', 500)
+        self.verbose = conf.get('verbose', False)
+        self.repair = conf.get('repair', None)
+        self.lhs_init = conf.get('lhs_init', True)
+        assert (self.acq.num_obj > 0)
+        
         if self.es is None:
             self.es = 'nsga2' if self.acq.num_obj > 1 else 'ga'
-
-    def get_init_pop(self, initial_suggest : pd.DataFrame = None) -> np.ndarray:
-        # init_pop = self.space.sample(self.pop)
-        self.eng   = SobolEngine(self.space.num_paras, scramble = True)
+    
+    def get_init_pop(self, initial_suggest: pd.DataFrame = None) -> np.ndarray:
+        """Return init pop."""
+        self.eng = SobolEngine(self.space.num_paras, scramble=True)
         sobol_samp = self.eng.draw(self.pop)
         sobol_samp = sobol_samp * (self.space.opt_ub - self.space.opt_lb) + self.space.opt_lb
-        x          = sobol_samp[:, :self.space.num_numeric]
-        xe         = sobol_samp[:, self.space.num_numeric:]
-        init_pop   = self.space.inverse_transform(x, xe)
+        x = sobol_samp[:, :self.space.num_numeric]
+        xe = sobol_samp[:, self.space.num_numeric:]
+        init_pop = self.space.inverse_transform(x, xe)
         if initial_suggest is not None:
-            init_pop = pd.concat([initial_suggest, init_pop], axis = 0).head(self.pop)
+            init_pop = pd.concat([initial_suggest, init_pop], axis=0).head(self.pop)
         x, xe = self.space.transform(init_pop)
         return np.hstack([x.numpy(), xe.numpy().astype(float)])
 
     def get_mutation(self):
+        """Return mutation."""
         mask = []
         for name in (self.space.numeric_names + self.space.enum_names):
             if self.space.paras[name].is_discrete_after_transform:
                 mask.append('int')
             else:
                 mask.append('real')
-
+        
         mutation = MixedVariableMutation(mask, {
-            'real' : get_mutation('real_pm', eta = 20), 
-            'int'  : get_mutation('int_pm', eta = 20)
+            'real': get_mutation('real_pm', eta=20),
+            'int': get_mutation('int_pm', eta=20)
         })
         return mutation
-
+    
     def get_crossover(self):
+        """Return crossover."""
         mask = []
         for name in (self.space.numeric_names + self.space.enum_names):
             if self.space.paras[name].is_discrete_after_transform:
                 mask.append('int')
             else:
                 mask.append('real')
-
+        
         crossover = MixedVariableCrossover(mask, {
-            'real' : get_crossover('real_sbx', eta = 15, prob = 0.9), 
-            'int'  : get_crossover('int_sbx', eta = 15, prob = 0.9)
+            'real': get_crossover('real_sbx', eta=15, prob=0.9),
+            'int': get_crossover('int_sbx', eta=15, prob=0.9)
         })
         return crossover
-
-    def optimize(self, initial_suggest : pd.DataFrame = None, fix_input : dict = None) -> pd.DataFrame:
-        lb        = self.space.opt_lb.numpy()
-        ub        = self.space.opt_ub.numpy()
-        prob      = BOProblem(lb, ub, self.acq, self.space, fix_input)
-        init_pop  = self.get_init_pop(initial_suggest)
-        mutation  = self.get_mutation()
+    
+    def optimize(self, initial_suggest: pd.DataFrame = None,
+                 fix_input: dict = None) -> pd.DataFrame:
+        """Maximise acq functions."""
+        lb = self.space.opt_lb.numpy()
+        ub = self.space.opt_ub.numpy()
+        prob = BOProblem(lb, ub, self.acq, self.space, fix_input)
+        init_pop = self.get_init_pop(initial_suggest)
+        mutation = self.get_mutation()
         crossover = self.get_crossover()
-        algo      = get_algorithm(self.es, pop_size = self.pop, sampling = init_pop, mutation = mutation, crossover = crossover)
-        res       = minimize(prob, algo, ('n_gen', self.iter), verbose = self.verbose)
+        algo = get_algorithm(
+            self.es,
+            pop_size=self.pop,
+            sampling=init_pop,
+            mutation=mutation,
+            crossover=crossover,
+            repair=self.repair)
+        res = minimize(prob, algo, ('n_gen', self.iter), verbose=self.verbose)
         if res.X is not None:
             opt_x = res.X.reshape(-1, len(lb)).astype(float)
         else:
@@ -127,9 +147,11 @@ class EvolutionOpt:
             if self.acq.num_obj == 1:
                 opt_x = opt_x[[np.random.choice(opt_x.shape[0])]]
         
-        opt_xcont = torch.from_numpy(opt_x[:, :self.space.num_numeric])
-        opt_xenum = torch.from_numpy(opt_x[:, self.space.num_numeric:])
-        df_opt    = self.space.inverse_transform(opt_xcont, opt_xenum)
+        opt_xcont = torch.from_numpy(
+            opt_x[:, :self.space.num_numeric].astype(float))
+        opt_xenum = torch.from_numpy(
+            opt_x[:, self.space.num_numeric:].astype(int))
+        df_opt = self.space.inverse_transform(opt_xcont, opt_xenum)
         if fix_input is not None:
             for k, v in fix_input.items():
                 df_opt[k] = v

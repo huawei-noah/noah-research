@@ -1,3 +1,5 @@
+"""Utils for surrogate model."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under

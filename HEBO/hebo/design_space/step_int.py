@@ -1,4 +1,5 @@
 import numpy as np
+
 from .param import Parameter
 
 class StepIntPara(Parameter):

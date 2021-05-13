@@ -1,3 +1,5 @@
+"""mindspore scaling methods."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -13,31 +15,42 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import FloatTensor as Tensor
 
 class TorchIdentityScaler(nn.Module):
+    """Identity Scalar."""
+    
     def __init__(self):
         super().__init__()
-
-    def fit(self, x : torch.FloatTensor):
+    
+    def fit(self, x: Tensor):
+        """Fit scalar."""
         return self
-
-    def forward(self, x : torch.FloatTensor) -> torch.FloatTensor:
+    
+    def construct(self, x: Tensor) -> Tensor:
+        """Construct scaler on x."""
         return x
-
-    def transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
-        return self.forward(x)
-
-    def inverse_transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
+    
+    def transform(self, x: Tensor) -> Tensor:
+        """Transform input x."""
+        return self.construct(x)
+    
+    def inverse_transform(self, x: Tensor) -> Tensor:
+        """Inverse transform input x."""
         return x
 
 class TorchStandardScaler(nn.Module):
+    """Standard scalar."""
+
     def __init__(self):
         super().__init__()
-        self.mean   = None
-        self.std    = None
+        self.mean = None
+        self.std = None
         self.fitted = False
 
     def fit(self, x : torch.FloatTensor):
+        """Fit scalar."""
+        
         assert(x.dim() == 2)
         with torch.no_grad():
             scaler = StandardScaler()
@@ -52,14 +65,18 @@ class TorchStandardScaler(nn.Module):
 
     def forward(self, x : torch.FloatTensor) -> torch.FloatTensor:
         return (x - self.mean) / self.std
-
-    def transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
-        return self.forward(x)
-
-    def inverse_transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
+    
+    def transform(self, x: Tensor) -> Tensor:
+        """Transform input x."""
+        return self.construct(x)
+    
+    def inverse_transform(self, x: Tensor) -> Tensor:
+        """Inverse transform input x."""
         return x * self.std + self.mean
 
 class TorchMinMaxScaler(nn.Module):
+    """Min Max scalar."""
+
     def __init__(self, range : tuple = (0, 1)):
         super().__init__()
         self.range_lb = float(range[0])
@@ -71,6 +88,7 @@ class TorchMinMaxScaler(nn.Module):
         self.fitted = False
 
     def fit(self, x : torch.FloatTensor):
+        """Fit scalar."""
         assert(x.dim() == 2)
         with torch.no_grad():
             scaler = MinMaxScaler((self.range_lb, self.range_ub))
@@ -79,12 +97,15 @@ class TorchMinMaxScaler(nn.Module):
             self.min_   = torch.FloatTensor(scaler.min_)
             self.fitted = True
         return self
-
-    def forward(self, x : torch.FloatTensor) -> torch.FloatTensor:
-        return self.transform(x)
-
-    def transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
+    
+    def construct(self, x: Tensor) -> Tensor:
+        """Construct scaler on x."""
         return self.scale_ * x + self.min_
-
-    def inverse_transform(self, x : torch.FloatTensor) -> torch.FloatTensor:
+    
+    def transform(self, x: Tensor) -> Tensor:
+        """Transform input x."""
+        return self.construct(x)
+    
+    def inverse_transform(self, x: Tensor) -> Tensor:
+        """Inverse transform input x."""
         return (x - self.min_) / self.scale_

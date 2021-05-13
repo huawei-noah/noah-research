@@ -1,3 +1,5 @@
+"""HEBO Optimizer."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -24,11 +26,22 @@ from .abstract_optimizer import AbstractOptimizer
 torch.set_num_threads(min(1, torch.get_num_threads()))
 
 class HEBO(AbstractOptimizer):
-    support_parallel_opt  = True
+    """HEBO Optimizer class."""
+    
+    support_parallel_opt = True
     support_combinatorial = True
-    support_contextual    = True
-    def __init__(self, space, model_name = 'gpy', rand_sample = None, acq_cls = MACE, es = 'nsga2'):
-        """
+    support_contextual = True
+    
+    def __init__(
+            self,
+            space,
+            model_name='gpy',
+            rand_sample=None,
+            acq_cls=MACE,
+            es='nsga2',
+            verbose=False):
+        """Init.
+
         model_name : surrogate model to be used
         rand_iter  : iterations to perform random sampling
         """
@@ -42,7 +55,8 @@ class HEBO(AbstractOptimizer):
         self.sobol       = SobolEngine(self.space.num_paras, scramble = False)
         self.acq_cls     = acq_cls
 
-    def quasi_sample(self, n, fix_input = None): 
+    def quasi_sample(self, n, fix_input = None):
+        """Quasi-random sampling function."""
         samp    = self.sobol.draw(n)
         samp    = samp * (self.space.opt_ub - self.space.opt_lb) + self.space.opt_lb
         x       = samp[:, :self.space.num_numeric]
@@ -52,38 +66,33 @@ class HEBO(AbstractOptimizer):
             for k, v in fix_input.items():
                 df_samp[k] = v
         return df_samp
-
+    
     @property
     def model_config(self):
-        if self.model_name == 'gp':
+        """Add additional arguments for surrogate model."""
+        if self.model_name == 'gpy':
             cfg = {
-                    'lr'           : 0.01,
-                    'num_epochs'   : 100,
-                    'verbose'      : False,
-                    'noise_lb'     : 8e-4, 
-                    'pred_likeli'  : False
-                    }
-        elif self.model_name == 'gpy':
-            cfg = {
-                    'verbose' : False,
-                    'warp'    : True,
-                    'space'   : self.space
-                    }
+                'verbose': self.verbose,
+                'warp': True,
+                'space': self.space
+            }
         elif self.model_name == 'gpy_mlp':
             cfg = {
-                    'verbose' : False
-                    }
+                'verbose': self.verbose
+            }
         elif self.model_name == 'rf':
-            cfg =  {
-                    'n_estimators' : 20
-                    }
+            cfg = {
+                'n_estimators': 20
+            }
         else:
             cfg = {}
         if self.space.num_categorical > 0:
-            cfg['num_uniqs'] = [len(self.space.paras[name].categories) for name in self.space.enum_names]
+            cfg['num_uniqs'] = [len(self.space.paras[name].categories)
+                                for name in self.space.enum_names]
         return cfg
-            
-    def suggest(self, n_suggestions=1, fix_input = None):
+    
+    def suggest(self, n_suggestions=1, fix_input=None):
+        """Suggest params."""
         if self.X.shape[0] < self.rand_sample:
             sample = self.quasi_sample(n_suggestions, fix_input)
             return sample
@@ -98,13 +107,18 @@ class HEBO(AbstractOptimizer):
                         y = torch.FloatTensor(power_transform(self.y / self.y.std(), method = 'yeo-johnson'))
                 if y.std() < 0.5:
                     raise RuntimeError('Power transformation failed')
-                model = get_model(self.model_name, self.space.num_numeric, self.space.num_categorical, 1, **self.model_config)
+                model = get_model(
+                    self.model_name,
+                    self.space.num_numeric,
+                    self.space.num_categorical,
+                    1,
+                    **self.model_config)
                 model.fit(X, Xe, y)
             except:
                 y     = torch.FloatTensor(self.y).clone()
                 model = get_model(self.model_name, self.space.num_numeric, self.space.num_categorical, 1, **self.model_config)
                 model.fit(X, Xe, y)
-
+            
             best_id = np.argmin(self.y.squeeze())
             best_x  = self.X.iloc[[best_id]]
             best_y  = y.min()
@@ -125,7 +139,7 @@ class HEBO(AbstractOptimizer):
             opt = EvolutionOpt(self.space, acq, pop = 100, iters = 100, verbose = False, es=self.es)
             rec = opt.optimize(initial_suggest = best_x, fix_input = fix_input).drop_duplicates()
             rec = rec[self.check_unique(rec)]
-
+            
             cnt = 0
             while rec.shape[0] < n_suggestions:
                 rand_rec = self.quasi_sample(n_suggestions - rec.shape[0], fix_input)
@@ -134,7 +148,7 @@ class HEBO(AbstractOptimizer):
                 cnt +=  1
                 if cnt > 3:
                     # sometimes the design space is so small that duplicated sampling is unavoidable
-                    break 
+                    break
             if rec.shape[0] < n_suggestions:
                 rand_rec = self.quasi_sample(n_suggestions - rec.shape[0], fix_input)
                 rec      = rec.append(rand_rec, ignore_index = True)
@@ -152,10 +166,12 @@ class HEBO(AbstractOptimizer):
                     select_id[1]= best_pred_id
                 rec_selected = rec.iloc[select_id].copy()
             return rec_selected
-
-    def check_unique(self, rec : pd.DataFrame) -> [bool]:
-        return (~pd.concat([self.X, rec], axis = 0).duplicated().tail(rec.shape[0]).values).tolist()
-
+    
+    def check_unique(self, rec: pd.DataFrame) -> [bool]:
+        """Check if parameter sets are unique."""
+        return (~pd.concat([self.X, rec], axis=0).duplicated().tail(
+            rec.shape[0]).values).tolist()
+    
     def observe(self, X, y):
         """Feed an observation back.
 
@@ -169,7 +185,7 @@ class HEBO(AbstractOptimizer):
             Corresponding values where objective has been evaluated
         """
         valid_id = np.where(np.isfinite(y.reshape(-1)))[0].tolist()
-        XX       = X.iloc[valid_id]
-        yy       = y[valid_id].reshape(-1, 1)
-        self.X   = self.X.append(XX, ignore_index = True)
-        self.y   = np.vstack([self.y, yy])
+        XX = X.iloc[valid_id]
+        yy = y[valid_id].reshape(-1, 1)
+        self.X = self.X.append(XX, ignore_index=True)
+        self.y = np.vstack([self.y, yy])
