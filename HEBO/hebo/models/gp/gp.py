@@ -1,3 +1,5 @@
+"""GP methods."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -7,30 +9,25 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import gpytorch
-import pickle
-
-from torch import Tensor, FloatTensor, LongTensor
-from pathlib import Path
+import torch
+from gpytorch.constraints import GreaterThan
+from gpytorch.distributions import MultivariateNormal, MultitaskMultivariateNormal
+from gpytorch.kernels import ScaleKernel, MaternKernel, MultitaskKernel
+from gpytorch.likelihoods import GaussianLikelihood, MultitaskGaussianLikelihood
+from gpytorch.means import ConstantMean, MultitaskMean
 from gpytorch.priors import GammaPrior
 from gpytorch.priors.torch_priors import LogNormalPrior
-from gpytorch.kernels import ScaleKernel, RBFKernel, MaternKernel, MultitaskKernel
-from gpytorch.likelihoods import GaussianLikelihood, MultitaskGaussianLikelihood
-from gpytorch.means import ConstantMean, ZeroMean, MultitaskMean
-from gpytorch.distributions import MultivariateNormal, MultitaskMultivariateNormal
-from gpytorch.constraints import Interval, GreaterThan
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from torch import Tensor, FloatTensor
 
-from ..util import filter_nan
 from ..base_model import BaseModel
 from ..layers import EmbTransform
 from ..scalers import TorchMinMaxScaler, TorchStandardScaler
+from ..util import filter_nan
 
 
 class GP(BaseModel):
+    """GP."""
     support_grad = True
     support_multi_output = True
     
@@ -47,11 +44,13 @@ class GP(BaseModel):
         self.yscaler = TorchStandardScaler()
     
     def fit_scaler(self, Xc: Tensor, Xe: Tensor, y: Tensor):
+        """Fit scalar transf."""
         if Xc is not None and Xc.shape[1] > 0:
             self.xscaler.fit(Xc)
         self.yscaler.fit(y)
     
     def xtrans(self, Xc: Tensor, Xe: Tensor, y: Tensor = None):
+        """X transform."""
         if Xc is not None and Xc.shape[1] > 0:
             Xc_t = self.xscaler.transform(Xc)
         else:
@@ -69,6 +68,7 @@ class GP(BaseModel):
             return Xc_t, Xe_t
     
     def fit(self, Xc: Tensor, Xe: Tensor, y: Tensor):
+        """Fit gp."""
         Xc, Xe, y = filter_nan(Xc, Xe, y, 'all')
         self.fit_scaler(Xc, Xe, y)
         Xc, Xe, y = self.xtrans(Xc, Xe, y)
@@ -123,6 +123,7 @@ class GP(BaseModel):
         self.lik.eval()
     
     def predict(self, Xc, Xe):
+        """Posterior prediction,"""
         Xc, Xe = self.xtrans(Xc, Xe)
         with gpytorch.settings.fast_pred_var(), gpytorch.settings.debug(False):
             pred = self.gp(Xc, Xe)
@@ -135,9 +136,7 @@ class GP(BaseModel):
         return mu, var
     
     def sample_y(self, Xc, Xe, n_samples=1) -> FloatTensor:
-        """
-        Should return (n_samples, Xc.shape[0], self.num_out)
-        """
+        """Should return (n_samples, Xc.shape[0], self.num_out)."""
         Xc, Xe = self.xtrans(Xc, Xe)
         with gpytorch.settings.debug(False):
             if self.pred_likeli:
@@ -148,10 +147,12 @@ class GP(BaseModel):
             return self.yscaler.inverse_transform(samp)
     
     def sample_f(self):
+        """Sample f."""
         raise NotImplementedError('Thompson sampling is not supported for GP, use `sample_y` instead')
     
     @property
     def noise(self):
+        """Noise."""
         if self.num_out == 1:
             return (self.gp.likelihood.noise * self.yscaler.std ** 2).view(self.num_out).detach()
         else:
@@ -159,6 +160,8 @@ class GP(BaseModel):
 
 
 class GPyTorchModel(gpytorch.models.ExactGP):
+    """GPyTorchModel."""
+    
     def __init__(self,
                  x: torch.Tensor,
                  xe: torch.Tensor,
@@ -183,6 +186,7 @@ class GPyTorchModel(gpytorch.models.ExactGP):
             self.kern_emb = kern_emb if not self.multi_task else MultitaskKernel(kern_emb, num_tasks=y.shape[1])
     
     def forward(self, x, xe):
+        """Forward."""
         m = self.mean(x)
         if x.shape[1] > 0:
             K = self.kern(x)

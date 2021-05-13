@@ -10,20 +10,19 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 
+import logging
 import warnings
+
 import GPy
+import hebo.mindspore as hebo_ms
 import mindspore as ms
-import mindspore.nn as nn
 import numpy as np
 from mindspore import Tensor
 
-import hebo.mindspore as hebo_ms
 from ..base_model import BaseModel
 from ..layers import OneHotTransform
 from ..scalers import MindSporeMinMaxScaler, MindSporeStandardScaler
 from ..util import filter_nan
-
-import logging
 
 logging.disable(logging.WARNING)
 

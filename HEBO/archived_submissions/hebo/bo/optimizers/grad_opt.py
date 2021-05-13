@@ -12,9 +12,8 @@ import pandas as pd
 import torch
 import torch.nn as nn
 
-from ..design_space.design_space import DesignSpace
-from ..design_space.numeric_param import NumericPara
 from ..acquisitions.acq import Acquisition
+from ..design_space.design_space import DesignSpace
 
 
 class GradAcqOpt:

@@ -7,15 +7,16 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.design_space.design_space import DesignSpace
-from hebo.acquisitions.acq import Acquisition
-from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+import os
+import sys
+
 import hebo.mindspore as hebo_ms
 import mindspore as ms
-from pytest import approx
 import pytest
-import sys
-import os
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.acquisitions.acq import Acquisition
+from hebo.design_space.design_space import DesignSpace
+from pytest import approx
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

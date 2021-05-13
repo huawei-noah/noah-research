@@ -7,9 +7,10 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import pandas as pd
-import numpy  as np
 from abc import ABC, abstractmethod
+
+import numpy  as np
+import pandas as pd
 
 
 class Parameter(ABC):

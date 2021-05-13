@@ -7,7 +7,8 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys, os
+import os
+import sys
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest

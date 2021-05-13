@@ -7,11 +7,13 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import torch
+from abc import ABC, abstractmethod
+
 import numpy as np
+import torch
 from torch import Tensor
 from torch.distributions import Normal
-from abc import ABC, abstractmethod
+
 from ..models.base_model import BaseModel
 
 

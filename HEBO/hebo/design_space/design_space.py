@@ -10,18 +10,18 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import pandas as pd
 import mindspore as ms
 import mindspore.numpy as mnp
+import pandas as pd
 from mindspore import Tensor
 
-from .numeric_param import NumericPara
-from .integer_param import IntegerPara
-from .pow_param import PowPara
-from .categorical_param import CategoricalPara
 from .bool_param import BoolPara
-from .pow_integer_param import PowIntegerPara
+from .categorical_param import CategoricalPara
 from .int_exponent_param import IntExponentPara
+from .integer_param import IntegerPara
+from .numeric_param import NumericPara
+from .pow_integer_param import PowIntegerPara
+from .pow_param import PowPara
 from .step_int import StepIntPara
 
 

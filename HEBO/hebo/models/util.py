@@ -9,9 +9,9 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+import hebo.mindspore as hebo_ms
 import numpy as np
 from mindspore import Tensor
-import hebo.mindspore as hebo_ms
 
 
 def filter_nan(x_: Tensor, xe_: Tensor, y_: Tensor,

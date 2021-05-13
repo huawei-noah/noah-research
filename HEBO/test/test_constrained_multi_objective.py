@@ -7,12 +7,11 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+import hebo.mindspore as hebo_ms
 import mindspore as ms
 import numpy as np
-from mindspore import Tensor
-
-import hebo.mindspore as hebo_ms
 from hebo.acquisitions.acq import GeneralAcq
+from mindspore import Tensor
 
 
 class DummyModel:

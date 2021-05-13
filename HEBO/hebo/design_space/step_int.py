@@ -1,6 +1,7 @@
 """Step Integer Parameter."""
 
 import numpy as np
+
 from .param import Parameter
 
 

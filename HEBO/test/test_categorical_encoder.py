@@ -7,15 +7,15 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.models.layers import OneHotTransform, EmbTransform
-import hebo.mindspore as hebo_ms
-import pytest
-from mindspore import Tensor
-import mindspore.nn as nn
-import mindspore as ms
-import numpy as np
-import sys
 import os
+import sys
+
+import hebo.mindspore as hebo_ms
+import mindspore as ms
+import mindspore.nn as nn
+import numpy as np
+from hebo.models.layers import OneHotTransform, EmbTransform
+from mindspore import Tensor
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

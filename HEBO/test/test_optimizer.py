@@ -7,20 +7,19 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+import os
+import sys
+
+import numpy as np
+import pandas as pd
+import pytest
 from hebo.design_space.bool_param import BoolPara
 from hebo.design_space.categorical_param import CategoricalPara
-from hebo.design_space.pow_param import PowPara
-from hebo.design_space.integer_param import IntegerPara
-from hebo.design_space.numeric_param import NumericPara
 from hebo.design_space.design_space import DesignSpace
-from hebo.optimizers.util import parse_space_from_bayesmark
+from hebo.design_space.integer_param import IntegerPara
+from hebo.design_space.pow_param import PowPara
 from hebo.optimizers.hebo import HEBO
-import pandas as pd
-import numpy as np
-from pytest import approx
-import pytest
-import sys
-import os
+from hebo.optimizers.util import parse_space_from_bayesmark
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

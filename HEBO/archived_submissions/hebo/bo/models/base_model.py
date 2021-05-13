@@ -7,10 +7,10 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+from abc import ABC, abstractmethod
+
 import torch
 from torch import Tensor, FloatTensor, LongTensor
-from .scalers import TorchStandardScaler, TorchMinMaxScaler
-from abc import ABC, abstractmethod
 
 
 class BaseModel(ABC):

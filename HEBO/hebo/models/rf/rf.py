@@ -9,12 +9,12 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import mindspore as ms
-from sklearn.ensemble import RandomForestRegressor
-from mindspore import Tensor
-import numpy as np
-
 import hebo.mindspore as hebo_ms
+import mindspore as ms
+import numpy as np
+from mindspore import Tensor
+from sklearn.ensemble import RandomForestRegressor
+
 from ..base_model import BaseModel
 from ..layers import OneHotTransform
 from ..util import filter_nan

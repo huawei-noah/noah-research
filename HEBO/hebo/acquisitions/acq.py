@@ -9,13 +9,13 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import mindspore as ms
-import numpy as np
-from mindspore import Tensor
 from abc import ABC, abstractmethod
-from scipy.stats import norm
 
 import hebo.mindspore as hebo_ms
+import numpy as np
+from mindspore import Tensor
+from scipy.stats import norm
+
 from ..models.base_model import BaseModel
 
 

@@ -9,11 +9,10 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import mindspore as ms
-from mindspore import Tensor
 from abc import ABC, abstractmethod
 
 import hebo.mindspore as hebo_ms
+from mindspore import Tensor
 
 
 class BaseModel(ABC):

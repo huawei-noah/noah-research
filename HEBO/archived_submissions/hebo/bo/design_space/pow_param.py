@@ -7,8 +7,8 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys
 import numpy as np
+
 from .param import Parameter
 
 

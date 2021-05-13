@@ -7,13 +7,14 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.acquisitions.acq import Tensor, Mean, Sigma, LCB, SingleObjectiveAcq, MOMeanSigmaLCB, MACE, GeneralAcq
-from hebo.models.rf.rf import RF
+import os
+import sys
+
+import mindspore as ms
 import numpy as np
 import pytest
-import mindspore as ms
-import sys
-import os
+from hebo.acquisitions.acq import Tensor, Mean, Sigma, LCB, SingleObjectiveAcq, MOMeanSigmaLCB, MACE, GeneralAcq
+from hebo.models.rf.rf import RF
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

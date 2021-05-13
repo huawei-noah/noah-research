@@ -1,3 +1,5 @@
+"""Bayesian Optimiser base class's."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -10,13 +12,15 @@
 import numpy  as np
 import pandas as pd
 import torch
-from hebo.models.model_factory import get_model
-from hebo.acquisitions.acq import LCB
 from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.acquisitions.acq import LCB
+from hebo.models.model_factory import get_model
+
 from .abstract_optimizer import AbstractOptimizer
 
 
 class BO(AbstractOptimizer):
+    """Main Bayesian Optimisation Module."""
     support_combinatorial = True
     support_contextual = True
     
@@ -29,6 +33,7 @@ class BO(AbstractOptimizer):
         self.rand_sample = 1 + self.space.num_paras if rand_sample is None else max(2, rand_sample)
     
     def suggest(self, n_suggestions=1, fix_input=None):
+        """Suggest."""
         assert n_suggestions == 1
         if self.X.shape[0] < self.rand_sample:
             sample = self.space.sample(n_suggestions)

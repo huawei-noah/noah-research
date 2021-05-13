@@ -7,7 +7,6 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from ..design_space.design_space import DesignSpace
 from ..
 
 

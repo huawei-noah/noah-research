@@ -1,16 +1,20 @@
+"""Synthetic Benchmarks."""
+
+from abc import ABC, abstractmethod
+
+import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
-import pandas as pd
-import numpy as np
-from torch.distributions import MultivariateNormal
-from pymoo.factory import get_problem
-from abc import ABC, abstractmethod
-from sklearn.preprocessing import MinMaxScaler
-from scipy.stats import special_ortho_group
 from hebo.design_space.design_space import DesignSpace
+from pymoo.factory import get_problem
+from scipy.stats import special_ortho_group
+from sklearn.preprocessing import MinMaxScaler
 
 
 class BenchParamScaler:
+    """BenchParamScaler."""
+    
     def __init__(self, lb: np.ndarray, ub: np.ndarray):
         self.scaler = MinMaxScaler((-1, 1)).fit(np.vstack([lb.reshape(-1), ub.reshape(-1)]))
     
@@ -28,6 +32,8 @@ class BenchParamScaler:
 
 
 class AbstractBenchmark(ABC):
+    """AbstractBenchmark."""
+    
     def __init__(self, dim):
         self.dim = dim
         self.space = DesignSpace().parse([{'name': f'x{i}', 'type': 'num', 'lb': -1, 'ub': 1} for i in range(dim)])
@@ -38,6 +44,8 @@ class AbstractBenchmark(ABC):
 
 
 class PymooDummy(AbstractBenchmark):
+    """PymooDummy."""
+    
     def __init__(self, dim, prob, bounds: tuple = None):
         super().__init__(dim)
         self.prob = prob
@@ -58,6 +66,8 @@ class PymooDummy(AbstractBenchmark):
 
 
 class BraninDummy(PymooDummy):
+    """BraninDummy."""
+    
     def __init__(self, dim=25):
         super().__init__(dim, prob=get_problem('go-branin01'))
 
@@ -65,7 +75,7 @@ class BraninDummy(PymooDummy):
 class BraninNoisy(BraninDummy):
     """
     The first two dimensions are relavent, the rest dimensions generate noisy
-    corruption, the higher the dimension is, the more noisy the output would be
+    corruption, the higher the dimension is, the more noisy the output would be.
     """
     
     def __init__(self, dim=25, factor=0.1):
@@ -79,11 +89,15 @@ class BraninNoisy(BraninDummy):
 
 
 class RosenbrockDummy(PymooDummy):
+    """RosenbrockDummy."""
+    
     def __init__(self, dim=100):
         super().__init__(dim, prob=get_problem("rosenbrock", n_var=2))
 
 
 class Hartmann6Dummy(PymooDummy):
+    """"Hartmann6Dummy."""
+    
     def __init__(self, dim=100):
         super().__init__(dim, prob=get_problem("go-hartmann6"))
 
@@ -94,22 +108,30 @@ class StyblinskiTangDummy(PymooDummy):
 
 
 class Rosenbrock(PymooDummy):
+    """Rosenbrock."""
+    
     def __init__(self, dim=100):
         super().__init__(dim, prob=get_problem("rosenbrock", n_var=dim))
 
 
 class Ackley(PymooDummy):
+    """Ackley."""
+    
     def __init__(self, dim=100):
         super().__init__(dim, prob=get_problem("ackley", n_var=dim, a=20, b=1 / 5, c=2 * np.pi))
 
 
 class AckleyDummy(PymooDummy):
+    """AckleyDummy."""
+    
     def __init__(self, dim=100, eff_dim=2):
         bounds = (-5 * np.ones(eff_dim), 10 * np.ones(eff_dim))
         super().__init__(dim, prob=get_problem("ackley", n_var=eff_dim, a=20, b=1 / 5, c=2 * np.pi), bounds=bounds)
 
 
 class AckleyOffsetRotation(PymooDummy):
+    """AckleyOffsetRotation."""
+    
     def __init__(self, dim=100, rank=None):
         super().__init__(dim, prob=get_problem("ackley", n_var=dim, a=20, b=1 / 5, c=2 * np.pi))
         self.offset = self.lb + (self.ub - self.lb) * np.random.rand(self.dim)
@@ -123,6 +145,8 @@ class AckleyOffsetRotation(PymooDummy):
 
 
 class AckleyCompressed(AbstractBenchmark):
+    """AckleyCompressed."""
+    
     def __init__(self, dim=100, eff_dim=2, seed: int = None):
         super().__init__(dim)
         if seed is not None:
@@ -143,8 +167,8 @@ class AckleyCompressed(AbstractBenchmark):
 
 class Schwefel_12(AbstractBenchmark):
     """
-    Used in " High Dimensional Bayesian Optimization Using Dropout"
-    Suggested dimension: [5, 10, 20, 30]
+    Used in High Dimensional Bayesian Optimization Using Dropout
+    Suggested dimension: [5, 10, 20, 30].
     """
     
     def __init__(self, dim=30):
@@ -152,6 +176,7 @@ class Schwefel_12(AbstractBenchmark):
         self.best_y = self._raw_eval(np.zeros((1, dim))).squeeze()
     
     def _raw_eval(self, x: np.array) -> np.ndarray:
+        """Raw eval."""
         obj = np.zeros((x.shape[0], 1))
         for i in range(self.dim):
             item = (x[:, :(i + 1)] ** 2).sum(axis=1, keepdims=True)

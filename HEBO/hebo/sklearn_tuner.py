@@ -9,16 +9,14 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import cross_val_predict, KFold
-from sklearn.metrics import get_scorer, make_scorer
+import warnings
 from typing import Callable
 
+import numpy as np
+import pandas as pd
 from hebo.design_space.design_space import DesignSpace
 from hebo.optimizers.hebo import HEBO
-
-import warnings
+from sklearn.model_selection import cross_val_predict
 
 warnings.filterwarnings('ignore')
 

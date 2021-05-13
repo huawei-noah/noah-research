@@ -7,17 +7,17 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.models.model_factory import get_model, get_model_class, model_dict
-from hebo.models.base_model import BaseModel
-import hebo.mindspore as hebo_ms
-from sklearn.metrics import r2_score
-from mindspore import Tensor
-import numpy as np
-import mindspore as ms
-from pytest import approx
-import pytest
-import sys
 import os
+import sys
+
+import hebo.mindspore as hebo_ms
+import mindspore as ms
+import numpy as np
+import pytest
+from hebo.models.base_model import BaseModel
+from hebo.models.model_factory import get_model, get_model_class, model_dict
+from mindspore import Tensor
+from sklearn.metrics import r2_score
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

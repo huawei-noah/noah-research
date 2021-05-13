@@ -11,11 +11,11 @@ import pandas as pd
 import torch
 from torch import Tensor
 
-from .numeric_param import NumericPara
-from .integer_param import IntegerPara
-from .pow_param import PowPara
-from .categorical_param import CategoricalPara
 from .bool_param import BoolPara
+from .categorical_param import CategoricalPara
+from .integer_param import IntegerPara
+from .numeric_param import NumericPara
+from .pow_param import PowPara
 
 
 class DesignSpace:

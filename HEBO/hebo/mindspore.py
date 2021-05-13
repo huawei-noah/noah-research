@@ -9,10 +9,9 @@
 
 """Extending mindspore with some util functions."""
 
-import numpy as np
 import mindspore as ms
-import mindspore.nn as nn
 import mindspore.numpy as mnp
+import numpy as np
 from mindspore import Tensor, ops
 
 

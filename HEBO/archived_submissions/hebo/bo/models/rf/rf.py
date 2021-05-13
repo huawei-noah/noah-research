@@ -7,12 +7,13 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+import numpy as np
 import torch
-from ..base_model import BaseModel
-from ..layers import OneHotTransform
 from sklearn.ensemble import RandomForestRegressor
 from torch import FloatTensor, LongTensor
-import numpy as np
+
+from ..base_model import BaseModel
+from ..layers import OneHotTransform
 
 
 class RF(BaseModel):

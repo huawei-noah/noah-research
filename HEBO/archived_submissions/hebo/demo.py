@@ -7,9 +7,9 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+from bo.acquisitions.lcb import LCB
 from bo.design_space import DesignSpace
 from bo.models.gp.gp import GP
-from bo.acquisitions.lcb import LCB
 from bo.optimizers import AcqOpt
 
 

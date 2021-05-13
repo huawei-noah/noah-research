@@ -1,10 +1,9 @@
 """Optimizer class for running autonomous black-box optimisation."""
 
+import numpy as np
+import pandas as pd
 from bayesmark.abstract_optimizer import AbstractOptimizer
 from bayesmark.experiment import experiment_main
-import pandas as pd
-import numpy as np
-
 from hebo.optimizers.hebo import HEBO
 from hebo.optimizers.util import parse_space_from_bayesmark
 

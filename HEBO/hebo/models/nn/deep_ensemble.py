@@ -1,3 +1,5 @@
+"""Deep Ensemble Methods."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -7,24 +9,21 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import os
-import sys
-import traceback
-import numpy as np
+from copy import deepcopy
+from multiprocessing import Pool
+
 import torch
 import torch.nn as nn
-
-from multiprocessing import Pool
-from pathlib import Path
-from torch.utils.data import DataLoader, TensorDataset
 from torch import Tensor, FloatTensor, LongTensor
-from copy import deepcopy
+from torch.utils.data import DataLoader, TensorDataset
+
 from ..base_model import BaseModel
 from ..layers import EmbTransform
 from ..scalers import TorchMinMaxScaler, TorchStandardScaler
 
 
 class DeepEnsemble(BaseModel):
+    """DeepEnsemble."""
     support_ts = True
     support_grad = True
     support_multi_output = True
@@ -60,13 +59,16 @@ class DeepEnsemble(BaseModel):
     
     @property
     def fitted(self):
+        """Fitted."""
         return self.models is not None
     
     @property
     def noise(self) -> FloatTensor:
+        """Noise."""
         return self.noise_est
     
     def fit(self, Xc_: FloatTensor, Xe_: LongTensor, y_: FloatTensor):
+        """Fit."""
         valid = torch.isfinite(y_).any(dim=1)
         Xc = Xc_[valid] if Xc_ is not None else None
         Xe = Xe_[valid] if Xe_ is not None else None
@@ -92,6 +94,7 @@ class DeepEnsemble(BaseModel):
             self.noise_est = (err ** 2).mean(dim=0).detach().clone()
     
     def predict(self, Xc_: FloatTensor, Xe_: LongTensor) -> (FloatTensor, FloatTensor):
+        """Predict."""
         Xc, Xe = self.trans(Xc_, Xe_)
         preds = torch.stack([self.models[i](Xc, Xe) for i in range(self.num_ensembles)])
         if not self.output_noise:
@@ -105,6 +108,7 @@ class DeepEnsemble(BaseModel):
         return self.yscaler.inverse_transform(py), ps2 * self.yscaler.std ** 2
     
     def sample_f(self):
+        """Sample_f."""
         assert (self.fitted)
         idx = self.sample_idx
         self.sample_idx = (self.sample_idx + 1) % self.num_ensembles
@@ -117,11 +121,13 @@ class DeepEnsemble(BaseModel):
         return f
     
     def fit_scaler(self, Xc: Tensor, Xe: Tensor, y: Tensor):
+        """Fit scaler."""
         if Xc is not None and Xc.shape[1] > 0:
             self.xscaler.fit(Xc)
         self.yscaler.fit(y)
     
     def trans(self, Xc: Tensor, Xe: Tensor, y: Tensor = None):
+        """Transform."""
         if Xc is not None and Xc.shape[1] > 0:
             Xc_t = self.xscaler.transform(Xc)
         else:
@@ -139,10 +145,12 @@ class DeepEnsemble(BaseModel):
             return Xc_t, Xe_t
     
     def loss_mse(self, pred, target):
+        """Loss."""
         mask = torch.isfinite(target)
         return nn.MSELoss()(pred[mask], target[mask])
     
     def loss_likelihood(self, pred, target):
+        """Likelihood."""
         mask = torch.isfinite(target)
         mu = pred[:, :self.num_out][mask]
         sigma2 = pred[:, self.num_out:][mask]
@@ -150,6 +158,7 @@ class DeepEnsemble(BaseModel):
         return torch.mean(loss)
     
     def fit_one(self, Xc, Xe, y, idx):
+        """Fit one."""
         torch.seed()
         dataset = TensorDataset(Xc, Xe, y)
         loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
@@ -188,6 +197,8 @@ class DeepEnsemble(BaseModel):
 
 
 class BaseNet(nn.Module):
+    """Base Net."""
+    
     def __init__(self, num_cont, num_enum, num_out, **conf):
         super().__init__()
         self.num_cont = num_cont
@@ -220,6 +231,7 @@ class BaseNet(nn.Module):
                 nn.init.xavier_uniform_(p, gain=nn.init.calculate_gain('relu'))
     
     def construct_hidden(self):
+        """Construct."""
         layers = [nn.Linear(self.eff_dim, self.num_hiddens), nn.ReLU()]
         for i in range(self.num_layers - 1):
             layers.append(nn.Linear(self.num_hiddens, self.num_hiddens))
@@ -227,12 +239,14 @@ class BaseNet(nn.Module):
         return nn.Sequential(*layers)
     
     def xtrans(self, Xc: FloatTensor, Xe: LongTensor) -> FloatTensor:
+        """X Transform."""
         Xall = Xc.clone() if self.num_cont > 0 else torch.zeros(Xe.shape[0], 0)
         if self.num_enum > 0:
             Xall = torch.cat([Xall, self.emb_trans(Xe)], dim=1)
         return Xall
     
     def forward(self, Xc: FloatTensor, Xe: LongTensor) -> FloatTensor:
+        """Forward."""
         inputs = self.xtrans(Xc, Xe)
         prior_out = 0.
         if self.rand_prior:

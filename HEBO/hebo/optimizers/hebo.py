@@ -10,18 +10,15 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 
+import hebo.mindspore as hebo_ms
 import numpy as np
 import pandas as pd
-import mindspore as ms
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.acquisitions.acq import MACE, Mean, Sigma
+from hebo.models.model_factory import get_model
 from mindspore import Tensor
 from pyDOE2 import lhs
 from sklearn.preprocessing import power_transform
-
-from hebo.design_space.design_space import DesignSpace
-from hebo.models.model_factory import get_model
-from hebo.acquisitions.acq import MACE, Mean, Sigma
-from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
-import hebo.mindspore as hebo_ms
 
 from .abstract_optimizer import AbstractOptimizer
 

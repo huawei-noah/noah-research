@@ -1,22 +1,26 @@
-import pdb
+"""Lattice methods."""
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from math import ceil
 
 
 def get_bit(n, nb) -> [int]:
+    """Get bit."""
     ret = [int(i) for i in bin(n)[2:].zfill(nb)]
     assert len(ret) == nb
     return ret
 
 
 def bin2dec(n: [int]) -> int:
+    """Bin 2 dec."""
     return int(''.join([str(x) for x in n]), 2)
 
 
 class Lattice(nn.Module):
+    """Lattice."""
+    
     def __init__(self, in_features, out_features, mono_matrix=None):
         """
         mono_matrix: out_features * in_features matirx, mono_matrix[i, j] = 1 means j-th feature for i-th output is monotonic
@@ -34,6 +38,7 @@ class Lattice(nn.Module):
         assert self.mono_matrix.shape[1] == in_features
     
     def get_ineq_matrix(self) -> [torch.FloatTensor]:
+        """Get ineq matrix."""
         ineq_matrix = []
         for i in range(self.out_features):
             if self.mono_matrix[i].sum() > 0:
@@ -56,6 +61,7 @@ class Lattice(nn.Module):
         return ineq_matrix
     
     def ineq_reg(self):
+        """Ineq reg."""
         reg = 0.
         for i in range(self.out_features):
             m = self.ineq_matrix[i]
@@ -63,6 +69,7 @@ class Lattice(nn.Module):
         return reg
     
     def construct_features(self, x):
+        """Construct features."""
         # # TODO: this function can be refactored to be faster
         # features = [1-x[:, 0], x[:, 0]]
         # for i in range(1, self.in_features):
@@ -82,8 +89,10 @@ class Lattice(nn.Module):
         return features
     
     def forward(self, x):
+        """Forward."""
         f = self.construct_features(x)
         return F.linear(f, self.weight, self.bias)
     
     def extra_repr(self):
+        """Extra repr."""
         return f'in_features = {self.in_features}, out_features = {self.out_features}'

@@ -1,3 +1,5 @@
+"""HEBO Embedding Methods."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -11,16 +13,18 @@
 import numpy  as np
 import pandas as pd
 import torch
+from hebo.acquisitions.acq import Acquisition, MACE
 from hebo.design_space.design_space import DesignSpace
 from hebo.design_space.numeric_param import NumericPara
-from hebo.acquisitions.acq import Acquisition, MACE, Mean, Sigma
+
 from .abstract_optimizer import AbstractOptimizer
 from .hebo import HEBO
 
 torch.set_num_threads(min(1, torch.get_num_threads()))
 
 
-def gen_emb_space(eff_dim: int, scale: float) -> DesignSpace:
+def gen_emb_space(eff_dim: int, scale: float) -> DesignSpace
+    """Gen emb space."""
     scale = -1 * scale if scale < 0 else scale
     space = DesignSpace().parse(
         [{'name': f'y{i}', 'type': 'num', 'lb': -1 * scale, 'ub': scale} for i in range(eff_dim)])
@@ -28,9 +32,7 @@ def gen_emb_space(eff_dim: int, scale: float) -> DesignSpace:
 
 
 def check_design_space(space: DesignSpace) -> bool:
-    """
-    All parameters should be continuous parameters and the range should be [-1, 1]
-    """
+    """All parameters should be continuous parameters and the range should be [-1, 1]."""
     for k, v in space.paras.items():
         if not isinstance(v, NumericPara):
             return False
@@ -44,6 +46,7 @@ def check_design_space(space: DesignSpace) -> bool:
 
 
 def gen_proj_matrix(eff_dim: int, dim: int, strategy: str = 'alebo'):
+    """Gen Proj Matirx."""
     if strategy == 'hesbo':
         matrix = np.zeros((eff_dim, dim))
         for i in range(dim):
@@ -58,6 +61,8 @@ def gen_proj_matrix(eff_dim: int, dim: int, strategy: str = 'alebo'):
 
 
 def gen_mace_cls(proj_matrix):
+    """Gen MACE CLS."""
+    
     class MACE_Embedding(Acquisition):
         def __init__(self, model, best_y, **conf):
             super().__init__(model, **conf)
@@ -83,6 +88,7 @@ def gen_mace_cls(proj_matrix):
 
 
 class HEBO_Embedding(AbstractOptimizer):
+    """HEBO Embedding Method."""
     support_parallel_opt = True
     support_combinatorial = False
     support_contextual = False
@@ -108,6 +114,7 @@ class HEBO_Embedding(AbstractOptimizer):
         self.mace.quasi_sample = self.quasi_sample
     
     def quasi_sample(self, n, fix_input=None, factor=16):
+        """Quasi sample."""
         assert fix_input is None
         if self.clip:
             return self.eff_space.sample(n)
@@ -131,6 +138,7 @@ class HEBO_Embedding(AbstractOptimizer):
         return samp.head(n)
     
     def project(self, df_x_ld: pd.DataFrame) -> pd.DataFrame:
+        """Project."""
         x = df_x_ld[self.eff_space.numeric_names].values
         x_hd = np.matmul(x, self.proj_matrix)
         if self.clip:
@@ -138,8 +146,10 @@ class HEBO_Embedding(AbstractOptimizer):
         return pd.DataFrame(x_hd, columns=self.space.numeric_names)
     
     def suggest(self, n_suggestions: int = 1):
+        """Suggest."""
         df_suggest = self.mace.suggest(n_suggestions)
         return df_suggest
     
     def observe(self, X, y):
+        """Observe."""
         self.mace.observe(X, y)

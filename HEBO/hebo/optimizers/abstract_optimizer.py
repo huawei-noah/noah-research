@@ -9,10 +9,10 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import pandas as pd
-import numpy as np
-from abc import ABC, abstractmethod
+from abc import ABC
 
+import numpy as np
+import pandas as pd
 from hebo.design_space.design_space import DesignSpace
 
 

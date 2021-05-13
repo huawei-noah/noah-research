@@ -10,16 +10,17 @@
 import numpy  as np
 import pandas as pd
 import torch
-from torch.quasirandom import SobolEngine
-from pymoo.algorithms.so_genetic_algorithm import GA
 from pymoo.algorithms.nsga2 import NSGA2
-from pymoo.factory import get_problem, get_mutation, get_crossover
+from pymoo.algorithms.so_genetic_algorithm import GA
+from pymoo.configuration import Configuration
+from pymoo.factory import get_mutation, get_crossover
+from pymoo.model.problem import get_problem_from_func
 from pymoo.operators.mixed_variable_operator import MixedVariableMutation, MixedVariableCrossover
 from pymoo.optimize import minimize
-from pymoo.model.problem import get_problem_from_func
-from pymoo.configuration import Configuration
-from ..design_space.design_space import DesignSpace
+from torch.quasirandom import SobolEngine
+
 from ..acquisitions.acq import Acquisition
+from ..design_space.design_space import DesignSpace
 
 Configuration.show_compile_hint = False
 

@@ -7,12 +7,12 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
+import os
+import sys
+
+import numpy as np
 from hebo.mindspore import randn, isfinite
 from hebo.models.util import filter_nan
-import numpy as np
-import pytest
-import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

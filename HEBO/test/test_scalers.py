@@ -7,14 +7,14 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.models.scalers import MindSporeStandardScaler, MindSporeMinMaxScaler, MindSporeIdentityScaler
+import os
+import sys
+
 import hebo.mindspore as hebo_ms
-import mindspore.nn as nn
 import mindspore as ms
 import numpy as np
 import pytest
-import sys
-import os
+from hebo.models.scalers import MindSporeStandardScaler, MindSporeMinMaxScaler, MindSporeIdentityScaler
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 

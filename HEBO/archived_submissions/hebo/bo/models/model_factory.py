@@ -9,9 +9,9 @@
 
 from .base_model import BaseModel
 from .gp.gp import GP
-from .rf.rf import RF
-from .gp.gpy_wgp import GPyGP
 from .gp.gpy_mlp import GPyMLPGP
+from .gp.gpy_wgp import GPyGP
+from .rf.rf import RF
 
 model_dict = {
     'gp': GP,

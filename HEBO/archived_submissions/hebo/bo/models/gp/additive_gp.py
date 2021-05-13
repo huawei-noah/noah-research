@@ -7,22 +7,12 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import gpytorch
-import pickle
-
-from torch import Tensor
-from pathlib import Path
-from gpytorch.kernels import ScaleKernel, RBFKernel
+import torch
 from gpytorch.likelihoods import GaussianLikelihood
-from gpytorch.means import ConstantMean
-from gpytorch.distributions import MultivariateNormal
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from torch import Tensor
 
 from ..base_model import BaseModel
-from ..layers import EmbTransform
 
 
 class GPyTorchModel(gpytorch.models.ExactGP):

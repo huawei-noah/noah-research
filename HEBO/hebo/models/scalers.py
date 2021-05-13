@@ -9,12 +9,10 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import mindspore as ms
 import mindspore.nn as nn
 from mindspore import Tensor
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 class MindSporeIdentityScaler(nn.Cell):

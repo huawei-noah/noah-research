@@ -8,10 +8,9 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 import torch
-from torch import Tensor
-from abc import ABC, abstractmethod
-from ..models.base_model import BaseModel
+
 from .acq import SingleObjectiveAcq
+from ..models.base_model import BaseModel
 
 
 class QEI_MC(SingleObjectiveAcq):

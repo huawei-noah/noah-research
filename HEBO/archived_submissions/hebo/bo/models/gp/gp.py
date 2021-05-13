@@ -7,22 +7,16 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import gpytorch
-import pickle
-
-from torch import Tensor, FloatTensor, LongTensor
-from pathlib import Path
+import torch
+from gpytorch.constraints import GreaterThan
+from gpytorch.distributions import MultivariateNormal, MultitaskMultivariateNormal
+from gpytorch.kernels import ScaleKernel, MaternKernel, MultitaskKernel
+from gpytorch.likelihoods import GaussianLikelihood, MultitaskGaussianLikelihood
+from gpytorch.means import ConstantMean, MultitaskMean
 from gpytorch.priors import GammaPrior
 from gpytorch.priors.torch_priors import LogNormalPrior
-from gpytorch.kernels import ScaleKernel, RBFKernel, MaternKernel, MultitaskKernel
-from gpytorch.likelihoods import GaussianLikelihood, MultitaskGaussianLikelihood
-from gpytorch.means import ConstantMean, ZeroMean, MultitaskMean
-from gpytorch.distributions import MultivariateNormal, MultitaskMultivariateNormal
-from gpytorch.constraints import Interval, GreaterThan
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from torch import Tensor, FloatTensor
 
 from ..base_model import BaseModel
 from ..layers import EmbTransform
@@ -131,7 +125,7 @@ class GP(BaseModel):
     
     def sample_y(self, Xc, Xe, n_samples=1) -> FloatTensor:
         """
-        Should return (n_samples, Xc.shape[0], self.num_out) 
+        Should return (n_samples, Xc.shape[0], self.num_out)
         """
         Xc, Xe = self.xtrans(Xc, Xe)
         with gpytorch.settings.debug(False):

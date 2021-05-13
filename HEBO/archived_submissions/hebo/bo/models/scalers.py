@@ -7,12 +7,9 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+from sklearn.preprocessing import StandardScaler
 
 
 class TorchIdentityScaler(nn.Module):

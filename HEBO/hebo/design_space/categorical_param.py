@@ -10,6 +10,7 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 import numpy as np
+
 from .param import Parameter
 
 

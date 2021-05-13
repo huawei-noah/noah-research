@@ -7,21 +7,18 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import bayesmark.random_search as rs
-from bayesmark import np_util
-from bayesmark.abstract_optimizer import AbstractOptimizer
-from bayesmark.experiment import experiment_main
-from sklearn.preprocessing import power_transform
-
 import numpy  as np
 import pandas as pd
 import torch
-from torch.quasirandom import SobolEngine
-from pyDOE2 import lhs
+from bayesmark.abstract_optimizer import AbstractOptimizer
+from bayesmark.experiment import experiment_main
+from bo.acquisitions.acq import Mean, Sigma, MACE
 from bo.design_space.design_space import DesignSpace
 from bo.models.model_factory import get_model
-from bo.acquisitions.acq import LCB, Mean, Sigma, MOMeanSigmaLCB, MACE
 from bo.optimizers.evolution_optimizer import EvolutionOpt
+from pyDOE2 import lhs
+from sklearn.preprocessing import power_transform
+from torch.quasirandom import SobolEngine
 
 torch.set_num_threads(min(1, torch.get_num_threads()))
 

@@ -10,8 +10,8 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 from .base_model import BaseModel
-from .gp.gpy_wgp import GPyGP
 from .gp.gpy_mlp import GPyMLPGP
+from .gp.gpy_wgp import GPyGP
 from .rf.rf import RF
 
 model_dict = {

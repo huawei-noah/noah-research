@@ -7,14 +7,13 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-import sys, os
+import os
+import sys
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest
-from pytest import approx
 
 import torch
-import numpy as np
 from torch import FloatTensor
 from sklearn.metrics import r2_score
 

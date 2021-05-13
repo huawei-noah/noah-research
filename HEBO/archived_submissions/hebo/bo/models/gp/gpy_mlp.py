@@ -7,15 +7,14 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from ..base_model import BaseModel
-from ..layers import EmbTransform, OneHotTransform
-from ..scalers import TorchMinMaxScaler, TorchStandardScaler
-
 import GPy
-import torch
-import torch.nn as nn
 import numpy as np
+import torch
 from torch import Tensor, FloatTensor, LongTensor
+
+from ..base_model import BaseModel
+from ..layers import OneHotTransform
+from ..scalers import TorchMinMaxScaler, TorchStandardScaler
 
 
 class GPyMLPGP(BaseModel):

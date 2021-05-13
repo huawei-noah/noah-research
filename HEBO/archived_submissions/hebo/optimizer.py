@@ -15,10 +15,7 @@ from bayesmark.experiment import experiment_main
 import numpy  as np
 import pandas as pd
 import torch
-from bo.design_space.design_space import DesignSpace
 from bo.models.gp.gp import GP
-from bo.acquisitions.acq import LCB, Mean, Sigma, MOMeanSigmaLCB
-from bo.optimizers.evolution_optimizer import EvolutionOpt
 
 torch.set_num_threads(min(1, torch.get_num_threads()))
 

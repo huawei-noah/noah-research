@@ -1,11 +1,13 @@
-import pdb
-import numpy as np
+"""Layers."""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
 class MonoLinear(nn.Module):
+    """MonoLinear."""
+    
     def __init__(self, in_features, out_features):
         super().__init__()
         self.in_features = in_features
@@ -21,6 +23,8 @@ class MonoLinear(nn.Module):
 
 
 class PartialMonoLinear(nn.Module):
+    """PartialMonoLinear."""
+    
     def __init__(self, in_features, out_features, mono_idxs):
         super().__init__()
         self.in_features = in_features
@@ -32,45 +36,54 @@ class PartialMonoLinear(nn.Module):
         self.linear = nn.Linear(len(self.other_idxs), out_features)
     
     def forward(self, x):
+        """Forward."""
         return self.linear(x[:, self.other_idxs]) + self.mono_linear(x[:, self.mono_idxs])
     
     def extra_repr(self):
+        """Extra Repr."""
         return f'in_features = {self.in_features}, out_features = {self.out_features}, num_mono = {self.num_mono}'
 
 
 class MonoLinearAct(nn.Module):
+    """MonoLinearAct."""
+    
     def __init__(self, in_features, out_features, act):
         super().__init__()
         self.linear = MonoLinear(in_features, out_features)
         self.act = act
     
     def forward(self, x):
+        """Forward pass."""
         return self.act(self.linear(x))
 
 
 class MonoConvex(nn.Module):
+    """MonoConvex."""
+    
     def __init__(self, in_features, out_features):
         super().__init__()
         self.layer = MonoLinearAct(in_features, out_features, nn.LeakyReLU())
     
     def forward(self, x):
+        """Forward."""
         return self.layer(x)
 
 
 class MonoConcave(nn.Module):
+    """MonoConcave."""
+    
     def __init__(self, in_features, out_features):
         super().__init__()
         self.linear = MonoLinear(in_features, out_features)
     
     def forward(self, x):
+        """Forward pass."""
         o = self.linear(x)
         return -1 * F.leaky_relu(-1 * o)
 
 
 class MonoNonLinear(nn.Module):
-    """
-    Only used as hidden layer
-    """
+    """Only used as hidden layer."""
     
     def __init__(self, in_features, out_features):
         super().__init__()
@@ -79,10 +92,13 @@ class MonoNonLinear(nn.Module):
         self.concave = MonoConcave(in_features, out_features)
     
     def forward(self, x):
+        """Forward."""
         return 0.5 * (self.concave(x) + self.convex(x))
 
 
 class KumarWarp(nn.Module):
+    """Kumaraswamy."""
+    
     def __init__(self, dim):
         super().__init__()
         self._a = nn.Parameter(torch.zeros((dim)))
@@ -95,15 +111,18 @@ class KumarWarp(nn.Module):
     
     @property
     def a(self):
+        """Param a."""
         # bound a an b to [al, au]
         return self._al + (self._au - self._al) * torch.sigmoid(self._a)
     
     @property
     def b(self):
+        """Param b."""
         # bound a an b to [al, au]
         return self._bl + (self._bu - self._bl) * torch.sigmoid(self._b)
     
     def l1reg(self):
+        """L1 reg."""
         """
         a = 1; b = 1 for identity transformation
         """
@@ -112,11 +131,14 @@ class KumarWarp(nn.Module):
         return reg_a + reg_b
     
     def forward(self, x):
+        """Forward."""
         out = 1. - (1. - x.clamp(min=self.eps, max=1 - self.eps) ** self.a) ** self.b
         return out
 
 
 class KumarWarpConcave(KumarWarp):
+    """KumarWarpConcave."""
+    
     def __init__(self, dim):
         super().__init__(dim)
         self._al = 0.06
@@ -126,6 +148,8 @@ class KumarWarpConcave(KumarWarp):
 
 
 class KumarWarpConvex(KumarWarp):
+    """KumarWarpConvex."""
+    
     def __init__(self, dim):
         super().__init__(dim)
         self._al = 1.0
@@ -135,6 +159,8 @@ class KumarWarpConvex(KumarWarp):
 
 
 class KumarWarpDiminishReturn(KumarWarp):
+    """KumarWarpDiminishReturn."""
+    
     def __init__(self, dim):
         super().__init__(dim)
         self._al = 0.05

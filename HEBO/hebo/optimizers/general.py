@@ -1,3 +1,5 @@
+"""General BO."""
+
 # Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify it under
@@ -10,17 +12,16 @@
 import numpy  as np
 import pandas as pd
 import torch
+from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+from hebo.acquisitions.acq import GeneralAcq
 from hebo.design_space.design_space import DesignSpace
 from hebo.models.model_factory import get_model, model_dict
-from hebo.acquisitions.acq import GeneralAcq
-from hebo.acq_optimizers.evolution_optimizer import EvolutionOpt
+
 from .abstract_optimizer import AbstractOptimizer
 
 
 class GeneralBO(AbstractOptimizer):
-    """
-    Bayesian optimisation that supports multi-objective and constrained optimization
-    """
+    """Bayesian optimisation that supports multi-objective and constrained optimization."""
     
     def __init__(self,
                  space: DesignSpace,
@@ -50,6 +51,7 @@ class GeneralBO(AbstractOptimizer):
             assert model_dict.get(model_name).support_multi_output
     
     def suggest(self, n_suggestions=1, fix_input=None):
+        """Suggest."""
         if self.X.shape[0] < self.rand_sample:
             sample = self.space.sample(n_suggestions)
             if fix_input is not None:
@@ -107,7 +109,9 @@ class GeneralBO(AbstractOptimizer):
         assert self.y.shape[1] == self.num_obj + self.num_constr
     
     def select_best(self, rec: pd.DataFrame) -> pd.DataFrame:
+        """Select Best."""
         pass
     
     def get_pf(self, y: np.ndarray) -> pd.DataFrame:
+        """Get PF."""
         pass

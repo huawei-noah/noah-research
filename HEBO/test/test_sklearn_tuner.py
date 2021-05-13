@@ -7,13 +7,14 @@
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
-from hebo.sklearn_tuner import sklearn_tuner
-from sklearn.metrics import r2_score, mean_squared_error
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.datasets import load_boston
-import pytest
-import sys
 import os
+import sys
+
+import pytest
+from hebo.sklearn_tuner import sklearn_tuner
+from sklearn.datasets import load_boston
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 
