@@ -22,8 +22,10 @@ from pymoo.model.problem import Problem
 from pymoo.configuration import Configuration
 from ..design_space.design_space import DesignSpace
 from ..acquisitions.acq import Acquisition
+
 Configuration.show_compile_hint = False
 from pymoo.factory import get_algorithm
+
 
 class BOProblem(Problem):
     """BO problem specification."""
@@ -45,16 +47,16 @@ class BOProblem(Problem):
         num_x = x.shape[0]
         xcont = torch.from_numpy(x[:, :self.space.num_numeric].astype(float))
         xenum = torch.from_numpy(x[:, self.space.num_numeric:].astype(float))
-        df_x  = self.space.inverse_transform(xcont, xenum)
-        if self.fix is not None: # invalidate fixed input, replace with fixed values
+        df_x = self.space.inverse_transform(xcont, xenum)
+        if self.fix is not None:  # invalidate fixed input, replace with fixed values
             for k, v in self.fix.items():
                 df_x[k] = v
         xcont, xenum = self.space.transform(df_x)
-
+        
         with torch.no_grad():
             acq_eval = self.acq(xcont, xenum).numpy().reshape(num_x, self.acq.num_obj + self.acq.num_constr)
             out['F'] = acq_eval[:, :self.acq.num_obj]
-
+            
             if self.acq.num_constr > 0:
                 out['G'] = acq_eval[:, -1 * self.acq.num_constr:]
 
@@ -92,7 +94,7 @@ class EvolutionOpt:
             init_pop = pd.concat([initial_suggest, init_pop], axis=0).head(self.pop)
         x, xe = self.space.transform(init_pop)
         return np.hstack([x.numpy(), xe.numpy().astype(float)])
-
+    
     def get_mutation(self):
         """Return mutation."""
         mask = []

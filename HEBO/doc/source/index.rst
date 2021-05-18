@@ -1,7 +1,7 @@
 .. BO documentation master file, created by
-   sphinx-quickstart on Wed Nov 11 15:20:24 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+sphinx-quickstart on Wed Nov 11 15:20:24 2020.
+You can adapt this file completely to your liking, but it should at least
+contain the root `toctree` directive.
 
 :github_url: https://github.com/huawei-noah/noah-research/tree/master/HEBO
 
@@ -24,7 +24,7 @@ Quick start
 
     def obj(params : pd.DataFrame) -> np.ndarray:
         return ((params.values - 0.37)**2).sum(axis = 1).reshape(-1, 1)
-            
+
     space = DesignSpace().parse([{'name' : 'x', 'type' : 'num', 'lb' : -3, 'ub' : 3}])
     opt   = MACEBO(space)
     for i in range(5):
@@ -60,7 +60,7 @@ Features
 - Continuous and categorical design parameters
 - Support creating new parameter type
 - Modular and flexible BO building blocks
-- Multiple probabilistic models including GP, RF and BNN 
+- Multiple probabilistic models including GP, RF and BNN
 - Ready to use optimizers:
     - Constrained and multi-objective optimisation
     - Contextual optimisation

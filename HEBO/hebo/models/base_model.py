@@ -15,7 +15,6 @@ from .scalers import TorchStandardScaler, TorchMinMaxScaler
 from abc import ABC, abstractmethod
 
 
-
 class BaseModel(ABC):
     """Base class for probabilistic regression models."""
     
@@ -73,7 +72,7 @@ class BaseModel(ABC):
         Should return a (self.n_out, ) float tensor.
         """
         return torch.zeros(self.num_out)
-
+    
     def sample_f(self):
         """Thompson Sampling."""
         # Thompson sampling
@@ -82,8 +81,8 @@ class BaseModel(ABC):
     def sample_y(self, Xc: Tensor, Xe: Tensor, n_samples: int) -> Tensor:
         """Sample y's."""
         py, ps2 = self.predict(Xc, Xe)
-        ps      = ps2.sqrt()
-        samp    = torch.zeros(n_samples, py.shape[0], self.num_out)
+        ps = ps2.sqrt()
+        samp = torch.zeros(n_samples, py.shape[0], self.num_out)
         for i in range(n_samples):
             samp[i] = py + ps * torch.randn(py.shape)
         return samp

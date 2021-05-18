@@ -16,6 +16,7 @@ from torch.distributions import Normal
 from abc import ABC, abstractmethod
 from ..models.base_model import BaseModel
 
+
 class Acquisition(ABC):
     """Acquisition base class."""
     
@@ -74,6 +75,7 @@ class LCB(SingleObjectiveAcq):
         py, ps2 = self.model.predict(x, xe)
         return py - self.kappa * ps2.sqrt()
 
+
 class Mean(SingleObjectiveAcq):
     """Mean acquisition."""
     
@@ -98,6 +100,7 @@ class Sigma(SingleObjectiveAcq):
         """eval."""
         _, ps2 = self.model.predict(x, xe)
         return -1 * ps2.sqrt()
+
 
 class EI(SingleObjectiveAcq):
     """EI."""
@@ -155,16 +158,17 @@ class MOMeanSigmaLCB(Acquisition):
         s.t.     LCB  < best_y
         """
         with torch.no_grad():
-            out        = torch.zeros(x.shape[0], self.num_obj + self.num_constr)
-            py, ps2    = self.model.predict(x, xe)
-            noise      = np.sqrt(self.model.noise)
-            py        += noise * torch.randn(py.shape)
-            ps         = ps2.sqrt()
-            lcb        = py - self.kappa * ps
-            out[:, 0]  = py.squeeze()
-            out[:, 1]  = -1 * ps.squeeze()
-            out[:, 2]  = lcb.squeeze() - self.best_y # lcb - best_y < 0
+            out = torch.zeros(x.shape[0], self.num_obj + self.num_constr)
+            py, ps2 = self.model.predict(x, xe)
+            noise = np.sqrt(self.model.noise)
+            py += noise * torch.randn(py.shape)
+            ps = ps2.sqrt()
+            lcb = py - self.kappa * ps
+            out[:, 0] = py.squeeze()
+            out[:, 1] = -1 * ps.squeeze()
+            out[:, 2] = lcb.squeeze() - self.best_y  # lcb - best_y < 0
             return out
+
 
 class MACE(Acquisition):
     """MACE."""
@@ -172,8 +176,8 @@ class MACE(Acquisition):
     def __init__(self, model, best_y, **conf):
         super().__init__(model, **conf)
         self.kappa = conf.get('kappa', 2.0)
-        self.eps   = conf.get('eps', 1e-4)
-        self.tau   = best_y
+        self.eps = conf.get('eps', 1e-4)
+        self.tau = best_y
     
     @property
     def num_constr(self):
@@ -190,27 +194,28 @@ class MACE(Acquisition):
         minimize (-1 * EI,  -1 * PI, lcb).
         """
         with torch.no_grad():
-            py, ps2   = self.model.predict(x, xe)
-            noise     = np.sqrt(2.0) * self.model.noise.sqrt()
-            ps        = ps2.sqrt()
-            lcb       = (py + noise * torch.randn(py.shape)) - self.kappa * ps
-            normed    = ((self.tau - self.eps - py - noise * torch.randn(py.shape)) / ps)
-            dist      = Normal(0., 1.)
-            log_phi   = dist.log_prob(normed)
-            Phi       = dist.cdf(normed)
-            PI        = Phi
-            EI        = ps * (Phi * normed +  log_phi.exp())
-            logEIapp  = ps.log() - 0.5 * normed**2 - (normed**2 - 1).log()
-            logPIapp  = -0.5 * normed**2 - torch.log(-1 * normed) - torch.log(torch.sqrt(torch.tensor(2 * np.pi)))
-
-            use_app             = ~((normed > -6) & torch.isfinite(EI.log()) & torch.isfinite(PI.log())).reshape(-1)
-            out                 = torch.zeros(x.shape[0], 3)
-            out[:, 0]           = lcb.reshape(-1)
-            out[:, 1][use_app]  = -1 * logEIapp[use_app].reshape(-1)
-            out[:, 2][use_app]  = -1 * logPIapp[use_app].reshape(-1)
+            py, ps2 = self.model.predict(x, xe)
+            noise = np.sqrt(2.0) * self.model.noise.sqrt()
+            ps = ps2.sqrt()
+            lcb = (py + noise * torch.randn(py.shape)) - self.kappa * ps
+            normed = ((self.tau - self.eps - py - noise * torch.randn(py.shape)) / ps)
+            dist = Normal(0., 1.)
+            log_phi = dist.log_prob(normed)
+            Phi = dist.cdf(normed)
+            PI = Phi
+            EI = ps * (Phi * normed + log_phi.exp())
+            logEIapp = ps.log() - 0.5 * normed ** 2 - (normed ** 2 - 1).log()
+            logPIapp = -0.5 * normed ** 2 - torch.log(-1 * normed) - torch.log(torch.sqrt(torch.tensor(2 * np.pi)))
+            
+            use_app = ~((normed > -6) & torch.isfinite(EI.log()) & torch.isfinite(PI.log())).reshape(-1)
+            out = torch.zeros(x.shape[0], 3)
+            out[:, 0] = lcb.reshape(-1)
+            out[:, 1][use_app] = -1 * logEIapp[use_app].reshape(-1)
+            out[:, 2][use_app] = -1 * logPIapp[use_app].reshape(-1)
             out[:, 1][~use_app] = -1 * EI[~use_app].log().reshape(-1)
             out[:, 2][~use_app] = -1 * PI[~use_app].log().reshape(-1)
             return out
+
 
 class GeneralAcq(Acquisition):
     """GeneralAcq."""
@@ -258,11 +263,11 @@ class GeneralAcq(Acquisition):
         """
         with torch.no_grad():
             py, ps2 = self.model.predict(x, xe)
-            ps      = ps2.sqrt()
+            ps = ps2.sqrt()
             if self.use_noise:
-                noise  = self.model.noise.sqrt()
-                py    += noise * torch.randn(py.shape)
+                noise = self.model.noise.sqrt()
+                py += noise * torch.randn(py.shape)
             out = torch.ones(py.shape)
-            out[:, :self.num_obj] = py[:, :self.num_obj]  - self.kappa   * ps[:, :self.num_obj]
-            out[:, self.num_obj:] = py[:, self.num_obj:]  - self.c_kappa * ps[:, self.num_obj:]
+            out[:, :self.num_obj] = py[:, :self.num_obj] - self.kappa * ps[:, :self.num_obj]
+            out[:, self.num_obj:] = py[:, self.num_obj:] - self.c_kappa * ps[:, self.num_obj:]
         return out

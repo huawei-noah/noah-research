@@ -11,40 +11,41 @@ import numpy as np
 
 from .param import Parameter
 
+
 class PowIntegerPara(Parameter):
     def __init__(self, param_dict):
         super().__init__(param_dict)
         self.base = param_dict.get('base', 10.)
-        self.lb   = np.log(param_dict['lb']) / np.log(self.base)
-        self.ub   = np.log(param_dict['ub']) / np.log(self.base)
+        self.lb = np.log(param_dict['lb']) / np.log(self.base)
+        self.ub = np.log(param_dict['ub']) / np.log(self.base)
         assert param_dict['lb'] >= 1
-
-    def sample(self, num = 1):
-        assert(num > 0)
+    
+    def sample(self, num=1):
+        assert (num > 0)
         return (self.base ** np.random.uniform(self.lb, self.ub, num)).round().astype(int)
-
+    
     def transform(self, x):
         return np.log(x) / np.log(self.base)
-
+    
     def inverse_transform(self, x):
         return (self.base ** x).round().astype(int)
-
+    
     @property
     def is_numeric(self):
         return True
-
+    
     @property
     def opt_lb(self):
         return self.lb
-
+    
     @property
     def opt_ub(self):
         return self.ub
-
+    
     @property
     def is_discrete(self):
         return True
-
+    
     @property
     def is_discrete_after_transform(self):
         return False

@@ -22,10 +22,12 @@ import numpy as np
 from torch import Tensor, FloatTensor, LongTensor
 
 import logging
+
 logging.disable(logging.WARNING)
 
 import warnings
-warnings.filterwarnings('ignore', category = RuntimeWarning)
+
+warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 
 class GPyGP(BaseModel):
@@ -39,9 +41,9 @@ class GPyGP(BaseModel):
         super().__init__(num_cont, num_enum, num_out, **conf)
         if num_enum > 0:
             self.one_hot = OneHotTransform(self.conf['num_uniqs'])
-        self.xscaler    = TorchMinMaxScaler((-1, 1))
-        self.yscaler    = TorchStandardScaler()
-        self.verbose    = self.conf.get('verbose', False)
+        self.xscaler = TorchMinMaxScaler((-1, 1))
+        self.yscaler = TorchStandardScaler()
+        self.verbose = self.conf.get('verbose', False)
         self.num_epochs = self.conf.get('num_epochs', 200)
         self.warp = self.conf.get('warp', True)
         self.space = self.conf.get('space')  # DesignSpace
@@ -55,7 +57,7 @@ class GPyGP(BaseModel):
             if self.space is not None:
                 cont_lb = self.space.opt_lb[:self.space.num_numeric].view(1, -1).float()
                 cont_ub = self.space.opt_ub[:self.space.num_numeric].view(1, -1).float()
-                self.xscaler.fit(torch.cat([Xc, cont_lb, cont_ub], dim = 0))
+                self.xscaler.fit(torch.cat([Xc, cont_lb, cont_ub], dim=0))
             else:
                 self.xscaler.fit(Xc)
         self.yscaler.fit(y)
@@ -66,19 +68,19 @@ class GPyGP(BaseModel):
             Xc_t = self.xscaler.transform(Xc)
         else:
             Xc_t = torch.zeros(Xe.shape[0], 0)
-
+        
         if Xe is None or Xe.shape[1] == 0:
             Xe_t = torch.zeros(Xc.shape[0], 0)
         else:
             Xe_t = self.one_hot(Xe.long())
-        Xall = torch.cat([Xc_t, Xe_t], dim = 1)
-
+        Xall = torch.cat([Xc_t, Xe_t], dim=1)
+        
         if y is not None:
             y_t = self.yscaler.transform(y)
             return Xall.numpy(), y_t.numpy()
         return Xall.numpy()
-
-    def fit(self, Xc : FloatTensor, Xe : LongTensor, y : LongTensor):
+    
+    def fit(self, Xc: FloatTensor, Xe: LongTensor, y: LongTensor):
         Xc, Xe, y = filter_nan(Xc, Xe, y, 'all')
         self.fit_scaler(Xc, y)
         X, y = self.trans(Xc, Xe, y)
@@ -113,8 +115,8 @@ class GPyGP(BaseModel):
         """predict."""
         Xall = self.trans(Xc, Xe)
         py, ps2 = self.gp.predict(Xall)
-        mu      = self.yscaler.inverse_transform(FloatTensor(py).view(-1, 1))
-        var     = (self.yscaler.std**2 * FloatTensor(ps2).view(-1, 1)).clamp(min = 1e-6)
+        mu = self.yscaler.inverse_transform(FloatTensor(py).view(-1, 1))
+        var = (self.yscaler.std ** 2 * FloatTensor(ps2).view(-1, 1)).clamp(min=1e-6)
         return mu, var
     
     def sample_f(self):
@@ -125,6 +127,5 @@ class GPyGP(BaseModel):
     @property
     def noise(self):
         """noise."""
-        var_normalized = Tensor(self.gp.likelihood.variance[0], ms.float32)
-        noise = (var_normalized * self.yscaler.std ** 2).view((self.num_out,))
-        return noise
+        var_normalized = self.gp.likelihood.variance[0]
+        return (var_normalized * self.yscaler.std ** 2).view(self.num_out)

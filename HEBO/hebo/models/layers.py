@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class EmbTransform(nn.Module):
     def __init__(self, num_uniqs, **conf):
         super().__init__()
@@ -23,20 +24,21 @@ class EmbTransform(nn.Module):
             self.emb.append(nn.Embedding(num_uniq, emb_size))
     
     @property
-    def num_out(self)->int:
+    def num_out(self) -> int:
         return sum(self.emb_sizes)
-
+    
     def forward(self, xe):
-        return torch.cat([self.emb[i](xe[:, i]).view(xe.shape[0], -1) for i in range(len(self.emb))], dim = 1)
+        return torch.cat([self.emb[i](xe[:, i]).view(xe.shape[0], -1) for i in range(len(self.emb))], dim=1)
+
 
 class OneHotTransform(nn.Module):
     def __init__(self, num_uniqs):
         super().__init__()
         self.num_uniqs = num_uniqs
-
+    
     @property
-    def num_out(self)->int:
+    def num_out(self) -> int:
         return sum(self.num_uniqs)
-
+    
     def forward(self, xe):
-        return torch.cat([F.one_hot(xe[:, i], self.num_uniqs[i]) for i in range(xe.shape[1])], dim = 1).float()
+        return torch.cat([F.one_hot(xe[:, i], self.num_uniqs[i]) for i in range(xe.shape[1])], dim=1).float()

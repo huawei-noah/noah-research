@@ -23,7 +23,7 @@ from .hebo import HEBO
 torch.set_num_threads(min(1, torch.get_num_threads()))
 
 
-def gen_emb_space(eff_dim: int, scale: float) -> DesignSpace
+def gen_emb_space(eff_dim: int, scale: float) -> DesignSpace:
     """Gen emb space."""
     scale = -1 * scale if scale < 0 else scale
     space = DesignSpace().parse(

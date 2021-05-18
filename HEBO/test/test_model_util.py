@@ -8,6 +8,7 @@
 # PARTICULAR PURPOSE. See the MIT License for more details.
 
 import sys, os
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../')
 import pytest
 import numpy as np
@@ -15,15 +16,16 @@ import torch
 import torch.nn as nn
 from hebo.models.util import filter_nan
 
+
 def test_filter():
-    x       = torch.randn(10, 1)
-    y       = torch.randn(10, 3)
-    y[0]    = np.nan
+    x = torch.randn(10, 1)
+    y = torch.randn(10, 3)
+    y[0] = np.nan
     y[1, 1] = np.nan
-
+    
     xf, xef, yf = filter_nan(x, None, y)
-    assert(yf.shape[0] == 9)
-
-    xf, xef, yf = filter_nan(x, None, y, keep_rule = 'all')
-    assert(yf.shape[0] == 8)
-    assert(torch.isfinite(yf).all())
+    assert (yf.shape[0] == 9)
+    
+    xf, xef, yf = filter_nan(x, None, y, keep_rule='all')
+    assert (yf.shape[0] == 8)
+    assert (torch.isfinite(yf).all())

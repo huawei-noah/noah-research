@@ -99,33 +99,33 @@ class DesignSpace:
         for i, name in enumerate(self.enum_names):
             xe[:, i] = self.paras[name].transform(xe[:, i])
         return torch.FloatTensor(xc), torch.LongTensor(xe.astype(int))
-
-    def inverse_transform(self, x : Tensor, xe : Tensor) -> pd.DataFrame:
+    
+    def inverse_transform(self, x: Tensor, xe: Tensor) -> pd.DataFrame:
         """
         input: x and xe
         output: pandas dataframe
         """
         with torch.no_grad():
-            df_num = pd.DataFrame(columns = self.numeric_names)
-            df_cat = pd.DataFrame(columns = self.enum_names)
+            df_num = pd.DataFrame(columns=self.numeric_names)
+            df_cat = pd.DataFrame(columns=self.enum_names)
             for i, name in enumerate(self.numeric_names):
                 df_num[name] = self.paras[name].inverse_transform(x.detach().numpy()[:, i])
             for i, name in enumerate(self.enum_names):
                 df_cat[name] = self.paras[name].inverse_transform(xe.detach().numpy()[:, i])
-            df = pd.concat([df_num, df_cat], axis = 1)
+            df = pd.concat([df_num, df_cat], axis=1)
             df = df[self.para_names]
             return df
-
+    
     @property
     def opt_lb(self):
         """Return optimisation lower bound."""
         lb_numeric = [self.paras[p].opt_lb for p in self.numeric_names]
-        lb_enum    = [self.paras[p].opt_lb for p in self.enum_names]
+        lb_enum = [self.paras[p].opt_lb for p in self.enum_names]
         return torch.tensor(lb_numeric + lb_enum)
-
+    
     @property
     def opt_ub(self):
         """Return optimisation upper bound."""
         ub_numeric = [self.paras[p].opt_ub for p in self.numeric_names]
-        ub_enum    = [self.paras[p].opt_ub for p in self.enum_names]
+        ub_enum = [self.paras[p].opt_ub for p in self.enum_names]
         return torch.tensor(ub_numeric + ub_enum)
