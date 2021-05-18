@@ -18,8 +18,76 @@ from hebo.design_space.design_space import DesignSpace
 from hebo.optimizers.hebo import HEBO
 from sklearn.model_selection import cross_val_predict
 
+from pymoo.model.problem import Problem
+from pymoo.operators.mixed_variable_operator import MixedVariableSampling, MixedVariableMutation, MixedVariableCrossover
+from pymoo.factory import get_sampling, get_crossover, get_mutation, get_termination
+from pymoo.algorithms.nsga2 import NSGA2
+
 warnings.filterwarnings('ignore')
 
+def minimise_me(
+        eqc,
+        neqc,
+        lower_bounds,
+        upper_bounds,
+):
+    sampling = get_sampling('real_lhs')
+    crossover = get_crossover('real_sbx', eta=15, prob=0.9)
+    mutation = get_mutation('real_pm', eta=20)
+
+    n_var = len(lower_bounds)
+    n_obj = len(eqc)
+    n_constr = len(neqc)
+    
+    class MultiObjMultiConstProblem(Problem):
+        def __init__(self, n_var=0, n_obj=0, n_constr=0, xl=[], xu=[]):
+            super().__init__(n_var=n_var,
+                             n_obj=n_obj,
+                             n_constr=n_constr,
+                             xl=xl,
+                             xu=xu)
+
+        def _evaluate(self, X, out, *args, **kwargs):
+            # Here we have a GP for each constraint.
+            # If one constraint is binary, see below.
+            
+            list_g = []
+            for f_cont in neqc:
+                list_g.append(f_cont(X))
+            out["G"] = np.column_stack(list_g)
+
+            list_f = []
+            for f_func in eqc:
+                list_f.append(f_func(X))
+
+            out["F"] = np.column_stack(list_f)
+            
+    problem = MultiObjMultiConstProblem(n_var=n_var, n_obj=n_obj, n_constr=n_constr, xl=lower_bounds, xu=upper_bounds)
+    
+    obj = NSGA2(
+        pop_size=100,  # change start children
+        n_offsprings=100,  # change the number of end children
+        sampling=sampling,  # TODO: can replace with get_init_pop(pop) once made
+        crossover=crossover,
+        mutation=mutation,
+        eliminate_duplicates=True
+    )
+
+    # perform a copy of the algorithm to ensure reproducibility
+    N_iterations = 1000
+    termination = get_termination("n_gen", N_iterations)
+    # let the algorithm know what problem we are intending to solve and provide other attributes
+
+    # obj.setup(problem, termination=termination, seed=1)
+    obj.setup(problem, termination=termination, seed=0)
+    i = 0
+    while obj.has_next():
+        i += 1
+        # perform an iteration of the algorithm
+        obj.next()
+    
+    result = obj.result()
+    return result
 
 def sklearn_tuner(
         model_class,
