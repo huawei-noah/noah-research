@@ -1,106 +1,74 @@
-![](hebo.png)
-```
-pip install HEBO
-```
 # README
-
-Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The <strong> winning submission </strong> to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
-
-Summary             |  Ablation
-:-------------------------:|:-------------------------:
-[Results]( https://github.com/huawei-noah/noah-research/blob/master/HEBO/summary_plot2.pdf) | [Results](https://github.com/huawei-noah/noah-research/blob/master/HEBO/summary_ablation2.pdf)
-
-# Contributors 
-
-<strong> Alexander I. Cowen-Rivers, Wenlong Lyu, Zhi Wang, Antoine Grosnit, Rasul Tutunov, Hao Jianye, Jun Wang, Haitham Bou Ammar. </strong>
 
 ## Installation
 
 ```bash
-python setup.py develop
+python -m pip install .
 ```
 
 ## Demo
 
 ```python
-import pandas as pd
-import numpy  as np
-from hebo.design_space.design_space import DesignSpace
+import mindspore.nn as nn
+import mindspore.dataset as ds
+from mindspore import Tensor
+import numpy as np
+from sklearn.datasets import load_boston
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
+from hebo.design_space import DesignSpace
 from hebo.optimizers.hebo import HEBO
 
-def obj(params : pd.DataFrame) -> np.ndarray:
-    return ((params.values - 0.37)**2).sum(axis = 1).reshape(-1, 1)
-        
-space = DesignSpace().parse([{'name' : 'x', 'type' : 'num', 'lb' : -3, 'ub' : 3}])
-opt   = HEBO(space)
-for i in range(5):
-    rec = opt.suggest(n_suggestions = 4)
-    opt.observe(rec, obj(rec))
-    print('After %d iterations, best obj is %.2f' % (i, opt.y.min()))
-```
+ds.config.set_num_parallel_workers(1)
 
-## Auto Tuning via Sklearn Estimator
+def obj(lr : float, weight_decay : float, hidden_size : int) -> float:
+    X, y = load_boston(return_X_y = True)
+    y    = y.reshape(-1, 1)
+    X_tr, X_tst, y_tr, y_tst = train_test_split(
+            X.astype(np.float32),
+            y.astype(np.float32),
+            test_size    = 0.3,
+            shuffle      = True,
+            random_state = 42)
 
-```python
-from sklearn.datasets import load_boston
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score, mean_squared_error
+    dataset = ds.GeneratorDataset(
+            lambda: ((x_, y_) for (x_, y_) in zip(X_tr, y_tr)),
+            column_names = ['x_train', 'y_train'],
+            shuffle      = True, 
+            python_multiprocessing = False
+            )
+    dataset = dataset.batch(32)
 
-from hebo.sklearn_tuner import sklearn_tuner
+    net = nn.SequentialCell(
+            nn.Dense(13, hidden_size),
+            nn.ReLU(),
+            nn.Dense(hidden_size, 1))
 
-space_cfg = [
-    {'name' : 'max_depth', 'type' : 'int', 'lb' : 1, 'ub' : 20},
-    {'name' : 'min_samples_leaf', 'type' : 'num', 'lb' : 1e-4, 'ub' : 0.5},
-    {'name' : 'max_features', 'type' : 'cat', 'categories' : ['auto', 'sqrt', 'log2']},
-    {'name' : 'bootstrap', 'type' : 'bool'},
-    {'name' : 'min_impurity_decrease', 'type' : 'pow', 'lb' : 1e-4, 'ub' : 1.0},
-    ]
-X, y   = load_boston(return_X_y = True)
-result = sklearn_tuner(RandomForestRegressor, space_cfg, X, y, metric = r2_score, max_iter = 16)
-```
+    crit          = nn.MSELoss()
+    opt           = nn.Adam(params = net.trainable_params(), learning_rate = lr, weight_decay = weight_decay)
+    net_with_crit = nn.WithLossCell(net, crit)
+    train_net     = nn.TrainOneStepCell(net_with_crit, opt)
+    for _ in range(100):
+        for d in dataset.create_dict_iterator():
+            train_net(d['x_train'], d['y_train'])
 
-## Documentation
+    py_tst = net(Tensor(X_tst)).asnumpy()
+    r2     = r2_score(y_tst, py_tst)
+    return -1 * np.array(r2).reshape(-1, 1)
 
-```bash
-cd doc
-make html
-```
-
-You can view the compiled documentation in `doc/build/html/index.html`.
-
-## Test
-
-```bash
-pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.coveragerc
-```
-
-## Reproduce Experimental Results
-
-- See `archived_submissions/hebo`, which is the exact submission that won the NeurIPS2020 Black-Box Optimsation Challenge.
-- Use `run_local.sh` in [bbo_challenge_starter_kit](https://github.com/rdturnermtl/bbo_challenge_starter_kit/) to reproduce `bayesmark` experiments, you can just drop `archived_submissions/hebo` to the `example_submissions` directory.
-- The `MACEBO` in `bo.optimizers.mace` is the same optimiser, with same hyperparameters but a modified interface (bayesmark dependency removed).
-
-
-## Features
-
-- Continuous, integer and categorical design parameters.
-- Constrained and multi-objective optimsation.
-- Contextual optimsation.
-- Multiple surrogate models including GP, RF and BNN.
-- Modular and flexible Bayesian Optimisation building blocks.
-
-
-## Cite Us
-
-Cowen-Rivers, Alexander I., et al. "HEBO: Heteroscedastic Evolutionary Bayesian Optimisation." arXiv preprint arXiv:2012.03826 (2020).
-
-## BibTex
-```
-@article{cowen2020hebo,
-  title={HEBO: Heteroscedastic Evolutionary Bayesian Optimisation},
-  author={Cowen-Rivers, Alexander I and Lyu, Wenlong and Wang, Zhi and Tutunov, Rasul and Jianye, Hao and Wang, Jun and Ammar, Haitham Bou},
-  journal={arXiv preprint arXiv:2012.03826},
-  year={2020},
-  note={winning submission to the NeurIPS 2020 Black Box Optimisation Challenge}
-}
+if __name__ == '__main__':
+    space = DesignSpace().parse([
+        {'name' : 'lr' ,  'type' : 'pow', 'lb' : 1e-4, 'ub' : 3e-2}, 
+        {'name' : 'weight_decay' ,  'type' : 'pow', 'lb' : 1e-6, 'ub' : 3e-2}, 
+        {'name' : 'hidden_size' ,  'type' : 'int', 'lb' : 16, 'ub' : 128}, 
+    ])
+    opt = HEBO(space)
+    for iter in range(50):
+        rec          = opt.suggest()
+        lr           = float(rec.iloc[0].lr)
+        weight_decay = float(rec.iloc[0].weight_decay)
+        hidden_size  = int(rec.iloc[0].hidden_size)
+        observation  = obj(lr, weight_decay, hidden_size)
+        opt.observe(rec, observation)
+        print('After %d iterations, best obj is %.3f' % (iter + 1, opt.y.min()))
 ```
