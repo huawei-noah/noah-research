@@ -85,7 +85,10 @@ def minimise_me(
         i += 1
         # perform an iteration of the algorithm
         obj.next()
-    
+        result = obj.result()
+        print(f"Objective values {result.F}")
+        print(f"Constraint values {result.G}")
+
     result = obj.result()
     return result.X,  result.F,  result.G
 

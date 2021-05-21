@@ -36,8 +36,9 @@ eqc = [objective1] # List of objective functions
 neqc = [contstraint1] # List of constraints <= 0 
 lb = [-10, -6, -4] # lower bound, one value for each variable
 up = [10, 3, 2] # upper bound, one value for each variable
+N_iterations = 10000 # you can increase this to see if more iterations finds better points
 
-params, objective_values, constraint_values  = minimise_me(eqc, neqc, lb, up)
+params, objective_values, constraint_values  = minimise_me(eqc, neqc, lb, up, N_iterations)
 print(params)
 print(objective_values)
 print(constraint_values)
