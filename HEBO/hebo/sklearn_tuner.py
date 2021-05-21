@@ -30,6 +30,7 @@ def minimise_me(
         neqc,
         lower_bounds,
         upper_bounds,
+        N_iterations=1000
 ):
     sampling = get_sampling('real_lhs')
     crossover = get_crossover('real_sbx', eta=15, prob=0.9)
@@ -74,12 +75,11 @@ def minimise_me(
     )
 
     # perform a copy of the algorithm to ensure reproducibility
-    N_iterations = 1000
     termination = get_termination("n_gen", N_iterations)
     # let the algorithm know what problem we are intending to solve and provide other attributes
 
     # obj.setup(problem, termination=termination, seed=1)
-    obj.setup(problem, termination=termination, seed=0)
+    obj.setup(problem, termination=termination, seed=np.random.randint(0,1000,1)[0])
     i = 0
     while obj.has_next():
         i += 1
@@ -87,7 +87,7 @@ def minimise_me(
         obj.next()
     
     result = obj.result()
-    return result
+    return result.X,  result.F,  result.G
 
 def sklearn_tuner(
         model_class,

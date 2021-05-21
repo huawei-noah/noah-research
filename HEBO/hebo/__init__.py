@@ -13,5 +13,6 @@ from . import design_space
 from . import models
 from . import optimizers
 from . import sklearn_tuner
+from .sklearn_tuner import minimise_me
 
 __version__ = "0.2.0"
