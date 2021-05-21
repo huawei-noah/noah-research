@@ -20,7 +20,7 @@ Summary             |  Ablation
 python setup.py develop
 ```
 
-## Minize Me Demo 
+## minimise_me Demo 
 
 ```python
 import numpy  as np
