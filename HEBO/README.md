@@ -26,19 +26,21 @@ python setup.py develop
 import numpy  as np
 from hebo import minimise_me
 
-def obj(params : np.ndarray) -> np.ndarray:
+def objective1(params : np.ndarray) -> np.ndarray:
     return ((params - 0.37)**2).sum(axis = 1).reshape(-1, 1)
        
-def contstraint(params : np.ndarray) -> np.ndarray:
+def contstraint1(params : np.ndarray) -> np.ndarray:
     return ((params - 0.37)**3).sum(axis = 1).reshape(-1, 1)
        
-eqc = [obj] # List of objective functions
-neqc = [contstraint] # List of constraints <= 0 
+eqc = [objective1] # List of objective functions
+neqc = [contstraint1] # List of constraints <= 0 
 lb = [-10, -6, -4] # lower bound, one value for each variable
 up = [10, 3, 2] # upper bound, one value for each variable
 
-best_params,  = minimise_me(eqc, neqc, lb, up)
-print(result.X)
+params, objective_values, constraint_values  = minimise_me(eqc, neqc, lb, up)
+print(params)
+print(objective_values)
+print(constraint_values)
 ```
 
 ## Demo
