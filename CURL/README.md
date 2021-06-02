@@ -7,77 +7,73 @@
 
 Repository for the **CURL: Neural Curve Layers for Global Image Enhancement** code.
 
-**Datasets**  
+### Requirements
 
-*  Samsung S7 dataset: https://elischwartz.github.io/DeepISP/
-*  Adobe5K dataset: https://data.csail.mit.edu/graphics/fivek/
+_requirements.txt_ contains the Python packages used by the code.
 
-**Dataset Preprocessing**
+### How to train CURL and use the model for inference
 
-* __Adobe-DPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). After downloading this dataset you will need to use Lightroom to pre-process the images according to the procedure outlined in the DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer). Please see the issue [here](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636) for instructions. Artist C retouching is used as the groundtruth/target. Feel free to raise a Gitlab issue if you need assistance with this (or indeed the Adobe-UPE dataset below). You can also find the training, validation and testing dataset splits for Adobe-DPE in the following [file](https://www.cmlab.csie.ntu.edu.tw/project/Deep-Photo-Enhancer/%5BExperimental_Code_Data%5D_Deep-Photo-Enhancer.zip). 
+#### Training CURL
 
-* __Adobe-UPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). As above, you will need to use Lightroom to pre-process the images according to the procedure outlined in the Underexposed Photo Enhancement Using Deep Illumination Estimation (DeepUPE) [paper](https://github.com/wangruixing/DeepUPE) and detailed in the issue [here](https://github.com/wangruixing/DeepUPE/issues/26). Artist C retouching is used as the groundtruth/target. You can find the test images for the Adobe-UPE dataset at this [link](https://drive.google.com/file/d/1HZnNgptNxjKJAhekz2K5yh0mW0yKIws2/view?usp=sharing).
+Instructions:
 
+To get this code working on your system / problem you will need to edit the data loading functions, as follows:
 
-**Training**  
+1. main.py, change the paths for the data directories to point to your data directory
+2. data.py, lines 248, 256, change the folder names of the data input and output directories to point to your folder names
 
-```
-python main.py --valid_every=250 --num_epoch=10000 
-
-
-valid_every: number of epochs to dump the testing and validation dataset metrics 
-num_epoch: total number of training epochs 
-```
-
-For CURL at 100 epochs, on Samsung S7 dataset, you should get the following result: 
-
-Validation dataset PSNR: 24.03 dB 
-
-Test dataset PSNR: 23.53 dB 
-
-Output is written to a corresponding data directory subdirectory eg:
+To train, run the command:
 
 ```
-/Samsung_Dataset/log_<timestamp>/
+python3 main.py
 ```
 
-**Inference**  
+<p align="center">
+<img src="./images/curl_training_loss.png" width="80%"/>
+</p>
 
-For inference, create a directory e.g. inference_imgs containing two sub-directories called "input" and "output": 
+#### Inference - Using Pre-trained Models for Prediction
 
-```
-/inference_imgs/input 
+The directory _pretrained_models_ contains a set of four CURL pre-trained models on the Adobe5K_DPE dataset, each model output from different epochs. The model with the highest validation dataset PSNR (22.66dB) is at epoch 99:
 
-/inference_imgs/output 
-```
+* curl_validpsnr_22.66_validloss_0.0734_testpsnr_23.40_testloss_0.0605_epoch_124_model.pt
 
-Place the input images into to the input directory (i.e. those images you wish to inference) and put the groundtruth images in the output directory. 
+This pre-trained CURL model obtains 23.40dB on the test dataset for Adobe DPE.
 
-In the inference_imgs directory create a text file called "images_inference.txt" and list the image names to be inferenced one per line, without any path of file extension e.g. if the image is a5000.tif you would create a file with one line with the entry: 
+To use this model for inference:
 
-```
-a5000 
-```
-
-To run inference use the following command: 
-
-```
-python main.py  --checkpoint_filepath= ---inference_img_dirpath= 
-
-
-checkpoint_filepath: location of checkpoint file 
-inference_img_dirpath: location of image directory 
-```
-
-For example: 
+1. Place the images you wish to infer in a directory e.g. ./adobe5k_dpe/curl_example_test_input/. Make sure the directory path has the word "input" somewhere in the path.
+2. Place the images you wish to use as groundtruth in a directory e.g. ./adobe5k_dpe/curl_example_test_output/. Make sure the directory path has the word "output" somewhere in the path.
+3. Place the names of the images (without extension) in a text file in the directory above the directory containing the images i.e. ./adobe5k_dpe/ e.g. ./adobe5k_dpe/images_inference.txt
+4. Run the command and the results will appear in a timestamped directory in the same directory as main.py:
 
 ```
-python main.py  --inference_img_dirpath="/inference_imgs/" --checkpoint_filepath="curl_validpsnr_24.032338682762976_validloss_0.031165003776550293_testpsnr_23.531164141118847_testloss_0.03296922147274017_epoch_99_model.pt"
+python3 main.py --inference_img_dirpath=./adobe5k_dpe/ --checkpoint_filepath=./pretrained_models/adobe_dpe/curl_validpsnr_22.66_validloss_0.0734_testpsnr_23.40_testloss_0.0605_epoch_124_model.pt
 ```
 
-Output is written to a corresponding data directory subdir eg:
+### CURL for RGB images
+
+- __rgb_ted.py__ contains the TED model for RGB images 
+
+### CURL for RAW images
+
+- __raw_ted.py__ contains the TED model for RGB images 
+
+### Github user contributions
+
+__CURL_for_RGB_images.zip__ is a contribution (RGB model and pre-trained weights) courtsey of Github user [hermosayhl](https://github.com/hermosayhl)
+
+### Bibtex
+
+If you do use ideas from the paper in your research please kindly consider citing as below:
 
 ```
-/Samsung_Dataset/log_<timestamp>/
-
+@misc{moran2019curl,
+    title={CURL: Neural Curve Layers for Global Image Enhancement},
+    author={Sean Moran and Steven McDonagh and Gregory Slabaugh},
+    year={2019},
+    eprint={1911.13175},
+    archivePrefix={arXiv},
+    primaryClass={eess.IV}
+}
 ```
