@@ -28,9 +28,6 @@ To train, run the command:
 python3 main.py
 ```
 
-<p align="center">
-<img src="./images/curl_training_loss.png" width="80%"/>
-</p>
 
 #### Inference - Using Pre-trained Models for Prediction
 
