@@ -1,7 +1,8 @@
 # CURL: Neural Curve Layers for Global Image Enhancement
 [Sean Moran](http://www.seanjmoran.com),  [Steven McDonagh](https://smcdonagh.github.io/), [Greg Slabaugh](http://gregslabaugh.net/)
 
-[Paper on arXiv](https://arxiv.org/pdf/1911.13175.pdf) 
+[[Paper]](https://arxiv.org/pdf/1911.13175.pdf) [[Supplementary]](http://www.seanjmoran.com/pdfs/CURL_supplementary.pdf) [[Video]](https://youtu.be/66FnRfDR_Oo) [[Poster]](https://sjmoran.github.io/pdfs/CURL_ICPR_POSTER.pdf) [[Slides]](http://www.seanjmoran.com/pdfs/CURL_supplementary.pdf) 
+
 
 ![Teaser](https://github.com/huawei-noah/noah-research/blob/master/CURL/teaser.png "Teaser")
 
