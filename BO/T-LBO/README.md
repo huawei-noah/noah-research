@@ -168,7 +168,7 @@ been carried out on several seeds.
 
 ### Our results on chemical design
 #### Optimisation of penalised logP
-![molecule-opt](./figures/mol-logP-opt.pdf)
+![molecule-opt](./figures/mol-logP-opt.png)
 We optimised the penalised water-octanol partition coefficient (logP) objective of molecules from the ZINC250K dataset
 and compared seval optimisation algorithms, showing that the highest logP scores are obtained with our methods **T-LBO** 
 and **ST-LBO**.
