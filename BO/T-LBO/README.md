@@ -181,10 +181,17 @@ and **ST-LBO**.
   six retrainings of the **JTVAE with triplet loss** (bottom right molecule).
 
 ## Cite Us
-TODO:
 
 ```
 # BitbTex
+@misc{grosnit2021highdimensional,
+      title={High-Dimensional Bayesian Optimisation with Variational Autoencoders and Deep Metric Learning}, 
+      author={Antoine Grosnit and Rasul Tutunov and Alexandre Max Maraval and Ryan-Rhys Griffiths and Alexander I. Cowen-Rivers and Lin Yang and Lin Zhu and Wenlong Lyu and Zhitang Chen and Jun Wang and Jan Peters and Haitham Bou-Ammar},
+      year={2021},
+      eprint={2106.03609},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 ```
 
 ## Credits
