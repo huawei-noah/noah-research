@@ -167,6 +167,12 @@ been carried out on several seeds.
 
 
 ### Our results on chemical design
+
+|  |Nb. Function evaluations |Penalized logP (top-3)|
+| --- | --- | --- |
+| T-LBO-2 | 3450 | 34.83 / 31.1 / 29.21|
+| T-LBO-1 | 2300 | 24.06 / 22.84 / 21.26|
+
 #### Optimisation of penalised logP
 ![molecule-opt](./figures/mol-logP-opt.png)
 We optimised the penalised water-octanol partition coefficient (logP) objective of molecules from the ZINC250K dataset
