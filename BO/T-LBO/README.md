@@ -170,6 +170,7 @@ been carried out on several seeds.
 
 |  |Nb. Function evaluations |Penalized logP (top-3)|
 | --- | --- | --- |
+| T-LBO-3 | 7750 | 38.57 / 34.83 / 34.63|
 | T-LBO-2 | 3450 | 34.83 / 31.1 / 29.21|
 | T-LBO-1 | 2300 | 24.06 / 22.84 / 21.26|
 
