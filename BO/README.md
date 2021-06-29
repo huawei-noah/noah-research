@@ -9,13 +9,14 @@ Further instructions are provided in the README
 files associated to each project.
 
 ## [HEBO](https://github.com/huawei-noah/noah-research/tree/master/BO/HEBO)
-![](https://github.com/huawei-noah/noah-research/blob/master/BO/HEBO/hebo.png)
+<img src="https://github.com/huawei-noah/noah-research/blob/master/BO/HEBO/hebo.png" alt="drawing" width="400"/>
+
 Bayesian optimsation library developped by Huawei Noahs Ark Decision Making and Reasoning (DMnR) lab. The <strong> winning submission </strong> to the [NeurIPS 2020 Black-Box Optimisation Challenge](https://bbochallenge.com/leaderboard). 
 
 ## [T-LBO](https://github.com/huawei-noah/noah-research/tree/master/BO/T-LBO)
-<p float="left">
-  <img src="https://github.com/huawei-noah/noah-research/blob/master/BO/T-LBO/figures/LSBO.pdf" width="100" />
-  <img src="https://github.com/huawei-noah/noah-research/blob/master/BO/T-LBO/figures/Magnets.pdf" width="100" /> 
+<p float="center">
+  <img src="https://github.com/huawei-noah/noah-research/blob/master/BO/T-LBO/figures/LSBO.png" width="400" />
+  <img src="https://github.com/huawei-noah/noah-research/blob/master/BO/T-LBO/figures/magnets.png" width="400" /> 
 </p>
 
 Codebase associated to: [High-Dimensional Bayesian Optimisation withVariational Autoencoders and Deep Metric Learning](https://arxiv.org/abs/2106.03609)
@@ -31,7 +32,8 @@ It is the hope that the results presented in this paper can act as a guiding pri
 
 ## [Bayesian Optimisation with Compositional Optimisers](https://github.com/huawei-noah/noah-research/tree/CompBO/BO/HEBO/CompBO)
 
-![](https://github.com/huawei-noah/noah-research/tree/CompBO/BO/HEBO/CompBO/image/summary-Best-performance-on-Synthetic-tasks-matern-52-3.png)
+<div style="text-align:center"><img src="https://github.com/huawei-noah/noah-research/blob/CompBO/BO/HEBO/CompBO/image/summary-Best-performance-on-Synthetic-tasks-matern-52-3.png" alt="drawing" width="600"/>
+
 
 Codebase associated to: [Are we Forgetting about Compositional Optimisers in Bayesian Optimisation?](https://arxiv.org/abs/2012.08240)
 ##### Abstract
