@@ -96,11 +96,10 @@ Cowen-Rivers, Alexander I., et al. "HEBO: Heteroscedastic Evolutionary Bayesian 
 
 ## BibTex
 ```
-@article{cowen2020hebo,
-  title={HEBO: Heteroscedastic Evolutionary Bayesian Optimisation},
-  author={Cowen-Rivers, Alexander I and Lyu, Wenlong and Wang, Zhi and Tutunov, Rasul and Jianye, Hao and Wang, Jun and Ammar, Haitham Bou},
+@article{cowen2020empirical,
+  title={An Empirical Study of Assumptions in Bayesian Optimisation},
+  author={Cowen-Rivers, Alexander I and Lyu, Wenlong and Tutunov, Rasul and Wang, Zhi and Grosnit, Antoine and Griffiths, Ryan Rhys and Jianye, Hao and Wang, Jun and Ammar, Haitham Bou},
   journal={arXiv preprint arXiv:2012.03826},
-  year={2020},
-  note={winning submission to the NeurIPS 2020 Black Box Optimisation Challenge}
+  year={2020}
 }
 ```
