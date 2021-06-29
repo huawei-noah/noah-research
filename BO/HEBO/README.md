@@ -92,7 +92,7 @@ pytest -v test/ --cov ./bo --cov-report term-missing --cov-config ./test/.covera
 
 ## Cite Us
 
-Cowen-Rivers, Alexander I., et al. "HEBO: Heteroscedastic Evolutionary Bayesian Optimisation." arXiv preprint arXiv:2012.03826 (2020).
+Cowen-Rivers, Alexander I., et al. "An Empirical Study of Assumptions in Bayesian Optimisation." arXiv preprint arXiv:2012.03826 (2021).
 
 ## BibTex
 ```
