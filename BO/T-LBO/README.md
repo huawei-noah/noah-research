@@ -1,7 +1,7 @@
 # High-Dimensional Bayesian Optimisation withVariational Autoencoders and Deep Metric Learning
 
 This repository is the official implementation of 
-[High-Dimensional Bayesian Optimisation withVariational Autoencoders and Deep Metric Learning]().
+[High-Dimensional Bayesian Optimisation withVariational Autoencoders and Deep Metric Learning](https://arxiv.org/abs/2106.03609).
 
 The provided code allows to re-run the experiments presented in the paper, including:
 - an implementation of soft contrastive and soft triplet losses in
