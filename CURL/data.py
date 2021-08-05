@@ -183,6 +183,11 @@ class Dataset(torch.utils.data.Dataset):
                             input_img=TF.rotate(input_img,-90, expand=True)
                             output_img=TF.rotate(output_img,-90, expand=True)
 
+                        # Random rotation -90
+                        if random.random() > 0.5:
+                            input_img=TF.rotate(input_img, 180, expand=True)
+                            output_img=TF.rotate(output_img, 180, expand=True)
+
                         #output_img.save("./"+self.data_dict[idx]['output_img'].split("/")[-1]+"2.png")
               
                 # Transform to tensor
