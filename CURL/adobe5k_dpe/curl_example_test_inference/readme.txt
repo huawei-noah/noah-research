@@ -1,0 +1,1 @@
+Enhanced by CURL model: curl_validpsnr_22.66_validloss_0.0734_testpsnr_23.40_testloss_0.0605_epoch_124_model.pt
