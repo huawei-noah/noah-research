@@ -1,1 +1,0 @@
-Disclaimer: note that the splits in images_valid.txt, images_test.txt, images_train.txt may not be those used in the e.g. DeepPhotoEnhancer (DPE) paper. The website for DPE has been unavailable for a year now and so the original splits are unknown. The splits in these .txt files are a best guess and might be incorrect.
