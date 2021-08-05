@@ -40,7 +40,7 @@ class ImageProcessing(object):
         img = img.view(-1, 3)
 
         img = (img / 12.92) * img.le(0.04045).float() + (((torch.clamp(img,
-                                                                       min=0.000001) + 0.055) / 1.055) ** 2.4) * img.gt(0.04045).float()
+                                                                       min=0.0001) + 0.055) / 1.055) ** 2.4) * img.gt(0.04045).float()
 
         rgb_to_xyz = Variable(torch.FloatTensor([  # X        Y          Z
             [0.412453, 0.212671, 0.019334],  # R
@@ -320,7 +320,7 @@ class ImageProcessing(object):
         :rtype: Tensor
 
         """
-        img=torch.clamp(img,1e-10,1)       
+        img=torch.clamp(img,1e-9,1)       
 
         img = img.permute(2, 1, 0)
         shape = img.shape
@@ -386,7 +386,7 @@ class ImageProcessing(object):
         img = img_copy2.clone()
 
         img = img.permute(2, 1, 0)
-        img = torch.clamp(img, 1e-10, 1)
+        img = torch.clamp(img, 1e-9, 1)
 
         return img
 

@@ -121,6 +121,8 @@ class Evaluator():
                     psnr_avg += psnr_example
                     ssim_avg += ssim_example
                     
+                    print(examples)
+                    print(loss)
                     if batch_num > 30:
                         '''
                         We save only the first 30 images down for time saving
@@ -129,7 +131,6 @@ class Evaluator():
                         continue
                     else:
 
-                        print(net_output_img_example_rgb.shape)
                         output_img_example = (
                             output_img_batch_rgb[0, 0:3, :, :] * 255).astype('uint8')
                         net_output_img_example = (
@@ -147,6 +148,8 @@ class Evaluator():
                     del input_img_example
                     del output_img_batch
 
+        print(num_batches)
+        print(examples)
         psnr_avg = psnr_avg / num_batches
         ssim_avg = ssim_avg / num_batches
 
