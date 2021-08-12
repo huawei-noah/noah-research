@@ -142,8 +142,7 @@ If you use this codebase, please cite the following paper:
 }
 ```
 
-If you use CAdam, NASA, SCGD or ASCGD, please also cite the following papers:
-- for CAdam:
+If you use CAdam, please also cite the following paper:
 > [R. Tutunov, M. Li, J. Wang and H. Bou-Ammar. Compositional ADAM: An Adaptive Compositional Solver, 2020.](https://arxiv.org/abs/2002.03755)
 ```shell script
 @article{tutunov2020cadam,
@@ -151,35 +150,5 @@ If you use CAdam, NASA, SCGD or ASCGD, please also cite the following papers:
   author={Tutunov, Rasul and Li, Minne and Wang, Jun and Bou-Ammar, Haitham},
   journal={arXiv preprint arXiv:2002.03755},
   year={2020}
-}
-```
-- for NASA:
-> [S. Ghadimi, A. Ruszczynski and M. Wang. A Single Timescale Stochastic Approximation Method for Nested Stochastic 
->Optimization. SIAM Journal on Optimization, 2020.](https://epubs.siam.org/doi/abs/10.1137/18M1230542)
-```shell script
-@article{ghadimi2020single,
-  title={A Single Timescale Stochastic Approximation Method for Nested Stochastic Optimization},
-  author={Ghadimi, Saeed and Ruszczynski, Andrzej and Wang, Mengdi},
-  journal={SIAM Journal on Optimization},
-  volume={30},
-  number={1},
-  pages={960--979},
-  year={2020},
-  publisher={SIAM}
-}
-```
-- for SCGD or ASCGD:
-> [M. Wang, E. X Fang and H. Liu. Stochastic compositional gradient descent: algorithms for minimizing compositions 
->of expected-value functions. Mathematical Programming, Springer, 2017.](https://link.springer.com/article/10.1007/s10107-016-1017-3)
-```shell script
-@article{Wang2017stochastic,
-  title={Stochastic compositional gradient descent: algorithms for minimizing compositions of expected-value functions},
-  author={Wang, Mengdi and Fang, Ethan X and Liu, Han},
-  journal={Mathematical Programming},
-  volume={161},
-  number={1-2},
-  pages={419--449},
-  year={2017},
-  publisher={Springer}
 }
 ```
