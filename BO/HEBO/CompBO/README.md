@@ -130,11 +130,15 @@ If you use this codebase, please cite the following paper:
 > A. Grosnit\*, A. I. Cowen-Rivers\*, R. Tutunov\*, R.-R. Griffiths, J. Wang, and H. Bou-Ammar.
 > Are we Forgetting about Compositional Optimisers in Bayesian Optimisation?, 2020.
 ```shell script
-@article{grosnit2020compbo,
-  title={Are we Forgetting about Compositional Optimisers in Bayesian Optimisation?},
-  author={Grosnit, Antoine and Cowen-Rivers, Alexander I and Tutunov, Rasul and Griffiths, Ryan-Rhys and Wang, Jun and Bou-Ammar, Haitham},
-  journal={arXiv preprint arXiv:?},
-  year={2020}
+@article{JMLR:v22:20-1422,
+  author  = {Antoine Grosnit and Alexander I. Cowen-Rivers and Rasul Tutunov and Ryan-Rhys Griffiths and Jun Wang and Haitham Bou-Ammar},
+  title   = {Are We Forgetting about Compositional Optimisers in Bayesian Optimisation?},
+  journal = {Journal of Machine Learning Research},
+  year    = {2021},
+  volume  = {22},
+  number  = {160},
+  pages   = {1-78},
+  url     = {http://jmlr.org/papers/v22/20-1422.html}
 }
 ```
 
