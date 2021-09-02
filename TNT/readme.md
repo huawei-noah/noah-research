@@ -1,7 +1,7 @@
-# Transformer in Transformer (TNT)
-By Kai Han, An Xiao, Enhua Wu, Jianyuan Guo, Chunjing Xu, Yunhe Wang. [[arXiv]](https://arxiv.org/abs/2103.00112)
+## The up to date code is moved to https://github.com/huawei-noah/CV-Backbones/tree/master/tnt_pytorch
 
-![image](https://user-images.githubusercontent.com/9500784/122160150-ff1bca80-cea1-11eb-9329-be5031bad78e.png)
+## Transformer in Transformer (TNT)
+By Kai Han, An Xiao, Enhua Wu, Jianyuan Guo, Chunjing Xu, Yunhe Wang. [[arXiv]](https://arxiv.org/abs/2103.00112)
 
 ## Requirements
 Pytorch 1.7.0,
