@@ -30,7 +30,7 @@ class HEBO(AbstractOptimizer):
     def __init__(self, space, model_name = 'gpy', rand_sample = None, acq_cls = MACE, es = 'nsga2'):
         """
         model_name : surrogate model to be used
-        rand_iter  : iterations to perform random sampling
+        rand_sample  : iterations to perform random sampling
         """
         super().__init__(space)
         self.space       = space
