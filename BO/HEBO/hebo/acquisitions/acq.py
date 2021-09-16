@@ -153,7 +153,7 @@ class MACE(Acquisition):
             ps        = ps2.sqrt()
             lcb       = (py + noise * torch.randn(py.shape)) - self.kappa * ps
             normed    = ((self.tau - self.eps - py - noise * torch.randn(py.shape)) / ps)
-            dist      = Normal(0., 1.)
+            dist      = Normal(0., 1. validate_args=False)
             log_phi   = dist.log_prob(normed)
             Phi       = dist.cdf(normed)
             PI        = Phi
