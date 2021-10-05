@@ -1,0 +1,12 @@
+.idea/*
+multiwoz/test.json
+multiwoz/train.json
+multiwoz/val.json
+self_play/movie/train.json
+self_play/movie/dev.json
+self_play/movie/test.json
+self_play/restaurant/train.json
+self_play/restaurant/dev.json
+self_play/restaurant/test.json
+models/*
+data/*
