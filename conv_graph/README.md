@@ -57,8 +57,7 @@ y_train = np.concatenate((y_train, y_t))
 ```  
 
 - We hope the comments in each file will be self-explanatory
-- Run experiments with several seeds to obtain a stable average
-- Let us know if you have any issues by reaching out to milan-dot-gritta-at-huawei-dot-com
+- Run experiments with several seeds to obtain a stable average (M2M data only)
 
 ##### Paper Links
 
@@ -68,4 +67,4 @@ y_train = np.concatenate((y_train, y_t))
 
 - We used [ConvLab 1.0](https://github.com/ConvLab/ConvLab) to evaluate the models using their [user simulator](https://github.com/ConvLab/ConvLab#evaluation)
 - Warning: It is not the easiest software to use, be patient
-- If you have trouble with running extrinsic evaluation, email my colleague gerasimos-dot-lampouras-at-huawei-dot-com :)
+- If you have trouble with running extrinsic evaluation, email my colleague gerasimos-dot-lampouras-at-huawei-dot-com!
