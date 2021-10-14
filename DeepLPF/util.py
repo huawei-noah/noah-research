@@ -18,44 +18,13 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
 '''
 import matplotlib
 matplotlib.use('agg')
-import os
-from skimage.metrics import structural_similarity as ssim
-import os.path
-import torch.nn.functional as F
-from skimage import io, color
-from copy import deepcopy
-import matplotlib.pyplot as plt
-from matplotlib.image import imread, imsave
-from scipy.ndimage.filters import convolve
-import torch.nn.init as net_init
-import datetime
-import math
-import numpy as np
-import copy
-from PIL import Image
-import torch.optim as optim
-import shutil
-import argparse
-from shutil import copyfile
-from PIL import Image
-import logging
-import data
-from torchvision.transforms import ToTensor
-from torchvision.datasets import ImageFolder
 from torch.autograd import Variable
-import torchvision.transforms as transforms
-import traceback
-import torch.nn as nn
+import numpy as np
 import torch
-import time
-import random
-import skimage
-import unet
-from abc import ABCMeta, abstractmethod
-import imageio
-import cv2
 import sys
-from skimage.transform import resize
+from PIL import Image
+from skimage.metrics import structural_similarity as ssim
+
 np.set_printoptions(threshold=sys.maxsize)
 
 

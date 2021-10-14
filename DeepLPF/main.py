@@ -17,61 +17,35 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
 
 Instructions:
 
-To get this code working on your system / problem you will need to edit the
-data loading functions, as follows:
+To get this code working on your system / problem please see the README.
 
-1. main.py, change the paths for the data directories to point to your data
-directory
-
-2. data.py, lines 248, 256, change the folder names of the data input and
-output directories to point to your folder names
+*** BATCH SIZE: Note this code is designed for a batch size of 1. The code needs re-engineered to support higher batch sizes. Using higher batch sizes is not supported currently and could lead to artefacts. To replicate our reported results 
+please use a batch size of 1 only ***
 '''
 import model
 import metric
 import os
-import glob
 import os.path
-import torch.nn.functional as F
-from math import exp
-from skimage import io, color
-from copy import deepcopy
-import matplotlib.pyplot as plt
-from matplotlib.image import imread, imsave
-from scipy.ndimage.filters import convolve
-import torch.nn.init as net_init
 import datetime
-from util import ImageProcessing
-import math
-import numpy as np
-import copy
 import torch.optim as optim
-import shutil
 import argparse
-from shutil import copyfile
-from PIL import Image
 import logging
-import data
-from torchvision.transforms import ToTensor
-from torchvision.datasets import ImageFolder
 from torch.autograd import Variable
 import torchvision.transforms as transforms
-import traceback
-import torch.nn as nn
 import torch
 import time
-import random
-import skimage
-import unet
 from data import Adobe5kDataLoader, Dataset
-from abc import ABCMeta, abstractmethod
-import imageio
-import cv2
 from torch.utils.tensorboard import SummaryWriter
-from skimage.transform import resize
 import matplotlib
+import numpy as np
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 matplotlib.use('agg')
 
 def main():
+
+    print("*** Before running this code ensure you keep the default batch size of 1. The code has not been engineered to support higher batch sizes. See README for more detail. Remove the exit() statement to use code. ***")
+    exit()
 
     writer = SummaryWriter()
 
@@ -98,8 +72,20 @@ def main():
         "--inference_img_dirpath", required=False,
         help="Directory containing images to run through a saved DeepLPF model instance", default=None)
     parser.add_argument(
-        "--training_img_dirpath", required=False,
+        "--training_img_dirpath", required=True,
         help="Directory containing images to train a DeepLPF model instance", default="/home/sjm213/adobe5k/adobe5k/")
+    parser.add_argument(
+        "--inference_img_list_path", required=False,
+        help="Plain text file containing the names of the images to inference")
+    parser.add_argument(
+        "--train_img_list_path", required=True,
+        help="Plain text file containing the names of the training images")
+    parser.add_argument(
+        "--valid_img_list_path", required=True,
+        help="Plain text file containing the names of the validation images")
+    parser.add_argument(
+        "--test_img_list_path", required=False,
+        help="Plain text file containing the names of the test images")
 
     args = parser.parse_args()
     num_epoch = args.num_epoch
@@ -107,12 +93,21 @@ def main():
     checkpoint_filepath = args.checkpoint_filepath
     inference_img_dirpath = args.inference_img_dirpath
     training_img_dirpath = args.training_img_dirpath
+    inference_img_list_path = args.inference_img_list_path
+    test_img_list_path = args.test_img_list_path
+    valid_img_list_path = args.valid_img_list_path
+    train_img_list_path = args.train_img_list_path
 
     logging.info('######### Parameters #########')
     logging.info('Number of epochs: ' + str(num_epoch))
     logging.info('Logging directory: ' + str(log_dirpath))
     logging.info('Dump validation accuracy every: ' + str(valid_every))
     logging.info('Training image directory: ' + str(training_img_dirpath))
+    logging.info('List of images to inference: ' + str(inference_img_list_path))
+    logging.info('List of test images: ' + str(test_img_list_path))
+    logging.info('List of validation images: ' + str(valid_img_list_path))
+    logging.info('List of training images: ' + str(train_img_list_path))
+
     logging.info('##############################')
 
     
@@ -129,7 +124,7 @@ def main():
                                 etc
         '''
         inference_data_loader = Adobe5kDataLoader(data_dirpath=inference_img_dirpath,
-                                                  img_ids_filepath=inference_img_dirpath+"/images_inference.txt")
+                                                  img_ids_filepath=inference_img_list_path)
         inference_data_dict = inference_data_loader.load_data()
         inference_dataset = Dataset(data_dict=inference_data_dict,
                                     transform=transforms.Compose([transforms.ToTensor()]), normaliser=1,
@@ -158,18 +153,18 @@ def main():
     else:
 
         training_data_loader = Adobe5kDataLoader(data_dirpath=training_img_dirpath,
-                                                 img_ids_filepath=training_img_dirpath+"/images_train.txt")
+                                                 img_ids_filepath=train_img_list_path)
         training_data_dict = training_data_loader.load_data()
 
         training_dataset = Dataset(data_dict=training_data_dict, normaliser=1, is_valid=False)
 
         validation_data_loader = Adobe5kDataLoader(data_dirpath=training_img_dirpath,
-                                               img_ids_filepath=training_img_dirpath+"/images_valid.txt")
+                                               img_ids_filepath=valid_img_list_path)
         validation_data_dict = validation_data_loader.load_data()
         validation_dataset = Dataset(data_dict=validation_data_dict, normaliser=1, is_valid=True)
 
         testing_data_loader = Adobe5kDataLoader(data_dirpath=training_img_dirpath,
-                                            img_ids_filepath=training_img_dirpath+"/images_test.txt")
+                                            img_ids_filepath=test_img_list_path)
         testing_data_dict = testing_data_loader.load_data()
         testing_dataset = Dataset(data_dict=testing_data_dict, normaliser=1,is_valid=True)
 
@@ -204,15 +199,12 @@ def main():
                                eps=1e-08)
         best_valid_psnr = 0.0
 
-        alpha = 0.0
         optimizer.zero_grad()
         net.train()
 
         running_loss = 0.0
         examples = 0
-        psnr_avg = 0.0
-        ssim_avg = 0.0
-        batch_size = 1
+        batch_size = 1       # *** WARNING: batch size of > 1 not supported in current version of code ***
         total_examples = 0
 
         for epoch in range(num_epoch):
@@ -223,7 +215,7 @@ def main():
             
             for batch_num, data in enumerate(training_data_loader, 0):
 
-                input_img_batch, gt_img_batch, category = Variable(data['input_img'],
+                input_img_batch, gt_img_batch, _ = Variable(data['input_img'],
                                                                        requires_grad=False).cuda(), Variable(data['output_img'],
                                                                                                              requires_grad=False).cuda(), data[
                     'name']

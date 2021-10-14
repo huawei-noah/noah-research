@@ -18,48 +18,16 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
 '''
 import matplotlib
 matplotlib.use('agg')
-from skimage.transform import resize
-import cv2
-import imageio
-from abc import ABCMeta, abstractmethod
-from data import Adobe5kDataLoader, Dataset
-import unet
-import skimage
-import random
-import time
-import torch
-import torch.nn as nn
-import traceback
-import torchvision.transforms as transforms
-from torch.autograd import Variable
-from torchvision.datasets import ImageFolder
-from torchvision.transforms import ToTensor
-import data
-import logging
-from PIL import Image
-from shutil import copyfile
-import argparse
-import shutil
-import torch.optim as optim
-import copy
 import numpy as np
-import math
-from util import ImageProcessing
-import datetime
-import torch.nn.init as net_init
-from scipy.ndimage.filters import convolve
-from matplotlib.image import imread, imsave
-import matplotlib.pyplot as plt
-from copy import deepcopy
-from skimage import io, color
-from math import exp
-import torch.nn.functional as F
-import os.path
-from skimage.metrics import structural_similarity as ssim
-import glob
-import os
-import model
 import sys
+import os
+import torch
+import matplotlib.pyplot as plt
+from torch.autograd import Variable
+from util import ImageProcessing
+from skimage.metrics import structural_similarity as ssim
+import logging
+
 np.set_printoptions(threshold=sys.maxsize)
 
 
@@ -68,8 +36,10 @@ class Evaluator():
     def __init__(self, criterion, data_loader, split_name, log_dirpath):
         """Initialisation function for the data loader
 
-        :param data_dirpath: directory containing the data
-        :param img_ids_filepath: file containing the ids of the images to load
+        :param criterion: loss function
+        :param data_loader: an instance of the DataLoader class for the dataset of interest
+        :param split_name: name of the split e.g. "test", "validation"
+        :param log_dirpath: logging directory
         :returns: N/A
         :rtype: N/A
 
@@ -84,11 +54,9 @@ class Evaluator():
         """Evaluates a network on a specified split of a dataset e.g. test, validation
 
         :param net: PyTorch neural network data structure
-        :param data_loader: an instance of the DataLoader class for the dataset of interest
-        :param split_name: name of the split e.g. "test", "validation"
-        :param log_dirpath: logging directory
-        :returns: average loss, average PSNR
-        :rtype: float, float
+        :param epoch: current epoch
+        :returns: average loss, average PSNR, average SSIM
+        :rtype: float, float, float
 
         """
         

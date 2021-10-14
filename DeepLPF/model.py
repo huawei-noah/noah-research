@@ -17,51 +17,16 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
 
 '''
 import matplotlib
-matplotlib.use('agg')
-import unet
-from skimage.transform import resize
-import cv2
-import imageio
-from abc import ABCMeta, abstractmethod
-from data import Adobe5kDataLoader, Dataset
-import unet
-import skimage
-import random
-import time
 import torch
 import torch.nn as nn
-import traceback
-import sys
-import torchvision.transforms as transforms
-from torch.autograd import Variable
-from torchvision.datasets import ImageFolder
-from torchvision.transforms import ToTensor
-import data
-import logging
-from PIL import Image
-from shutil import copyfile
-import argparse
-import shutil
-import torch.optim as optim
-import copy
-import numpy as np
-import math
-from util import ImageProcessing
-import datetime
-import torch.nn.init as net_init
-from scipy.ndimage.filters import convolve
-from matplotlib.image import imread, imsave
-import matplotlib.pyplot as plt
-from copy import deepcopy
-from skimage import io, color
+import unet
 from math import exp
+import math
 import torch.nn.functional as F
-import os.path
-from skimage.metrics import structural_similarity as ssim
-import glob
-import os
-print(torch.__version__)
-np.set_printoptions(threshold=sys.maxsize)
+from util import ImageProcessing
+from torch.autograd import Variable
+
+matplotlib.use('agg')
 
 
 class DeepLPFLoss(nn.Module):
@@ -997,9 +962,9 @@ class DeepLPFParameterPrediction(nn.Module):
         img_cubic = self.cubic_filter.get_cubic_mask(feat, img)
        
         mask_scale_graduated = self.graduated_filter.get_graduated_mask(
-            feat, img)
+            feat, img_cubic)
         mask_scale_elliptical = self.elliptical_filter.get_elliptical_mask(
-            feat, img)
+            feat, img_cubic)
        
         mask_scale_fuse = torch.clamp(
             mask_scale_graduated+mask_scale_elliptical, 0, 2)
