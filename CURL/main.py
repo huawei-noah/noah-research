@@ -11,31 +11,10 @@ Authors: Sean Moran (sean.j.moran@gmail.com), 2020
 
 Instructions:
 
-To get this code working on your system / problem you will need to edit the
-data loading functions, as follows:
+To get this code working on your system / problem please see the README.
 
-1. main.py, change the paths for the data directories to point to your data
-directory 
-
-2. main.py, requires images_train.txt, images_valid.txt, images_test.txt, 
-that list the training, validation and test images, one per line of each
-txt file
-
-3. data.py, lines 223, 240, 423, 431 change the folder names of the data input and
-output directories to point to your folder names. 
-
-We used the Samsung S7 and the Adobe datasets in the paper. They can be 
-found at the following URLs:
-
-1. Samsung S7: https://elischwartz.github.io/DeepISP/
-2. Adobe5k: https://data.csail.mit.edu/graphics/fivek/
-
-To train the model:
-
-python main.py --valid_every=250 --num_epoch=10000 
-
-With the above arguments, the model will be tested on the validation dataset
-every 250 epochs, and the total number of epochs for training will be 10,000.
+*** BATCH SIZE: Note this code is designed for a batch size of 1. The code needs re-engineered to support higher batch sizes. Using higher batch sizes is not supported currently and could lead to artefacts. To replicate our reported results 
+please use a batch size of 1 only ***
 
 '''
 
@@ -58,6 +37,9 @@ from torch.utils.tensorboard import SummaryWriter
 np.set_printoptions(threshold=sys.maxsize)
 
 def main():
+
+    print("*** Before running this code ensure you keep the default batch size of 1. The code has not been engineered to support higher batch sizes. See README for more detail. Remove the exit() statement to use code. ***")
+    exit()
 
     writer = SummaryWriter()
 

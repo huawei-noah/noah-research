@@ -8,6 +8,8 @@
    Repository links for the paper <i>CURL: Neural Curve Layers for Global Image Enhancement</i>. In this repository you will find a link to the code and information of the datasets. Please raise a Github issue if you need assistance of have any questions on the research. 
 </p>
 
+**_BATCH SIZE:_ Note this code is designed for a batch size of 1. It needs re-engineered to support higher batch sizes. Using higher batch sizes is not supported currently. To replicate our reported results please use a batch size of 1 only.**
+
 ### [[Paper]](https://arxiv.org/pdf/1911.13175)  [[Supplementary]](https://sjmoran.github.io/pdfs/CURL_supplementary.pdf) [[Video]](https://youtu.be/66FnRfDR_Oo) [[Poster]](https://sjmoran.github.io/pdfs/CURL_ICPR_POSTER.pdf) [[Slides]](https://sjmoran.github.io/pdfs/DeepLPFDataBites.pdf) 
 
 <p align="center">
@@ -63,6 +65,26 @@
     <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_input/a4723-_DGW7894_input.png"/></td>   
      <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_output/a4723-_DGW7894.png"/></td>     
      <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_inference/a4723-_DGW7894_TEST_510_8_PSNR_28.702_SSIM_0.902.jpg"/></td> 
+  </tr>
+   <tr>
+    <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_input/a2803-060810_075208_GM6A0020_input.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_output/a2803-060810_075208_GM6A0020.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_inference/a2803-060810_075208_GM6A0020_VALID_510_30_PSNR_27.756_SSIM_0.982.jpg"/></td> 
+  </tr>
+   <tr>
+    <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_input/a2917-jmac_DSC3800_input.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_output/a2917-jmac_DSC3800.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_inference/a2917-jmac_DSC3800_VALID_510_4_PSNR_31.279_SSIM_0.977.jpg"/></td> 
+  </tr>
+   <tr>
+    <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_input/a3232-_DGW6397%20input.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_output/a3232-_DGW6397.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_inference/a3232-_DGW6397_VALID_510_2_PSNR_27.860_SSIM_0.952.jpg"/></td> 
+  </tr>
+   <tr>
+    <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_input/a4232-Duggan_090323_6181%20input.png"/></td> 
+     <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_output/a4232-Duggan_090323_6181.png"/></td>   
+     <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_inference/a4232-Duggan_090323_6181_VALID_510_19_PSNR_28.413_SSIM_0.975.jpg"/></td> 
   </tr>
 </table>
 

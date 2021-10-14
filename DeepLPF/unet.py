@@ -16,14 +16,8 @@ Authors: Sean Moran (sean.j.moran@gmail.com),
          Pierre Marza (pierre.marza@gmail.com)
 
 '''
-import numpy as np
 import torch
 import torch.nn as nn
-from math import sqrt
-from torch.nn import init
-from torch.autograd import Variable
-import torch.nn.functional as F
-
 
 class UNet(nn.Module):
 
