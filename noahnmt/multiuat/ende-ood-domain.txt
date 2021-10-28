@@ -1,0 +1,2 @@
+/home/ma-user/work/uncertainty-multidomain-project/corpus/multidomain/QED-bin
+/home/ma-user/work/uncertainty-multidomain-project/corpus/multidomain/TED2013-bin
