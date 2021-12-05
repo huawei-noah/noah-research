@@ -1,0 +1,20 @@
+# Copyright (C) 2021. Huawei Technologies Co., Ltd. All rights reserved.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MIT License for more details.
+
+defaults:
+  - training: likelihood_training
+  - dataset: clinc
+  - lm: lstm
+  - background_lm: lstm
+  - embedder: glove_embedder
+
+p_noise: 0.5
+noise_type: 'uniform'
+add_valid_to_vocab: false
+add_test_to_vocab: false
+experiment_name: 'debug'

@@ -1,0 +1,20 @@
+# Copyright (C) 2021. Huawei Technologies Co., Ltd. All rights reserved.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MIT License for more details.
+
+defaults:
+  - training: classifier_training
+  - dataset: clinc
+  - classifier: cnn
+  - embedder: glove_embedder
+
+score_type: 'max'
+temperature: 1.0
+add_valid_to_vocab: true
+add_test_to_vocab: true
+experiment_name: 'debug'
+use_checkpoint: false

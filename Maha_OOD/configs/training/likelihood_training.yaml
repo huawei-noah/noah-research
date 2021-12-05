@@ -1,0 +1,31 @@
+# Copyright (C) 2021. Huawei Technologies Co., Ltd. All rights reserved.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MIT License for more details.
+
+training:
+  shuffle: true
+  train_batch_size: 64
+  val_batch_size: 100
+  max_epochs: 300
+  num_workers: 0
+  optimizer:
+    lr: 1e-3
+    beta1: 0.9
+    beta2: 0.999
+  back_optimizer:
+    lr: 5e-5
+    beta1: 0.9
+    beta2: 0.999
+  scheduler:
+    use: false
+    gamma: 0.999
+  early_stop:
+    monitor: 'val_loss'
+    patience: 5
+    mode: 'min'
+    min_delta: 0.0
+  gradient_clip_val: 0

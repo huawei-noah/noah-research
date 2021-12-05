@@ -1,0 +1,18 @@
+# Copyright (C) 2021. Huawei Technologies Co., Ltd. All rights reserved.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MIT License for more details.
+
+classifier:
+  name: 'cnn'
+  num_channels: 128
+  ks_list: [2,3,4,5]
+  hid_list: [512,512,512]
+  dropout: 0.5
+  interim_dropout: 0.5
+  num_classes: 150
+  l2_coeff: 0
+  use_batch_norm: false
