@@ -13,14 +13,12 @@ import mindspore as ms
 import mindspore.numpy as mnp
 from mindspore import Tensor
 from pyDOE2 import lhs
-from pymoo.algorithms.so_genetic_algorithm import GA
-from pymoo.algorithms.nsga2 import NSGA2
+from pymoo.algorithms.soo.nonconvex.ga import GA
+from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.factory import get_problem, get_mutation, get_crossover
 from pymoo.operators.mixed_variable_operator import MixedVariableMutation, MixedVariableCrossover
 from pymoo.optimize import minimize
-from pymoo.model.problem import Problem
-from pymoo.configuration import Configuration
-Configuration.show_compile_hint = False
+from pymoo.core.problem import Problem
 from pymoo.factory import get_algorithm
 
 import hebo.mindspore as hebo_ms
