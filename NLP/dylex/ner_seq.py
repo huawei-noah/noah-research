@@ -1,0 +1,279 @@
+# coding=utf-8
+# 2021/10/11 Changed for Dylex 
+#   Huawei Technologies Co., Ltd. 
+
+# Copyright 2018 The Google AI Language Team Authors, The HuggingFace Inc. team.
+# Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+""" Named entity recognition fine-tuning: utilities to work with CLUENER task. """
+import torch
+import logging
+import os
+import copy
+import json
+from utils_ner import DataProcessor
+
+logger = logging.getLogger(__name__)
+
+class InputExample(object):
+    """A single training/test example for token classification."""
+    def __init__(self, guid, text_a, labels):
+        """Constructs a InputExample.
+        Args:
+            guid: Unique id for the example.
+            text_a: list. The words of the sequence.
+            labels: (Optional) list. The labels for each word of the sequence. This should be
+            specified for train and dev examples, but not for test examples.
+        """
+        self.guid = guid
+        self.text_a = text_a
+        self.labels = labels
+
+    def __repr__(self):
+        return str(self.to_json_string())
+    def to_dict(self):
+        """Serializes this instance to a Python dictionary."""
+        output = copy.deepcopy(self.__dict__)
+        return output
+    def to_json_string(self):
+        """Serializes this instance to a JSON string."""
+        return json.dumps(self.to_dict(), indent=2, sort_keys=True) + "\n"
+
+class InputFeatures(object):
+    """A single set of features of data."""
+    def __init__(self, input_ids, input_mask, input_len, segment_ids, label_ids, loss_mask=None):
+        self.input_ids = input_ids
+        self.input_mask = input_mask
+        self.loss_mask = loss_mask
+        self.segment_ids = segment_ids
+        self.label_ids = label_ids
+        self.input_len = input_len
+
+    def __repr__(self):
+        return str(self.to_json_string())
+
+    def to_dict(self):
+        """Serializes this instance to a Python dictionary."""
+        output = copy.deepcopy(self.__dict__)
+        return output
+
+    def to_json_string(self):
+        """Serializes this instance to a JSON string."""
+        return json.dumps(self.to_dict(), indent=2, sort_keys=True) + "\n"
+
+
+class CnerProcessor(DataProcessor):
+    """Processor for the chinese ner data set."""
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "train.char.bmes")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "dev.char.bmes")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "test.char.bmes")), "test")
+
+    def get_labels(self):
+        """See base class."""
+        return ["X",'B-CONT','B-EDU','B-LOC','B-NAME','B-ORG','B-PRO','B-RACE','B-TITLE',
+                'I-CONT','I-EDU','I-LOC','I-NAME','I-ORG','I-PRO','I-RACE','I-TITLE',
+                'O','S-NAME','S-ORG','S-RACE',"[START]", "[END]"]
+
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            if i == 0:
+                continue
+            guid = "%s-%s" % (set_type, i)
+            text_a= line['words']
+            # BIOS
+            labels = []
+            for x in line['labels']:
+                if 'M-' in x:
+                    labels.append(x.replace('M-','I-'))
+                elif 'E-' in x:
+                    labels.append(x.replace('E-', 'I-'))
+                else:
+                    labels.append(x)
+            examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
+        return examples
+
+class CluenerProcessor(DataProcessor):
+    """Processor for the chinese ner data set."""
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "train.json")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "dev.json")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "test.json")), "test")
+
+    def get_labels(self):
+        """See base class."""
+        return ["X", "B-address", "B-book", "B-company", 'B-game', 'B-government', 'B-movie', 'B-name',
+                'B-organization', 'B-position','B-scene',"I-address",
+                "I-book", "I-company", 'I-game', 'I-government', 'I-movie', 'I-name',
+                'I-organization', 'I-position','I-scene',
+                "S-address", "S-book", "S-company", 'S-game', 'S-government', 'S-movie',
+                'S-name', 'S-organization', 'S-position',
+                'S-scene','O',"[START]", "[END]"]
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            text_a= line['words']
+            # BIOS
+            labels = line['labels']
+            examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
+        return examples
+
+
+class CmoProcessor(CnerProcessor):
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "train.txt"), delimiter="\t"), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "dev.txt"), delimiter="\t"), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "test.txt"), delimiter="\t"), "test")
+
+    def get_labels(self, data_dir):
+        label_path = os.path.join(data_dir, "label.txt")
+        labels = file2list(label_path)
+        # 进行排序
+        labels = sorted(labels)
+        return labels
+
+def file2list(filepath):
+    lines = []
+    with open(filepath, encoding="utf-8") as fr:
+        for line in fr:
+            line = line.strip()
+            if line: lines.append(line)
+    return lines
+
+def convert_examples_to_features(
+    examples,label_list,max_seq_length,tokenizer,
+    cls_token_at_end=False,cls_token="[CLS]",cls_token_segment_id=0,
+    sep_token="[SEP]",pad_on_left=False,pad_token=0,pad_token_segment_id=0,
+    sequence_a_segment_id=0,mask_padding_with_zero=True,):
+    """ Loads a data file into a list of `InputBatch`s
+        `cls_token_at_end` define the location of the CLS token:
+            - False (Default, BERT/XLM pattern): [CLS] + A + [SEP] + B + [SEP]
+            - True (XLNet/GPT pattern): A + [SEP] + B + [SEP] + [CLS]
+        `cls_token_segment_id` define the segment id associated to the CLS token (0 for BERT, 2 for XLNet)
+    """
+    label_map = {label: i for i, label in enumerate(label_list)}
+    features = []
+    for (ex_index, example) in enumerate(examples):
+        if ex_index % 10000 == 0:
+            logger.info("Writing example %d of %d", ex_index, len(examples))
+        tokens = tokenizer.tokenize(example.text_a)
+        label_ids = [label_map[x] for x in example.labels]
+        # Account for [CLS] and [SEP] with "- 2".
+        special_tokens_count = 2
+        if len(tokens) > max_seq_length - special_tokens_count:
+            tokens = tokens[: (max_seq_length - special_tokens_count)]
+            label_ids = label_ids[: (max_seq_length - special_tokens_count)]
+
+        # The convention in BERT is:
+        # (a) For sequence pairs:
+        #  tokens:   [CLS] is this jack ##son ##ville ? [SEP] no it is not . [SEP]
+        #  type_ids:   0   0  0    0    0     0       0   0   1  1  1  1   1   1
+        # (b) For single sequences:
+        #  tokens:   [CLS] the dog is hairy . [SEP]
+        #  type_ids:   0   0   0   0  0     0   0
+        #
+        # Where "type_ids" are used to indicate whether this is the first
+        # sequence or the second sequence. The embedding vectors for `type=0` and
+        # `type=1` were learned during pre-training and are added to the wordpiece
+        # embedding vector (and position vector). This is not *strictly* necessary
+        # since the [SEP] token unambiguously separates the sequences, but it makes
+        # it easier for the model to learn the concept of sequences.
+        #
+        # For classification tasks, the first vector (corresponding to [CLS]) is
+        # used as as the "sentence vector". Note that this only makes sense because
+        # the entire model is fine-tuned.
+        tokens += [sep_token]
+        label_ids += [label_map['O']]
+        segment_ids = [sequence_a_segment_id] * len(tokens)
+
+        if cls_token_at_end:
+            tokens += [cls_token]
+            label_ids += [label_map['O']]
+            segment_ids += [cls_token_segment_id]
+        else:
+            tokens = [cls_token] + tokens
+            label_ids = [label_map['O']] + label_ids
+            segment_ids = [cls_token_segment_id] + segment_ids
+
+        input_ids = tokenizer.convert_tokens_to_ids(tokens)
+        # The mask has 1 for real tokens and 0 for padding tokens. Only real
+        # tokens are attended to.
+        input_mask = [1 if mask_padding_with_zero else 0] * len(input_ids)
+        loss_mask = [1 if (mask_padding_with_zero and not token.startswith("##")) else 0 for token in tokens]
+
+        input_len = len(label_ids)
+        # Zero-pad up to the sequence length.
+        padding_length = max_seq_length - len(input_ids)
+        if pad_on_left:
+            input_ids = ([pad_token] * padding_length) + input_ids
+            input_mask = ([0 if mask_padding_with_zero else 1] * padding_length) + input_mask
+            segment_ids = ([pad_token_segment_id] * padding_length) + segment_ids
+            label_ids = ([pad_token] * padding_length) + label_ids
+        else:
+            input_ids += [pad_token] * padding_length
+            input_mask += [0 if mask_padding_with_zero else 1] * padding_length
+            loss_mask += [0 if mask_padding_with_zero else 1] * padding_length
+            segment_ids += [pad_token_segment_id] * padding_length
+            label_ids += [pad_token] * padding_length
+
+        assert len(input_ids) == max_seq_length
+        assert len(input_mask) == max_seq_length
+        assert len(segment_ids) == max_seq_length
+        assert len(label_ids) == max_seq_length
+        if ex_index < 5:
+            logger.info("*** Example ***")
+            logger.info("guid: %s", example.guid)
+            logger.info("tokens: %s", " ".join([str(x) for x in tokens]))
+            logger.info("input_ids: %s", " ".join([str(x) for x in input_ids]))
+            logger.info(f"recover tokens: {' '.join([tokenizer.ids_to_tokens[i] for i in input_ids][:input_len])}")
+            logger.info("input_mask: %s", " ".join([str(x) for x in input_mask]))
+            logger.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
+            logger.info("label_ids: %s", " ".join([str(x) for x in label_ids]))
+            logger.info(f"label_ids recover: {' '.join([label_list[i] for i in label_ids][:input_len])}")
+            logger.info("loss_mask: %s", " ".join([str(x) for x in loss_mask]))
+
+        features.append(InputFeatures(input_ids=input_ids, input_mask=input_mask, loss_mask=loss_mask,input_len = input_len,
+                                      segment_ids=segment_ids, label_ids=label_ids))
+    return features
