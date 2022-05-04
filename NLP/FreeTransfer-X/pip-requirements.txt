@@ -1,0 +1,14 @@
+numpy==1.18.0
+pythainlp==2.3.2
+nltk==3.2.5
+subword-nmt==0.3.7
+mecab-python3==1.0.4
+unidic-lite==1.0.8
+matplotlib==2.2.3
+packaging==21.0
+torchvision==0.8.0
+torch==1.7.0
+transformers==4.8.2
+tokenizers==0.10.3
+sentencepiece==0.1.96
+wikiextractor
