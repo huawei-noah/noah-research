@@ -5,6 +5,15 @@ Bayesian optimisation codebase developed by Huawei R&D, Noah's Ark Lab (London),
 
 <div style="text-align:center"><img src="./image/summary-Best-performance-on-Synthetic-tasks-matern-52-3.png" alt="drawing" width="600"/>
 
+## Installation
+
+ This code was tested on a Python 3.8. virtual environment.
+```bashrc
+python -m venv ./venv
+source venv/bin/activate
+pip install -r ./requirements.txt
+```
+ 
 ## Features
 
 This codebase contains:
