@@ -4,6 +4,7 @@ Bayesian optimisation codebase developed by Huawei R&D, Noah's Ark Lab (London),
 [Are we Forgetting about Compositional Optimisers in Bayesian Optimisation?](https://jmlr.org/papers/v22/20-1422.html) experimental section.
 
 <div style="text-align:center"><img src="./image/summary-Best-performance-on-Synthetic-tasks-matern-52-3.png" alt="drawing" width="600"/>
+<div style="text-align:left">
 
 ## Installation
 
@@ -22,8 +23,10 @@ This codebase contains:
  - Implementations of [compositional optimisers](./custom_optimizer): `CAdam`, `NASA`
 , `SCGD` and `ASCGD`, which can be used to maximise the acquisition function written in a nested form.
  - [Notebooks](./notebooks) providing demo on the [use of compositional optimisers](./notebooks/cadam_demo.ipynb) and 
- on the use of the [`BayesOptimisation`](./core/bayes_opt.py) class to [perform BO](./notebooks/bo_demo.ipynb) with various acquisition functions and 
- optimisers.
+ on the use of the [`BayesOptimisation`](./core/bayes_opt.py) class to [perform BO](./notebooks/bo_demo.ipynb) 
+with various acquisition functions and optimisers. A [third notebook](./notebooks/exp_summary.ipynb) provides the 
+code for generating the main figures of our paper.
+ - [Scripts](./core/scripts) to rerun BO on the synthetic tasks (with order 0 - 1 - 2 optimiser / compositional acquisition functions, etc.)
 
 ## Running BO: example of black-box optimisation
 
