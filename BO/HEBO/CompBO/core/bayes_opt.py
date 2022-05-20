@@ -1,3 +1,5 @@
+#NEW
+
 import time
 from typing import Type, Optional, List, Any, Dict, Union, Tuple
 
@@ -23,8 +25,7 @@ from core.comp_acquisition.compositional_acquisition import CompositionalAcquisi
 from core.es.evolution_opt import EvolutionOpt, DEopt, CMAESopt
 from core.gp.custom_gp import SingleTaskRoundGP
 from core.params_helper import ParamSpace
-from core.utils.utils_query import query_AcqFunc, query_scheduler, query_optimizer, \
-    query_covar
+from core.utils.utils_query import query_AcqFunc, query_scheduler, query_optimizer, query_covar
 from custom_optimizer import ASCGD
 from custom_optimizer.comp_opt import CompositionalOptimizer
 from custom_optimizer.utils.utils import columnwise_clamp_
