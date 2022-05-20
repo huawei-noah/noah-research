@@ -1,5 +1,6 @@
 import os
 import pickle
+from argparse import Namespace
 from typing import Any
 import json
 
@@ -54,3 +55,15 @@ def load_np(path: str, filename: str) -> np.ndarray:
     if len(filename) < 5 or filename[-4:] != '.npy':
         filename += '.npy'
     return np.load(os.path.join(path, filename))
+
+
+def save_config(config: Namespace, filename: str = 'config') -> None:
+    save_w_pickle(config, config.result_dir, filename)
+
+
+def load_config(path_or_filepath: str, filename: str = 'config') -> Namespace:
+    if len(path_or_filepath) > 4 and path_or_filepath[-4:] == '.pkl':
+        path, filename = os.path.split(path_or_filepath)
+    else:
+        path = path_or_filepath
+    return load_w_pickle(path, filename)
