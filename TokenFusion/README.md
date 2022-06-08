@@ -7,11 +7,11 @@ By Yikai Wang, Xinghao Chen, Lele Cao, Wenbing Huang, Fuchun Sun, Yunhe Wang.
 This repository is a PyTorch implementation of "Multimodal Token Fusion for Vision Transformers", in CVPR 2022. 
 
 <div align="center">
-   <img src="./figs/fig1.png" width="512">
+   <img src="./figs/fig1.PNG" width="512">
 </div>
 
 <div align="center">
-   <img src="./figs/fig2.png" width="960">
+   <img src="./figs/fig2.PNG" width="960">
 </div>
 
 ## Other implementations
