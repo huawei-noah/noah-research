@@ -2,7 +2,7 @@
 
 ## Overview
 
-O2DESpy is a framework for object-oriented discrete event simulation based on standard Python 3.x. It is developed by Huawei, Noah's Ark Lab, and extended from [O2DES](https://gitlab.com/li-haobin/O2DESNet).
+O2DESpy is a framework for object-oriented discrete event simulation based on standard Python 3.x. It is developed by Huawei, Noah's Ark Lab and the National University of Signapore, and extended from [O2DES](https://github.com/li-haobin/O2DESNet).
 
 It hybrids both event-based and state-based formalism, and implement them in an object-oriented programming language. As it is event-based in the kernel, O2DESpy is able to model the structure and behaviours of a system precisely. On top of it, the state-based formalism enables modularization and hierarchical modelling. Besides, the object-oriented paradigm abstracts the model definitions and makes them seamless to interact with analytical functionalities, regardless of their fidelity levels.
 
