@@ -2,7 +2,7 @@
 
 By Yikai Wang, Xinghao Chen, Lele Cao, Wenbing Huang, Fuchun Sun, Yunhe Wang.
 
-[**[Paper]**](https://arxiv.org/pdf/2204.08721.pdf)
+[**[Paper]**](https://openaccess.thecvf.com/content/CVPR2022/html/Wang_Multimodal_Token_Fusion_for_Vision_Transformers_CVPR_2022_paper.html)
 
 This repository is a PyTorch implementation of "Multimodal Token Fusion for Vision Transformers", in CVPR 2022. 
 
