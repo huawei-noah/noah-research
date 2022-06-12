@@ -114,6 +114,7 @@ class WeTr(nn.Module):
                 param_groups[0].append(param)
         for param in list(self.decoder.parameters()):
             param_groups[2].append(param)
+        param_groups[2].append(self.alpha)
         return param_groups
 
     def forward(self, x):
