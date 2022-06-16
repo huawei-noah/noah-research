@@ -3,7 +3,7 @@
 [**Abstract**](#abstract) | [**Datasets**](#datasets) |
 [**Two-Step Knowledge Distillation**](#two-step-knowledge-distillation) |
 
-This repository contains the implementation of the NAACL 2022 paper [FreeTransfer-X: Safe and Label-Free Cross-Lingual Transfer from Off-the-Shelf Models](https://2022.naacl.org/).
+This repository contains the implementation of the NAACL 2022 paper [FreeTransfer-X: Safe and Label-Free Cross-Lingual Transfer from Off-the-Shelf Models](https://arxiv.org/pdf/2206.06586.pdf).
 
 # Abstract
 
