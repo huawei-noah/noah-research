@@ -13,3 +13,4 @@ This repository provides some of the NLP techniques developed by Huawei Noah's A
 * [FreeGBDT](https://github.com/huawei-noah/noah-research/tree/master/freegbdt) investigates whether it is feasible (or superior) to replace the conventional MLP classifier head used with pretrained transformers with a gradient-boosted decision tree. Want to know if it worked? Take a look at the [ACL Findings 2021](https://aclanthology.org/2021.findings-acl.26.pdf) paper!
 * [Dual Transfer](https://github.com/huawei-noah/noah-research/tree/master/noahnmt/dual-transfer)
 * [MultiUAT](https://github.com/huawei-noah/noah-research/tree/master/noahnmt/multiuat)
+* [PERT](https://github.com/huawei-noah/noah-research/tree/master/noahime/PERT) is a transformer-based solution for pinyin-to-character conversion task which is core to the Chinese input method.
