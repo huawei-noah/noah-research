@@ -14,3 +14,4 @@ This repository provides some of the NLP techniques developed by Huawei Noah's A
 * [Dual Transfer](https://github.com/huawei-noah/noah-research/tree/master/noahnmt/dual-transfer)
 * [MultiUAT](https://github.com/huawei-noah/noah-research/tree/master/noahnmt/multiuat)
 * [PERT](https://github.com/huawei-noah/noah-research/tree/master/noahime/PERT) is a transformer-based solution for pinyin-to-character conversion task which is core to the Chinese input method.
+* [Maha_OOD](https://github.com/huawei-noah/noah-research/tree/master/Maha_OOD) is unsupervised method for out-of-domain detection for intents. The code to reproduce the results from the paper [AAAI 2021]("Revisting Mahalanobis Distance for Transformer-based Out-of-Domain Detection")
