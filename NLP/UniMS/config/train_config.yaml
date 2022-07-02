@@ -1,0 +1,87 @@
+# Basic Config
+project: UniMS
+mode: train
+# resume
+stage_resume: False
+stage_resume_path: path_to_checkpoint
+
+# Dataloader Config
+data_path: path_to_data
+batch_size: 16
+val_batch_size: 80
+num_workers: 2
+max_image_num: 10
+max_sent_num: 50
+
+# Datamodule Config
+# Tokenizer
+sent_token_len: 512
+ref_token_len: 128
+add_special_tokens: True
+truncation: True
+padding: max_length
+return_tensors: pt
+ignore_pad_token_for_loss: True
+# collate fn
+sent_lower_case: True
+mm_lower_case: True
+# sentence order: original / independent / greedy / image
+sent_order: original
+# get sentence order pseudo label: independent / greedy
+pseudo_label: greedy
+get_sent_score: False
+# get image order pseudo label: order / rouge / distill
+image_pseudo_label: distill
+get_image_score: False
+
+# Model Config
+pretrained_model_path: path_to_ptm_checkpoint
+backbone: bart-base
+dropout: 0.1
+
+# visual config
+use_image: True
+# CLIP / ResNet50 / ViT / LinProj
+visual_backbone: LinProj
+# ViT-B-16.pt / ViT-B-32.pt / RN50.pt / RN101.pt / RN50x4.pt / RN50x16.pt
+clip_path: path_to_clip_checkpoint
+use_image_score: True
+visual_guide: True
+image_score_layer: 6
+image_balance: 1
+image_tau: 10
+
+# extractive config
+use_language_score: True
+language_score_layer: 6
+language_balance: 10
+use_ranking_loss: False
+margin: 0.0001
+# abstractive config
+use_summarization: True
+
+# Optimizer Config
+# Adam / AdamW / Adafactor
+optimizer: AdamW
+learning_rate: 0.00005
+weight_decay: 0
+# LinearWarmup / PolynomialWarmup / CosineWarmup / ConstantWarmup
+scheduler: ConstantWarmup
+#scheduler: False
+warmup_ratio: 0.025
+
+# Trainer Config
+seed: 26
+train_params:
+  strategy: ddp
+  accumulate_grad_batches: 1
+  progress_bar_refresh_rate: 1
+  gradient_clip_val: 1.0
+  gpus: 2
+  benchmark: False
+  deterministic: True
+  max_steps: 30000
+  weights_summary: top
+  val_check_interval: 0.25
+  default_root_dir: path_to_log
+
