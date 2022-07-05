@@ -2,7 +2,7 @@ detectron2==0.1
 ftfy==6.0.3
 h5py==2.7.1
 matplotlib==2.1.2
-nltk==3.2.5
+nltk==3.6.6
 numpy==1.19.5
 opencv-python==3.4.0.12
 pandas==0.22.0
