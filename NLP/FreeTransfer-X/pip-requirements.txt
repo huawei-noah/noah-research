@@ -1,6 +1,6 @@
 numpy==1.18.0
 pythainlp==2.3.2
-nltk==3.2.5
+nltk==3.6.6
 subword-nmt==0.3.7
 mecab-python3==1.0.4
 unidic-lite==1.0.8
