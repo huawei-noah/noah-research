@@ -3,5 +3,5 @@ tensorflow_gpu==2.5.1
 scipy==1.2.0
 numpy==1.18.5
 opencv_python==4.4.0.42
-Pillow==8.3.2
+Pillow==9.0.1
 
