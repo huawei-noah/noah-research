@@ -41,7 +41,6 @@ ${ROOT}
         |-- SMPL_NEUTRAL.pkl
 |-- lib
     |-- pytorch_yolo_v3_master
-```
 
 ## Demo
 ```shell
