@@ -41,21 +41,26 @@ ${ROOT}
         |-- SMPL_NEUTRAL.pkl
 |-- lib
     |-- pytorch_yolo_v3_master
+```
 
 ## Demo
 ```shell
 sh scripts/run_demo.sh
 ```
 
-<img src="assets/im08036/im08036.png" width="24%">
-<img src="assets/im08036/im08036_bbox.jpg" width="24%">
-<img src="assets/im08036/im08036_front_view_cliff_hr48.jpg" width="24%">
-<img src="assets/im08036/im08036_side_view_cliff_hr48.jpg" width="24%">
+<p float="left">
+   <img src="assets/im08036/im08036.png" width="24%">
+   <img src="assets/im08036/im08036_bbox.jpg" width="24%">
+   <img src="assets/im08036/im08036_front_view_cliff_hr48.jpg" width="24%">
+   <img src="assets/im08036/im08036_side_view_cliff_hr48.jpg" width="24%">
+</p>
 
-<img src="assets/im00492/im00492.png" width="24%">
-<img src="assets/im00492/im00492_bbox.jpg" width="24%">
-<img src="assets/im00492/im00492_front_view_cliff_hr48.jpg" width="24%">
-<img src="assets/im00492/im00492_side_view_cliff_hr48.jpg" width="24%">
+<p float="left">
+   <img src="assets/im00492/im00492.png" width="24%">
+   <img src="assets/im00492/im00492_bbox.jpg" width="24%">
+   <img src="assets/im00492/im00492_front_view_cliff_hr48.jpg" width="24%">
+   <img src="assets/im00492/im00492_side_view_cliff_hr48.jpg" width="24%">
+</p>
 
 The results will be saved in the same directory as the input, including the detected bbox, 
 the front-view and side-view rendering of the reconstructed meshes, 
@@ -72,8 +77,10 @@ Run the script to visualize the pseudoGT, press the `<-` and `->` button to the 
 sh scripts/run_cliffGT_visualization.sh
 ```
 
-<img src="assets/visualized_cliffGT/viz_cliffGT_perImg-COCO_sample.jpg" width="49%">
-<img src="assets/visualized_cliffGT/viz_cliffGT_perSubject-MPII_sample.jpg" width="49%">
+<p float="left">
+   <img src="assets/visualized_cliffGT/viz_cliffGT_perImg-COCO_sample.jpg" width="49%">
+   <img src="assets/visualized_cliffGT/viz_cliffGT_perSubject-MPII_sample.jpg" width="49%">
+</p>
 
 Data format: 
 ```
