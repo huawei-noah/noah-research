@@ -1,5 +1,7 @@
 # CLIFF [ECCV 2022 Oral]
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cliff-carrying-location-information-in-full/3d-human-pose-estimation-on-3dpw)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3dpw?p=cliff-carrying-location-information-in-full)
+
 <img src="assets/teaser.gif" width="100%">
 
 *(This testing video is from the 3DPW testset, and processed frame by frame without temporal smoothing.)*
@@ -8,7 +10,9 @@
 This repo contains the demo code, 
 and the pseudo-GT SMPL parameters used in the training for the paper:
 
-**CLIFF: Carrying Location Information in Full Frames into Human Pose and Shape Estimation**.
+[**CLIFF: Carrying Location Information in Full Frames into Human Pose and Shape Estimation**](
+    https://arxiv.org/abs/2208.00571
+).
 
 ## Installation
 ```bash
@@ -35,6 +39,7 @@ ${ROOT}
         |-- hr48-PA43.0_MJE69.0_MVE81.2_3dpw.pt
         |-- res50-PA45.7_MJE72.0_MVE85.3_3dpw.pt
         |-- yolov3.weights
+        |-- hr48-PA53.7_MJE91.4_MVE110.0_agora_val.pt
     |-- smpl
         |-- SMPL_FEMALE.pkl
         |-- SMPL_MALE.pkl
