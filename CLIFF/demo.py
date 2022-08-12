@@ -226,8 +226,10 @@ def main(args):
         print("--------------------------- Making videos ---------------------------")
         from common.utils import images_to_video
         images_to_video(front_view_dir, video_path=front_view_dir + ".mp4", frame_rate=args.frame_rate)
-        images_to_video(side_view_dir, video_path=side_view_dir + ".mp4", frame_rate=args.frame_rate)
-        images_to_video(bbox_dir, video_path=bbox_dir + ".mp4", frame_rate=args.frame_rate)
+        if args.show_sideView:
+            images_to_video(side_view_dir, video_path=side_view_dir + ".mp4", frame_rate=args.frame_rate)
+        if args.show_bbox:
+            images_to_video(bbox_dir, video_path=bbox_dir + ".mp4", frame_rate=args.frame_rate)
 
 
 if __name__ == '__main__':
