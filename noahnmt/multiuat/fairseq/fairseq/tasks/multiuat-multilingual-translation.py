@@ -378,7 +378,6 @@ class MultiUATMultilingualTranslationTask(MultilingualTranslationTask):
             self.data_actor_pretrained = True
 
         if update_num % self.args.update_sampling_interval == 0 and update_num != 0 and data_actor is not None and self.current_sampling_update_num != update_num:
-            model.eval()
             # train_grad_state = self.copy_grad(model)
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
