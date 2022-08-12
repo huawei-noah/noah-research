@@ -123,6 +123,8 @@ def main(args):
 
         cx, cy, b = center[:, 0], center[:, 1], scale * 200
         bbox_info = torch.stack([cx - img_w / 2., cy - img_h / 2., b], dim=-1)
+        # The constants below are used for normalization, and calculated from H36M data.
+        # It should be fine if you use the plain Equation (5) in the paper.
         bbox_info[:, :2] = bbox_info[:, :2] / focal_length.unsqueeze(-1) * 2.8  # [-1, 1]
         bbox_info[:, 2] = (bbox_info[:, 2] - 0.24 * focal_length) / (0.06 * focal_length)  # [-1, 1]
 
