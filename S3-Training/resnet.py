@@ -179,11 +179,8 @@ class ResNet_imagenet(ResNet):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
                 m.weight_val.data.normal_(0, math.sqrt(2. / n))
-                m.weight_val.data.abs_()
                 m.weight_shift.data.normal_(0, math.sqrt(2. / n))
-                m.weight_shift.data = m.weight_shift.data.abs() * -1
                 m.weight_shift2.data.normal_(0, math.sqrt(2. / n))
-                m.weight_shift2.data = m.weight_shift2.data.abs() * -1
 
             if isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
@@ -219,11 +216,8 @@ class ResNet_cifar10(ResNet):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
                 m.weight_val.data.normal_(0, math.sqrt(2. / n))
-                m.weight_val.data.abs_()
                 m.weight_shift.data.normal_(0, math.sqrt(2. / n))
-                m.weight_shift.data = m.weight_shift.data.abs() * -1
                 m.weight_shift2.data.normal_(0, math.sqrt(2. / n))
-                m.weight_shift2.data = m.weight_shift2.data.abs() * -1
 
             if isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
