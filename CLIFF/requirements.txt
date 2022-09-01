@@ -1,0 +1,11 @@
+torch>=1.11.0
+numpy>=1.22.4
+opencv-python>=4.5.5.64
+matplotlib>=3.5.2
+pillow>=9.1.1
+tqdm>=4.64.0
+trimesh>=3.12.3
+pyrender>=0.1.45
+yacs>=0.1.8
+smplx>=0.1.28
+torchgeometry>=0.1.2
