@@ -2,7 +2,7 @@
 
 This repository is the DEMO code of the NeurIPS 2021 paper [S3: Sign-Sparse-Shift Reparametrization for Effective Training of Low-bit Shift Networks](https://proceedings.neurips.cc/paper/2021/file/7a1d9028a78f418cb8f01909a348d9b2-Paper.pdf).
 
-Shift neural networks reduce computation complexity by removing expensive multiplication operations and quantizing continuous weights into low-bit discrete values, which are fast and energy-efficient compared to conventional neural networks. However, existing shift networks are sensitive to the weight initialization and yield a degraded performance caused by vanishing gradient and weight sign freezing problem. To address these issues, we propose S3 re-parameterization, a novel technique for training low-bit shift networks. Our method decomposes a discrete parameter in a sign-sparse-shift 3-fold manner. This way, it efficiently learns a low-bit network with weight dynamics similar to full-precision networks and insensitive to weight initialization. Our proposed training method pushes the boundaries of shift neural networks and shows 3-bit shift networks compete with their full-precision counterparts in terms of top-1 accuracy on ImageNet.
+Shift neural networks (Power-of-Two quantization) reduce computation complexity by removing expensive multiplication operations and quantizing continuous weights into low-bit discrete values, which are fast and energy-efficient compared to conventional neural networks. However, existing shift networks are sensitive to the weight initialization and yield a degraded performance caused by vanishing gradient and weight sign freezing problem. To address these issues, we propose S3 re-parameterization, a novel technique for training low-bit shift networks. Our method decomposes a discrete parameter in a sign-sparse-shift 3-fold manner. This way, it efficiently learns a low-bit network with weight dynamics similar to full-precision networks and insensitive to weight initialization. Our proposed training method pushes the boundaries of shift neural networks and shows 3-bit shift networks compete with their full-precision counterparts in terms of top-1 accuracy on ImageNet.
 
 <p align="center">
 <img src="figures/S3-Shift3bit-Training.png" alt="Training Diagram of S3 re-parameterized 3-bit shift network" width="540">
@@ -29,7 +29,7 @@ python main.py /path/to/imagenet
 
 ## Pre-trained checkpoints
 
-Two pre-trained checkpoints corresponding to the 3-bit results reported in the paper are provided [here](./pre-trained-ckpt-evaluation/pre-trained-ckpts.7z). The checkpoints convert into a format compatible with the PyTorch official ImageNet training example so that this open-source code can evaluate the validation accuracy of the checkpoints.
+Two pre-trained checkpoints corresponding to the 3-bit results reported in the paper can be [downloaded here](./pre-trained-ckpt-evaluation/). The checkpoints convert into a format compatible with the PyTorch official ImageNet training example so that the standard implementation code can evaluate the validation accuracy of the checkpoints.
 
 ### 3-bit Shift Network on ResNet-18 ImageNet
 <details>
