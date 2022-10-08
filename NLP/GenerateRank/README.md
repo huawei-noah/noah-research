@@ -68,3 +68,21 @@ python -m torch.distributed.launch \
 
 ```
 
+## Reference
+
+Please cite our paper if you use our models in your works:
+```
+@inproceedings{shen-etal-2021-generate-rank,
+    title = "Generate {\&} Rank: A Multi-task Framework for Math Word Problems",
+    author = "Shen, Jianhao  and
+      Yin, Yichun  and
+      Li, Lin  and
+      Shang, Lifeng  and
+      Jiang, Xin  and
+      Zhang, Ming  and
+      Liu, Qun",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2021",
+    year = "2021",
+    pages = "2269--2279",
+}
+```
