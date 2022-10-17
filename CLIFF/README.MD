@@ -4,7 +4,7 @@
 [![youtube intro video](https://img.shields.io/youtube/views/e8neN405UsY?style=social)](https://youtu.be/e8neN405UsY)
 [![youtube demo video](https://img.shields.io/youtube/views/UBqhTHYPoOo?style=social)](https://youtu.be/UBqhTHYPoOo)
 
-<img src="assets/teaser.gif" width="100%">
+<img src="assets/teaser.gif" width="71.5%">
 
 *(This testing video is from the 3DPW testset, and processed frame by frame without temporal smoothing.)*
 
@@ -51,6 +51,9 @@ ${ROOT}
 ```
 
 ## Demo
+
+<img src="assets/sota.png" width="60%">
+
 ```shell
 sh scripts/run_demo.sh
 ```
@@ -77,6 +80,11 @@ One can change the demo options in the script.
 Please see the option description in the bottom lines of `demo.py`.
 
 ## Pseudo-GT
+
+<p float="left">
+   <img src="assets/gt_direct.png" width="30.5%">
+   <img src="assets/gt_indirect.png" width="68.5%">
+</p>
 
 Run the script to visualize the pseudoGT, press the `<-` and `->` button to the next sample, and `esc` to exit.
 
