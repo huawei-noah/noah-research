@@ -4,6 +4,7 @@ Code for the EMNLP 2022 paper
 "[Training Dynamics for Curriculum Learning: A Study on Monolingual and Cross-lingual NLU](https://aclanthology.org/2022.emnlp-main.167/)"
 
 If you like this work, please cite the publication as follows:
+```
 @inproceedings{christopoulou-etal-2022-training,
     title = "Training Dynamics for Curriculum Learning: A Study on Monolingual and Cross-lingual {NLU}",
     author = "Christopoulou, Fenia  and
@@ -17,7 +18,7 @@ If you like this work, please cite the publication as follows:
     url = "https://aclanthology.org/2022.emnlp-main.167",
     pages = "2595--2611"
 }
-
+```
 
 ### Environment
 All models were training on a single Nvidia V100 16GB GPU.
@@ -26,14 +27,13 @@ Pending to provide a docker image the will help replicate experiments.
 
 ### Pre-trained Language Models
 
-XLM-R-base and RoBERTa-base language models from the HuggingFace hub ([xlmr-base](https://huggingface.co/xlm-roberta-base),
-[roberta-base](https://huggingface.co/roberta-base) will be downloaded from [HuggingFace](https://huggingface.co/models)
+[XLM-R-base](https://huggingface.co/xlm-roberta-base) and [RoBERTa-base](https://huggingface.co/roberta-base) language models will be downloaded from [HuggingFace](https://huggingface.co/models)
 automatically during the first time of training.
 
 
 ### Datasets
 
-Download the datasets used following instructions inside the `get_data.sh` script.
+Download the datasets following instructions inside the `get_data.sh` script.
 ```
 cd original_data/
 bash get_data.sh
@@ -60,7 +60,7 @@ python convert_advsquad.py -i ../original_data/squad_adversarial \
                            -o ../data/squad_adversarial_converted
 ```
 
-Data can then be processed choosing one of `['xnli', 'pawsx', 'mldoc', 'xcopa', 'siqa', 'paws', 'twitter-ppdb', 'qnli', 'rte', 'mnli']`.
+Data can then be processed by choosing one of `['xnli', 'pawsx', 'mldoc', 'xcopa', 'siqa', 'paws', 'twitter-ppdb', 'qnli', 'rte', 'mnli']`.
 All data will be saved in the `data/` directory in an appropriate format for 
 [HuggingFace Datasets](https://huggingface.co/docs/datasets/) to load.
 An example is shown below:
@@ -80,7 +80,7 @@ cd exps_bash/
 bash run_baseline.sh xnli xlm-roberta-base 7e-6 10
 bash run_baseline.sh xnli roberta-base 7e-6 10
 ```
-More info about those can be found in `exps_bash/run_all.sh`.
+More info about that can be found in `exps_bash/run_all.sh`.
 
 
 #### Collecting Training Dynamics & Difficulty Scores
@@ -137,7 +137,7 @@ python get_cr_scores.py --model_name roberta-base \
 
 #### Training with Curricula
 
-Using the training dynamics the following curricula can be used to re-train a model: 
+Using training dynamics the following curricula can be employed to re-train a model: 
 `annealing`, `annealing-bias`, `competence`, `competence-bias`, `cross-review` and heuristics including `length`, `word rarity` and `perplexity`.
 
 Examples for running a model with CL:
@@ -150,7 +150,7 @@ bash run_heuristics.sh xnli 'xlm-roberta-base' 7e-6 10 32 128 "71500 107000 7150
 ```
 The `confidence-based` and `heuristics-based` curricula use the competence scheduler. 
 Hence, they require to know the number of training steps in advance.
-For each seed you need to give an integer corresponding to the numbers of total steps the teacher model has been trained on.
+For each seed you need to give an integer corresponding to the number of total steps the teacher model has been trained on.
 This is printed at the end of the baseline model training.
 
 
