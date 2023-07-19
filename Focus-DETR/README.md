@@ -1,8 +1,9 @@
 ## Focus-DETR
-This is the official implementation of the paper "Less is More: Focus Attention for Efficient DETR"
-Authors:Dehua Zheng, Wenhui Dong, Hailin Hu, Xinghao Chen, Yunhe Wang.
+This is the official implementation of the paper "Less is More: Focus Attention for Efficient DETR" 
 
-[[`arXiv`]()] [[`BibTeX`](#citing-focus-detr)]
+Authors: Dehua Zheng, Wenhui Dong, Hailin Hu, Xinghao Chen, Yunhe Wang.
+
+[`arXiv`]
 
 <div align="center">
   <img src="./assets/model_arch.png"/>
@@ -12,7 +13,7 @@ Authors:Dehua Zheng, Wenhui Dong, Hailin Hu, Xinghao Chen, Yunhe Wang.
 - [Focus-DETR](#focus-detr)
 - [Table of Contents](#table-of-contents)
 - [Main Results with Pretrained Models](#main-results-with-pretrained-models)
-      - [Pretrained focus\_detr with ResNet Backbone](#pretrained-focus_detr-with-resnet-backbone)
+    - [Pretrained focus\_detr with ResNet Backbone](#pretrained-focus_detr-with-resnet-backbone)
     - [Pretrained focus\_detr with Swin-Transformer Backbone](#pretrained-focus_detr-with-swin-transformer-backbone)
 - [Installation](#installation)
 - [Training](#training)
@@ -81,7 +82,7 @@ Here we provide the pretrained `Focus-DETR` weights based on detrex.
 <td align="center"> <a href="https://github.com/linxid/Focus-DETR-mindspore/releases/download/Focus-DETR/focus_detr_r101_4scale_24ep.zip">model</a></td>
 </tr>
 <!-- ROW: focus_detr_r101_4scale_36ep -->
- <tr><td align="left"><a href="configs/focus_detr_resnet/focus_detr_r101_4scale_36ep.py">Focus-DETR-R50-4scale</a></td>
+ <tr><td align="left"><a href="configs/focus_detr_resnet/focus_detr_r101_4scale_36ep.py">Focus-DETR-R101-4scale</a></td>
 <td align="center">R-101</td>
 <td align="center">IN1k</td>
 <td align="center">36</td>
