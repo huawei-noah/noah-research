@@ -3,10 +3,12 @@ This is the official implementation of the paper "Less is More: Focus Attention 
 
 Authors: Dehua Zheng, Wenhui Dong, Hailin Hu, Xinghao Chen, Yunhe Wang.
 
-[`arXiv`]
+[[`arXiv`](https://arxiv.org/abs/2307.12612)] [[`BibTeX`](#citing-focus-detr)]
+
+Focus-DETR is a model that focuses attention on more informative tokens for a better trade-off between computation efficiency and model accuracy. Compared with the state-of-the-art sparse transformed-based detector under the same setting, our Focus-DETR gets comparable complexity while achieving 50.4AP (+2.2) on COCO.
 
 <div align="center">
-  <img src="./assets/model_arch.png"/>
+  <img src="./assets/overview.jpg"/>
 </div><br/>
 
 ## Table of Contents
@@ -178,4 +180,18 @@ Model evaluation can be done as follows:
 ```bash
 cd detrex
 python tools/train_net.py --config-file projects/focus_detr/configs/path/to/config.py --eval-only train.init_checkpoint=/path/to/model_checkpoint
+```
+
+## Citing Focus-DETR
+If you find our work helpful for your research, please consider citing the following BibTeX entry.
+
+```BibTex
+@misc{zheng2023more,
+      title={Less is More: Focus Attention for Efficient DETR}, 
+      author={Dehua Zheng and Wenhui Dong and Hailin Hu and Xinghao Chen and Yunhe Wang},
+      year={2023},
+      eprint={2307.12612},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
