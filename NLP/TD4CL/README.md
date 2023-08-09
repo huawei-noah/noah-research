@@ -22,7 +22,11 @@ If you like this work, please cite the publication as follows:
 
 ### Environment
 All models were training on a single Nvidia V100 16GB GPU.
-Pending to provide a docker image the will help replicate experiments.
+Download the docker image used for the project from [here](https://drive.google.com/file/d/1MjhB2CaGvAo3BSPg4UMJciY4hoOCK3ah/view?usp=sharing) and load as follows:
+```bash
+docker load < clearn_img_latest.tar.gz
+docker image ls  # check image
+```
 
 
 ### Pre-trained Language Models
