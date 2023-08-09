@@ -1,4 +1,4 @@
-# CLIFF [ECCV 2022 Oral]
+# CLIFF Official Implementation [ECCV 2022 Oral]
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cliff-carrying-location-information-in-full/3d-human-pose-estimation-on-3dpw)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3dpw?p=cliff-carrying-location-information-in-full)
 [![youtube intro video](https://img.shields.io/youtube/views/e8neN405UsY?style=social)](https://youtu.be/e8neN405UsY)
