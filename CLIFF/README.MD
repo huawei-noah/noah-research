@@ -116,6 +116,11 @@ Data format:
 When submitting an issue, please add **"[CLIFF]"** before the title, e.g., `[CLIFF] your issue title`.
 This is for clarifying which subproject the issue points to.
 
+## Other Implementations
+- BEDLAM: 
+- MMHuman3D: 
+- haofanwang: 
+
 ## Citing
 ```
 @Inproceedings{li2022cliff,
