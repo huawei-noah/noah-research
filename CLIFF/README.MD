@@ -117,9 +117,9 @@ When submitting an issue, please add **"[CLIFF]"** before the title, e.g., `[CLI
 This is for clarifying which subproject the issue points to.
 
 ## Other Implementations
-- BEDLAM: 
-- MMHuman3D: 
-- haofanwang: 
+- [BEDLAM](https://github.com/pixelite1201/BEDLAM): training, evaluation, demo
+- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d/tree/main/configs/cliff): training, evaluation, demo
+- [haofanwang](https://github.com/haofanwang/CLIFF): demo
 
 ## Citing
 ```
