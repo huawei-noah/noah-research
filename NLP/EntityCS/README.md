@@ -208,7 +208,7 @@ Example usage:
 import datasets
 
 for lang in ['en', 'fr', 'es']:
-    d = datasets.load_dataset("huawei-noah/entity_cs", data_files=f"data/{lang}/", split="train")
+    d = datasets.load_dataset("huawei-noah/entity_cs", data_dir=f"data/{lang}/", split="train")
     print(d)
 ```
 
