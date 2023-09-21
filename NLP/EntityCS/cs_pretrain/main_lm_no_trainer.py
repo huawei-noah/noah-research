@@ -380,7 +380,7 @@ def main():
         logger.info(f"Loading {lang.upper()}")
 
         raw_datasets_by_lang[lang] = load_dataset(
-            "huawei-noah/entity_cs", data_files=f"data/{lang}/", split="train"
+            "huawei-noah/entity_cs", data_dir=f"data/{lang}/", split="train"
         )
 
         if lang == "en":
