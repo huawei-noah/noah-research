@@ -196,6 +196,30 @@ Run the model as follows:
 bash run_xl_wic.sh
 ```
 
+## EntityCS Corpus
+We provide the EntityCS corpus in all 93 languages on the HF Hub: 
+[https://huggingface.co/datasets/huawei-noah/entity_cs](https://huggingface.co/datasets/huawei-noah/entity_cs)
+
+Code-switched instances in different languages are associated with the original English sentence, containing two fields `en_sentence` and
+`cs_sentence`. For the English instances (`en`), only the `en_sentence` field exists.
+
+Example usage:
+```python
+import datasets
+
+for lang in ['en', 'fr', 'es']:
+    d = datasets.load_dataset("huawei-noah/entity_cs", data_dir=f"data/{lang}/", split="train")
+    print(d)
+```
+
+## Trained Models on the EntityCS corpus
+We provide 4 models based on different objectives, trained on the EntityCS corpus with 39 languages (those of WikiANN) 
+and achieve the lowest perplexity score on the validation set:
+- MLM: [https://huggingface.co/huawei-noah/EntityCS-39-MLM-xlmr-base](https://huggingface.co/huawei-noah/EntityCS-39-MLM-xlmr-base)
+- WEP: [https://huggingface.co/huawei-noah/EntityCS-39-WEP-xlmr-base](https://huggingface.co/huawei-noah/EntityCS-39-WEP-xlmr-base)
+- PEP<sub>MS</sub>: [https://huggingface.co/huawei-noah/EntityCS-39-PEP_MS-xlmr-base](https://huggingface.co/huawei-noah/EntityCS-39-PEP_MS-xlmr-base)
+- PEP<sub>MS</sub> + MLM: [https://huggingface.co/huawei-noah/EntityCS-39-PEP_MS_MLM-xlmr-base](https://huggingface.co/huawei-noah/EntityCS-39-PEP_MS_MLM-xlmr-base)
+  
 ## License
 Licensed under the Apache License, Version 2.0. Please see the [License](./LICENSE) file for more information.
 Disclaimer: This is not an officially supported HUAWEI product.
