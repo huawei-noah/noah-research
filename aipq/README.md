@@ -51,8 +51,7 @@ The [runs/eval.sh](runs/eval.sh) script allows to run multiple combinations of m
 
 We provide models for `three architectures` with `agnostic pair formation` and all `regularization` enabled, leading to the numbers shown on Table 3. of the paper:
 
-![image](/uploads/7270abf5-89b6-4acd-9a87-49803df17f15/1693840161702.jpeg '1693840161702.jpeg')
-
+![table-3](https://github.com/huawei-noah/noah-research/blob/master/aipq/assets/paper_table3.jpg)
 
 # Citation
     @inproceedings{thong2022content,
