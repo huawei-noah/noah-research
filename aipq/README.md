@@ -7,7 +7,7 @@ Source code for FR-IQA with agnostic sampling and differentiable correlation reg
 
 [core](core) -- core modules to be used in other parts  
 [data](data) -- csv files with all the filepaths to dataset images  
-[mindspore](minspore) -- mindspore specific code for evaluation
+[mindspore](mindspore) -- mindspore specific code for evaluation
 [torch](torch) -- torch specific code for evaluation
 [runs](runs) -- bash script with options to evaluate multiple dataset/model combinations
 [checkpoints](checkpoints) -- location of the (compressed) model checkpoints
@@ -20,7 +20,7 @@ Newer versions of some of the necessary libraries have since became available an
 
 
 ## Model checkpoints
-To use this code with the models used on the BMVC'22 paper we must first extract them from the tar.gz archives. Model checkpoints are archived across multiple files (made to be <50M). Restoring the original ``.ckpt`` (mindspore) and ``.pth.tar`` (pytorch) files can be achieved by doing:
+To use this code with the models from BMVC'22 paper we must first extract them from the tar.gz archives. Model checkpoints are archived across multiple files (made to be <50M). Restoring the original ``.ckpt`` (mindspore) and ``.pth.tar`` (pytorch) files can be achieved by doing:
 
 	cd checkpoints/
 	cat model_checkpoints.tar.gz.*  | tar xzvf -
@@ -55,8 +55,8 @@ We provide models for `three architectures` with `agnostic pair formation` and a
 
 # Citation
     @inproceedings{thong2022content,
-    title={Content-Diverse Comparisons improve {IQA}},
-    author={Thong, William and Costa Pereira, Jose and Parisot, Sarah and Leonardis, Ales and McDonagh, Steven},
-    booktitle={British Machine Vision Conference},
-    year={2022}
+      title={Content-Diverse Comparisons improve {IQA}},
+      author={Thong, William and Costa Pereira, Jose and Parisot, Sarah and Leonardis, Ales and McDonagh, Steven},
+      booktitle={British Machine Vision Conference},
+      year={2022}
     }
