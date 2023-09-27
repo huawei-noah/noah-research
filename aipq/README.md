@@ -20,10 +20,7 @@ Newer versions of some of the necessary libraries have since became available an
 
 
 ## Model checkpoints
-To use this code with the models from BMVC'22 paper we must first extract them from the tar.gz archives. Model checkpoints are archived across multiple files (made to be <50M). Restoring the original ``.ckpt`` (mindspore) and ``.pth.tar`` (pytorch) files can be achieved by doing:
-
-	cd checkpoints/
-	cat model_checkpoints.tar.gz.*  | tar xzvf -
+Three models - in both Mindspore and Pytorch - are provided to replicate results from the BMVC'22 paper. They are located in this [HuggingFace repository](https://huggingface.co/huawei-noah/aipq). Just copy the HF repository contents to the ``checkpoints`` directory. 
   
 ## Datasets
 
