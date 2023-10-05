@@ -1,0 +1,11 @@
+datasets
+transformers
+sentencepiece
+scipy
+tqdm
+matplotlib
+seaborn
+scipy
+spacy==2.2.0
+sklearn
+scikit-learn

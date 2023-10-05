@@ -1,0 +1,13 @@
+mindspore==2.1.0
+torch==2.0.1
+torchvision==0.15.2
+numpy
+opencv_python
+Pillow
+scipy
+matplotlib
+pandas
+tqdm
+patchify
+download
+lpips
