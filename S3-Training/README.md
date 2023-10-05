@@ -1,3 +1,7 @@
+# DenseShift: Towards Accurate and Efficient Low-Bit Power-of-Two Quantization
+
+The DEMO code of the ICCV-2023 paper [DenseShift: Towards Accurate and Efficient Low-Bit Power-of-Two Quantization](https://openaccess.thecvf.com/content/ICCV2023/html/Li_DenseShift_Towards_Accurate_and_Efficient_Low-Bit_Power-of-Two_Quantization_ICCV_2023_paper.html) will be update to this repo soon.
+
 # S3: Sign-Sparse-Shift Reparametrization for Effective Training of Low-bit Shift Networks
 
 This repository is the DEMO code of the NeurIPS 2021 paper [S3: Sign-Sparse-Shift Reparametrization for Effective Training of Low-bit Shift Networks](https://proceedings.neurips.cc/paper/2021/file/7a1d9028a78f418cb8f01909a348d9b2-Paper.pdf).
