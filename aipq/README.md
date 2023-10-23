@@ -59,4 +59,3 @@ We provide models for `three architectures` with `agnostic pair formation` and a
     }
 
 
-【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
