@@ -2,11 +2,16 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 import math
 
-from dsconv2d import DenseShiftConv2d3bit
+from s3conv2dshift import S3Conv2dShift3bit, add_reg_sparse_to_loss
 
-def conv3x3(in_planes, out_planes, stride=1):
+def conv3x3_fp(in_planes, out_planes, stride=1):
     "3x3 convolution with padding"
-    return DenseShiftConv2d3bit(in_planes, out_planes, kernel_size=3, stride=stride,
+    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
+                             padding=1, bias=False)
+
+def conv3x3_s3(in_planes, out_planes, stride=1):
+    "3x3 convolution with padding"
+    return S3Conv2dShift3bit(in_planes, out_planes, kernel_size=3, stride=stride,
                      padding=1, bias=False)
 
 class BasicBlock(nn.Module):
@@ -15,10 +20,10 @@ class BasicBlock(nn.Module):
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
 
-        self.conv1 = conv3x3(inplanes, planes, stride)
+        self.conv1 = conv3x3_s3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
+        self.conv2 = conv3x3_s3(planes, planes)
         self.bn2 = nn.BatchNorm2d(planes)
         self.downsample = downsample
         self.stride = stride
@@ -48,7 +53,7 @@ class Bottleneck(nn.Module):
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(Bottleneck, self).__init__()
 
-        conv2d = DenseShiftConv2d3bit
+        conv2d = S3Conv2dShift3bit
 
         self.conv1 = conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
@@ -94,7 +99,7 @@ class ResNet(nn.Module):
 
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
-                DenseShiftConv2d3bit(self.inplanes, planes * block.expansion,
+                S3Conv2dShift3bit(self.inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(planes * block.expansion),
             )
@@ -170,12 +175,12 @@ class ResNet_imagenet(ResNet):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
 
-            # Low-variance initialization
-            if isinstance(m, DenseShiftConv2d3bit):
-                m.weight_sign.data.normal_(0, 1e-3)
-                m.weight_t1.data.normal_(0, 1e-3)
-                m.weight_t2.data.normal_(0, 1e-3)
-                m.weight_t3.data.normal_(0, 1e-3)
+            if isinstance(m, S3Conv2dShift3bit):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+                m.weight_val.data.normal_(0, math.sqrt(2. / n))
+                m.weight_shift.data.normal_(0, math.sqrt(2. / n))
+                m.weight_shift2.data.normal_(0, math.sqrt(2. / n))
 
             if isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
@@ -207,12 +212,12 @@ class ResNet_cifar10(ResNet):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
 
-            # Low-variance initialization
-            if isinstance(m, DenseShiftConv2d3bit):
-                m.weight_sign.data.normal_(0, 1e-3)
-                m.weight_t1.data.normal_(0, 1e-3)
-                m.weight_t2.data.normal_(0, 1e-3)
-                m.weight_t3.data.normal_(0, 1e-3)
+            if isinstance(m, S3Conv2dShift3bit):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+                m.weight_val.data.normal_(0, math.sqrt(2. / n))
+                m.weight_shift.data.normal_(0, math.sqrt(2. / n))
+                m.weight_shift2.data.normal_(0, math.sqrt(2. / n))
 
             if isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
