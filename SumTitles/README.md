@@ -31,3 +31,4 @@ Please use the following bibtex code for citation:
     abstract = "The existing dialogue summarization corpora are significantly extractive. We introduce a methodology for dataset extractiveness evaluation and present a new low-extractive corpus of movie dialogues for abstractive text summarization along with baseline evaluation. The corpus contains 153k dialogues and consists of three parts: 1) automatically aligned subtitles, 2) automatically aligned scenes from scripts, and 3) manually aligned scenes from scripts. We also present an alignment algorithm which we use to construct the corpus.",
 }
 ```
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

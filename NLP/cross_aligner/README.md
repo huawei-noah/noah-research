@@ -119,3 +119,5 @@ if use_weighting.use_new_weighting_method:
 ```
 
 We hope you find our resources useful. Get in touch if you need further help :)
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

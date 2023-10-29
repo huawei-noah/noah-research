@@ -172,3 +172,5 @@ python evaluate.py --model_dir ../trained_models/xnli_xlm-roberta-base_123_LR7e-
 
 Licensed under the Apache License, Version 2.0. Please see the [License](./LICENSE) file for more information.
 Disclaimer: This is not an officially supported HUAWEI product.
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

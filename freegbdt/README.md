@@ -96,3 +96,5 @@ We have done our best to make runs deterministic, but we can't guarantee that th
 - Seed used for CNLI: `61461`
 - Seed used for ANLI: `11440`
 - Seed used for QNLI: `43851`
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

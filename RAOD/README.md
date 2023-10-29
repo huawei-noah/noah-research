@@ -102,3 +102,4 @@ If you find our work helpful, please cite the following paper.
     year      = {2023},
 }
 ```
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

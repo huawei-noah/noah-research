@@ -53,3 +53,4 @@ Finally, **`nohup ./config/mtod.sh mtod_target large &`** should train the large
 
 That should give a good idea for further runs, if unsure, look inside the shell file for clues :)
 
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

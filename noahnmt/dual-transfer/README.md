@@ -34,3 +34,4 @@ bash train-parent-mt.sh
 ```
 bash train-child-mt.sh
 ```
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

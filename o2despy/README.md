@@ -91,3 +91,5 @@ In this example, the termination condition is defined as a time duration where t
 ## Cooperation and Contribution
 
 Welcome to use O2DESpy. If you have any questions or suggestions, need help, fix bugs, contribute new modules, or improve the documentation, submit an issue in the community. We will reply to and communicate with you in a timely manner. 
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

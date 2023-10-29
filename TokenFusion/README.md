@@ -109,5 +109,5 @@ If you find our work useful for your research, please consider citing the follow
   year={2022}
 }
 ```
-
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
 

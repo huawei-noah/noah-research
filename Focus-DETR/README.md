@@ -195,3 +195,4 @@ If you find our work helpful for your research, please consider citing the follo
       primaryClass={cs.CV}
 }
 ```
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

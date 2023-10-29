@@ -87,3 +87,5 @@ bash scripts/train_distill_cloud.sh \
 --vocabs_dir $VOCABS_DIR
 ```
 The main differences between the args and those of Step 1 are: `--multi_dir` and `--run_steps`.
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

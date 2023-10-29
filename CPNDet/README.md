@@ -177,6 +177,6 @@ or
 python test.py --cfg_file DLA34 --testiter <iter> --split <split> --suffix multi_scale
 
 ```
-
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
 
 

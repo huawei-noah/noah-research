@@ -9,3 +9,4 @@ Further instructions are provided in the README
 files associated to each project.
 
 
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

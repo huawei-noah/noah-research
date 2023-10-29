@@ -221,3 +221,5 @@ Our model achieves the following performance on :
 | 3-bit Shift ResNet-50 |     75.748%         |      92.800%       |
 
 The minor accuracy difference (~0.3%) between Table 1 and the evaluation code output may cause by the difference between our implementation and the PyTorch official ImageNet training example.
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
