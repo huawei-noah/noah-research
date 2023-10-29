@@ -68,3 +68,4 @@ Please refer to the paper for an introduction to datasets and the required refer
 - Memory-augmented RNN with homogeneous memory parameter d: `mRNN_fixD`
 - Memory-augmented LSTM with homogeneous d: `mLSTM_fixD`
 
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

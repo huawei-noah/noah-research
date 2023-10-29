@@ -144,3 +144,5 @@ refine the upsampled slices with a CNN prior to rendering.
 ## dataset_generation
 
 Module that downloads and generates synthetic training sets.
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

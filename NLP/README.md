@@ -21,3 +21,5 @@ image selection without any requirement on the existence and quality of image ca
 * [MultiUAT](https://github.com/huawei-noah/noah-research/tree/master/noahnmt/multiuat)
 * [PERT](https://github.com/huawei-noah/noah-research/tree/master/noahime/PERT) is a transformer-based solution for pinyin-to-character conversion task which is core to the Chinese input method.
 * [Maha_OOD](https://github.com/huawei-noah/noah-research/tree/master/Maha_OOD) is unsupervised method for out-of-domain detection for intents. The code to reproduce the results from the paper [AAAI 2021](https://arxiv.org/abs/2101.03778)
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

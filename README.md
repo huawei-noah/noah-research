@@ -10,3 +10,5 @@ Please refer to the following format:
 An example is as follows:
 
 - [mRNN-mLSTM] This is the title of an issue of mRNN-mLSTM
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

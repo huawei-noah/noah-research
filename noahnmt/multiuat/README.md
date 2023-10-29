@@ -71,3 +71,4 @@ bash jobscripts/multiuat/train-multiuat-multidomain.sh [SRC] [TGT] [DOMAIN_PATH]
 
 You can use `evaluate-ckpt-multidomain.py` and `evaluate-ckpt-multilingual.py` to evaluate the checkpoint on multiple datasets with a single command. 
 
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

@@ -155,3 +155,5 @@ The procedure for selecting the model is the same as for transformers.
 
 ## Computing infrastructure
 Each experiment was done using a single NVIDIA GeForce RTX 2080 GPU, requiring no longer than 2 hours.
+
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】

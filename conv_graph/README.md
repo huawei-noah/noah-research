@@ -68,3 +68,4 @@ y_train = np.concatenate((y_train, y_t))
 - We used [ConvLab 1.0](https://github.com/ConvLab/ConvLab) to evaluate the models using their [user simulator](https://github.com/ConvLab/ConvLab#evaluation)
 - Warning: It is not the easiest software to use, be patient
 - If you have trouble with running extrinsic evaluation, email my colleague gerasimos-dot-lampouras-at-huawei-dot-com!
+【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
