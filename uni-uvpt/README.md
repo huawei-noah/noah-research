@@ -46,8 +46,8 @@ python tools/convert_datasets/synthia.py data/synthia/ --nproc 8
 ## Pre-Training in the source domain
 
 (1) Download models pretrained on ImageNet-1K and put them in `model/`:
-Swin-B: [weight](https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/swin/swin_base_patch4_window7_224_20220317-e9b98025.pth)
-Mit-B5: [weight](https://drive.google.com/drive/folders/1b7bwrInTW4VLEm27YawHOAMSMikga2Ia?usp=sharing)
+[Swin-B](https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/swin/swin_base_patch4_window7_224_20220317-e9b98025.pth)
+[Mit-B5](https://drive.google.com/drive/folders/1b7bwrInTW4VLEm27YawHOAMSMikga2Ia?usp=sharing)
 
 (2) Then, a pre-training job can be launched as follows:
 ```shell
