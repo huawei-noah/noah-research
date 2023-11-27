@@ -45,7 +45,7 @@ python tools/convert_datasets/synthia.py data/synthia/ --nproc 8
 
 ## Pre-Training in the source domain
 
-(1) Download models pretrained on ImageNet-1K and put them in `model/`:
+(1) Download models pre-trained on ImageNet-1K and put them in `model/`:
 [Swin-B](https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/swin/swin_base_patch4_window7_224_20220317-e9b98025.pth)
 [Mit-B5](https://drive.google.com/drive/folders/1b7bwrInTW4VLEm27YawHOAMSMikga2Ia?usp=sharing)
 
@@ -53,7 +53,7 @@ python tools/convert_datasets/synthia.py data/synthia/ --nproc 8
 ```shell
 python pretrain.py <config_dir>
 ```
-Please refers to `launcher_pretrain.py` for all pretraining jobs
+Please refer to `launcher_pretrain.py` for all pretraining jobs
 and all source models could be downloaded from [baidu](https://pan.baidu.com/s/156HXFY3Cjoa-ngSox-tMWA?pwd=jit1) and [Google Drive](https://drive.google.com/drive/folders/1KXy4axpESMi97SHKbzw9hpeQ1fBJvb2_?usp=sharing), and must be placed in `model/`.
 
 ## Generating Pseudo Labels
@@ -61,14 +61,14 @@ Then we can generate pseudo labels using:
 ```shell
 python generate_pseudo_label.py --config <config_dir> --checkpoint <source_model_dir> --pseudo_label_dir <citiscapes_dir>/pretrain/<source_model_name>/train/
 ```
-Please refers to `launcher_pseudo_label.py` for all jobs.
+Please refer to `launcher_pseudo_label.py` for all jobs.
 
 ## Training
-All the preparing steps have finished, here we can train the final model using:
+After all preparations, we can train the final model by running:
 ```shell
 python train.py <config_dir>
 ```
-Please refers to `launcher_train.py` for all training jobs.
+Please refer to `launcher_train.py` for all training jobs.
 
 
 ## Testing
@@ -78,7 +78,7 @@ The checkpoints could be downloaded [baidu](https://pan.baidu.com/s/156HXFY3Cjoa
 
 python test.py <config_dir> <checkpoint_dir>  --eval mIoU
 ```
-Please refers to `launcher_test.py` for all testing jobs.
+Please refer to `launcher_test.py` for all testing jobs.
 
 
 ## Results
