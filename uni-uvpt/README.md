@@ -54,7 +54,7 @@ Mit-B5: [weight](https://drive.google.com/drive/folders/1b7bwrInTW4VLEm27YawHOAM
 python pretrain.py <config_dir>
 ```
 Please refers to `launcher_pretrain.py` for all pretraining jobs
-and all source models could be downloaded from  [here]().
+and all source models could be downloaded from [baidu](https://pan.baidu.com/s/156HXFY3Cjoa-ngSox-tMWA?pwd=jit1) and [Google Drive](https://drive.google.com/drive/folders/1KXy4axpESMi97SHKbzw9hpeQ1fBJvb2_?usp=sharing), and must be placed in `model/`.
 
 ## Generating Pseudo Labels
 Then we can generate pseudo labels using:
@@ -73,7 +73,7 @@ Please refers to `launcher_train.py` for all training jobs.
 
 ## Testing
 We have provided all checkpoints for fast evaluations.
-The checkpoints could be downloaded [here]() and must be placed in `model/Uni-UVPT_models/`.
+The checkpoints could be downloaded [baidu](https://pan.baidu.com/s/156HXFY3Cjoa-ngSox-tMWA?pwd=jit1) and [Google Drive](https://drive.google.com/drive/folders/1KXy4axpESMi97SHKbzw9hpeQ1fBJvb2_?usp=sharing), and must be placed in `model/`.
 ```shell
 
 python test.py <config_dir> <checkpoint_dir>  --eval mIoU
