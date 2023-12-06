@@ -1,0 +1,13 @@
+click>=8.0.3
+matplotlib>=3.5.1
+mmcv==1.4.0
+mmsegmentation==0.30.0
+numpy==1.21.6
+pandas>=1.1.5
+Pillow>=9.1.1
+setuptools>=68.0.0
+timm==0.6.13
+torch==1.10.2
+tqdm=>=4.64.0
+imgaug
+imagecorruptions
