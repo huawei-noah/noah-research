@@ -4,7 +4,7 @@ This directory contains official implementations for Graph Atlas, which aims for
 
 ## [DyG2Vec: Representation Learning for Dynamic Graphs with Windows](DyG2Vec)
 
-![](DyG2Vec/figures/DyG2Vec_window_framework_updated.png)
+![](DyG2Vec/DyG2Vec_window_framework_updated.png)
 
 ### Abstract
 
@@ -14,7 +14,7 @@ Paper accepted at TMLR 2023: https://openreview.net/forum?id=YRKS2J0x36
 
 ## [Todyformer: Towards Holistic Dynamic Graph Transformers with Structure-Aware Tokenization](TodyFormer)
 
-![](TodyFormer/figures/todyformer.png)
+![](TodyFormer/todyformer.png)
 
 
 ### Abstract
