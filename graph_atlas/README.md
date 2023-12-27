@@ -2,7 +2,7 @@
 
 This directory contains official implementations for Graph Atlas, which aims for efficient dynamic graph representation.  This work is developed by Huawei Noah's Ark Lab.
 
-## [DyG2Vec: Representation Learning for Dynamic Graphs with Windows](DyG2Vec)
+## [DyG2Vec: Efficient Representation Learning for Dynamic Graphs](DyG2Vec)
 
 ![](DyG2Vec/DyG2Vec_window_framework_updated.png)
 
