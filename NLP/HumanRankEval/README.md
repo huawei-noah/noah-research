@@ -1,9 +1,9 @@
-## HumanRankEval: Automatic Evaluation of Alignment with Human Preferences
+## HumanRankEval: Automatic Evaluation of LMs as Conversational Assistants
 
 #### The repository is based on [EleutherAI LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness), big thanks!
 
 This project provides a framework to evaluate generative language models (Seq2seq also supported by AutoHF) on HumanRankEval (HRE).
-If you find it helpful, please cite the **HumanRankEval** [paper](LINK_TO_BE_ADDED).
+If you find it helpful, please cite the **HumanRankEval** [paper](https://aclanthology.org/2024.naacl-long.456/).
 
 - Supported Topics: **python, java, unix, cpp, html, english, physics, latex, soft_eng, stats, cs_db, languages_sciences, apple_android, math**
 - Supported Models: **AutoHF (single and multi-gpu runs implemented, see below)**
@@ -25,13 +25,13 @@ We provide an example in ```lm_eval.models.mindspore``` for OPT (facebook) model
 ### Dataset
 
 The HRE dataset is hosted on [HuggingFace Datasets](https://huggingface.co/datasets/huawei-noah/human_rank_eval). 
-It will be automatically (down)loaded with: ```load_dataset("huawei-noah/human_rank_eval")```
+Download with: ```load_dataset("huawei-noah/human_rank_eval")```, then save it to disk for the next step, please.
 
 ### Running HumanRankEval
 
 Set the **MODEL_DIR=/your/path/to/models/**
 
-Set the **DATA_PATH=/your/path/to/HumanRankEvalData/**
+Set the **DATA_PATH=/your/path/to/HumanRankEval/**
 
 > 💡 Check out ```evaluate.sh``` for full details 💡
 > 
