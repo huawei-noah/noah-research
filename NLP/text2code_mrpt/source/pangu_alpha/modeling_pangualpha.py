@@ -21,7 +21,6 @@
 """PyTorch Pangu Alpha GPT-2 model."""
 
 import sys
-sys.path.append('../gpt2/')
 from typing import Optional, Tuple, Union
 
 import torch
@@ -30,7 +29,7 @@ from packaging import version
 from torch import nn
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 import torch.nn.functional as F
-from gpt2.modeling_gpt2 import (
+from source.gpt2.modeling_gpt2 import (
     GPT2PreTrainedModel,
     GPT2Model,
     GPT2MLP

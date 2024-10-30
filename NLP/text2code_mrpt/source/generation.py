@@ -18,13 +18,13 @@ import os
 import re
 from typing import Optional
 from dataclasses import dataclass, field
-from human_eval.utils import write_jsonl, read_problems
+from utils import write_jsonl, read_problems
 from torch.utils.data import DataLoader, Dataset
-import logging
 from tqdm import tqdm
 import torch
 import transformers
 from transformers import HfArgumentParser, set_seed, AutoTokenizer
+import logging
 from pangu_alpha import (
     PanguAlphaConfig,
     PanguAlphaModel,
@@ -33,8 +33,14 @@ from pangu_alpha import (
 from gpt_neo import GPTNeoForCausalLM
 import pickle
 import copy
+import json
 
 
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    datefmt="%m/%d/%Y %H:%M:%S",
+    level=logging.INFO,
+)
 logger = logging.getLogger(__name__)
 
 
@@ -45,36 +51,32 @@ model2model = {'pycodegpt': GPTNeoForCausalLM, 'pangu': PanguAlphaModel}
 @dataclass
 class Arguments:
     local_rank: str = field(default=0)
-    prompt: str = field(default="")
-    test_base: Optional[bool] = field(default=False, metadata={"help": "Test base model"})
     model_name_or_path: str = field(default=None)
-    vocab_threshold: int = field(default=None)
     prefix_lm: bool = field(default=None)
     max_seq_length: int = field(default=None, metadata={"help": "Max sequence length"})
     max_new_tokens: int = field(default=None, metadata={"help": "Max new tokens, excluding prompt"})
     stop_token: str = field(default="<eot>", metadata={"help": "Stopping token"})
     output_dir: str = field(default="", metadata={"help": "Output directory"})
-    human_eval_file: str = field(default="../data/human_eval/data/human_eval_internal.jsonl", metadata={"help": "HE file"})
+    dataset_file: str = field(default=None, metadata={"help": "dataset file"})
     temperature: float = field(default=1.0, metadata={"help": ""})
     greedy: bool = field(default=False, metadata={"help": "Do greedy decoding"})
     repetition_penalty: float = field(default=1.0, metadata={"help": "primarily useful for CTRL model; in that case, use 1.2"})
     k: int = field(default=0, metadata={"help": ""})
     p: float = field(default=0.9, metadata={"help": ""})
-    prefix: str = field(default="", metadata={"help": "Text added prior to input."})
     batch_size: int = field(default=32, metadata={"help": "Batch size"})
     seed: int = field(default=1234, metadata={"help": "Seed"})
     no_cuda: bool = field(default=False, metadata={"help": ""})
-    filter: bool = field(default=False, metadata={"help": ""})
     num_return_sequences: int = field(default=1, metadata={"help": ""})
     mlp_samples: int = field(default=1, metadata={"help": ""})
     torch_dtype: str = field(default="fp32", metadata={"help": "What dtype to load the model with"})
     replicated_tokens_map: bool = field(default=False, metadata={"help": "Allow replicated embeddings"})
     data_path: str = field(default=None, metadata={'help': "data_path"})
     model_type: str = field(default='pangu', metadata={"help": "Model type"})
+    incremental: bool = field(default=False, metadata={'help': "Use incremental generations"})
+    show_examples: bool = field(default=False, metadata={'help': "Show example generation"})
 
-
-class HumanEvalDataset_pycodegpt(Dataset):
-    def __init__(self, problems, unit_tests=None, args=None, tokenizer=None):
+class PycodegptDataset(Dataset):
+    def __init__(self, problems, args=None, tokenizer=None):
         self.problems = []
 
         pbar = tqdm(problems)
@@ -104,18 +106,39 @@ class HumanEvalDataset_pycodegpt(Dataset):
                         new_code_ids.append(cid)
                 code_ids = copy.deepcopy(new_code_ids)
 
-            encoded_prompt = [tokenizer.convert_tokens_to_ids('<|beginoftext|>')] + \
-                              code_ids + \
-                             [tokenizer.convert_tokens_to_ids('<comments>')] + \
-                              docstring_ids + \
-                             [tokenizer.convert_tokens_to_ids('<python>')]
+            if problems[task_id]['completion'] != '':  # for incremental
+                completion_ids = tokenizer.encode(problems[task_id]['completion'], add_special_tokens=False)
+                if args.replicated_tokens_map:
+                    new_complition_ids = []
+                    for cid in completion_ids:
+                        if cid in args.replicated_tokens_map:
+                            new_complition_ids.append(args.replicated_tokens_map[cid])
+                        else:
+                            new_complition_ids.append(cid)
+                    completion_ids = copy.deepcopy(new_complition_ids)
+
+                comp_len = len(completion_ids)
+                encoded_prompt = [tokenizer.convert_tokens_to_ids('<|beginoftext|>')] + \
+                                 code_ids + \
+                                 [tokenizer.convert_tokens_to_ids('<comments>')] + \
+                                 docstring_ids + \
+                                 [tokenizer.convert_tokens_to_ids('<python>')] + \
+                                 completion_ids
+
+            else:
+                comp_len = 0
+                encoded_prompt = [tokenizer.convert_tokens_to_ids('<|beginoftext|>')] + \
+                                 code_ids + \
+                                 [tokenizer.convert_tokens_to_ids('<comments>')] + \
+                                 docstring_ids + \
+                                 [tokenizer.convert_tokens_to_ids('<python>')]
 
             things_to_return = {
-                'task_id': task_id,
-                'prompt_length': len(encoded_prompt),
-                'unit_tests': unit_tests[task_id] if unit_tests else None,
+                'task_id': task_id, #.replace('HumanEval', 'Python'),
+                'prompt_length': len(encoded_prompt) - comp_len,
                 'encoded_prompt': encoded_prompt,
                 'attn_masks': [1] * len(encoded_prompt),
+                'original_prompt': problems[task_id]['signature']
             }
 
             # Prefix-LM option
@@ -131,8 +154,8 @@ class HumanEvalDataset_pycodegpt(Dataset):
         return self.problems[item]
 
 
-class HumanEvalDataset_pangu(Dataset):
-    def __init__(self, problems, unit_tests=None, args=None, tokenizer=None):
+class PanguDataset(Dataset):
+    def __init__(self, problems, args=None, tokenizer=None):
         self.problems = []
 
         pbar = tqdm(problems)
@@ -145,7 +168,14 @@ class HumanEvalDataset_pangu(Dataset):
             encoded_comments = [tokenizer.convert_tokens_to_ids('<comments>')] + \
                                 tokenizer.encode(comments, add_special_tokens=False)
 
-            code_ids = tokenizer.encode(code, add_special_tokens=False)
+            if problems[task_id]['completion'] != '':  # for incremental
+                completion_ids = tokenizer.encode(problems[task_id]['completion'], add_special_tokens=False)
+                comp_len = len(completion_ids)
+                code_ids = tokenizer.encode(code, add_special_tokens=False) + completion_ids 
+            else:
+                comp_len = 0
+                code_ids = tokenizer.encode(code, add_special_tokens=False)
+
             if args.replicated_tokens_map:
                 new_code_ids = []
                 for cid in code_ids:
@@ -154,7 +184,6 @@ class HumanEvalDataset_pangu(Dataset):
                     else:
                         new_code_ids.append(cid)
                 code_ids = copy.deepcopy(new_code_ids)
-                logger.info('Used NEW code_ids')
 
             encoded_code = [tokenizer.convert_tokens_to_ids('<python>')] + code_ids
 
@@ -163,12 +192,12 @@ class HumanEvalDataset_pangu(Dataset):
                 encoded_prompt = encoded_prompt[:args.max_seq_length]
 
             things_to_return = {
-                'task_id': task_id,
+                'task_id': task_id, # .replace('HumanEval', 'Python'),
                 'code': code,
-                'prompt_length': len(encoded_prompt),
-                'unit_tests': unit_tests[task_id] if unit_tests else None,
+                'prompt_length': len(encoded_prompt) - comp_len,
                 'encoded_prompt': encoded_prompt,
                 'attn_masks': [1] * len(encoded_prompt),
+                'original_prompt': problems[task_id]['signature']
             }
 
             # Prefix-LM option
@@ -191,7 +220,7 @@ class MyCollate:
 
     def __call__(self, batch):
         task_id_batch = [item['task_id'] for item in batch]
-        unit_test_batch = [item['unit_tests'] for item in batch]
+        orig_prompt_batch = [item['original_prompt'] for item in batch]
 
         max_len = max([len(item['encoded_prompt']) for item in batch])
 
@@ -211,7 +240,7 @@ class MyCollate:
             prefix_batch = torch.tensor([item['prefix_lm_mask'] for item in batch], dtype=torch.long)
         else:
             prefix_batch = None
-        return task_id_batch, prompt_length_batch, unit_test_batch, problem_batch, attnmasks_batch, prefix_batch
+        return task_id_batch, prompt_length_batch, problem_batch, attnmasks_batch, prefix_batch, orig_prompt_batch
 
 
 def post_process_generated_tokens(generated_tokens, indent_spaces=4):
@@ -234,7 +263,6 @@ def post_process_generated_tokens(generated_tokens, indent_spaces=4):
 
 
 def main():
-    logger.info("INFO")
     transformers.utils.logging.set_verbosity_info()
     logging.getLogger("transformers.generation_utils").setLevel(logging.ERROR)
     args = HfArgumentParser(Arguments).parse_args_into_dataclasses()[0]
@@ -251,21 +279,11 @@ def main():
     #############################
     # LOAD MODEL & TOKENIZER
     #############################
-    if args.test_base:
-        tokenizer = PanguAlphaTokenizer(vocab_file="spm/vocab.model")
-
-        special_tokens_dict = {
-            "additional_special_tokens": ["<eod>", "<eot>", "<pad>", "<java>", "<python>", "<go>", "<php>",
-                                          "<javascript>", "<ruby>", "<en>", "<cn>", "<comments>"]
-        }
-        num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-
-    else:
-        tokenizer = model2tokenizer[args.model_type].from_pretrained(
-            args.model_name_or_path,
-            local_files_only=True,
-            use_fast=True
-        )
+    tokenizer = model2tokenizer[args.model_type].from_pretrained(
+        args.model_name_or_path,
+        local_files_only=True,
+        use_fast=True
+    )
 
     ##############################
     # DeepSpeed things
@@ -291,28 +309,27 @@ def main():
     ##########################
     # Example Generation
     ##########################
-    if 'pycodegpt' in args.model_name_or_path:
-        example_generation_pycodegpt(tokenizer=tokenizer, args=args, model=model)
-    else:
-        example_generation_pangu(tokenizer=tokenizer, args=args, model=model)
+    if args.show_examples:
+        if 'pycodegpt' in args.model_name_or_path:
+            example_generation_pycodegpt(tokenizer=tokenizer, args=args, model=model)
+        else:
+            example_generation_pangu(tokenizer=tokenizer, args=args, model=model)
 
     ###################################
     # Actually begin Generation
     ###################################
-    problems = read_problems(args.human_eval_file)
-    unit_tests = {}
+    logger.info(f'Loading dataset: {args.dataset_file}')
+    problems = read_problems(args.dataset_file, infer_incremental_completions=args.incremental)
 
     if 'pycodegpt' in args.model_name_or_path:
-        dataset = HumanEvalDataset_pycodegpt(
+        dataset = PycodegptDataset(
             problems,
-            unit_tests=unit_tests,
             tokenizer=tokenizer,
             args=args
         )
     else:
-        dataset = HumanEvalDataset_pangu(
+        dataset = PanguDataset(
             problems,
-            unit_tests=unit_tests,
             tokenizer=tokenizer,
             args=args
         )
@@ -328,7 +345,7 @@ def main():
     model.eval()
 
     for sample_no in tqdm(range(args.num_return_sequences), leave=False, desc='Generating samples'):
-        for task_ids, prompt_lengths, unit_tests, batch, attn_masks, prefix_idx in \
+        for task_ids, prompt_lengths, batch, attn_masks, prefix_idx, orig_prompts in \
                 tqdm(dataloader, leave=False, desc=f'For sample #{sample_no} / {args.num_return_sequences}'):
 
             if not args.no_cuda:
@@ -358,10 +375,10 @@ def main():
                     sample_replacement=True
                 )
 
-            for task_id, prompt_length, test_cases, generated_sequence in \
-                    zip(task_ids, prompt_lengths, unit_tests, output_sequences):
+            for task_id, prompt_length, generated_sequence, orig_prompt in \
+                    zip(task_ids, prompt_lengths, output_sequences, orig_prompts):
 
-                generated_sequence = generated_sequence[prompt_length:]  # take after signature
+                generated_sequence = generated_sequence[prompt_length:]
 
                 # Decode text
                 answer = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(generated_sequence))
@@ -371,8 +388,8 @@ def main():
 
                 # post-process
                 answer = post_process_generated_tokens(answer)
-
-                generated_sequences.append(dict(task_id=task_id, completion=answer))
+                
+                generated_sequences.append(dict(task_id=task_id, generation=answer, prompt=orig_prompt))
 
         write_jsonl(
             os.path.join(
@@ -386,6 +403,8 @@ def main():
 
 
 def example_generation_pangu(tokenizer=None, model=None, args=None):
+    logger.info('--- In example generation of PanGu ---')
+
     fixed_prompt = "Check if in given list of numbers, are any two numbers closer to each other than\ngiven threshold.\n>>> " \
                    "has_close_elements([1.0, 2.0, 3.0], 0.5)\nFalse\n>>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\nTrue\n"
     signature = "def has_close_elements(numbers: List[float], threshold: float):"
@@ -447,14 +466,13 @@ def example_generation_pangu(tokenizer=None, model=None, args=None):
     text = post_process_generated_tokens(text)
     text = fixed_prompt + signature + text
 
-    print('========== EXAMPLE GENERATION ==========')
+    logger.info('========== EXAMPLE GENERATION ==========')
     print(text)
-    print('========================================')
-
+    logger.info('========================================')
 
 
 def example_generation_pycodegpt(tokenizer=None, model=None, args=None):
-    print('--- In example generation of PYCODEGPT ---')
+    logger.info('--- In example generation of PYCODEGPT ---')
 
     signature = "def has_close_elements(numbers: List[float], threshold: float) -> bool:"
     docstring = "\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each " \
@@ -518,9 +536,9 @@ def example_generation_pycodegpt(tokenizer=None, model=None, args=None):
     text = post_process_generated_tokens(text)
     text = signature + docstring + text
 
-    print('========== EXAMPLE GENERATION ==========')
+    logger.info('========== EXAMPLE GENERATION ==========')
     print(text)
-    print('========================================')
+    logger.info('========================================')
 
 
 if __name__ == "__main__":

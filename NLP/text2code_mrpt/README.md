@@ -1,8 +1,8 @@
-# Text-to-Code Generation with Modality-related Pre-training
+# Text-to-Code Generation with Modality-relative Pre-training
 
 
 Official implementation for the EACL 2024 paper 
-["Text-to-Code Generation with Modality-related Pre-training"](https://aclanthology.org/2024.eacl-long.72/).
+"[Text-to-Code Generation with Modality-relative Pre-training](https://aclanthology.org/2024.eacl-long.72/)".
 
 If you like this work or plan to use it, please cite the publication as follows:
 ```html
@@ -27,46 +27,39 @@ If you like this work or plan to use it, please cite the publication as follows:
 ## Environment Setup
 
 We provide a docker image with the specifics of the environment used for the experiments.
+Click [here](https://drive.google.com/file/d/1PtskeJAKor8sbXVXEQtQ9JVB2W2XxqhX/view?usp=drive_link) to download it.
+Alternative, `setup.py` includes all the necessary dependencies.
+To install the directory as a package, run
 ```bash
-docker load < text2code_mrpt_img.tar.gz
-
-docker run \
---name mrpt \
--e TERM=xterm-256color \
---gpus="all" \
--ti --rm -d \
---mount type=bind,src="/path_to_the_folder/text2code_mrpt/",target=/workspace/text2code_mrpt/ \
-text2code_mrpt:latest
+pip install -e .
 ```
 
 ## Training Data
 
-We provide the data from Github that we use to train PyCodeGPT and PanGu-Coder. They are available on the 
-HuggingFace Hub:
-[https://huggingface.co/datasets/huawei-noah/python_github_text2code](https://huggingface.co/datasets/huawei-noah/python_github_text2code)
+We make available the data from Github that we use to train PyCodeGPT and PanGu-Coder (approximately 23M text-to-code pairs) on the 
+HuggingFace Hub:  
+[https://huggingface.co/datasets/huawei-noah/python_text2code](https://huggingface.co/datasets/huawei-noah/python_text2code)
 
 In order to optimize training, we concatenated training instances, resulting in a meta-instance that was fed into 
 the model. So that consecutive training instances do not contaminate one another, we edit attention masks and 
 absolute positions accordingly.
 The data are pre-tokenized first and then concatenated.
-To convert the training data into a concatenated format, run the following selecting (or use `concat.sh`) the separation strategy that you want (look at the comments):
+To convert the training data into a concatenated format, run the following (or use `concat.sh`) with the separation strategy that you want:
 
 ```bash
 python sample_concatenation.py \
 --main_dir=directory_where_the_project_resides/ \
 --dataset_dir=path_to_python_data/python_github_text2code \
 --max_seq_length=1024 \
---tokenizer=pycodegpt \  # or pangu
---model_name_or_path=/nfs/aiml2/nlp_team/fenia/MRPT/stage1_trained_models_100M/pycodegpt \
+--tokenizer=pycodegpt \
+--model_name_or_path=path_to_pretrained_model \
 --save_name=pycodegpt_partial_sep \
---separate_some_embeds="python_tokens.txt"
-#--separate_embeds=True
+--separate_some_embeds="python_tokens.txt" # or --separate_embeds=True
 ```
 
 
 ## Modality-relative Pre-training
-There are the following arguments, that control the modality-relative pre-training objectives, summarised in the 
-table below:
+The following arguments control the modality-relative pre-training objectives:
 
 | Objective        | Separation | Additional Arguments                                                                      | 
 |------------------|------------|-------------------------------------------------------------------------------------------|
@@ -83,17 +76,7 @@ table below:
 |                  | partial    | --predict_code=True, --prefix_lm=True, --separate_some_embeds="python_tokens.txt"         |
 |                  | full       | --predict_code=True, --prefix_lm=True, --separate_embeds=True                             |
 
-You can run the `run_model.sh` script by appending the necessary additional arguments for each objective described in the above table.
-
-
-## Evaluation
-
-In the paper, we evaluated models on [HumanEval](https://github.com/openai/human-eval) and 
-[MBPP](https://github.com/google-research/google-research/tree/master/mbpp) based on functional correctness, using the [CodeGeeX](https://github.com/THUDM/CodeGeeX) framework.  
-We provide simpler code (compared to the framework) for generation via the `run_generation_greedy.sh` and `run_generation_samples.sh` scripts.
-For further details on evaluation, check the [evaluation_guide](evaluation_guide.md) guide.
-
-For measuring **incremental pass@k** we provide the augmented HumanEval and BPP datasets.
+You can run `run_model.sh` by appending the necessary arguments for each objective described in the above table.
 
 
 ## Released Models
@@ -104,9 +87,48 @@ We release 6 models, trained on the text-to-code paired data, based on the CodeC
   - https://huggingface.co/huawei-noah/pycodegpt-CodeCLM-partial-100m
   - https://huggingface.co/huawei-noah/pycodegpt-CodeCLM-full-100m
 - PanGu:
-  - https://huggingface.co/huawei-noah/pangu-CodeCLM-300M
+  - https://huggingface.co/huawei-noah/pangu-CodeCLM-300m
   - https://huggingface.co/huawei-noah/pangu-CodeCLM-partial-300m
   - https://huggingface.co/huawei-noah/pangu-CodeCLM-full-300m
+
+
+## Evaluation
+
+In the paper, we evaluated models on [HumanEval](https://github.com/openai/human-eval) and 
+[MBPP](https://github.com/google-research/google-research/tree/master/mbpp) based on functional correctness.
+Generations are obtained with the `geneval.sh` script and executed with the [CodeGeeX](https://github.com/THUDM/CodeGeeX) framework.  
+
+```bash
+# Get CodeGeeX
+git clone https://github.com/THUDM/CodeGeeX.git
+cd CodeGeeX && pip install -e .
+```
+
+```python
+# Download the MBPP test set (make sure it gets saved inside the CodeGeeX directory)
+from datasets import load_dataset
+ds = load_dataset("google-research-datasets/mbpp", "full", split="test")
+ds.to_json("mbpp_test.jsonl")
+```
+
+In addition, place the files inside `codegeex_changes` into the official CodeGeeX folder:
+- `cp codegeex_changes/codegeex/benchmark/humaneval-x/evaluate_humaneval_x.py path_to_codegeex/codegeex/benchmark/humaneval-x/`
+- `cp -r codegeex_changes/codegeex/benchmark/mbpp/ path_to_codegeex/codegeex/benchmark/`
+- `cp codegeex_changes/scripts/evaluate_mbpp.sh path_to_codegeex/scripts/`
+
+Example runs:
+```bash
+cd source
+
+# greedy decoding
+bash geneval.sh -cgxp path_to_codegeex -mf pycodegpt -mp path_to_model/pycodegpt-CodeCLM-partial-100m/ -dat humaneval -greedy True 
+
+# sampling
+bash geneval.sh -cgxp path_to_codegeex -mf pycodegpt -mp path_to_model/pycodegpt-CodeCLM-partial-100m/ -dat mbpp             
+
+# for incremental pass@k
+bash geneval.sh -cgxp path_to_codegeex -mf pycodegpt -mp path_to_model/pycodegpt-CodeCLM-partial-100m/ -dat humaneval -greedy True -incr True  
+```
 
 
 ## License

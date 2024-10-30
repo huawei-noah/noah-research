@@ -42,7 +42,7 @@ WARMUP=0.01
 DECAY=0.01
 
 
-save_dir_name="pangu_CodeCLM_full_sep"
+save_dir_name="pangu-CodeCLM-partial-300m"
 
 DISTRIBUTED_ARGS="--nproc_per_node $GPUS_PER_NODE --nnodes $NNODES --node_rank $NODE_RANK --master_addr $MASTER_ADDR --master_port $MASTER_PORT"
 

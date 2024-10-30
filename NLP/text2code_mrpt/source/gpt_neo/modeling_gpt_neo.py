@@ -22,8 +22,6 @@
 # ============================================================================
 """ PyTorch GPT Neo model."""
 
-import sys
-sys.path.append('../pangu_alpha/')
 import os
 from typing import Optional, Tuple, Union
 import copy
@@ -43,7 +41,7 @@ from transformers.modeling_outputs import (
 from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
 from .configuration_gpt_neo import GPTNeoConfig
-from pangu_alpha.generation_utils import CustomGenerationMixin
+from source.pangu_alpha.generation_utils import CustomGenerationMixin
 
 
 logger = logging.get_logger(__name__)
