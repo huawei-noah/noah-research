@@ -130,8 +130,8 @@ def read_problems(filename, infer_incremental_completions=False):
                 code = intask["canonical_solution"]
             else:
                 code = intask["code"]
-            if code.startswith(outtask["signature"]):
-                code = code[len(outtask["signature"]):]
+            if outtask["signature"] in code:
+                code = code[code.find(outtask["signature"]) + len(outtask["signature"]):]
 
             # Check to avoid duplicate completion tasks due to empty lines or other artifacts
             unique_codes = set()
