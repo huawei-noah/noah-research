@@ -7,7 +7,7 @@ jsonschema==2.6.0
 matplotlib==3.1.1
 multidict==4.5.2
 networkx==2.4
-nltk==3.4.5
+nltk==3.6.6
 numpy==1.17.2
 PyYAML==5.4
 regex==2018.1.10
