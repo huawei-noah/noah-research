@@ -39,13 +39,13 @@ ROOT achieves this through dual robustness mechanisms:
 
 ### 1. Adaptive Newton-Schulz Iteration (AdaNewton)
 
-Standard Newton-Schulz iterations use fixed coefficients that are suboptimal for varying matrix dimensions. ROOT employs **shape-specific coefficients** optimized for the specific spectral properties of different layers, ensuring consistent orthogonalization precision.
+Standard Newton-Schulz iterations use fixed coefficients that are suboptimal for varying matrix dimensions. ROOT employs shape-specific coefficients optimized for the specific spectral properties of different layers, ensuring consistent orthogonalization precision.
 
 ![Decomposition Precision](figures/precision.png)
 
 ### 2. Proximal Outlier Suppression
 
-Large-scale training often suffers from gradient outliers that destabilize orthogonalization. ROOT incorporates a **soft-thresholding** mechanism derived from proximal optimization to filter out extreme noise while retaining structural gradient information.
+Large-scale training often suffers from gradient outliers that destabilize orthogonalization. ROOT incorporates a soft-thresholding mechanism derived from proximal optimization to filter out extreme noise while retaining structural gradient information.
 
 ## Quick Start
 
@@ -71,5 +71,5 @@ If you find this work useful, please cite our paper:
       url={https://arxiv.org/abs/2511.20626}, 
 }
 ```
-## Usage & Acknowledgements
+## Acknowledgements
 We appreciate the following code bases and conceptual inspiration: [Muon](https://github.com/KellerJordan/Muon), [Moonlight](https://github.com/MoonshotAI/Moonlight), [AdamW](https://github.com/egg-west/AdamW-pytorch).
