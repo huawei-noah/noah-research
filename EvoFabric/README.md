@@ -6,7 +6,7 @@
 <p align="center">
     <a href="https://pypi.org/project/evofabric/">
         <img
-            src="https://img.shields.io/badge/python-3.10+-blue?logo=python"
+            src="https://img.shields.io/badge/python-3.11+-blue?logo=python"
             alt="pypi"
         />
     </a>
@@ -16,7 +16,7 @@
             alt="pypi"
         />
     </a>
-    <a href="https://doc.evofabric.io/">
+    <a href="https://evofabric.readthedocs.io/en/latest/">
         <img
             src="https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown"
             alt="docs"
@@ -32,7 +32,7 @@
 
 
 ## 📢 News
-- **[2025-11]** EvoFabric 0.1.2 is released now! Checkout our [guidance documentation]() for detailed instructions and best practices.
+- **[2025-11]** EvoFabric 0.1.2 is released now! Checkout our [guidance documentation](https://evofabric.readthedocs.io/en/latest/) for detailed instructions and best practices.
 
 ## ✨Why EvoFabric?
 * **Logical Visibility, Controllable Debugging**: The graph structure visualizes agent logic, combined with Debug and visualization features, making the system’s operational paths and state changes clearly visible, bidding farewell to “black-box development”;
@@ -51,13 +51,6 @@
 
 > EvoFabric requires **Python>=3.11**
 
-#### From Github
-```bash
-git clone -b main https://github.com/xxxxx
-
-cd evofabric
-pip install -e .
-```
 #### Using pip
 
 ```bash

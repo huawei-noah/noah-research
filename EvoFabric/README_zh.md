@@ -6,7 +6,7 @@
 <p align="center">
     <a href="https://pypi.org/project/evofabric/">
         <img
-            src="https://img.shields.io/badge/python-3.10+-blue?logo=python"
+            src="https://img.shields.io/badge/python-3.11+-blue?logo=python"
             alt="pypi"
         />
     </a>
@@ -16,7 +16,7 @@
             alt="pypi"
         />
     </a>
-    <a href="https://doc.evofabric.io/">
+    <a href="https://evofabric.readthedocs.io/zh_CN/latest/">
         <img
             src="https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown"
             alt="docs"
@@ -32,7 +32,7 @@
 
 
 ## 📢 新闻
-- **[2025-11]** EvoFabric 0.1.2 现已发布！请查看我们的[指导文档]()以获取详细说明和最佳实践。
+- **[2025-11]** EvoFabric 0.1.2 现已发布！请查看我们的[指导文档](https://evofabric.readthedocs.io/zh_CN/latest/)以获取详细说明和最佳实践。
 
 ## ✨ 为什么选择 EvoFabric？
 * **逻辑可视，调试可控：** 图结构呈现智能体逻辑，结合 Debug 与可视化功能，让系统运行路径与状态变化清晰可见，告别 “黑盒开发”；
@@ -51,13 +51,7 @@
 
 > EvoFabric 要求 **Python>=3.11**
 
-#### 从 Github 安装
-```bash
-git clone -b main https://github.com/xxxxx
-
-cd evofabric
-pip install -e .
-```#### 使用 pip 安装
+#### 使用 PIP 安装
 
 ```bash
 pip install evofabric
