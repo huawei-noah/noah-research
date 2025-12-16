@@ -1,0 +1,109 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-25 17:17+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/Applications/sop2workflow.rst:2
+msgid "SOP2Workflow"
+msgstr "SOP2Workflow"
+
+#: ../../source/Applications/sop2workflow.rst:4
+msgid "在企业场景中，标准操作流程（Standard Operating Procedure，简称 SOP）通常以文档形式存在，用于规范任务执行。"
+msgstr "In enterprise scenarios, Standard Operating Procedure (SOP) is typically documented to standardize task execution."
+
+#: ../../source/Applications/sop2workflow.rst:6
+msgid "随着多智能体架构的兴起，越来越多的需求将传统 SOP 转化成可执行的工作流来替代或辅助执行人员。然而，这一转换工作需要专业能力、软件开发能力以及较为耗时的工作流调优过程。"
+msgstr "With the rise of multi-agent architecture, there is an increasing demand to convert traditional SOPs into executable workflows to replace or assist personnel in executing tasks. However, this conversion process requires professional expertise, software development capabilities, and a relatively time-consuming workflow optimization process."
+
+#: ../../source/Applications/sop2workflow.rst:8
+msgid "因此，我们基于 EvoFabric 框架，提出了 SOP2Workflow 功能，它旨在基于将静态的SOP文档转换为一个可执行的工作流 (:py:class:`~evofabric.core.graph.GraphEngine`)，以降低这一替换成本。"
+msgstr "Therefore, based on the EvoFabric framework, we propose the SOP2Workflow feature, which aims to convert static SOP documents into an executable workflow (:py:class:`~evofabric.core.graph.GraphEngine`) to reduce this replacement cost."
+
+#: ../../source/Applications/sop2workflow.rst:11
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/Applications/sop2workflow.rst:13
+msgid "SOP2Workflow 提供以下能力："
+msgstr "SOP2Workflow provides the following capabilities:"
+
+#: ../../source/Applications/sop2workflow.rst:15
+msgid "将SOP按功能内聚，拆分成多个可自主迭代执行的智能体。"
+msgstr "Split SOPs into multiple functionally cohesive agents capable of autonomous iterative execution."
+
+#: ../../source/Applications/sop2workflow.rst:17
+msgid "将工具、记忆等资源按需分配给各个智能体。"
+msgstr "Allocate tools, memory, and other resources as needed to each agent."
+
+#: ../../source/Applications/sop2workflow.rst:19
+msgid "构建一个完整的可运行的工作流。"
+msgstr "Build a complete runnable workflow."
+
+#: ../../source/Applications/sop2workflow.rst:21
+msgid "保存过程中所有大语言模型的输出，专业人员可对每个节点的指令、工具、路由方式等内容进行手工修改，重新运行可自动加载修改后的内容，并继续生成完整的工作流。"
+msgstr "During the saving process, all outputs from large language models can be manually modified by professionals for each node's instructions, tools, and routing methods. Re-running automatically loads the modified content and continues generating the complete workflow."
+
+#: ../../source/Applications/sop2workflow.rst:24
+msgid "方案介绍"
+msgstr "Solution Introduction"
+
+#: ../../source/Applications/sop2workflow.rst:26
+msgid "SOP2Workflow分为两步，第一步对SOP进行拆解并生成Workflow的骨架，第二步补全每个节点的细节："
+msgstr "SOP2Workflow is divided into two steps: Step 1 decomposes the SOP and generates the skeleton of the Workflow, Step 2 completes the details of each node:"
+
+#: ../../source/Applications/sop2workflow.rst:28
+msgid "我们将SOP拆解成全局指令（多数用于定义数据格式、执行策略等）和属于节点的局部指令。局部指令会被大语言模型按功能内聚成多个Agent节点，每个Agent节点专注于执行一类功能。同时，大语言模型还需要补充路由节点（如果有需要），用来保证数据能够正确地从开始节点流转到结束节点。拆解的结果会存储在 ``output_dir/_sop_breakdown.yaml`` 内。"
+msgstr "We break down the SOP into global instructions (mostly used for defining data formats, execution strategies, etc.) and local instructions specific to nodes. Local instructions are grouped by the large language model into multiple agent nodes based on functional cohesion, with each agent node focusing on executing a specific type of functionality. Additionally, the large language model may need to supplement routing nodes (if necessary) to ensure data flows correctly from the start node to the end node. The breakdown result will be stored in ``output_dir/_sop_breakdown.yaml``."
+
+#: ../../source/Applications/sop2workflow.rst:30
+msgid "随后，每个Agent节点的细节会被补全。我们将当前Agent节点的指令、路由、全局指令、工具列表、记忆列表和其他节点的职责提供给大语言模型，通过大语言模型思考并补全： a. 当前Agent节点需要哪些工具。 b. 当前Agent节点需要哪些记忆模块。 c. 当前Agent节点的路由是否完整。是否需要路由到 ``user`` 和 ``end`` 节点。"
+msgstr "Subsequently, the details of each Agent node will be completed. We provide the current Agent node's instructions, routing, global instructions, tool list, memory list, and the responsibilities of other nodes to the large language model, which will think and complete: a. The tools required by the current Agent node. b. The memory modules required by the current Agent node. c. Whether the routing of the current Agent node is complete. Whether routing to the ``user`` and ``end`` nodes is required."
+
+#: ../../source/Applications/sop2workflow.rst:35
+msgid "此外，我们还会使用一个模板将全局指令、Agent指令、路由条件和路由命令拼成一个完整指令作为该Agent节点的 ``system_prompt`` 。"
+msgstr "Additionally, we will also use a template to assemble the global instructions, Agent instructions, routing conditions, and routing commands into a complete instruction as the ``system_prompt`` for this Agent node."
+
+#: ../../source/Applications/sop2workflow.rst:68
+msgid "使用方式"
+msgstr "Usage"
+
+#: ../../source/Applications/sop2workflow.rst:70
+msgid "我们基于 `SOP-Bench <https://arxiv.org/abs/2506.08119>`_ 的SOP数据搭建了一个示例。"
+msgstr "We built an example based on the SOP data from `SOP-Bench <https://arxiv.org/abs/2506.08119>`_."
+
+#: ../../source/Applications/sop2workflow.rst:74
+msgid "为了方便，我们将该数据集的工具重新包装成了一个MCP服务器，并通过 `--tool_file` 指定MCP启动代码路径。"
+msgstr "For convenience, we have re-packaged the tools of this dataset into an MCP server, and specify the path to the MCP startup code using `--tool_file`."
+
+#: ../../source/Applications/sop2workflow.rst:196
+msgid "示例输出"
+msgstr "Example output"
+
+#: ../../source/Applications/sop2workflow.rst:198
+msgid "customer_service_sop 场景："
+msgstr "customer_service_sop Scenario:"
+
+#: ../../source/Applications/sop2workflow.rst:200 ../../source/Applications/sop2workflow.rst:321 ../../source/Applications/sop2workflow.rst:448
+msgid "SOP 输入："
+msgstr "SOP Input:"
+
+#: ../../source/Applications/sop2workflow.rst:318
+msgid "aircraft_inspection_sop 场景："
+msgstr "aircraft_inspection_sop Scene:"
+
+#: ../../source/Applications/sop2workflow.rst:446
+msgid "content_flagging_sop 场景："
+msgstr "content_flagging_sop Scenario:"

@@ -1,0 +1,75 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-02 14:25+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/Applications/kernel_evolve.rst:3
+msgid "KernelEvolve"
+msgstr "KernelEvolve"
+
+#: ../../source/Applications/kernel_evolve.rst:5
+msgid "KernelEvolve是一个基于graph agent实现的自进化Kernel改写应用API工具，用于将Pytorch的kernel代码通过自进化模式改写为Triton实现， 模块已经集成了GPU的评估器。"
+msgstr "KernelEvolve is a self-evolving kernel rewriting application API tool based on graph agent, used to rewrite PyTorch kernel code into Triton implementation through a self-evolving mode, and the module has already integrated a GPU evaluator."
+
+#: ../../source/Applications/kernel_evolve.rst:9
+msgid "1. 条件与限制"
+msgstr "1. Conditions and Restrictions"
+
+#: ../../source/Applications/kernel_evolve.rst:11
+msgid "设置的模型需要支持Function calling，否则无法使用此API"
+msgstr "The configured model must support Function calling; otherwise, this API cannot be used."
+
+#: ../../source/Applications/kernel_evolve.rst:12
+msgid "进化结果与模型能力相关，如果无法生成，可以多次尝试重新生成"
+msgstr "Evolution results are related to model capabilities. If unable to generate, you can try regenerating multiple times."
+
+#: ../../source/Applications/kernel_evolve.rst:13
+msgid "Kernel格式规范必须符合以下格式，必须要以Model为开头，kernel部分放到forward中实现，此外还必须包含get_inputs与get_init_inputs初始化与测试参数，否则可能无法正常评估生成的kernel："
+msgstr "The Kernel format specification must conform to the following format, start with Model, implement the kernel part in forward, and include get_inputs and get_init_inputs for initializing and testing parameters; otherwise, the generated kernel may not be properly evaluated:"
+
+#: ../../source/Applications/kernel_evolve.rst:49
+msgid "2. 使用说明"
+msgstr "2. User Guide"
+
+#: ../../source/Applications/kernel_evolve.rst:51
+msgid "使用kernel evolve完成kernel进化重写只需要四步骤即可： 1. 请先准备要改写的kernel代码，例如："
+msgstr ""
+"Using kernel evolve to complete kernel evolution rewriting only requires four steps:\n"
+"1. First, please prepare the kernel code to be rewritten, for example:"
+
+#: ../../source/Applications/kernel_evolve.rst:58
+msgid "因此，请改写成Model的格式，并且写好初始化和测试参数的获取函数："
+msgstr "Therefore, please rewrite in Model format and write the initialization and test parameter acquisition functions:"
+
+#: ../../source/Applications/kernel_evolve.rst:93
+msgid "准备好代码后，请引入依赖 :py:class:`~evofabric.app.kernel_evolve.LLMConfig` ，配置好模型参数"
+msgstr "After the code is ready, please import the dependency :py:class:`~evofabric.app.kernel_evolve.LLMConfig` and configure the model parameters."
+
+#: ../../source/Applications/kernel_evolve.rst:105
+msgid "你可以直接使用evofabric.app.kernel_evolve.GPUEvaluator作为评估器进行GPU算子的进化评估，此外，也可以根据需求继承 :py:class:`~evofabric.app.kernel_evolve.BaseEvaluator` 实现评估的方法作为进化的参考："
+msgstr "You can directly use evofabric.app.kernel_evolve.GPUEvaluator as the evaluator for evolutionary evaluation of GPU operators. Additionally, you can inherit :py:class:`~evofabric.app.kernel_evolve.BaseEvaluator` to implement the evaluation method as a reference for evolution according to your needs:"
+
+#: ../../source/Applications/kernel_evolve.rst:121
+msgid "将刚刚的配置作为进化器的构造函数，初始化 :py:class:`~evofabric.app.kernel_evolve.KernelEvolve` ，启动进化评估，获取重写结果："
+msgstr "Use the previous configuration as the constructor for the evolver, initialize :py:class:`~evofabric.app.kernel_evolve.KernelEvolve`, start the evolutionary evaluation, and obtain the rewritten results:"
+
+#: ../../source/Applications/kernel_evolve.rst:132
+msgid "如果成功改写，则返回success_flag为True；"
+msgstr "If the rewrite is successful, return success_flag as True;"
+
+#: ../../source/Applications/kernel_evolve.rst:133
+msgid "如果失败改写，则会返回错误信息。"
+msgstr "If the rewrite fails, an error message will be returned."

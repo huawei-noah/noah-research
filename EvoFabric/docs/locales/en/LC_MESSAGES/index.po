@@ -1,0 +1,277 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/index.rst:139
+msgid "User Guide:"
+msgstr "User Guide:"
+
+#: ../../source/index.rst:156
+msgid "Developer Guide:"
+msgstr "Developer Guide:"
+
+#: ../../source/index.rst:163
+msgid "Applications:"
+msgstr "Applications:"
+
+#: ../../source/index.rst:171
+msgid "API Reference:"
+msgstr "API Reference:"
+
+#: ../../source/index.rst:181
+msgid "Community:"
+msgstr "Community:"
+
+#: ../../source/index.rst:8
+msgid "Welcome to EvoFabric"
+msgstr "Welcome to EvoFabric"
+
+#: ../../source/index.rst:10
+msgid "EvoFabric 是一款基于异步图引擎构建的轻量级多智能体（Multi-Agent）框架，具备高度灵活性。 我们致力于为开发者提供更直观、更自由的方式，助力其设计、构建和调试复杂的人工智能应用。"
+msgstr "EvoFabric is a lightweight multi-agent (Multi-Agent) framework built on an asynchronous graph engine, with high flexibility. We are committed to providing developers with more intuitive and more free ways to help them design, build, and debug complex artificial intelligence applications."
+
+#: ../../source/index.rst:13
+msgid "该框架以 “图即编排（Graph as Orchestration）” 为核心设计理念，将智能体系统抽象为 状态（State）、节点（Node）、边（Edge） 三个基本组成单元。"
+msgstr "The framework is centered around the core design concept of \"Graph as Orchestration,\" abstracting the agent system into three basic components: State (State), Node (Node), Edge (Edge)."
+
+#: ../../source/index.rst:16
+msgid "整体介绍"
+msgstr "Overview"
+
+#: ../../source/index.rst:18
+msgid "与传统的串行或管道式编排不同，EvoFabric 采用状态驱动的异步图执行引擎，每个节点只需专注于输入的处理与输出的状态变化，而图引擎会自动完成调度、分组、执行与同步工作。"
+msgstr "Unlike traditional serial or pipeline-based orchestration, EvoFabric employs a state-driven asynchronous graph execution engine, where each node only needs to focus on processing the input and output state changes, while the graph engine automatically handles scheduling, grouping, execution, and synchronization."
+
+#: ../../source/index.rst:20
+msgid "借助高度模块化的设计以及便捷的注册机制，开发者不仅能使用系统提供的标准模块，还可自由定义新的节点、工具、记忆单元、状态更新逻辑等。自定义模块完成注册后，便能像内置组件一样无缝接入图引擎。"
+msgstr "With the highly modular design and convenient registration mechanism, developers can not only use the standard modules provided by the system but also freely define new nodes, tools, memory units, state update logic, and more. Once custom modules are registered, they can seamlessly integrate into the graph engine just like built-in components."
+
+#: ../../source/index.rst:22
+msgid "EvoFabric 的核心理念是： **“状态驱动、图式编排、可演化的智能体生态。”**"
+msgstr "EvoFabric's core concept is: **\"state-driven, schema orchestration, evolvable intelligent agent ecosystem.\"**"
+
+#: ../../source/index.rst:25
+msgid "它既是一套多智能体运行架构，也是一个支持工作流生成与演化的平台。"
+msgstr "It is not only a multi-agent runtime architecture, but also a platform supporting workflow generation and evolution."
+
+#: ../../source/index.rst:29
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/index.rst:31
+msgid "EvoFabric 的独特优势体现在对底层图引擎和组件可扩展性的设计上："
+msgstr "EvoFabric's unique advantages lie in the design of the underlying graph engine and component scalability:"
+
+#: ../../source/index.rst:33
+msgid "**直观的状态图驱动引擎**"
+msgstr "**Intuitive State Diagram-Driven Engine**"
+
+#: ../../source/index.rst:35
+msgid "图由 **状态**、**节点**、 **边** 构成，节点接收完整状态后，输出状态增量。"
+msgstr "Graph consists of **state**, **nodes**, **edges**, nodes receive the complete state and output the state increment."
+
+#: ../../source/index.rst:37
+msgid "边不仅负责连接各节点，还承担着状态传递、过滤与改写的功能。同时，其支持的 **条件边** 可动态控制数据流向。"
+msgstr "Edges not only connect nodes but also handle state transfer, filtering, and rewriting. Additionally, the **conditional edges** it supports can dynamically control data flow direction."
+
+#: ../../source/index.rst:39
+msgid "节点能够从多个上游 “边组” 接收数据，并且支持为每个 “边组” 指定不同的状态合并策略，轻松应对复杂的数据汇聚场景。"
+msgstr "Nodes can receive data from multiple upstream \"edge groups\" and support specifying different state merging strategies for each \"edge group,\" easily handling complex data aggregation scenarios."
+
+#: ../../source/index.rst:41
+msgid "**灵活、可定制的状态管理**"
+msgstr "**Flexible, customizable state management**"
+
+#: ../../source/index.rst:43
+msgid "所有状态字段都需明确声明类型与更新规则。"
+msgstr "All status fields must clearly declare type and update rules."
+
+#: ../../source/index.rst:45
+msgid "自定义更新逻辑只需定义 ``def function(old, new) -> updated`` 并完成注册，即可无缝接入图引擎。"
+msgstr "Custom update logic only needs to define ``def function(old, new) -> updated`` and complete registration to seamlessly integrate into the graph engine."
+
+#: ../../source/index.rst:47
+msgid "**流式消息处理与上下文感知**"
+msgstr "**Streaming Message Processing and Context-Aware**"
+
+#: ../../source/index.rst:49
+msgid "提供上下文访问接口，使节点与工具在运行中能感知在图中的节点和工具调用信息。"
+msgstr "Provide a context access interface, enabling nodes and tools to perceive node and tool invocation information within the graph during runtime."
+
+#: ../../source/index.rst:51
+msgid "支持注册自定义 ``stream_handler``，自由控制流式消息的处理与展示。"
+msgstr "Supports registering custom ``stream_handler``, freely controlling the processing and display of streaming messages."
+
+#: ../../source/index.rst:53
+msgid "**严格的 Pydantic 序列化体系**"
+msgstr "**Strict Pydantic Serialization System**"
+
+#: ../../source/index.rst:55
+msgid "所有组件遵循 Pydantic 规范，以实现序列化与反序列化功能。"
+msgstr "All components adhere to the Pydantic specification to enable serialization and deserialization."
+
+#: ../../source/index.rst:57
+msgid "图可导出为配置文件并重新加载运行，保障应用的可迁移性。"
+msgstr "The graph can be exported as a configuration file and reloaded to run, ensuring the application's portability."
+
+#: ../../source/index.rst:59
+msgid "原生/自定义组件通过继承基类自动注册到工厂，随图一同导出。"
+msgstr "Native/custom components are automatically registered with the factory by inheriting the base class and exported along with the diagram."
+
+#: ../../source/index.rst:62
+msgid "主要功能"
+msgstr "Main Functions"
+
+#: ../../source/index.rst:64
+msgid "EvoFabric 提供了一套开箱即用的功能，帮助您快速启动项目。"
+msgstr "EvoFabric provides a set of out-of-the-box features to help you quickly start your project."
+
+#: ../../source/index.rst:66
+msgid "**核心引擎**:"
+msgstr "**Core Engine**:"
+
+#: ../../source/index.rst:68
+msgid "自动识别并执行四种类型的节点：**同步/异步 + 流式/非流式**。"
+msgstr "Automatically identify and execute four types of nodes: **synchronous/asynchronous + streaming/non-streaming**."
+
+#: ../../source/index.rst:70
+msgid "支持 逐步调试（Debug Mode），让您能够调试复杂的长链工作流。"
+msgstr "Supports step-by-step debugging (Debug Mode), allowing you to debug complex long-chain workflows."
+
+#: ../../source/index.rst:72
+msgid "支持图的可视化功能，方便您查看有向图的连接情况。"
+msgstr "Supports graph visualization, enabling you to easily view the connections in directed graphs."
+
+#: ../../source/index.rst:74
+msgid "**内置节点与组件**:"
+msgstr "**Built-in Nodes and Components**:"
+
+#: ../../source/index.rst:76
+msgid "**AgentNode**: 集成了记忆、工具调用和 大语言模型（LLM） 的标准化智能体节点。"
+msgstr "**AgentNode**: A standardized agent node that integrates memory, tool calls, and large language model (LLM)."
+
+#: ../../source/index.rst:78
+msgid "**UserNode**: 暂停图运行并接收用户消息的交互型节点。"
+msgstr "**UserNode**: An interactive node that pauses graph execution and receives user messages."
+
+#: ../../source/index.rst:80
+msgid "**多种记忆模块**: 包括 **ChatMem** (对话记忆)、**RetrievalMem** (检索记忆) 等。"
+msgstr "**Multiple memory modules**: including **ChatMem** (dialogue memory), **RetrievalMem** (retrieval memory), etc."
+
+#: ../../source/index.rst:82
+msgid "**强大的工具系统**:"
+msgstr "**Powerful Tool System**:"
+
+#: ../../source/index.rst:84
+msgid "强大的工具管理系统，支持 Python 工具和 MCP 工具。支持工具内在状态的管理。"
+msgstr "Powerful tool management system, supports Python tools and MCP tools. Supports the management of the internal state of tools."
+
+#: ../../source/index.rst:86
+msgid "内置 **Docker 沙箱**，安全执行第三方代码。"
+msgstr "Built-in **Docker sandbox**, securely execute third-party code."
+
+#: ../../source/index.rst:88
+msgid "**模型与数据**:"
+msgstr "**Model and Data**:"
+
+#: ../../source/index.rst:90
+msgid "提供多种 **Client** ，支持与 **chat**, **embed**, **rerank** 等模型交互。"
+msgstr "Provides multiple **Clients**, supporting interaction with **chat**, **embed**, **rerank**, and other models."
+
+#: ../../source/index.rst:92
+msgid "配备向量数据库管理模块，支持文档、记忆等持久性管理。"
+msgstr "Equipped with a vector database management module, supporting persistent management of documents, memories, etc."
+
+#: ../../source/index.rst:94
+msgid "**多智能体协作**:"
+msgstr "**Multi-Agent Collaboration**:"
+
+#: ../../source/index.rst:96
+msgid "内置 **Swarm** 模式，支持构建多个智能体（Agent）协同工作的复杂系统。"
+msgstr "Built-in **Swarm** mode, supports building complex systems where multiple agents (Agent) collaborate."
+
+#: ../../source/index.rst:98
+msgid "**高级工作流生成**:"
+msgstr "**Advanced Workflow Generation**:"
+
+#: ../../source/index.rst:100
+msgid "**SOP to Workflow**: 可将标准作业流程（SOP）文档直接转换为可执行的 EvoFabric 工作流图。"
+msgstr "**SOP to Workflow**: Standard Operating Procedure (SOP) documents can be directly converted into executable EvoFabric workflow diagrams."
+
+#: ../../source/index.rst:102
+msgid "**Kernel Evolve**: 具备动态演化和优化 **kernel代码** 的能力。"
+msgstr "**Kernel Evolve**: Capable of dynamic evolution and optimization of **kernel code**."
+
+#: ../../source/index.rst:106
+msgid "为什么选择 EvoFabric"
+msgstr "Why Choose EvoFabric"
+
+#: ../../source/index.rst:108
+msgid "**逻辑可视，调试可控**：图结构呈现智能体逻辑，结合 Debug 与可视化功能，让系统运行路径与状态变化清晰可见，告别 “黑盒开发”；"
+msgstr "**Logical Visibility, Controllable Debugging**: The graph structure visualizes agent logic, combined with Debug and visualization features, making the system's operational paths and state changes clearly visible, bidding farewell to \"black-box development\";"
+
+#: ../../source/index.rst:110
+msgid "**高度可扩展**：模块化注册机制与 Pydantic 规范，支持自定义节点、工具、记忆模块快速接入，适配各类业务场景；"
+msgstr "**Highly Scalable**: Modular registration mechanism and Pydantic specifications support rapid integration of custom nodes, tools, and memory modules, adapting to various business scenarios;"
+
+#: ../../source/index.rst:112
+msgid "**异步原生，性能优异**：基于 Python asyncio 构建，完美支持高并发与流式响应，保障大规模多智能体系统稳定运行；"
+msgstr "**Natively Asynchronous, Excellent Performance**: Built on Python asyncio, perfectly supports high concurrency and streaming responses, ensuring stable operation of large-scale multi-agent systems;"
+
+#: ../../source/index.rst:114
+msgid "**全流程支持**：从图构建、执行、调试，到导出、重载、部署，提供全流程工具链，降低开发与运维成本；"
+msgstr "**End-to-End Support**: from graph construction, execution, debugging, to export, reload, deployment, providing an end-to-end toolchain to reduce development and operations costs;"
+
+#: ../../source/index.rst:116
+msgid "**兼顾多场景需求**：无论是快速验证原型的研究场景，还是大规模部署的工程化场景，都能提供稳固基础与灵活扩展点。"
+msgstr "**Versatile Across Scenarios**: Whether it's the research scenario for rapid prototype validation or the engineering scenario for large-scale deployment, it can provide a solid foundation and flexible expansion points."
+
+#: ../../source/index.rst:118
+msgid "EvoFabric 让“智能体编排”不再是黑盒，而是一个可视、可调、可演化的系统。 它是你构建下一代智能体系统的结构化基石。"
+msgstr "EvoFabric makes \"agent orchestration\" no longer a black box, but a visual, tunable, and evolvable system. It is the structured cornerstone for building the next-generation agent systems."
+
+#: ../../source/index.rst:123
+msgid "开始"
+msgstr "Start"
+
+#: ../../source/index.rst:125
+msgid ":doc:`构建您的第一个智能体应用 </UserGuide/BuildFirstAgent>`"
+msgstr ":doc:`Build Your First Agent Application </UserGuide/BuildFirstAgent>`"
+
+#: ../../source/index.rst:127
+msgid ":doc:`了解图引擎 </UserGuide/graph/index>`"
+msgstr ":doc:`Learn about Graph Engine </UserGuide/graph/index>`"
+
+#: ../../source/index.rst:129
+msgid ":doc:`了解图引擎Debug模式 </UserGuide/GraphDebugger>`"
+msgstr ":doc:`Learn about Graph Engine Debug Mode </UserGuide/GraphDebugger>`"
+
+#: ../../source/index.rst:131
+msgid ":doc:`了解工具管理模块 </UserGuide/tool/index>`"
+msgstr ":doc:`Learn about the Tool Management Module </UserGuide/tool/index>`"
+
+#: ../../source/index.rst:133
+msgid ":doc:`了解记忆管理模块 </UserGuide/mem/index>`"
+msgstr ":doc:`Learn about the memory management module </UserGuide/mem/index>`"
+
+#: ../../source/index.rst:135
+msgid ":doc:`了解向量数据存储 </UserGuide/vectorstore/index>`"
+msgstr ":doc:`Learn about vector data storage </UserGuide/vectorstore/index>`"
+
+#: ../../source/index.rst:137
+msgid ":doc:`了解图的导出和重载 </UserGuide/Factory>`"
+msgstr ":doc:`Learn about graph export and reload </UserGuide/Factory>`"

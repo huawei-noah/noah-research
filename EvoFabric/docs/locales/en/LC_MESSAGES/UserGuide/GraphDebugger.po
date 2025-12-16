@@ -1,0 +1,81 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/GraphDebugger.rst:2
+msgid "图引擎的调试模式"
+msgstr "Graph Engine Debug Mode"
+
+#: ../../source/UserGuide/GraphDebugger.rst:4
+msgid "EvoFabric支持用户像调试Python一样对图进行调试，目前已支持的调试操作有："
+msgstr "EvoFabric allows users to debug graphs as they would debug Python, with the currently supported debugging operations including:"
+
+#: ../../source/UserGuide/GraphDebugger.rst:6
+msgid "设置断点、取消断点：程序会在断点对应节点停止运行"
+msgstr "Set breakpoint, Cancel breakpoint: The program will stop running at the node corresponding to the breakpoint"
+
+#: ../../source/UserGuide/GraphDebugger.rst:7
+msgid "Resume：从当前状态运行到结束/下一个断点"
+msgstr "Resume: Run to end/next breakpoint"
+
+#: ../../source/UserGuide/GraphDebugger.rst:8
+msgid "单步调试：单步步过当前节点/当前运行到的所有节点"
+msgstr "Single-step debugging: Step over current node / all nodes currently reached"
+
+#: ../../source/UserGuide/GraphDebugger.rst:9
+msgid "返回上一步：从当前断点返回运行的上一步"
+msgstr "Return to Previous Step: Return to the previous step in the run from the current breakpoint"
+
+#: ../../source/UserGuide/GraphDebugger.rst:10
+msgid "修改从节点A -> 节点B的输出结果"
+msgstr "Modify the output result from node A -> node B"
+
+#: ../../source/UserGuide/GraphDebugger.rst:14
+msgid "使用方式"
+msgstr "How to Use"
+
+#: ../../source/UserGuide/GraphDebugger.rst:16
+msgid "构建图："
+msgstr "Construct graph:"
+
+#: ../../source/UserGuide/GraphDebugger.rst:59
+msgid "build图阶段使用 ``graph_mode=GraphMode.DEBUG`` 开启图Debug模式"
+msgstr "Use ``graph_mode=GraphMode.DEBUG`` in the build graph phase to enable graph Debug mode"
+
+#: ../../source/UserGuide/GraphDebugger.rst:65
+msgid "设置断点"
+msgstr "Set breakpoint"
+
+#: ../../source/UserGuide/GraphDebugger.rst:71
+msgid "开始以debug模式执行"
+msgstr "Start executing in debug mode"
+
+#: ../../source/UserGuide/GraphDebugger.rst:77
+msgid "此时图会在 ``b`` 节点停止执行，可以使用单步调试 ``step_over`` 执行节点 ``b``"
+msgstr "At this point, the graph will stop executing at node ``b``, and you can use single-step debugging ``step_over`` to execute node ``b``."
+
+#: ../../source/UserGuide/GraphDebugger.rst:83
+msgid "此时已执行完成节点 ``b`` ，如果想恢复到执行节点 ``b`` 之前，则可以使用 ``restore_step``"
+msgstr "Node ``b`` has already been executed. If you want to restore to the state before executing node ``b``, you can use ``restore_step``."
+
+#: ../../source/UserGuide/GraphDebugger.rst:89
+msgid "此时节点执行状态又恢复至最开始节点 ``b`` 状态，可以使用 ``clear_breakpoint`` 清除断点，接着执行到程序结束"
+msgstr "At this point, the node's execution status returns to the initial state of node ``b``, you can use ``clear_breakpoint`` to clear the breakpoint, and then continue executing until the program ends"
+
+#: ../../source/UserGuide/GraphDebugger.rst:96
+msgid "程序执行结束后，可获得执行结果 ``result`` ，此结果与常规运行结果一致"
+msgstr "After the program execution ends, the execution result ``result`` can be obtained, which is consistent with the conventional execution result."

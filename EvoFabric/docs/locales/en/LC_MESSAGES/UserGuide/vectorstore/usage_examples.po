@@ -1,0 +1,73 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:2
+msgid "使用示例"
+msgstr "Usage Example"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:4
+msgid "本节提供了各种场景中如何使用 VectorStore 模块的实用示例。"
+msgstr "This section provides practical examples of how to use the VectorStore module in various scenarios."
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:7
+msgid "基本文本搜索"
+msgstr "Basic Text Search"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:9
+msgid "简单的文本搜索功能："
+msgstr "Simple text search function:"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:54
+msgid "基于元数据的搜索"
+msgstr "Metadata-based search"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:56
+msgid "使用元数据进行过滤搜索："
+msgstr "Filtered search using metadata:"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:106
+msgid "批处理"
+msgstr "Batch processing"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:108
+msgid "高效处理大型文档集合："
+msgstr "Efficiently process large document collections:"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:149
+msgid "文档管理"
+msgstr "Document Management"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:151
+msgid "添加、更新和删除文档："
+msgstr "Add, update, and delete documents:"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:203
+msgid "RAG应用集成"
+msgstr "RAG Application Integration"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:205
+msgid "向量化存储在检索增强生成系统中的应用："
+msgstr "Application of vectorized storage in retrieval-augmented generation systems:"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:284
+msgid "错误处理和恢复"
+msgstr "Error Handling and Recovery"
+
+#: ../../source/UserGuide/vectorstore/usage_examples.rst:286
+msgid "错误处理模式："
+msgstr "Error Handling Mode:"

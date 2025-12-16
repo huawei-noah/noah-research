@@ -1,0 +1,29 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/mem/index.rst:8
+msgid "Memory 组件"
+msgstr "Memory component"
+
+#: ../../source/UserGuide/mem/index.rst:3
+msgid "记忆能力"
+msgstr "Memory ability"
+
+#: ../../source/UserGuide/mem/index.rst:5
+msgid "本指南介绍 EvoFabric 中的记忆功能，当前提供的实现包括 标准Retrival Memory 、 Chat Memory 以及Task Memory 能力，后续将持续扩展更多记忆模式。"
+msgstr "This guide introduces the memory functionality in EvoFabric. The currently provided implementations include Standard Retrieval Memory, Chat Memory, and Task Memory capabilities. More memory patterns will be continuously expanded in the future."

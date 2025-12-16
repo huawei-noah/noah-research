@@ -1,0 +1,249 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/vector_store.rst:2
+msgid "evofabric.core.vectorstore"
+msgstr "evofabric.core.vectorstore"
+
+#: ../../source/APIReference/core/vector_store.rst:9
+msgid "定义基本向量数据库接口的抽象基类。"
+msgstr "Define the abstract base class for the basic vector database interface."
+
+#: ../../source/APIReference/core/vector_store.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/vector_store.rst:11
+msgid "数据库集合名称"
+msgstr "Database Collection Name"
+
+#: ../../source/APIReference/core/vector_store.rst:13
+msgid "持久化存储目录"
+msgstr "Persistent storage directory"
+
+#: ../../source/APIReference/core/vector_store.rst:15
+msgid "用于文本向量化的嵌入客户端"
+msgstr "Embedding client for text vectorization"
+
+#: ../../source/APIReference/core/vector_store.rst:17 ../../source/APIReference/core/vector_store.rst:118
+msgid "相似性搜索的默认结果数量"
+msgstr "Default number of results for similarity search"
+
+#: ../../source/APIReference/core/vector_store.rst:23
+msgid "将向量存储持久化到磁盘。"
+msgstr "Persist vector storage to disk."
+
+#: ../../source/APIReference/core/vector_store.rst
+msgid "raises"
+msgstr "raises"
+
+#: ../../source/APIReference/core/vector_store.rst:25 ../../source/APIReference/core/vector_store.rst:34 ../../source/APIReference/core/vector_store.rst:49 ../../source/APIReference/core/vector_store.rst:64 ../../source/APIReference/core/vector_store.rst:73 ../../source/APIReference/core/vector_store.rst:95 ../../source/APIReference/core/vector_store.rst:103
+msgid "NotImplementedError"
+msgstr "NotImplementedError"
+
+#: ../../source/APIReference/core/vector_store.rst:30
+msgid "清除整个向量存储。"
+msgstr "Clear the entire vector storage."
+
+#: ../../source/APIReference/core/vector_store.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/vector_store.rst:32 ../../source/APIReference/core/vector_store.rst:147
+msgid "删除的文档数量"
+msgstr "Number of deleted documents"
+
+#: ../../source/APIReference/core/vector_store.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/vector_store.rst:39
+msgid "在向量存储上执行相似性搜索。"
+msgstr "Execute similarity search on vector storage."
+
+#: ../../source/APIReference/core/vector_store.rst:41
+msgid "要搜索的查询文本"
+msgstr "Query text to be searched"
+
+#: ../../source/APIReference/core/vector_store.rst:43
+msgid "返回的结果数量（默认：top_k）"
+msgstr "Number of results returned (default: top_k)"
+
+#: ../../source/APIReference/core/vector_store.rst:45
+msgid "搜索的元数据过滤器"
+msgstr "Search metadata filter"
+
+#: ../../source/APIReference/core/vector_store.rst:47
+msgid "匹配查询的数据库项目列表"
+msgstr "List of database items matching the query"
+
+#: ../../source/APIReference/core/vector_store.rst:54 ../../source/APIReference/core/vector_store.rst:167
+msgid "向向量存储添加新的数据库项目。"
+msgstr "Add new database items to vector storage."
+
+#: ../../source/APIReference/core/vector_store.rst:56
+msgid "要添加的 DBItem 或文本列表"
+msgstr "DBItem or text list to be added"
+
+#: ../../source/APIReference/core/vector_store.rst:58 ../../source/APIReference/core/vector_store.rst:171
+msgid "元数据列表（可选）"
+msgstr "Metadata List (Optional)"
+
+#: ../../source/APIReference/core/vector_store.rst:60 ../../source/APIReference/core/vector_store.rst:173
+msgid "文档 ID 列表（可选）"
+msgstr "Document ID List (Optional)"
+
+#: ../../source/APIReference/core/vector_store.rst:62
+msgid "添加项目的 ID 列表"
+msgstr "Add Project ID List"
+
+#: ../../source/APIReference/core/vector_store.rst:69
+msgid "根据其原始 ID 删除项目。"
+msgstr "Delete the item according to its original ID."
+
+#: ../../source/APIReference/core/vector_store.rst:71 ../../source/APIReference/core/vector_store.rst:183
+msgid "要删除的 ID 列表"
+msgstr "List of IDs to delete"
+
+#: ../../source/APIReference/core/vector_store.rst:78
+msgid "具有高级功能的增强型向量数据库操作的抽象类。"
+msgstr "Abstract class for enhanced vector database operations with advanced features."
+
+#: ../../source/APIReference/core/vector_store.rst:80
+msgid "集合名称"
+msgstr "Collection Name"
+
+#: ../../source/APIReference/core/vector_store.rst:82 ../../source/APIReference/core/vector_store.rst:114
+msgid "持久化存储目录（可选）。如果未设置，使用内存模式。"
+msgstr "Persistent storage directory (optional). If not set, use memory mode."
+
+#: ../../source/APIReference/core/vector_store.rst:84
+msgid "嵌入函数（可选）"
+msgstr "Embedding function (Optional)"
+
+#: ../../source/APIReference/core/vector_store.rst:86
+msgid "默认搜索 top_k"
+msgstr "Default search top_k"
+
+#: ../../source/APIReference/core/vector_store.rst:91
+msgid "获取数据库中的向量数量。"
+msgstr "Get the number of vectors in the database."
+
+#: ../../source/APIReference/core/vector_store.rst:93 ../../source/APIReference/core/vector_store.rst:192
+msgid "向量数量"
+msgstr "Number of Vectors"
+
+#: ../../source/APIReference/core/vector_store.rst:99 ../../source/APIReference/core/vector_store.rst:197
+msgid "获取当前集合的信息。"
+msgstr "Retrieve information about the current collection."
+
+#: ../../source/APIReference/core/vector_store.rst:101 ../../source/APIReference/core/vector_store.rst:199
+msgid "集合信息字典"
+msgstr "Collection Information Dictionary"
+
+#: ../../source/APIReference/core/vector_store.rst:108
+msgid "基于原生 ChromaDB 的向量数据库实现。"
+msgstr "Vector database implementation based on native ChromaDB."
+
+#: ../../source/APIReference/core/vector_store.rst:110
+msgid "继承自 :py:class:`VectorDB` 并实现所有抽象方法。"
+msgstr "Inherits from :py:class:`VectorDB` and implements all abstract methods."
+
+#: ../../source/APIReference/core/vector_store.rst:112
+msgid "ChromaDB 集合名称"
+msgstr "ChromaDB Collection Name"
+
+#: ../../source/APIReference/core/vector_store.rst:116
+msgid "用于文本向量化的嵌入客户端（必需）"
+msgstr "Embedding client for text vectorization (required)"
+
+#: ../../source/APIReference/core/vector_store.rst:121
+msgid "**嵌入客户端要求：**"
+msgstr "**Embedded Client Requirements:**"
+
+#: ../../source/APIReference/core/vector_store.rst:123
+msgid "embedding 参数必须是 ``EmbedClientBase`` 的实例。框架提供两个主要实现："
+msgstr "The embedding parameter must be an instance of ``EmbedClientBase``. The framework provides two main implementations:"
+
+#: ../../source/APIReference/core/vector_store.rst:125
+msgid ":py:class:`~evofabric.core.clients.SentenceTransformerEmbed` 用于本地句子转换器模型"
+msgstr ":py:class:`~evofabric.core.clients.SentenceTransformerEmbed` is used for local sentence transformer model"
+
+#: ../../source/APIReference/core/vector_store.rst:126
+msgid ":py:class:`~evofabric.core.clients.OpenAIEmbedClient` 基于 OpenAI API 的嵌入"
+msgstr ":py:class:`~evofabric.core.clients.OpenAIEmbedClient` Embedding based on OpenAI API"
+
+#: ../../source/APIReference/core/vector_store.rst:130
+msgid "在 pydantic 验证后初始化 ChromaDB。"
+msgstr "Initialize ChromaDB after pydantic validation."
+
+#: ../../source/APIReference/core/vector_store.rst:132
+msgid "Pydantic 验证上下文"
+msgstr "Pydantic Validation Context"
+
+#: ../../source/APIReference/core/vector_store.rst:138
+msgid "持久化数据。在 ChromaDB 中，数据会自动持久化。"
+msgstr "Persistent data. In ChromaDB, data is automatically persisted."
+
+#: ../../source/APIReference/core/vector_store.rst:140
+msgid "None"
+msgstr "None"
+
+#: ../../source/APIReference/core/vector_store.rst:145
+msgid "通过删除所有文档同时保留集合来清除向量存储。"
+msgstr "Clear the vector storage by deleting all documents while retaining the collection."
+
+#: ../../source/APIReference/core/vector_store.rst:153
+msgid "执行相似性搜索并返回 :py:class:`SearchResult` 对象列表。"
+msgstr "Perform similarity search and return a list of :py:class:`SearchResult` objects."
+
+#: ../../source/APIReference/core/vector_store.rst:155
+msgid "查询文本"
+msgstr "Query text"
+
+#: ../../source/APIReference/core/vector_store.rst:157
+msgid "返回的结果数量（默认 top_k）"
+msgstr "Number of returned results (default top_k)"
+
+#: ../../source/APIReference/core/vector_store.rst:159
+msgid "元数据过滤器"
+msgstr "Metadata Filter"
+
+#: ../../source/APIReference/core/vector_store.rst:161
+msgid "搜索结果列表"
+msgstr "Search Results List"
+
+#: ../../source/APIReference/core/vector_store.rst:169
+msgid "DBItem 或文本列表"
+msgstr "DBItem or text list"
+
+#: ../../source/APIReference/core/vector_store.rst:175
+msgid "添加后的 ID 列表"
+msgstr "Added ID List"
+
+#: ../../source/APIReference/core/vector_store.rst:181
+msgid "根据其 ID 删除向量。"
+msgstr "Delete the vector by its ID."
+
+#: ../../source/APIReference/core/vector_store.rst:185
+msgid "删除是否成功"
+msgstr "Was the deletion successful?"
+
+#: ../../source/APIReference/core/vector_store.rst:190
+msgid "获取集合中存储的向量数量。"
+msgstr "Get the number of vectors stored in the collection."

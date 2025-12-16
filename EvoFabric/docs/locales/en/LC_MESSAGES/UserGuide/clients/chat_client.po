@@ -1,0 +1,93 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/clients/chat_client.rst:3
+msgid "ChatClient"
+msgstr "ChatClient"
+
+#: ../../source/UserGuide/clients/chat_client.rst:7
+msgid "ChatClient 是用于与大语言模型进行对话交互的客户端模块，支持流式和非流式响应获取，适用于构建智能对话系统、Agent 节点等场景。"
+msgstr "ChatClient is a client module for dialogue interaction with large language models, supporting both streaming and non-streaming response retrieval, and suitable for building intelligent dialogue systems, Agent nodes, and other scenarios."
+
+#: ../../source/UserGuide/clients/chat_client.rst:11
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/clients/chat_client.rst:13
+msgid "ChatClient 模块提供了统一的接口用于调用不同后端的大语言模型（LLM）进行对话生成。实现对 OpenAI、盘古等模型的统一调用方式，并支持配置模型参数、流式解析、HTTP 客户端设置等功能。"
+msgstr "The ChatClient module provides a unified interface for calling different backend large language models (LLMs) to generate conversations. It implements a unified calling method for models such as OpenAI and PanGu, and supports features including configuring model parameters, streaming parsing, and HTTP client settings."
+
+#: ../../source/UserGuide/clients/chat_client.rst:17
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/clients/chat_client.rst:19
+msgid "**统一接口**: 所有客户端继承自 :py:class:`~evofabric.core.clients.ChatClientBase`，提供一致的调用方式。"
+msgstr "**Unified Interface**: All clients inherit from :py:class:`~evofabric.core.clients.ChatClientBase`, providing a consistent calling method."
+
+#: ../../source/UserGuide/clients/chat_client.rst:20
+msgid "**流式支持**: 支持流式响应获取，适用于实时交互场景。"
+msgstr "**Streaming Support**: Supports streaming responses, suitable for real-time interaction scenarios."
+
+#: ../../source/UserGuide/clients/chat_client.rst:21
+msgid "**灵活配置**: 支持模型参数、HTTP 客户端参数、推理参数的灵活配置。"
+msgstr "**Flexible Configuration**: Supports flexible configuration of model parameters, HTTP client parameters, and inference parameters."
+
+#: ../../source/UserGuide/clients/chat_client.rst:22
+msgid "**可扩展性**: 易于扩展新的模型客户端。"
+msgstr "**Scalability**: Easy to expand new model clients."
+
+#: ../../source/UserGuide/clients/chat_client.rst:23
+msgid "**异步支持**: 基于异步接口实现，适用于高并发场景。"
+msgstr "**Asynchronous Support**: Implemented using asynchronous interfaces, suitable for high-concurrency scenarios."
+
+#: ../../source/UserGuide/clients/chat_client.rst:26
+msgid "基本使用"
+msgstr "Basic Usage"
+
+#: ../../source/UserGuide/clients/chat_client.rst:52
+msgid "在 Agent 中使用"
+msgstr "Use in Agent"
+
+#: ../../source/UserGuide/clients/chat_client.rst:71
+msgid "最佳实践"
+msgstr "Best Practices"
+
+#: ../../source/UserGuide/clients/chat_client.rst:73
+msgid "**1. 流式响应处理**"
+msgstr "**1. Streaming Response Processing**"
+
+#: ../../source/UserGuide/clients/chat_client.rst:75
+msgid "适用于实时展示流式消息等场景："
+msgstr "Applies to scenarios such as real-time display of streaming messages:"
+
+#: ../../source/UserGuide/clients/chat_client.rst:87
+msgid "**2. 参数覆盖机制**"
+msgstr "**2. Parameter Override Mechanism**"
+
+#: ../../source/UserGuide/clients/chat_client.rst:89
+msgid "调用时传入的 ``kwargs`` 会覆盖初始化时的 ``inference_kwargs``："
+msgstr "The ``kwargs`` passed during the call will override the ``inference_kwargs`` set during initialization:"
+
+#: ../../source/UserGuide/clients/chat_client.rst:105
+msgid "**3. 错误处理与重试**"
+msgstr "**3. Error Handling and Retries**"
+
+#: ../../source/UserGuide/clients/chat_client.rst:107
+msgid "建议在调用层加入异常处理逻辑："
+msgstr "It is recommended to add exception handling logic at the calling layer:"

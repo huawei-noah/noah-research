@@ -1,0 +1,129 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/Plugins.rst:3
+msgid "插件"
+msgstr "Plugin"
+
+#: ../../source/UserGuide/Plugins.rst:5
+msgid "EvoFabric支持用户自定义插件，目前已经预定义的插件类型有："
+msgstr "EvoFabric supports user-defined plugins, and the currently predefined plugin types are:"
+
+#: ../../source/UserGuide/Plugins.rst:7
+msgid ":py:class:`~evofabric.core.graph.SyncNode`: 同步节点"
+msgstr ":py:class:`~evofabric.core.graph.SyncNode`: Sync node"
+
+#: ../../source/UserGuide/Plugins.rst:8
+msgid ":py:class:`~evofabric.core.graph.AsyncNode`: 异步节点"
+msgstr ":py:class:`~evofabric.core.graph.AsyncNode`: asynchronous node"
+
+#: ../../source/UserGuide/Plugins.rst:9
+msgid ":py:class:`~evofabric.core.graph.SyncStreamNode`: 同步流节点"
+msgstr ":py:class:`~evofabric.core.graph.SyncStreamNode`: Sync Stream Node"
+
+#: ../../source/UserGuide/Plugins.rst:10
+msgid ":py:class:`~evofabric.core.graph.AsyncStreamNode`: 异步流节点"
+msgstr ":py:class:`~evofabric.core.graph.AsyncStreamNode`: Async Stream Node"
+
+#: ../../source/UserGuide/Plugins.rst:11
+msgid ":py:class:`~evofabric.core.clients.ChatClientBase`: 自定义大模型"
+msgstr ":py:class:`~evofabric.core.clients.ChatClientBase`: Custom Large Model"
+
+#: ../../source/UserGuide/Plugins.rst:12
+msgid ":py:class:`~evofabric.core.clients.EmbedClientBase`: 自定义文本Embedding模块"
+msgstr ":py:class:`~evofabric.core.clients.EmbedClientBase`: Custom text Embedding module"
+
+#: ../../source/UserGuide/Plugins.rst:13
+msgid ":py:class:`~evofabric.core.clients.RerankClientBase`: 自定义ReRank模块"
+msgstr ":py:class:`~evofabric.core.clients.RerankClientBase`: Custom ReRank module"
+
+#: ../../source/UserGuide/Plugins.rst:14
+msgid ":py:class:`~evofabric.core.mem.MemBase`: 自定义记忆模块"
+msgstr ":py:class:`~evofabric.core.mem.MemBase`: Custom Memory Module"
+
+#: ../../source/UserGuide/Plugins.rst:15
+msgid ":py:class:`~evofabric.core.tool.ToolManager`: 自定义工具管理器"
+msgstr ":py:class:`~evofabric.core.tool.ToolManager`: Custom Tool Manager"
+
+#: ../../source/UserGuide/Plugins.rst:16
+msgid ":py:class:`~evofabric.core.tool.McpToolManager`: MCP工具管理器"
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager`: MCP Tool Manager"
+
+#: ../../source/UserGuide/Plugins.rst:17
+msgid ":py:class:`~evofabric.core.tool.CodeSandbox`: 代码沙箱"
+msgstr ":py:class:`~evofabric.core.tool.CodeSandbox`: Code Sandbox"
+
+#: ../../source/UserGuide/Plugins.rst:18
+msgid ":py:class:`~evofabric.core.vectorstore.DBBase`: 数据库"
+msgstr ":py:class:`~evofabric.core.vectorstore.DBBase`: Database"
+
+#: ../../source/UserGuide/Plugins.rst:22
+msgid "也可在 :class:`evofabric.plugin_manager.PluginTypeDict` 查找支持的插件类型"
+msgstr "Supported plugin types can also be looked up in :class:`evofabric.plugin_manager.PluginTypeDict`"
+
+#: ../../source/UserGuide/Plugins.rst:25
+msgid "插件接入原理"
+msgstr "Plugin Integration Principle"
+
+#: ../../source/UserGuide/Plugins.rst:27
+msgid "插件接入 EvoFabric 框架需使用 Python 的 ``entry-points`` 机制: 当用户在自己的插件包中配置文件定义了 ``entry-points``，EvoFabric会自动识别到插件。"
+msgstr "Plugins integrating with the EvoFabric framework require the use of Python's ``entry-points`` mechanism: when users define ``entry-points`` in the configuration file of their plugin package, EvoFabric will automatically recognize the plugin."
+
+#: ../../source/UserGuide/Plugins.rst:29
+msgid "示例如下："
+msgstr "Example as follows:"
+
+#: ../../source/UserGuide/Plugins.rst:38
+msgid "以上配置 :meth:`demo_tool1:create` 对应 ``demo_tool1.create`` 函数，EvoFabric将在注册插件阶段调用该函数以获取插件类。"
+msgstr "The above configuration :meth:`demo_tool1:create` corresponds to the ``demo_tool1.create`` function, and EvoFabric will call this function during the plugin registration phase to obtain the plugin class."
+
+#: ../../source/UserGuide/Plugins.rst:40
+msgid "插件初始化逻辑可见： :func:`evofabric.plugin_manager.load_plugins`"
+msgstr "Plugin initialization logic is visible: :func:`evofabric.plugin_manager.load_plugins`"
+
+#: ../../source/UserGuide/Plugins.rst:42
+msgid "在被EvoFabric框架加载后，插件会自动继承于对应类型的父类，用户即可根据需要使用对应插件。"
+msgstr "After being loaded by the EvoFabric framework, plugins automatically inherit from the parent class corresponding to their type, and users can then use the corresponding plugins as needed."
+
+#: ../../source/UserGuide/Plugins.rst:46
+msgid "插件示例"
+msgstr "Plugin Example"
+
+#: ../../source/UserGuide/Plugins.rst:48
+msgid "接下来我们可以按照此指引自定义一个名为demo_tool1的插件："
+msgstr "Next, we can customize a plugin named demo_tool1 according to this guide:"
+
+#: ../../source/UserGuide/Plugins.rst:50
+msgid "首先我们要新建一个python包，目录结构如下："
+msgstr "First, we need to create a new Python package. The directory structure is as follows:"
+
+#: ../../source/UserGuide/Plugins.rst:62
+msgid "其中 ``pyproject.toml`` 中包含了entry-points注册块，具体的配置如下："
+msgstr "The ``pyproject.toml`` file contains the entry-points registration block, the specific configuration is as follows:"
+
+#: ../../source/UserGuide/Plugins.rst:93
+msgid "编写插件逻辑，如下是一个LLM模块的流输出示例，位于 ``demo_tool1/invoke_tool.py`` ："
+msgstr "Write plugin logic. The following is a streaming output example of an LLM module, located at ``demo_tool1/invoke_tool.py``:"
+
+#: ../../source/UserGuide/Plugins.rst:110
+msgid "增加注册函数，位于 ``demo_tool1/invoke_tool.py`` ："
+msgstr "Add registration function, located at ``demo_tool1/invoke_tool.py``:"
+
+#: ../../source/UserGuide/Plugins.rst:117
+msgid "插件已完成，仅需在当前目录中执行 ``pip install -e .`` 即可安装该插件。"
+msgstr "The plugin has been completed. Simply execute ``pip install -e .`` in the current directory to install it."

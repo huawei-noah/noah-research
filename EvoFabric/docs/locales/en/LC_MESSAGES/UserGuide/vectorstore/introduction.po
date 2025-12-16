@@ -1,0 +1,144 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:2
+msgid "介绍"
+msgstr "Introduction"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:4
+msgid "EvoFabric 中的 :py:class:`~evofabric.core.vectorstore` 模块提供了一个全面的向量数据库解决方案，专为高效的文本存储、检索和相似性搜索操作而设计。采用模块化架构构建，它支持各种向量数据库后端，并提供同步和异步 API。"
+msgstr "The `:py:class:`~evofabric.core.vectorstore` module in EvoFabric provides a comprehensive vector database solution designed for efficient text storage, retrieval, and similarity search operations. Built with a modular architecture, it supports various vector database backends and provides both synchronous and asynchronous APIs."
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:9
+msgid ":py:class:`~evofabric.core.vectorstore` 模块提供以下功能："
+msgstr "The :py:`~evofabric.core.vectorstore` module provides the following functions:"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:11
+msgid "**多后端支持**：目前包含 :py:class:`~evofabric.core.vectorstore.ChromaDB` 实现，架构可扩展以支持其他向量数据库"
+msgstr "**Multi-backend support**: Currently includes the :py:class:`~evofabric.core.vectorstore.ChromaDB` implementation, and the architecture is extensible to support other vector databases."
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:12
+msgid "**灵活集成**：与嵌入客户端的无缝集成，支持自动文本向量化"
+msgstr "**Flexible Integration**: Seamless integration with embedded clients, supporting automatic text vectorization"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:13
+msgid "**丰富的 API 套件**：全面的文本添加、相似性搜索、数据库管理和元数据处理方法"
+msgstr "**Comprehensive API Suite**: Comprehensive text addition, similarity search, database management, metadata processing methods"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:14
+msgid "**异步支持**：为高性能应用程序提供完整的异步 API 支持"
+msgstr "**Asynchronous Support**: Full asynchronous API support for high-performance applications"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:15
+msgid "**元数据管理**：过滤和基于元数据的搜索功能"
+msgstr "**Metadata Management**: Filtering and metadata-based search functionality"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:18
+msgid "核心组件"
+msgstr "Core Components"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:20
+msgid "模块包含几个关键组件："
+msgstr "The module includes several key components:"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:22
+msgid ":py:class:`~evofabric.core.vectorstore.DBBase`: 定义基本向量数据库接口的抽象基类"
+msgstr ":py:class:`~evofabric.core.vectorstore.DBBase`: Defines the abstract base class for the basic vector database interface."
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:23
+msgid ":py:class:`~evofabric.core.vectorstore.VectorDB`：具有高级向量操作的增强抽象类"
+msgstr ":py:class:`~evofabric.core.vectorstore.VectorDB`: An enhanced abstract class with advanced vector operations"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:24
+msgid ":py:class:`~evofabric.core.vectorstore.ChromaDB`：生产就绪的 ChromaDB 实现"
+msgstr ":py:class:`~evofabric.core.vectorstore.ChromaDB`: production-ready ChromaDB implementation"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:25
+msgid "**数据类型**: 用于结构化数据处理的 :py:class:`~evofabric.core.typing.DBItem` 和 :py:class:`~evofabric.core.typing.SearchResult`"
+msgstr "**Data Type**: used for structured data processing :py:class:`~evofabric.core.typing.DBItem` and :py:class:`~evofabric.core.typing.SearchResult`"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:28
+msgid "使用场景"
+msgstr "Usage Scenario"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:30
+msgid ":py:class:`~evofabric.core.vectorstore` 模块适用于："
+msgstr ":py:class:`~evofabric.core.vectorstore` The module is suitable for:"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:32
+msgid "**检索增强生成 (RAG)**：存储和检索相关文档以提供 LLM 上下文"
+msgstr "**Retrieval-Augmented Generation (RAG)**: Store and retrieve relevant documents to provide LLM context"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:33
+msgid "**语义搜索**：在文本语料库上实现基于相似性的搜索"
+msgstr "**Semantic Search**: Implement similarity-based search on text corpora"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:34
+msgid "**文档管理**：存储、索引和检索带有元数据的文档"
+msgstr "**Document Management**: Store, index, and retrieve documents with metadata"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:35
+msgid "**知识库**：构建和管理知识检索系统"
+msgstr "**Knowledge Base**: Building and Managing Knowledge Retrieval Systems"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:36
+msgid "**内容推荐**：基于语义相似性查找相似内容"
+msgstr "**Content Recommendation**: Search for similar content based on semantic similarity"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:39
+msgid "架构优势"
+msgstr "Architectural Advantages"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:41
+msgid "**模块化设计**：易于使用新的向量数据库后端进行扩展"
+msgstr "**Modular Design**: Easy to extend with new vector database backends"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:42
+msgid "**类型安全**：全面的类型注解和 Pydantic 验证"
+msgstr "**Type Safety**: Comprehensive type annotations and Pydantic validation"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:43
+msgid "**错误处理**：错误处理和恢复机制"
+msgstr "**Error Handling**: Error Handling and Recovery Mechanisms"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:44
+msgid "**性能**：针对速度和内存效率进行优化"
+msgstr "**Performance**: Optimized for speed and memory efficiency"
+
+#: ../../source/UserGuide/vectorstore/introduction.rst:45
+msgid "**灵活性**：支持自定义嵌入函数和元数据过滤"
+msgstr "**Flexibility**: Support for custom embedding functions and metadata filtering"
+
+#~ msgid "**DBBase**：定义基本向量数据库接口的抽象基类"
+#~ msgstr "**DBBase**: Defines the abstract base class for the basic vector database interface"
+
+#~ msgid "**VectorDB**：具有高级向量操作的增强抽象类"
+#~ msgstr "**VectorDB**: An enhanced abstract class with advanced vector operations"
+
+#~ msgid "**ChromaDB**：生产就绪的 ChromaDB 实现"
+#~ msgstr "**ChromaDB**: Production-Ready ChromaDB Implementation"
+
+#~ msgid "**数据类型**：用于结构化数据处理的 DBItem 和 SearchResult"
+#~ msgstr "**Data Types**: DBItem and SearchResult for structured data processing"
+
+#~ msgid "VectorStore 模块适用于："
+#~ msgstr "VectorStore module applies to:"

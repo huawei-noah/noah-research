@@ -1,0 +1,12 @@
+/* Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved. */
+h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+}
+
+div.mermaid {
+    text-align: center;
+}
+div.mermaid svg {
+    display: inline-block;
+    max-width: 100%;
+}

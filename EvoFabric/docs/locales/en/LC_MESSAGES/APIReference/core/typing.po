@@ -1,0 +1,597 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/typing.rst:2
+msgid "evofabric.core.typing"
+msgstr "evofabric.core.typing"
+
+#: ../../source/APIReference/core/typing.rst:7
+msgid "General"
+msgstr ""
+"General\n"
+"General"
+
+#: ../../source/APIReference/core/typing.rst:11
+msgid "空参数描述符。"
+msgstr "Empty parameter descriptor."
+
+#: ../../source/APIReference/core/typing.rst:14
+msgid "Graph Related"
+msgstr "Graph Related"
+
+#: ../../source/APIReference/core/typing.rst:19
+msgid "图中的特殊节点枚举，用于标识图的起始节点和结束节点。"
+msgstr "The enumeration of special nodes in the graph, used to identify the start and end nodes of the graph."
+
+#: ../../source/APIReference/core/typing.rst:23
+msgid "判断给定名称是否为特殊节点。"
+msgstr "Determine whether the given name is a special node."
+
+#: ../../source/APIReference/core/typing.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/typing.rst:25
+msgid "节点名称。"
+msgstr "Node name."
+
+#: ../../source/APIReference/core/typing.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/typing.rst:28
+msgid "如果是特殊节点返回 ``True``，否则返回 ``False``。"
+msgstr "Return ``True`` if it is a special node, otherwise return ``False``."
+
+#: ../../source/APIReference/core/typing.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/typing.rst:34
+msgid "判断给定名称或节点是否为结束节点。"
+msgstr "Determine whether the given name or node is an end node."
+
+#: ../../source/APIReference/core/typing.rst:36 ../../source/APIReference/core/typing.rst:47
+msgid "节点名称或 SpecialNode 实例。"
+msgstr "Node name or SpecialNode instance."
+
+#: ../../source/APIReference/core/typing.rst:39
+msgid "如果是结束节点返回 ``True``，否则返回 ``False``。"
+msgstr "If it is an end node, return ``True``, otherwise return ``False``."
+
+#: ../../source/APIReference/core/typing.rst:45
+msgid "判断给定名称或节点是否为起始节点。"
+msgstr "Determine whether the given name or node is a starting node."
+
+#: ../../source/APIReference/core/typing.rst:50
+msgid "如果是起始节点返回 ``True``，否则返回 ``False``。"
+msgstr "If it is the starting node, return ``True``, otherwise return ``False``."
+
+#: ../../source/APIReference/core/typing.rst:57
+msgid "图执行模式的枚举，表示图的运行模式。"
+msgstr "Graph execution mode enumeration, representing the graph's execution mode."
+
+#: ../../source/APIReference/core/typing.rst:61
+msgid "图的正常运行模式。"
+msgstr "Graph's normal operation mode."
+
+#: ../../source/APIReference/core/typing.rst:65
+msgid "图的调试运行模式。"
+msgstr "Graph Debugging Run Mode"
+
+#: ../../source/APIReference/core/typing.rst:71
+msgid "节点动作模式枚举类，用于定义节点在拥有多个前驱节点时的执行条件。"
+msgstr "Node action mode enumeration class, used to define the execution conditions of a node when it has multiple predecessor nodes."
+
+#: ../../source/APIReference/core/typing.rst:75
+msgid "任意模式：当收到任意前驱节点的消息时，该节点即执行。"
+msgstr "Arbitrary mode: The node executes immediately upon receiving a message from any predecessor node."
+
+#: ../../source/APIReference/core/typing.rst:79
+msgid "全部模式：仅当收到所有前驱节点的消息后，该节点才执行。"
+msgstr "All Mode: The node executes only after receiving messages from all predecessor nodes."
+
+#: ../../source/APIReference/core/typing.rst:85
+msgid "默认边分组标识。"
+msgstr "Default edge grouping identifier."
+
+#: ../../source/APIReference/core/typing.rst:89
+msgid "流式数据块类型别名，表示任意类型的流式片段。"
+msgstr "Streaming data block type alias, representing any type of stream fragment."
+
+#: ../../source/APIReference/core/typing.rst:93
+msgid "状态增量类型别名，表示状态变更的字典结构。"
+msgstr "State increment type alias, representing the dictionary structure of state changes."
+
+#: ../../source/APIReference/core/typing.rst:97
+msgid "状态类型别名，可为 ``BaseModel`` 实例或普通字典。"
+msgstr "State type alias, can be a ``BaseModel`` instance or a regular dictionary."
+
+#: ../../source/APIReference/core/typing.rst:101
+msgid "状态 Schema 的数据类型。"
+msgstr "Status Schema's data type."
+
+#: ../../source/APIReference/core/typing.rst:104
+msgid "Messages"
+msgstr "Messages"
+
+#: ../../source/APIReference/core/typing.rst:108
+msgid "定义 LLM 聊天客户端的使用信息。"
+msgstr "Define the usage information for the LLM chat client."
+
+#: ../../source/APIReference/core/typing.rst:110
+msgid "生成补全内容所使用的 token 数。"
+msgstr "The number of tokens used to generate the completion."
+
+#: ../../source/APIReference/core/typing.rst:113
+msgid "提示词中使用的 token 数。"
+msgstr "Number of tokens used in the prompt."
+
+#: ../../source/APIReference/core/typing.rst:116
+msgid "请求中使用的总 token 数（提示词 + 补全内容）。"
+msgstr "Total number of tokens used in the request (prompt + completion content)."
+
+#: ../../source/APIReference/core/typing.rst:119 ../../source/APIReference/core/typing.rst:128 ../../source/APIReference/core/typing.rst:136
+msgid "生成所耗时间（秒）。"
+msgstr "Time consumed for generation (seconds)."
+
+#: ../../source/APIReference/core/typing.rst:126
+msgid "定义嵌入（embedding）的使用信息。"
+msgstr "Define the usage information of embedding (embedding)."
+
+#: ../../source/APIReference/core/typing.rst:134
+msgid "定义重排序（reranking）的使用信息。"
+msgstr "Definition of reranking (reranking) usage information."
+
+#: ../../source/APIReference/core/typing.rst:143
+msgid "定义函数调用的信息。"
+msgstr "Define function call information."
+
+#: ../../source/APIReference/core/typing.rst:145
+msgid "JSON 格式的函数参数。"
+msgstr "JSON-formatted function parameters."
+
+#: ../../source/APIReference/core/typing.rst:148
+msgid "函数名称。"
+msgstr "Function name."
+
+#: ../../source/APIReference/core/typing.rst:155
+msgid "定义工具调用信息。"
+msgstr "Define tool call information."
+
+#: ../../source/APIReference/core/typing.rst:157
+msgid "函数调用的唯一标识符。"
+msgstr "Unique identifier for function calls."
+
+#: ../../source/APIReference/core/typing.rst:160
+msgid "模型调用的函数对象。"
+msgstr "Function object called by the model."
+
+#: ../../source/APIReference/core/typing.rst:163
+msgid "调用类型。"
+msgstr "call type."
+
+#: ../../source/APIReference/core/typing.rst:170
+msgid "定义 LLM 聊天客户端的流式分块内容。"
+msgstr "Define the streaming chunked content of the LLM chat client."
+
+#: ../../source/APIReference/core/typing.rst:172 ../../source/APIReference/core/typing.rst:294
+msgid "推理内容。"
+msgstr "Reasoning content."
+
+#: ../../source/APIReference/core/typing.rst:175
+msgid "输出内容。"
+msgstr "Output content."
+
+#: ../../source/APIReference/core/typing.rst:182
+msgid "定义 LLM 客户端的响应格式。"
+msgstr "Define the response format for the LLM client."
+
+#: ../../source/APIReference/core/typing.rst:184
+msgid "响应内容。"
+msgstr "Response content."
+
+#: ../../source/APIReference/core/typing.rst:187 ../../source/APIReference/core/typing.rst:297
+msgid "工具调用列表。"
+msgstr "Tool Call List"
+
+#: ../../source/APIReference/core/typing.rst:190
+msgid "响应的推理内容。"
+msgstr "Response reasoning content."
+
+#: ../../source/APIReference/core/typing.rst:193 ../../source/APIReference/core/typing.rst:211 ../../source/APIReference/core/typing.rst:226 ../../source/APIReference/core/typing.rst:300
+msgid "使用信息。"
+msgstr "Usage Information."
+
+#: ../../source/APIReference/core/typing.rst:196
+msgid "响应的唯一标识符。"
+msgstr "Unique identifier for the response."
+
+#: ../../source/APIReference/core/typing.rst:199
+msgid "元信息。"
+msgstr "Metadata."
+
+#: ../../source/APIReference/core/typing.rst:206
+msgid "定义嵌入客户端的响应格式。"
+msgstr "Define the response format for the embedded client."
+
+#: ../../source/APIReference/core/typing.rst:208
+msgid "嵌入向量（浮点数列表）。"
+msgstr "Embedding vector (list of floating-point numbers)."
+
+#: ../../source/APIReference/core/typing.rst:218
+msgid "定义重排序客户端的响应格式。"
+msgstr "Define the response format for the reordering client."
+
+#: ../../source/APIReference/core/typing.rst:220
+msgid "重排序得分。"
+msgstr "Re-ranking score."
+
+#: ../../source/APIReference/core/typing.rst:223
+msgid "重排序文本。"
+msgstr "Reorder text."
+
+#: ../../source/APIReference/core/typing.rst:233
+msgid "表示状态消息的基类。"
+msgstr "Base class representing status messages."
+
+#: ../../source/APIReference/core/typing.rst:235 ../../source/APIReference/core/typing.rst:251 ../../source/APIReference/core/typing.rst:267 ../../source/APIReference/core/typing.rst:285 ../../source/APIReference/core/typing.rst:310
+msgid "消息内容。"
+msgstr "Message content."
+
+#: ../../source/APIReference/core/typing.rst:238
+msgid "消息唯一 ID（由 append_message 策略自动添加）。"
+msgstr "Message Unique ID (automatically added by the append_message strategy)."
+
+#: ../../source/APIReference/core/typing.rst:241
+msgid "消息由哪个Node发出（由 :py:class:`GraphNodeSpec` 在运行时注入）。"
+msgstr "Which Node emitted the message (injected at runtime by :py:class:`GraphNodeSpec`)."
+
+#: ../../source/APIReference/core/typing.rst:247
+msgid "系统消息。"
+msgstr "System message."
+
+#: ../../source/APIReference/core/typing.rst:249 ../../source/APIReference/core/typing.rst:265 ../../source/APIReference/core/typing.rst:283 ../../source/APIReference/core/typing.rst:308
+msgid "**继承自** :py:class:`StateBaseMessage`"
+msgstr "**Inherits from** :py:class:`StateBaseMessage`"
+
+#: ../../source/APIReference/core/typing.rst:254 ../../source/APIReference/core/typing.rst:270 ../../source/APIReference/core/typing.rst:288 ../../source/APIReference/core/typing.rst:313
+msgid "消息唯一 ID。"
+msgstr "Unique Message ID."
+
+#: ../../source/APIReference/core/typing.rst:257
+msgid "消息角色，固定为 ``system``。"
+msgstr "Message role, fixed as ``system``."
+
+#: ../../source/APIReference/core/typing.rst:263
+msgid "用户消息。"
+msgstr "User message."
+
+#: ../../source/APIReference/core/typing.rst:273
+msgid "消息角色，固定为 ``user``。"
+msgstr "Message role, fixed as ``user``."
+
+#: ../../source/APIReference/core/typing.rst:281
+msgid "助手消息。"
+msgstr "Assistant message."
+
+#: ../../source/APIReference/core/typing.rst:291
+msgid "消息角色，固定为 ``assistant``。"
+msgstr "Message role, fixed as ``assistant``."
+
+#: ../../source/APIReference/core/typing.rst:306
+msgid "工具消息。"
+msgstr "Tool message."
+
+#: ../../source/APIReference/core/typing.rst:316 ../../source/APIReference/core/typing.rst:328
+msgid "工具调用 ID。"
+msgstr "Tool Call ID."
+
+#: ../../source/APIReference/core/typing.rst:319
+msgid "消息角色，固定为 ``tool``。"
+msgstr "Message role, fixed as ``tool``."
+
+#: ../../source/APIReference/core/typing.rst:326
+msgid "定义工具调用的执行结果。"
+msgstr "Define the execution result of tool calls."
+
+#: ../../source/APIReference/core/typing.rst:331
+msgid "工具是否成功返回结果。"
+msgstr "Did the tool successfully return the result."
+
+#: ../../source/APIReference/core/typing.rst:334
+msgid "工具返回的具体信息。若成功，为预期结果；若失败，为错误简述。"
+msgstr "The specific information returned by the tool. If successful, the expected result; if failed, a brief error description."
+
+#: ../../source/APIReference/core/typing.rst:337
+msgid "完整错误回溯。"
+msgstr "Complete error backtrace."
+
+#: ../../source/APIReference/core/typing.rst:343
+msgid "将输入消息转换为验证后的 :py:class:`StateMessage` 实例。"
+msgstr "Convert the input message to a validated :py:class:`StateMessage` instance."
+
+#: ../../source/APIReference/core/typing.rst:345
+msgid "一个经过验证的 StateMessage 实例。"
+msgstr "A verified StateMessage instance."
+
+#: ../../source/APIReference/core/typing.rst:351
+msgid "聊天消息类型别名，表示对话历史中可能出现的任意消息类型。 包括 :class:`UserMessage`、:class:`ToolMessage`、:class:`AssistantMessage`、:class:`SystemMessage` 或 :class:`StateBaseMessage`。"
+msgstr "Chat message type alias, representing any message types that may appear in the conversation history. Including :class:`UserMessage`, :class:`ToolMessage`, :class:`AssistantMessage`, :class:`SystemMessage`, or :class:`StateBaseMessage`."
+
+#: ../../source/APIReference/core/typing.rst:354
+msgid "定义为： ::"
+msgstr "Defined as: ::"
+
+#: ../../source/APIReference/core/typing.rst:362
+msgid "Tool"
+msgstr "Tool"
+
+#: ../../source/APIReference/core/typing.rst:367
+msgid "代码沙盒初始化配置类。"
+msgstr "Code Sandbox Initialization Configuration Class"
+
+#: ../../source/APIReference/core/typing.rst:369
+msgid "Docker 镜像名称，默认为 ``\"python:3-slim\"``"
+msgstr "Docker image name, default is ``\"python:3-slim\"``"
+
+#: ../../source/APIReference/core/typing.rst:372
+msgid "容器运行结束后是否自动删除，默认为 ``True``"
+msgstr "Whether to automatically delete the container after it finishes running, default is ``True``"
+
+#: ../../source/APIReference/core/typing.rst:375
+msgid "容器内的工作目录，默认为 ``\"/tmp\"``"
+msgstr "Working directory inside the container, default is ``\"/tmp\"``"
+
+#: ../../source/APIReference/core/typing.rst:378
+msgid "是否分配伪终端，默认为 ``True``"
+msgstr "Whether to allocate a pseudo-terminal, default: ``True``"
+
+#: ../../source/APIReference/core/typing.rst:381
+msgid "是否在后台运行容器，默认为 ``True``"
+msgstr "Whether to run the container in the background, default is ``True``"
+
+#: ../../source/APIReference/core/typing.rst:384
+msgid "内存限制，默认为 ``\"4096m\"``"
+msgstr "Memory limit, default is ``\"4096m\"``"
+
+#: ../../source/APIReference/core/typing.rst:387
+msgid "CPU 配额，默认为 ``50000``"
+msgstr "CPU quota, default is ``50000``"
+
+#: ../../source/APIReference/core/typing.rst:390
+msgid "容器入口点，默认为 ``\"/bin/sh\"``"
+msgstr "Container entry point, default to ``\"/bin/sh\"``"
+
+#: ../../source/APIReference/core/typing.rst:393
+msgid "容器启动时执行的命令，默认为 ``None``"
+msgstr "Command to execute when the container starts, default is ``None``"
+
+#: ../../source/APIReference/core/typing.rst:396
+msgid "容器名称，默认为 ``\"evofabric_sandbox\"``"
+msgstr "Container name, default is ``\"evofabric_sandbox\"``"
+
+#: ../../source/APIReference/core/typing.rst:399
+msgid "容器使用的网络模式，默认为 ``\"host\"``"
+msgstr "The network mode used by the container, defaulting to ``\"host\"``"
+
+#: ../../source/APIReference/core/typing.rst:402
+msgid "挂载卷映射，默认为 ``None``"
+msgstr "Volume mount mapping, default is ``None``"
+
+#: ../../source/APIReference/core/typing.rst:409
+msgid "PromptRequest 用于定义提示请求。"
+msgstr "PromptRequest is used to define prompt requests."
+
+#: ../../source/APIReference/core/typing.rst:411 ../../source/APIReference/core/typing.rst:426
+msgid "服务器名称。"
+msgstr "Server name."
+
+#: ../../source/APIReference/core/typing.rst:414
+msgid "提示模板名称。"
+msgstr "Prompt Template Name"
+
+#: ../../source/APIReference/core/typing.rst:417
+msgid "参数字典。"
+msgstr "Parameter Dictionary."
+
+#: ../../source/APIReference/core/typing.rst:424
+msgid "ResourceRequest 用于定义资源请求。"
+msgstr "ResourceRequest is used to define resource requests."
+
+#: ../../source/APIReference/core/typing.rst:429
+msgid "资源 URL 地址。"
+msgstr "Resource URL address."
+
+#: ../../source/APIReference/core/typing.rst:435
+msgid "定义 MCP 服务器的标准输入输出（Stdio）链接类型配置。"
+msgstr "Define the standard input and output (Stdio) link type configuration for the MCP server."
+
+#: ../../source/APIReference/core/typing.rst:437
+msgid "**继承自** :py:class:`StdioServerParameters`"
+msgstr "**Inherits from** :py:class:`StdioServerParameters`"
+
+#: ../../source/APIReference/core/typing.rst:439
+msgid "类型标识符，固定为 ``\"StdioLink\"``。"
+msgstr "Type identifier, fixed as ``\"StdioLink\"``."
+
+#: ../../source/APIReference/core/typing.rst:442
+msgid "读取超时时间，默认为 ``10.0`` 秒。"
+msgstr "Read timeout, default is ``10.0`` seconds."
+
+#: ../../source/APIReference/core/typing.rst:445
+msgid "启动服务器的执行方式（继承自父类）。"
+msgstr "Execution method for starting the server (inherited from the parent class)."
+
+#: ../../source/APIReference/core/typing.rst:448
+msgid "启动服务器的指令参数（继承自父类）。"
+msgstr "Command parameters for starting the server (inherited from the parent class)."
+
+#: ../../source/APIReference/core/typing.rst:455
+msgid "定义 MCP 服务器的 SSE（Server-Sent Events）链接类型配置。"
+msgstr "Define the SSE (Server-Sent Events) link type configuration for the MCP server."
+
+#: ../../source/APIReference/core/typing.rst:457
+msgid "类型标识符，固定为 ``\"SseLink\"``。"
+msgstr "Type identifier, fixed as ``\"SseLink\"``."
+
+#: ../../source/APIReference/core/typing.rst:460
+msgid "SSE 服务器地址。"
+msgstr "SSE server address."
+
+#: ../../source/APIReference/core/typing.rst:463 ../../source/APIReference/core/typing.rst:484
+msgid "请求头，默认为 ``None``。"
+msgstr "Request header, default to ``None``."
+
+#: ../../source/APIReference/core/typing.rst:466 ../../source/APIReference/core/typing.rst:487
+msgid "请求超时时间，默认为 ``30.0`` 秒。"
+msgstr "Request timeout, default is ``30.0`` seconds."
+
+#: ../../source/APIReference/core/typing.rst:469 ../../source/APIReference/core/typing.rst:490
+msgid "SSE 流读取超时时间，默认为 ``300.0`` 秒。"
+msgstr "SSE stream read timeout, default is ``300.0`` seconds."
+
+#: ../../source/APIReference/core/typing.rst:476
+msgid "定义 MCP 服务器的可流式传输 HTTP 链接配置。"
+msgstr "Define the streamable HTTP link configuration for the MCP server."
+
+#: ../../source/APIReference/core/typing.rst:478
+msgid "类型标识符，固定为 ``\"StreamableHttpLink\"``。"
+msgstr "Type identifier, fixed to ``\"StreamableHttpLink\"``."
+
+#: ../../source/APIReference/core/typing.rst:481
+msgid "HTTP 服务器地址。"
+msgstr "HTTP server address."
+
+#: ../../source/APIReference/core/typing.rst:493
+msgid "连接关闭时是否终止，默认为 ``True``。"
+msgstr "Whether to terminate when the connection is closed, default is ``True``."
+
+#: ../../source/APIReference/core/typing.rst:500
+msgid "MCPConfig 是 MCP 的配置类。"
+msgstr "MCPConfig is MCP's configuration class."
+
+#: ../../source/APIReference/core/typing.rst:502
+msgid "SSE/HTTP 传输的 URL。当使用 stdio 传输时，可以填写 MCP 服务器的绝对路径。"
+msgstr "URL for SSE/HTTP transmission. When using stdio transmission, you can fill in the absolute path of the MCP server."
+
+#: ../../source/APIReference/core/typing.rst:508
+msgid "定义单个工具的内部状态。"
+msgstr "Define the internal state of a single tool."
+
+#: ../../source/APIReference/core/typing.rst:510
+msgid "工具内部状态类型，固定为 ``\"ToolInnerState\"``。"
+msgstr "Tool internal state type, fixed as ``\"ToolInnerState\"``."
+
+#: ../../source/APIReference/core/typing.rst:513
+#, python-brace-format
+msgid "工具状态内容，格式为 ``{state_name: state_content}``。"
+msgstr "Tool state content, format is ``{state_name: state_content}``."
+
+#: ../../source/APIReference/core/typing.rst:516
+#, python-brace-format
+msgid "工具元状态内容，格式为 ``{state_name: state_content}``。"
+msgstr "Tool meta state content, format is ``{state_name: state_content}``."
+
+#: ../../source/APIReference/core/typing.rst:523
+msgid "定义工具管理器的整体状态。"
+msgstr "Define the overall state of the tool manager."
+
+#: ../../source/APIReference/core/typing.rst:525
+msgid "状态类型，固定为 ``\"ToolManagerState\"``。"
+msgstr "State type, fixed as ``\"ToolManagerState\"``."
+
+#: ../../source/APIReference/core/typing.rst:528
+msgid "工具管理状态。键为工具名称，值为对应的 :py:class:`ToolInnerState`。"
+msgstr "Tool management state. Keys are tool names, values are the corresponding :py:class:`ToolInnerState`."
+
+#: ../../source/APIReference/core/typing.rst:534
+msgid "MCP 服务器连接类型别名，用于表示不同类型的 MCP 服务器通信方式。"
+msgstr "MCP server connection type alias, used to represent different types of MCP server communication methods."
+
+#: ../../source/APIReference/core/typing.rst:536
+msgid "支持的连接类型："
+msgstr "Supported connection types:"
+
+#: ../../source/APIReference/core/typing.rst:538
+msgid ":class:`StdioLink`"
+msgstr ":class:`StdioLink`"
+
+#: ../../source/APIReference/core/typing.rst:539
+msgid ":class:`SseLink`"
+msgstr ":class:`SseLink`"
+
+#: ../../source/APIReference/core/typing.rst:540
+msgid ":class:`StreamableHttpLink`"
+msgstr ":class:`StreamableHttpLink`"
+
+#: ../../source/APIReference/core/typing.rst:542
+msgid "使用 `Annotated` 和 Pydantic 的 `Field` 设置了类型区分： ::"
+msgstr "Using `Annotated` and Pydantic's `Field` to set type distinctions: ::"
+
+#: ../../source/APIReference/core/typing.rst:550
+msgid "说明："
+msgstr "Explanation:"
+
+#: ../../source/APIReference/core/typing.rst:551
+msgid "该类型用于 MCP 工具管理系统中，便于在不同通信方式的服务器间进行统一管理和调用。"
+msgstr "This type is used in the MCP tool management system to facilitate unified management and invocation between servers with different communication methods."
+
+#: ../../source/APIReference/core/typing.rst:555
+msgid "VectorStore"
+msgstr "VectorStore"
+
+#: ../../source/APIReference/core/typing.rst:559
+msgid "用于向量存储和检索的基础数据库项目。"
+msgstr "A basic database project for vector storage and retrieval."
+
+#: ../../source/APIReference/core/typing.rst:561
+msgid "需要向量化的文本内容"
+msgstr "Text content requiring vectorization"
+
+#: ../../source/APIReference/core/typing.rst:563
+msgid "数据库中的唯一标识符"
+msgstr "Unique identifier in the database"
+
+#: ../../source/APIReference/core/typing.rst:565
+msgid "附加的元数据字典"
+msgstr "Additional Metadata Dictionary"
+
+#: ../../source/APIReference/core/typing.rst:568 ../../source/APIReference/core/typing.rst:600
+msgid "**使用示例：**"
+msgstr "**Usage Example:**"
+
+#: ../../source/APIReference/core/typing.rst:589
+msgid "相似性搜索返回的结果数据结构。"
+msgstr "The data structure of the results returned by similarity search."
+
+#: ../../source/APIReference/core/typing.rst:591
+msgid "文档文本"
+msgstr "Document text"
+
+#: ../../source/APIReference/core/typing.rst:593
+msgid "关联的元数据"
+msgstr "Associated Metadata"
+
+#: ../../source/APIReference/core/typing.rst:595
+msgid "相似性分数（0-1，值越高表示越相似）"
+msgstr "Similarity score (0-1, higher values indicate greater similarity)"
+
+#: ../../source/APIReference/core/typing.rst:597
+msgid "文档唯一标识符"
+msgstr "Unique Document Identifier"

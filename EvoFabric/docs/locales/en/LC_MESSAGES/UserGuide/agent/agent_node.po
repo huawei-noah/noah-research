@@ -1,0 +1,85 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/agent/agent_node.rst:2
+msgid "AgentNode"
+msgstr "AgentNode"
+
+#: ../../source/UserGuide/agent/agent_node.rst:5
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/agent/agent_node.rst:7
+msgid ":py:class:`~evofabric.core.agent.AgentNode` 是 EvoFabric 中的智能体节点，继承自 :py:class:`~evofabric.core.graph.AsyncStreamNode`，集成了 **记忆管理**、**工具调用**、**LLM 调用** 和 **输入输出格式化** 功能。 它适用于需要自然语言交互、状态追踪以及工具操作的复杂工作流场景。"
+msgstr ":py:class:`~evofabric.core.agent.AgentNode` is the agent node in EvoFabric, inheriting from :py:class:`~evofabric.core.graph.AsyncStreamNode`, and integrates **memory management**, **tool calls**, **LLM calls**, and **input/output formatting**. It is suitable for complex workflow scenarios requiring natural language interaction, state tracking, and tool operations."
+
+#: ../../source/UserGuide/agent/agent_node.rst:10
+msgid "**工作流程：**"
+msgstr "**Workflow:**"
+
+#: ../../source/UserGuide/agent/agent_node.rst:12
+msgid "调用记忆模块的 :py:meth:`~evofabric.core.mem.MemBase.retrieval_update` ，按顺序更新上下文状态。"
+msgstr "Call the memory module's :py:meth:`~evofabric.core.mem.MemBase.retrieval_update` to sequentially update the context state."
+
+#: ../../source/UserGuide/agent/agent_node.rst:13
+msgid "使用 ``input_msg_format`` 模板，将输入状态格式化为 LLM 可识别的消息。"
+msgstr "Use the ``input_msg_format`` template to format the input state into messages recognizable by LLM."
+
+#: ../../source/UserGuide/agent/agent_node.rst:14
+msgid "调用 :py:class:`~evofabric.core.clients.ChatClientBase` 执行推理，获取初步回复。"
+msgstr "Call :py:class:`~evofabric.core.clients.ChatClientBase` to perform inference and obtain the preliminary response."
+
+#: ../../source/UserGuide/agent/agent_node.rst:15
+msgid "根据需要调用工具管理器执行相关操作。"
+msgstr "Invoke the tool manager as needed to perform the relevant operations."
+
+#: ../../source/UserGuide/agent/agent_node.rst:16
+msgid "使用 ``output_msg_format`` 模板将 LLM 回复渲染为最终输出。"
+msgstr "Use the ``output_msg_format`` template to render the LLM response into the final output."
+
+#: ../../source/UserGuide/agent/agent_node.rst:17
+msgid "调用记忆模块的 :py:meth:`~evofabric.core.mem.MemBase.add_messages` 按顺序更新记忆。"
+msgstr "Call the memory module's :py:meth:`~evofabric.core.mem.MemBase.add_messages` to update the memory in order."
+
+#: ../../source/UserGuide/agent/agent_node.rst:20
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/agent/agent_node.rst:22
+msgid "**集成记忆管理**：可同时管理多个记忆组件，实现上下文追踪。"
+msgstr "**Integrated Memory Management**: Can simultaneously manage multiple memory components, enabling context tracking."
+
+#: ../../source/UserGuide/agent/agent_node.rst:23
+msgid "**工具调用支持**：可在推理过程中动态调用注册的工具。"
+msgstr "**Tool Call Support**: Registered tools can be dynamically invoked during the reasoning process."
+
+#: ../../source/UserGuide/agent/agent_node.rst:24
+msgid "**LLM 推理封装**：统一管理输入格式化、推理参数和输出渲染。"
+msgstr "**LLM Inference Encapsulation**: Unified management of input formatting, inference parameters, and output rendering."
+
+#: ../../source/UserGuide/agent/agent_node.rst:25
+msgid "**流式输出**：通过 :py:class:`~evofabric.core.graph.StreamWriter` 实现逐步输出 LLM 回复。"
+msgstr "**Streaming Output**: Implemented via :py:class:`~evofabric.core.graph.StreamWriter` for step-by-step output of LLM responses."
+
+#: ../../source/UserGuide/agent/agent_node.rst:26
+msgid "**Pydantic 输出验证**：支持 ``output_schema`` 对 LLM 输出进行结构化校验。"
+msgstr "**Pydantic Output Validation**: Supports ``output_schema`` for structured validation of LLM outputs."
+
+#: ../../source/UserGuide/agent/agent_node.rst:29
+msgid "使用方法"
+msgstr "Usage Instructions"

@@ -1,0 +1,53 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-30 14:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/mem/task_mem.rst:3
+msgid "TaskMem"
+msgstr "Task Memory"
+
+#: ../../source/UserGuide/mem/task_mem.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/mem/task_mem.rst:9
+msgid "TaskMem 是Agent框架的提供的一项基于记忆的能力提升功能。其可在每一步智能体推理将操作以及评估模块的结论储存。再次执行时检索相似场景，动态总结经验提升任务成功率。"
+msgstr "TaskMem is a memory-based capability enhancement feature provided by the Agent framework. It can store the conclusions of operations and the evaluation module at each step of agent reasoning. When executed again, it retrieves similar scenarios, dynamically summarizes experience to improve the task success rate."
+
+#: ../../source/UserGuide/mem/task_mem.rst:13
+msgid "特性"
+msgstr "Characteristic"
+
+#: ../../source/UserGuide/mem/task_mem.rst:15
+msgid "**基于记忆的演进**: 多轮执行时，TaskMem利用轨迹记忆以及当时的评估结果（可选） 形成经验优化上下文。"
+msgstr "**Memory-based Evolution**: During multi-round execution, TaskMem utilizes trajectory memory and the evaluation results at that time (optional) to form an experience optimization context."
+
+#: ../../source/UserGuide/mem/task_mem.rst:16
+msgid "**可接入的评估函数**: TaskMem包含一个即时评估模块入口，可以产生正误、评分及评价。也可以空缺部分字段，直接储存，在规则生成时统一分析。"
+msgstr "**Accessible Evaluation Functions**: TaskMem includes an instant evaluation module entry point that can generate correct/incorrect, scores, and evaluations. It can also leave some fields blank and store them directly, analyzing them uniformly during rule generation."
+
+#: ../../source/UserGuide/mem/task_mem.rst:17
+msgid "**经验生成引导接口**: 支持用户以Prompt形式传入经验总结引导描述，指引新执行任务的经验生成。"
+msgstr "**Experience Generation Guidance Interface**: Supports users to pass in guidance descriptions for experience summarization in the form of a Prompt, to guide the experience generation for new tasks."
+
+#: ../../source/UserGuide/mem/task_mem.rst:20
+msgid "最佳实践"
+msgstr "Best practice"
+
+#: ../../source/UserGuide/mem/task_mem.rst:21
+msgid "构建TaskMem并直接使用（也可接入Agent）"
+msgstr "Build TaskMem and use it directly (can also be integrated with Agent)."

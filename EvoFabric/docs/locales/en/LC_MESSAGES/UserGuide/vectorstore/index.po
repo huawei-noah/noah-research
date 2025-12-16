@@ -1,0 +1,28 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/vectorstore/index.rst:2
+msgid "向量化存储"
+msgstr "Vectorized storage"
+
+#: ../../source/UserGuide/vectorstore/index.rst:4
+msgid "本指南提供了 EvoFabric 中向量化存储功能的全面文档，该功能为文本存储、检索和相似性搜索提供了向量数据库能力。"
+msgstr "This guide provides comprehensive documentation for the vector storage functionality in EvoFabric, which provides vector database capabilities for text storage, retrieval, and similarity search."
+
+#~ msgid "VectorStore"
+#~ msgstr "VectorStore"

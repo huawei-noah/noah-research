@@ -1,0 +1,137 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:2
+msgid "介绍"
+msgstr "Introduction"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:4
+msgid "EvoFabric 的多智能体（Multi-Agent）模块提供用于构建“智能体协作图”的能力。该模块采用可扩展架构，当前包含 Swarm 组件（Swarm-style 的多智能体），后续将补充更多编排策略与组件。"
+msgstr "EvoFabric's Multi-Agent module provides the capability to build \"agent collaboration graphs.\" The module adopts a scalable architecture, currently including the Swarm component (Swarm-style multi-agent), with additional orchestration strategies and components to be added subsequently."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:7
+msgid "什么是多智能体？"
+msgstr "What is multi-agent?"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:9
+msgid "多智能体系统通过一组各司其职的 Agent 协作完成复杂任务。每个 Agent 往往绑定特定能力（检索、规划、工具调用、代码执行、写作审校等），并在约定的拓扑与路由机制下进行“接力式”求解，以提升可控性、可观测性和鲁棒性。"
+msgstr "Multi-agent systems complete complex tasks through a group of Agents, each with specific roles, collaborating. Each Agent is typically bound to specific capabilities (retrieval, planning, tool calling, code execution, writing review, etc.), and performs \"relay-style\" solving under agreed-upon topology and routing mechanisms to enhance controllability, observability, and robustness."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:12
+msgid "为什么选择多智能体"
+msgstr "Why Choose Multi-Agent"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:14
+msgid "将复杂任务拆解为多个专职 Agent（规划、检索、计算、工具调用、写作等），提升可靠性与可维护性"
+msgstr "Decompose complex tasks into multiple specialized Agents (planning, retrieval, computation, tool call, writing, etc.), improving reliability and maintainability"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:15
+msgid "基于“handoff（移交）”范式，让 Agent 在任务中动态协作与接力"
+msgstr "Based on the 'handoff (handover)' paradigm, let Agent dynamically collaborate and relay in tasks"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:16
+msgid "利用图结构控制执行流、避免无谓循环，并在需要时约束拓扑"
+msgstr "Utilize graph structure to control execution flow, avoid unnecessary loops, and constrain topology when needed."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:17
+msgid "分而治之与可维护性：把复杂任务拆解为稳定的子角色，单个 Agent 的提示与工具更聚焦、更易测试与演进。"
+msgstr "Divide and Conquer and Maintainability: Break down complex tasks into stable sub-roles, with individual Agent prompts and tools being more focused, easier to test and evolve."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:18
+msgid "复用与扩展：不同团队可沉淀领域 Agent 并在更大工作流内复用，或按需增加/替换角色而不破坏主体流程。"
+msgstr "Reuse and Expansion: Different teams can accumulate domain-specific Agents and reuse them within larger workflows, or add/replace roles as needed without disrupting the core workflow."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:21
+msgid "典型使用场景"
+msgstr "Typical Use Cases"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:23
+msgid "检索增强与写作协作：检索 Agent、整合/评审 Agent、撰写 Agent 协作完成资料搜集与成稿。"
+msgstr "Retrieval Enhancement and Writing Collaboration: Retrieval Agent, Integration/Review Agent, Writing Agent collaborate to complete information gathering and drafting."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:24
+msgid "面向工具的任务编排：由“调度/规划”Agent 触发检索、数据库、搜索、代码执行等工具并路由子任务。"
+msgstr "Tool-oriented task orchestration: The \"Scheduling/Planning\" Agent triggers tools such as retrieval, database, search, and code execution, and routes subtasks."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:25
+msgid "客服/运营自动化：按照“分诊/路由 → 专家处理 → 质检/汇总”流程组织角色；在实时语音或多模态场景中可采用“顺序 handoff”接力。"
+msgstr "Customer Service/Operations Automation: Organize roles according to the 'Triage/Routing → Expert Handling → Quality Inspection/Summary' process; in real-time voice or multimodal scenarios, 'sequential handoff' can be adopted."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:26
+msgid "研究与数据工作台：多 Agent 组聊协作完成信息搜集、对比、总结与可视化。"
+msgstr "Research and Data Workbench: Collaborative Multi-Agent Group Chat for Information Gathering, Comparison, Summarization, and Visualization."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:27
+msgid "长流程与人审：在关键节点通过中断机制等待人审决定，再继续流程（批准/修改/拒绝）。"
+msgstr "Long workflow and human review: At key nodes, use an interruption mechanism to wait for human review decisions before proceeding with the process (approve/modify/reject)."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:32
+msgid "Swarm的优势"
+msgstr "Swarm's Advantages"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:34
+msgid "快速落地与低心智负担：API 简洁、约定优于配置，适合以“规划 + 专家 Agent”的模式在较少回合内完成任务。"
+msgstr "Rapid Deployment and Low Cognitive Load: Concise API, convention over configuration, suitable for completing tasks in fewer iterations using the 'planning + expert agent' model."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:35
+msgid "明确的接力语义：内置 handoff 工具使“把任务交给谁、携带什么信息”具备可见、可测与可控的接口。"
+msgstr "Clear handoff semantics: The built-in handoff tool provides visible, measurable, and controllable interfaces for \"who to hand off the task to and what information to carry.\""
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:36
+msgid "拓扑可约束：通过 ``edges`` 指定允许的移交边，既能 Star（集中调度）也能 All‑to‑All（探索验证）或 Pipeline（流水线）。"
+msgstr "Topology constraints: Specify allowed edges via ``edges``, supporting Star (centralized scheduling), All-to-All (exploratory validation), or Pipeline (pipeline)."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:37
+msgid "易于集成：与 EvoFabric 的 AgentNode、ToolManager、ComponentFactory、Pydantic State 无缝衔接。"
+msgstr "Easy Integration: Seamless integration with EvoFabric's AgentNode, ToolManager, ComponentFactory, and Pydantic State."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:41
+msgid "Swarm 的关键构件与术语"
+msgstr "Swarm's Key Components and Terms"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:43
+msgid "以下术语既覆盖业界多智能体通用构件，也标注 Swarm 的特有点，便于迁移理解："
+msgstr "The following terms cover both the industry's general multi-agent components and highlight Swarm's specific features, facilitating understanding of migration:"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:45
+msgid "Agent（智能体） 绑定聊天模型、系统提示与工具集合的节点。Swarm 中使用 ``AgentNode`` 表示。"
+msgstr "Agent (intelligent agent) is a node that binds chat models, system prompts, and tool set. In Swarm, it is represented by ``AgentNode``."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:48
+msgid "Tool/Function（工具调用） Agent 通过工具与外部世界交互，如检索、天气查询、时间查询、数据库操作等。"
+msgstr "Tool/Function (Tool Calling) Agent interacts with the external world through tools, such as retrieval, weather query, time query, database operations, etc."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:51
+msgid "Handoff（移交，Swarm 特有重点） 由当前 Agent 主动“把任务接力给目标 Agent”，并携带上下文或需求说明。Swarm 会为每个 Agent 注入定制化的 ``handoff`` 工具，其可选目标由 ``edges`` 或“全连接（默认）”自动生成。"
+msgstr "Handoff (handover, Swarm-specific focus) The current Agent actively \"hands off the task to the target Agent\" while carrying context or requirements. Swarm injects a customized ``handoff`` tool for each Agent, with optional targets automatically generated by ``edges`` or \"fully connected (default)\"."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:54
+msgid "Router/Planner（路由/规划） 用于决定下一步交给谁。常见模式包括：集中式 Planner（Star）、条件路由（基于消息/工具调用）、以及有限状态机/层级调度。"
+msgstr "Router/Planner (Routing/Planning) is used to determine who the next step is assigned to. Common patterns include: Centralized Planner (Star), Conditional Routing (based on messages/tool calls), and Finite State Machine/Hierarchical Scheduling."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:57
+msgid "Graph/Edges（图与边） 以“节点+有向边”控制可达路径与条件分支。Swarm 通过 ``edges`` 生成允许的 handoff 目标集合，并在运行时打印路由日志以便调试。"
+msgstr "Graph/Edges (Graph and Edges) Using \"node + directed edge\" to control reachable paths and conditional branches. Swarm uses ``edges`` to generate the allowed handoff target set and prints routing logs at runtime for debugging."
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:60
+msgid "State/Memory（状态/记忆） Swarm 运行图需要 Pydantic 状态模型，至少包含 ``messages: List[StateMessage]``"
+msgstr "State/Memory (State/Memory) Swarm run graph requires a Pydantic state model, must include at least ``messages: List[StateMessage]``"
+
+#: ../../source/UserGuide/multi_agent/introduction.rst:63
+msgid "Termination（终止条件） Swarm 默认在检测到回复中包含 ``\"FINISHED\"`` 时终止；也可通过 ``termination_pattern`` 自定义为 ``\"END\"`` 等。"
+msgstr "Termination (Termination Condition) Swarm defaults to terminating when it detects ``\"FINISHED\"`` in the response; it can also be customized via ``termination_pattern`` to ``\"END\"`` and others."

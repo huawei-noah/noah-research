@@ -1,0 +1,170 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/agent.rst:2
+msgid "evofabric.core.agent"
+msgstr "evofabric.core.agent"
+
+#: ../../source/APIReference/core/agent.rst:7
+msgid "AgentNode"
+msgstr "AgentNode"
+
+#: ../../source/APIReference/core/agent.rst:12
+msgid "集成记忆管理、工具调用、LLM 调用与输入输出格式化的智能体节点。继承自 :py:class:`AsyncStreamNode`"
+msgstr "Agent node integrating memory management, tool invocation, LLM invocation, and input/output formatting. Inherits from :py:class:`AsyncStreamNode`"
+
+#: ../../source/APIReference/core/agent.rst:14
+msgid "**工作流程：**"
+msgstr "**Workflow:**"
+
+#: ../../source/APIReference/core/agent.rst:16
+msgid "按顺序调用记忆模块的 ``retrieval_update()`` 更新模型上下文。"
+msgstr "Sequentially call the memory module's ``retrieval_update()`` to update the model context."
+
+#: ../../source/APIReference/core/agent.rst:17
+msgid "按 ``input_msg_format`` 模板格式化输入。"
+msgstr "Format the input according to the ``input_msg_format`` template."
+
+#: ../../source/APIReference/core/agent.rst:18
+msgid "调用 LLM Client 获取回复。"
+msgstr "Call LLM Client to get the response."
+
+#: ../../source/APIReference/core/agent.rst:19
+msgid "按需执行被调用的工具。"
+msgstr "Execute the invoked tools on demand."
+
+#: ../../source/APIReference/core/agent.rst:20
+msgid "按 ``output_msg_format`` 模板格式化回复。"
+msgstr "Format the reply according to the ``output_msg_format`` template."
+
+#: ../../source/APIReference/core/agent.rst:21
+msgid "按顺序调用记忆模块的 ``add_messages()`` 更新记忆。"
+msgstr "Call the memory module's ``add_messages()`` method sequentially to update memory."
+
+#: ../../source/APIReference/core/agent.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/agent.rst:23
+msgid "LLM 后端客户端。"
+msgstr "LLM backend client."
+
+#: ../../source/APIReference/core/agent.rst:26
+msgid "系统提示词。"
+msgstr "System prompt."
+
+#: ../../source/APIReference/core/agent.rst:29
+msgid "调用 LLM 时的推理参数。"
+msgstr "Inference parameters when calling LLM."
+
+#: ../../source/APIReference/core/agent.rst:32
+msgid "工具管理器或管理器列表。"
+msgstr "Tool Manager or Manager List."
+
+#: ../../source/APIReference/core/agent.rst:35
+msgid "记忆组件或组件列表。"
+msgstr "Memory component or component list."
+
+#: ../../source/APIReference/core/agent.rst:38
+msgid "期望 LLM 返回的 Pydantic 模型。"
+msgstr "The Pydantic model expected to be returned by the LLM."
+
+#: ../../source/APIReference/core/agent.rst:41
+msgid "`jinja2` 模板字符串，用于渲染 LLM 输出；需同时提供 ``output_schema``。"
+msgstr "`jinja2` template string used for rendering LLM output; must also provide ``output_schema``"
+
+#: ../../source/APIReference/core/agent.rst:44
+msgid "`jinja2` 模板字符串，用于将输入状态格式化为单条用户消息。"
+msgstr "`jinja2` template string used to format input state into a single user message."
+
+#: ../../source/APIReference/core/agent.rst:49
+msgid "执行智能体推理。"
+msgstr "Execute agent reasoning."
+
+#: ../../source/APIReference/core/agent.rst:51
+msgid "输入状态，须含 ``messages`` 字段。"
+msgstr "Input state must contain the ``messages`` field."
+
+#: ../../source/APIReference/core/agent.rst:54
+msgid "流式输出写入器。"
+msgstr "Streaming output writer."
+
+#: ../../source/APIReference/core/agent.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/agent.rst:57
+msgid "增量状态，含更新后的消息。"
+msgstr "Incremental state, containing the updated message."
+
+#: ../../source/APIReference/core/agent.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/agent.rst:61
+msgid "UserNode"
+msgstr "UserNode"
+
+#: ../../source/APIReference/core/agent.rst:67
+msgid "一个从终端获取用户输入并为图提供异步输入的节点。"
+msgstr "A node that obtains user input from the terminal and provides asynchronous input to the graph."
+
+#: ../../source/APIReference/core/agent.rst:69
+msgid "继承自 :class:`~evofabric.core.graph.AsyncNode`。"
+msgstr "Inherits from :class:`~evofabric.core.graph.AsyncNode`."
+
+#: ../../source/APIReference/core/agent.rst:71
+msgid "UserNode 自动处理以下异常情况："
+msgstr "UserNode automatically handles the following exceptions:"
+
+#: ../../source/APIReference/core/agent.rst:73
+msgid "**EOFError**: 用户输入流结束（如文件结束符）"
+msgstr "**EOFError**: User input stream ended (e.g., end-of-file marker)"
+
+#: ../../source/APIReference/core/agent.rst:74
+msgid "**KeyboardInterrupt**: 用户中断输入（Ctrl+C）"
+msgstr "**KeyboardInterrupt**: User interrupts input (Ctrl+C)"
+
+#: ../../source/APIReference/core/agent.rst:75
+msgid "**其他异常**: 捕获所有未预期的错误"
+msgstr "**Other Exceptions**: Catch all unexpected errors"
+
+#: ../../source/APIReference/core/agent.rst:77
+#, python-brace-format
+msgid "所有异常情况下都会返回空的状态增量：``{\"messages\": []}``"
+msgstr "An empty state increment will be returned in all abnormal situations: ``{\"messages\": []}``"
+
+#: ../../source/APIReference/core/agent.rst:79
+msgid "显示的用户输入提示信息。默认为 ``Please enter your input: ``"
+msgstr "User input prompt. Default: ``Please enter your input: ``"
+
+#: ../../source/APIReference/core/agent.rst:82
+msgid "用户输入在状态中存储的键名。默认为 ``user_input``"
+msgstr "The key name for storing user input in the state. Default is ``user_input``"
+
+#: ../../source/APIReference/core/agent.rst:88
+msgid "获取用户输入并返回状态增量。"
+msgstr "Obtain user input and return status increment."
+
+#: ../../source/APIReference/core/agent.rst:90
+msgid "当前状态"
+msgstr "Current Status"
+
+#: ../../source/APIReference/core/agent.rst:92
+msgid "包含用户输入的状态增量"
+msgstr "State increment including user input"

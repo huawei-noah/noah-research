@@ -1,0 +1,130 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-04 15:22+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:4
+msgid "MCP 会话管理"
+msgstr "MCP Session Management"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:8
+msgid ":py:class:`~evofabric.core.tool.McpSessionController` 类用于管理与 MCP（Model Context Protocol）服务器的完整连接生命周期。它负责连接建立、会话管理、异常安全断开，以及通过异步上下文管理器确保资源正确释放。该组件能够在需要时保持持久连接状态。"
+msgstr ":py:class:`~evofabric.core.tool.McpSessionController` class is used to manage the entire connection lifecycle with the MCP (Model Context Protocol) server. It is responsible for connection establishment, session management, exception-safe disconnection, and ensuring the correct release of resources through asynchronous context managers. This component can maintain a persistent connection state when necessary."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:11
+msgid "核心功能"
+msgstr "Core Functions"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:12
+msgid "**连接生命周期管理** - 通过异步上下文器自动处理MCP服务器的连接/断开"
+msgstr "**Connection Lifecycle Management** - Automatically handle the connection/disconnection of the MCP server through an asynchronous context manager."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:13
+msgid "**会话状态监控** - 提供 `is_connect` 属性实时监控连接状态"
+msgstr "**Session Status Monitoring** - Provides the `is_connect` attribute for real-time monitoring of the connection status."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:14
+msgid "**持久连接支持** - 通过 `persistent_link` 参数控制退出时是否断开连接"
+msgstr "**Persistent Connection Support** - Controls whether to disconnect on exit via the `persistent_link` parameter."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:15
+msgid "**后台任务管理** - 维护异步会话线程实现非阻塞通信"
+msgstr "**Background Task Management** - Maintain asynchronous session threads to implement non-blocking communication"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:16
+msgid "**异常安全断开** - 处理通信错误时自动执行清理操作"
+msgstr "**Exception-Safe Disconnect** - Automatically performs cleanup operations when handling communication errors."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:19
+msgid "创建会话控制器"
+msgstr "Create Session Controller"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:20
+msgid "以下示例展示了创建McpSession控制器的基础用法："
+msgstr "The following example shows the basic usage of creating the McpSession controller:"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:49
+msgid "属性说明"
+msgstr "Attribute Description"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:50
+msgid "``session`` (只读): 返回当前活动的客户端会话对象"
+msgstr "``session`` (read-only): Returns the current active client session object"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:51
+msgid "``is_connect`` (只读): 布尔值指示当前是否处于连接状态"
+msgstr "``is_connect`` (read-only): A boolean value indicating the current connection state."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:52
+msgid "``persistent_link``: 布尔标志，控制是否在上下文退出时保持连接"
+msgstr "``persistent_link``: A boolean flag that controls whether the connection is maintained when the context exits."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:53
+msgid "``server_name``: 只读字符串，标识连接的MCP服务器名称"
+msgstr "``server_name``: Read-only string identifying the name of the connected MCP server."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:56
+msgid "异步方法详解"
+msgstr "Asynchronous Methods Explained"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:58
+msgid "connect()"
+msgstr "connect()"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:59
+msgid "建立MCP服务器的异步连接： - 安全可重复调用（重复调用会被忽略） - 创建后台维护任务等待连接就绪 - 完全建立连接后设置 `_connected` 标志"
+msgstr ""
+"Establish an asynchronous connection to the MCP server:\n"
+"- Safe and repeatable (repeated calls will be ignored)\n"
+"- Create a background maintenance task to wait for the connection to be ready\n"
+"- Set the `_connected` flag after the connection is fully established"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:70
+msgid "disconnect()"
+msgstr "disconnect()"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:71
+msgid "断开 MCP 连接并重置内部状态。包含："
+msgstr "Disconnect MCP connection and reset internal state. Includes:"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:73
+msgid "取消后台维护任务"
+msgstr "Cancel background maintenance task"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:75
+msgid "清除连接相关属性"
+msgstr "Clear connection-related properties"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:77
+msgid "自动处理取消和关闭异常"
+msgstr "Automatically handle cancel and close exceptions."
+
+#: ../../source/UserGuide/tool/mcp_session.rst:86
+msgid "异步上下文管理器"
+msgstr "Asynchronous Context Manager"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:88
+msgid "控制器实现了Python的异步上下文管理器协议，确保资源自动管理："
+msgstr "The controller implements Python's asynchronous context manager protocol, ensuring automatic resource management:"
+
+#: ../../source/UserGuide/tool/mcp_session.rst:105
+msgid "当设置 persistent_link=True 时，会话在退出异步上下文管理器后不会自动断开。 在这种模式下，用户必须显式调用 disconnect() 来释放网络连接与后台任务。 否则可能导致 资源泄露（例如挂起的会话协程、未释放的 socket 连接等）。"
+msgstr "When persistent_link=True is set, the session will not automatically disconnect after exiting the asynchronous context manager. In this mode, the user must explicitly call disconnect() to release the network connection and background tasks. Otherwise, it may lead to resource leaks (such as pending session coroutines, unreleased socket connections, etc.)."

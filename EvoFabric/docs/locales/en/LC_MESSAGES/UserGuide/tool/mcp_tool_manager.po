@@ -1,0 +1,194 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-04 15:22+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:4
+msgid "McpToolManager"
+msgstr "McpToolManager"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:9
+msgid ":py:class:`~evofabric.core.tool.McpToolManager` 继承自 :py:class:`~evofabric.core.tool.ToolManagerBase` ， 用于统一管理**多个外部 MCP 服务器**及其暴露的工具、资源、提示词。"
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager` inherits from :py:class:`~evofabric.core.tool.ToolManagerBase`, and is used to uniformly manage **multiple external MCP servers** and their exposed tools, resources, and prompts."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:12
+msgid "与原生 Python 工具管理器不同，MCP 工具管理器通过 `Model Context Protocol` 与任意语言实现的 MCP 服务器通信， 天然支持跨语言、跨进程、甚至跨主机的工具调用。"
+msgstr "Unlike the native Python tool manager, the MCP tool manager communicates with MCP servers implemented in any language via the `Model Context Protocol`, natively supporting cross-language, cross-process, and even cross-host tool calls."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:15
+msgid "在 Agent 场景下，它负责向 :py:class:`~evofabric.core.agent.AgentNode` 提供工具列表， 根据大语言模型（LLM）输出的工具调用指令执行对应工具，并将执行结果反馈给 LLM。 同时支持查看连接状态、动态增删服务器、工具级权限控制等高级功能。"
+msgstr "In the Agent scenario, it is responsible for providing a list of tools to :py:class:`~evofabric.core.agent.AgentNode`, executing the corresponding tool based on the tool calling instruction output by the Large Language Model (LLM), and feeding the execution result back to the LLM. It also supports advanced features such as viewing connection status, dynamically adding or deleting servers, and tool-level permission control."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:21
+msgid "建立MCP连接"
+msgstr "Establish MCP connection"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:23
+msgid "在使用 :py:class:`~evofabric.core.tool.McpToolManager` 前，你需要为每个 MCP 服务配置对应的连接参数 :py:class:`~evofabric.core.typing.McpServerLink`。 随后，通过在 ``async with`` 语句中使用 ``McpToolManager``，即可自动建立与所有已注册 MCP 服务器的连接，并在代码块结束后自动断开连接。 在连接建立后，你可以调用如 ``list_tools``、``call_tools`` 等方法来获取工具信息或执行工具调用。"
+msgstr "Before using :py:class:`~evofabric.core.tool.McpToolManager`, you need to configure the corresponding connection parameters :py:class:`~evofabric.core.typing.McpServerLink` for each MCP service. Subsequently, by using ``McpToolManager`` in an ``async with`` statement, connections to all registered MCP servers will be automatically established and automatically disconnected after the code block ends. After the connection is established, you can call methods such as ``list_tools``, ``call_tools``, etc., to get tool information or execute tool calls."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:27
+msgid ":py:class:`~evofabric.core.tool.McpToolManager` 提供两种连接管理模式，请务必根据场景选择："
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager` provides two connection management modes, please be sure to choose based on the scenario:"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:29
+msgid "**异步上下文管理器（推荐）**"
+msgstr "Asynchronous Context Manager (Recommended)"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:53
+msgid "**手动 connect / disconnect**"
+msgstr "**Manual connect / disconnect**"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:64
+msgid "若忘记调用 ``disconnect()``，可能造成 socket、子进程等资源泄露。"
+msgstr "If `disconnect()` is not called, it may cause resource leaks such as sockets and subprocesses."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:68
+msgid "即使 ``persistent_link=True``，使用 ``with`` 方式也会在退出时 **主动断连所有服务器** ； 如需要长连接保持，请采用手动 ``connect/disconnect`` 并自行确保在合适时机释放。"
+msgstr "Even if `persistent_link=True`, using the `with` statement will also **actively disconnect from all servers** upon exiting; if you need to maintain a long connection, please use manual `connect/disconnect` and ensure that it is released at the appropriate time."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:73
+msgid "添加、删除MCP服务器"
+msgstr "Add, delete MCP Server"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:75
+msgid ":py:class:`~evofabric.core.tool.McpToolManager` 支持在运行期间动态增删 MCP 服务器。 你可以随时添加新的服务器连接配置，也可以删除已有服务器。删除服务器时，工具管理器会自动断开与该服务器的现有连接。 同时，你也可以根据需要单独重连某个服务器或重连全部服务器，并通过 :py:meth:`~evofabric.core.tool.McpToolManager.get_mcp_status()` 查看当前所有服务器的连接状态。"
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager` supports dynamically adding and deleting MCP servers during runtime. You can add new server connection configurations at any time, or delete existing servers. When a server is deleted, the tool manager will automatically disconnect from the existing connection to that server. At the same time, you can also reconnect to a specific server or all servers as needed, and use :py:meth:`~evofabric.core.tool.McpToolManager.get_mcp_status()` to view the connection status of all current servers."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:99
+msgid "MCP服务器使用"
+msgstr "MCP Server Usage"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:101
+msgid ":py:class:`~evofabric.core.tool.McpToolManager` 支持工具查看、工具调用、获取提示词、获取资源等功能。"
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager` supports tool viewing, tool calling, prompt retrieval, resource retrieval, and other functions."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:103
+msgid "示例："
+msgstr "Example:"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:133
+msgid "工具控制器（可选）"
+msgstr "Tool Controller (Optional)"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:135
+msgid "在 :py:class:`~evofabric.core.tool.McpToolManager` 中，你可以为工具调用配置一个可选的 :py:class:`~evofabric.core.tool.ToolController`。工具控制器允许你通过规则动态启用或禁用特定工具。 当控制器被注册后："
+msgstr "In :py:class:`~evofabric.core.tool.McpToolManager`, you can configure an optional :py:class:`~evofabric.core.tool.ToolController` for tool calls. The tool controller allows you to dynamically enable or disable specific tools through rules. When the controller is registered:"
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:139
+msgid ":py:meth:`~evofabric.core.tool.McpToolManager.list_tools` 会自动过滤掉被禁用的工具，不再返回这些工具的 schema。"
+msgstr ":py:meth:`~evofabric.core.tool.McpToolManager.list_tools` will automatically filter out disabled tools and no longer return the schema of these tools."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:140
+msgid ":py:meth:`~evofabric.core.tool.McpToolManager.call_tools` 若尝试调用被禁用的工具，将返回工具被禁用的异常信息。"
+msgstr ":py:meth:`~evofabric.core.tool.McpToolManager.call_tools` will return an exception message indicating that the tool is disabled, if an attempt is made to call a disabled tool."
+
+#: ../../source/UserGuide/tool/mcp_tool_manager.rst:142
+msgid "通过这种方式，你可以灵活地管理不同场景下允许调用的工具集。"
+msgstr "In this way, you can flexibly manage the tool sets allowed to be called in different scenarios."
+
+#~ msgid "与 :py:class:`~evofabric.core.tool.ToolManager` 类似，智能体通过 :py:class:`~evofabric.core.tool.McpToolManager` 获取工具列表、输出工具调用指令并获取工具执行结果。"
+#~ msgstr "Similar to :py:class:`~evofabric.core.tool.ToolManager`, the agent uses :py:class:`~evofabric.core.tool.McpToolManager` to get the tool list, output tool invocation instructions, and get the tool execution results."
+
+#~ msgid ":py:class:`~evofabric.core.tool.McpToolManager` 在 :py:meth:`~evofabric.core.tool.McpToolManager.list_tools` 和 :py:meth:`~evofabric.core.tool.McpToolManager.call_tools` 时建立临时链接并在获取结果后释放。而非长时间保持链接。"
+#~ msgstr ":py:class:`~evofabric.core.tool.McpToolManager` establishes temporary links when :py:meth:`~evofabric.core.tool.McpToolManager.list_tools` and :py:meth:`~evofabric.core.tool.McpToolManager.call_tools` are called, and releases them after obtaining the results, rather than maintaining the links for a long time."
+
+#~ msgid ":py:class:`~evofabric.core.tool.McpToolManager` 支持不同个MCP服务器上可能存在同名工具的场景，为此，在系统中，MCP的实际工具名为{server_name}_{tool_name}。"
+#~ msgstr "The :py:class:`~evofabric.core.tool.McpToolManager` supports scenarios where multiple MCP servers may have tools with the same name. Therefore, in the system, the actual MCP tool name is {server_name}_{tool_name}."
+
+#~ msgid "依赖项安装"
+#~ msgstr "Dependency Installation"
+
+#~ msgid "在您使用McpToolManager之前，需要安装fastmcp和mcp依赖，以方便地构建您的MCP服务器。推荐安装fastmcp>=2.12.2, mcp>=1.16.0"
+#~ msgstr "Before using McpToolManager, you need to install fastmcp and mcp dependencies to easily build your MCP server. Recommended to install fastmcp>=2.12.2, mcp>=1.16.0"
+
+#~ msgid ":py:class:`~evofabric.core.tool.McpToolManager` 可以通过 :py:meth:`~evofabric.core.tool.McpToolManager.add_mcp_servers` 和 :py:meth:`~evofabric.core.tool.McpToolManager.delete_mcp_servers` 添加和删除MCP服务器。"
+#~ msgstr ":py:class:`~evofabric.core.tool.McpToolManager` can add and delete MCP servers through :py:meth:`~evofabric.core.tool.McpToolManager.add_mcp_servers` and :py:meth:`~evofabric.core.tool.McpToolManager.delete_mcp_servers`."
+
+#~ msgid "首先，新建文件 ``server_demo_stdio.py`` 模拟MCP服务器。"
+#~ msgstr "First, create a new file ``server_demo_stdio.py`` to simulate an MCP server."
+
+#~ msgid "启动 ``Divide`` 服务器："
+#~ msgstr "Start the ``Divide`` server:"
+
+#~ msgid "MCP工具调用"
+#~ msgstr "MCP tool call"
+
+#~ msgid "首先，新建 ``server_demo_http.py`` 模拟MCP服务器并启动。"
+#~ msgstr "First, create a new ``server_demo_http.py`` to simulate an MCP server and start it."
+
+#~ msgid "启动 ``Add`` 服务器："
+#~ msgstr "Start ``Add`` server:"
+
+#~ msgid "执行工具调用示例："
+#~ msgstr "Example of executing tool calls:"
+
+#~ msgid "基本使用：prompt调用"
+#~ msgstr "Basic Usage: Prompt Invocation"
+
+#~ msgid "通过 :py:meth:`~evofabric.core.tool.McpToolManager.get_prompt` 可以获取MCP服务器提供的prompt。"
+#~ msgstr "Through :py:meth:`~evofabric.core.tool.McpToolManager.get_prompt` you can obtain the prompt provided by the MCP server."
+
+#~ msgid "首先，启动上文介绍的MCP服务端脚本。"
+#~ msgstr "First, start the MCP server-side script introduced above."
+
+#~ msgid "获取 prompt 示例："
+#~ msgstr "Get prompt example:"
+
+#~ msgid "基本使用：resource调用"
+#~ msgstr "Basic Usage: Resource Call"
+
+#~ msgid "McpToolManager支持访问和使用MCP服务器上的资源和资源模板。"
+#~ msgstr "McpToolManager supports access and use of resources and resource templates on the MCP server."
+
+#~ msgid "获取资源和资源模板示例:"
+#~ msgstr "Obtain examples of resources and resource templates:"
+
+#~ msgid "**异步上下文管理器（推荐）** .. code-block:: python"
+#~ msgstr "**Asynchronous Context Manager (Recommended)** .. code-block:: python"
+
+#~ msgid "from evofabric.core.tool import McpToolManager from evofabric.core.typing import StreamableHttpLink"
+#~ msgstr "from evofabric.core.tool import McpToolManager from evofabric.core.typing import StreamableHttpLink"
+
+#~ msgid "# create mcp tool manager manager = McpToolManager("
+#~ msgstr "# create mcp tool manager manager = McpToolManager("
+
+#~ msgid "server_links={"
+#~ msgstr "server_links={"
+
+#~ msgid "\"math_server\": StreamableHttpLink(url=\"http://127.0.0.1:8000/mcp\"), \"file_server\": StreamableHttpLink(url=\"http://127.0.0.1:8001/mcp\"),"
+#~ msgstr "\"math_server\": StreamableHttpLink(url=\"http://127.0.0.1:8000/mcp\"), \"file_server\": StreamableHttpLink(url=\"http://127.0.0.1:8001/mcp\"),"
+
+#~ msgid "}, timeout=300, persistent_link=False"
+#~ msgstr "}, timeout=300, persistent_link=False"
+
+#~ msgid ") async with manager:"
+#~ msgstr ") async with manager:"
+
+#~ msgid "await manager.list_tools() ..."
+#~ msgstr "await manager.list_tools() ..."
+
+#~ msgid "# After leaving the `with` block, **regardless of whether `persistent_link` is True**, # all MCP connections will be forcibly disconnected to prevent resource leaks # when the event loop shuts down."
+#~ msgstr "# After leaving the `with` block, **regardless of whether `persistent_link` is True**, # all MCP connections will be forcibly disconnected to prevent resource leaks # when the event loop shuts down."
+
+#~ msgid "await manager.connect()     # establish connection"
+#~ msgstr "await manager.connect()     # establish connection"
+
+#~ msgid "await manager.disconnect()   # must disconnect manually, otherwise the connection will remain active!"
+#~ msgstr "await manager.disconnect()   # must disconnect manually, otherwise the connection will remain active!"

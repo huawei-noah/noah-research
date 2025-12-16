@@ -1,0 +1,33 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/multi_agent/getting_started.rst:2
+msgid "快速开始"
+msgstr "Quick Start"
+
+#: ../../source/UserGuide/multi_agent/getting_started.rst:4
+msgid "本节将带你用最少的代码跑通一个 Swarm 多智能体协作示例，并了解核心概念与常见配置。"
+msgstr "This section will guide you through running a Swarm multi-agent collaboration example with minimal code and help you understand the core concepts and common configurations."
+
+#: ../../source/UserGuide/multi_agent/getting_started.rst:8
+msgid "最小可用示例（All-to-All）"
+msgstr "Minimal Viable Example (All-to-All)"
+
+#: ../../source/UserGuide/multi_agent/getting_started.rst:10
+msgid "以下示例创建 4 个 Agent：planner（规划）、user_name（查姓名）、user_conf（查城市）、weather（查天气）。不提供 ``edges``，默认全连接（除自身），便于快速验证。"
+msgstr "The following example creates 4 Agents: planner (planning), user_name (check name), user_conf (check city), weather (check weather). Do not provide ``edges``, default to fully connected (excluding self), for quick validation."
