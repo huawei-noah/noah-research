@@ -4,17 +4,12 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  jobs:
-    post_checkout:
-      - cd EvoFabric
-      - ls
-      - ls docs
 
 sphinx:
-  configuration: docs/source/conf.py
+  configuration: EvoFabric/docs/source/conf.py
 
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: EvoFabric/docs/requirements.txt
     - method: pip
       path: EvoFabric
