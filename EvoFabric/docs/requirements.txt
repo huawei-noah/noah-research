@@ -1,1 +1,2 @@
 sphinxcontrib-mermaid>=0.9
+sphinx-book-theme

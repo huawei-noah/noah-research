@@ -25,6 +25,5 @@ html_static_path = ['_static']
 html_css_files = ['custom.css']
 html_extra_path = ['../../LICENSE']
 
-language = 'zh_CN'
 locale_dirs = ['../locales/']
 gettext_compact = False
