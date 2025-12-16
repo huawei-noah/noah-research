@@ -7,6 +7,8 @@ build:
   jobs:
     post_checkout:
       - cd EvoFabric
+      - ls
+      - ls docs
 
 sphinx:
   configuration: docs/source/conf.py
@@ -14,6 +16,5 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
-
     - method: pip
       path: EvoFabric
