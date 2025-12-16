@@ -9,9 +9,11 @@ build:
       - cd EvoFabric
 
 sphinx:
-  configuration: EvoFabric/docs/source/conf.py
+  configuration: docs/source/conf.py
 
 python:
   install:
+    - requirements: docs/requirements.txt
+
     - method: pip
       path: EvoFabric
