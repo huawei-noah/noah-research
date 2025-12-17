@@ -2,7 +2,6 @@
 
 <h2 align="center">EvoFabric: An Open, Evolvable Agent Framework for Creative Intelligence System</h2>
 
-
 <p align="center">
     <a href="https://pypi.org/project/evofabric/">
         <img
