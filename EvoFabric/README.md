@@ -1,7 +1,6 @@
 [**中文主页**](README_zh.md)
 
-<h2 align="center">EvoFabric: An Open, Evolving Fabric for Creative Intelligence</h2>
-
+<h2 align="center">EvoFabric: An Open, Evolvable Agent Framework for Creative Intelligence System</h2>
 
 <p align="center">
     <a href="https://pypi.org/project/evofabric/">
@@ -12,7 +11,7 @@
     </a>
     <a href="https://pypi.org/project/evofabric/">
         <img
-            src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpypi.org%2Fpypi%2Fagentscope%2Fjson&query=%24.info.version&prefix=v&logo=pypi&label=version"
+            src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpypi.org%2Fpypi%2Fevofabric%2Fjson&query=%24.info.version&prefix=v&logo=pypi&label=version"
             alt="pypi"
         />
     </a>
@@ -32,7 +31,7 @@
 
 
 ## 📢 News
-- **[2025-11]** EvoFabric 0.1.2 is released now! Checkout our [guidance documentation](https://evofabric.readthedocs.io/en/latest/) for detailed instructions and best practices.
+- **[2025-11]** EvoFabric 0.1.3 is released now! Checkout our [guidance documentation](https://evofabric.readthedocs.io/en/latest/) for detailed instructions and best practices.
 
 ## ✨Why EvoFabric?
 * **Logical Visibility, Controllable Debugging**: The graph structure visualizes agent logic, combined with Debug and visualization features, making the system’s operational paths and state changes clearly visible, bidding farewell to “black-box development”;

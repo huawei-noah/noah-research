@@ -1,6 +1,6 @@
 [**英文主页**](README.md)
 
-<h2 align="center">EvoFabric: 一个用于创造性智能的开放、可演进的架构</h2>
+<h2 align="center">EvoFabric: 创造智能系统的开放、可进化 Agent 框架</h2>
 
 
 <p align="center">
@@ -12,7 +12,7 @@
     </a>
     <a href="https://pypi.org/project/evofabric/">
         <img
-            src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpypi.org%2Fpypi%2Fagentscope%2Fjson&query=%24.info.version&prefix=v&logo=pypi&label=version"
+            src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpypi.org%2Fpypi%2Fevofabric%2Fjson&query=%24.info.version&prefix=v&logo=pypi&label=version"
             alt="pypi"
         />
     </a>
@@ -32,7 +32,7 @@
 
 
 ## 📢 新闻
-- **[2025-11]** EvoFabric 0.1.2 现已发布！请查看我们的[指导文档](https://evofabric.readthedocs.io/zh_CN/latest/)以获取详细说明和最佳实践。
+- **[2025-11]** EvoFabric 0.1.3 现已发布！请查看我们的[指导文档](https://evofabric.readthedocs.io/zh_CN/latest/)以获取详细说明和最佳实践。
 
 ## ✨ 为什么选择 EvoFabric？
 * **逻辑可视，调试可控：** 图结构呈现智能体逻辑，结合 Debug 与可视化功能，让系统运行路径与状态变化清晰可见，告别 “黑盒开发”；
