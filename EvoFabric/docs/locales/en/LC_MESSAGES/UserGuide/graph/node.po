@@ -1,0 +1,177 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/node.rst:2 ../../source/UserGuide/graph/node.rst:47
+msgid "添加节点"
+msgstr "Add Node"
+
+#: ../../source/UserGuide/graph/node.rst:5 ../../source/UserGuide/graph/node.rst:16 ../../source/UserGuide/graph/node.rst:20
+msgid "节点类型"
+msgstr "Node Type"
+
+#: ../../source/UserGuide/graph/node.rst:7
+msgid "EvoFabric 的图引擎提供四种类型的节点，分别支持同步、异步及其对应的流式处理模式。不同节点通过继承相应的基类并实现 ``__call__`` 方法来定义处理逻辑，需要流式输出的节点可利用 StreamWriter 实现流式输出。"
+msgstr "EvoFabric's graph engine provides four types of nodes, each supporting synchronous, asynchronous, and their corresponding streaming processing modes. Different nodes define processing logic by inheriting the corresponding base classes and implementing the ``__call__`` method, nodes requiring streaming output can utilize StreamWriter to achieve streaming output."
+
+#: ../../source/UserGuide/graph/node.rst:11
+msgid "EvoFabric 支持直接添加普通的 Python 函数作为节点。 系统会根据函数签名自动识别其类型并封装为合适的节点实例。 详情参考：:func:`~evofabric.core.graph.callable_to_node`"
+msgstr "EvoFabric supports directly adding ordinary Python functions as nodes. The system automatically identifies its type based on the function signature and encapsulates it as a suitable node instance. For details, see: :func:`~evofabric.core.graph.callable_to_node`"
+
+#: ../../source/UserGuide/graph/node.rst:21
+msgid "继承类"
+msgstr "Derived class"
+
+#: ../../source/UserGuide/graph/node.rst:22
+msgid "方法定义"
+msgstr "Method Definition"
+
+#: ../../source/UserGuide/graph/node.rst:23
+msgid "处理逻辑"
+msgstr "Processing Logic"
+
+#: ../../source/UserGuide/graph/node.rst:24
+msgid "流式输出"
+msgstr "Streaming output"
+
+#: ../../source/UserGuide/graph/node.rst:25
+msgid "同步节点"
+msgstr "synchronization node"
+
+#: ../../source/UserGuide/graph/node.rst:26
+msgid ":class:`~evofabric.core.graph.SyncNode`"
+msgstr ":class:`~evofabric.core.graph.SyncNode`"
+
+#: ../../source/UserGuide/graph/node.rst:27
+msgid "``def __call__(state: State) -> StateDelta``"
+msgstr "def __call__(state: State) -> StateDelta"
+
+#: ../../source/UserGuide/graph/node.rst:28
+msgid "在方法中实现节点的同步处理逻辑"
+msgstr "Implement the synchronous processing logic for nodes in the method"
+
+#: ../../source/UserGuide/graph/node.rst:29 ../../source/UserGuide/graph/node.rst:34
+msgid "不支持"
+msgstr "Not supported"
+
+#: ../../source/UserGuide/graph/node.rst:30
+msgid "异步节点"
+msgstr "Asynchronous Node"
+
+#: ../../source/UserGuide/graph/node.rst:31
+msgid ":class:`~evofabric.core.graph.AsyncNode`"
+msgstr ":class:`~evofabric.core.graph.AsyncNode`"
+
+#: ../../source/UserGuide/graph/node.rst:32
+msgid "``async def __call__(state: State) -> StateDelta``"
+msgstr "async def __call__(state: State) -> StateDelta"
+
+#: ../../source/UserGuide/graph/node.rst:33
+msgid "在方法中实现节点的异步处理逻辑"
+msgstr "Implement the node's asynchronous processing logic in the method"
+
+#: ../../source/UserGuide/graph/node.rst:35
+msgid "同步流式节点"
+msgstr "Synchronous Streaming Node"
+
+#: ../../source/UserGuide/graph/node.rst:36
+msgid ":class:`~evofabric.core.graph.SyncStreamNode`"
+msgstr ":class:`~evofabric.core.graph.SyncStreamNode`"
+
+#: ../../source/UserGuide/graph/node.rst:37
+msgid "``def __call__(state: State, stream_writer: StreamWriter) -> StateDelta``"
+msgstr "def __call__(state: State, stream_writer: StreamWriter) -> StateDelta"
+
+#: ../../source/UserGuide/graph/node.rst:38
+msgid "在方法中实现节点的同步处理逻辑，并通过 :meth:`~evofabric.core.graph.StreamWriter.put` 输出流式消息"
+msgstr "Implement the synchronous processing logic for nodes in the method and output streaming messages through :meth:`~evofabric.core.graph.StreamWriter.put`"
+
+#: ../../source/UserGuide/graph/node.rst:39 ../../source/UserGuide/graph/node.rst:44
+msgid "支持"
+msgstr "support"
+
+#: ../../source/UserGuide/graph/node.rst:40
+msgid "异步流式节点"
+msgstr "Asynchronous Streaming Node"
+
+#: ../../source/UserGuide/graph/node.rst:41
+msgid ":class:`~evofabric.core.graph.AsyncStreamNode`"
+msgstr ":class:`~evofabric.core.graph.AsyncStreamNode`"
+
+#: ../../source/UserGuide/graph/node.rst:42
+msgid "``async def __call__(state: State, stream_writer: StreamWriter) -> StateDelta``"
+msgstr "async def __call__(state: State, stream_writer: StreamWriter) -> StateDelta"
+
+#: ../../source/UserGuide/graph/node.rst:43
+msgid "在方法中实现节点的异步处理逻辑，并通过 :meth:`~evofabric.core.graph.StreamWriter.put` 输出流式消息"
+msgstr "Implement the asynchronous processing logic for nodes in the method and output streaming messages through :meth:`~evofabric.core.graph.StreamWriter.put`"
+
+#: ../../source/UserGuide/graph/node.rst:49
+msgid "通过 :py:meth:`~evofabric.core.graph.GraphBuilder.add_node` 方法在图中添加节点，同时可以指定节点名、行为模式以及多输入的合并策略（可选）。"
+msgstr "Add nodes to the graph using the :py:meth:`~evofabric.core.graph.GraphBuilder.add_node` method, specifying the node name, behavior mode, and the merge strategy for multiple inputs (optional)."
+
+#: ../../source/UserGuide/graph/node.rst:51
+msgid "每个节点代表一个独立的计算单元或逻辑步骤，可为同步、异步或流式节点。"
+msgstr "Each node represents an independent computing unit or logical step and can be a synchronous, asynchronous, or streaming node."
+
+#: ../../source/UserGuide/graph/node.rst:71
+msgid "**参数说明：**"
+msgstr "**Parameter Description:**"
+
+#: ../../source/UserGuide/graph/node.rst:73
+msgid "``name`` ：节点名称，必须唯一。 不可使用系统保留名称 ``start`` 与 ``end``。"
+msgstr "``name``: Node name, must be unique. Cannot use system reserved names ``start`` and ``end``."
+
+#: ../../source/UserGuide/graph/node.rst:76
+msgid "``node`` ：节点实例，可为四种节点类型之一（同步、异步、同步流式、异步流式）， 或普通 Python 函数（系统会自动包装为对应节点类型）。"
+msgstr "``node``: node instance, which can be one of four node types (synchronous, asynchronous, synchronous streaming, asynchronous streaming), or an ordinary Python function (the system automatically wraps it into the corresponding node type)."
+
+#: ../../source/UserGuide/graph/node.rst:79
+msgid "``action_mode`` ：节点的触发模式，控制前驱节点完成后何时执行。"
+msgstr "``action_mode``: The node's trigger mode, controlling when to execute after the predecessor node completes."
+
+#: ../../source/UserGuide/graph/node.rst:81
+msgid "``\"any\"`` ：任意一个前驱节点执行完成即触发。"
+msgstr "\"any\": Triggers when any predecessor node completes execution."
+
+#: ../../source/UserGuide/graph/node.rst:82
+msgid "``\"all\"`` ：同组别的所有前驱节点执行完成后触发。"
+msgstr "\"all\": Triggered after all predecessor nodes in the same group have completed execution."
+
+#: ../../source/UserGuide/graph/node.rst:85
+msgid "``multi_input_merge_strategy`` ：多前驱状态合并策略。 当节点存在来自多个组别的输入时，可为不同组别指定合并函数。 该参数为一个字典，``key`` 为边的 ``group`` 名，``value`` 为 ``Callable[[List[State]], State]`` 类型的函数。"
+msgstr "``multi_input_merge_strategy``: Multi-predecessor state merging strategy. When a node has inputs from multiple groups, a merge function can be specified for different groups. This parameter is a dictionary where the ``key`` is the edge's ``group`` name, and the ``value`` is a function of type ``Callable[[List[State]], State]``."
+
+#: ../../source/UserGuide/graph/node.rst:89
+msgid "若未指定此参数，则系统使用默认的状态更新机制依次合并输入状态。"
+msgstr "If this parameter is not specified, the system uses the default state update mechanism to sequentially merge the input states."
+
+#: ../../source/UserGuide/graph/node.rst:92
+msgid "组别的定义和使用方式详见 :doc:`edge`"
+msgstr "See :doc:`edge` for the definition and usage of groups"
+
+#: ../../source/UserGuide/graph/node.rst:94
+msgid "**使用示例：**"
+msgstr "**Usage Example:**"
+
+#: ../../source/UserGuide/graph/node.rst:109
+msgid "**运行机制：**"
+msgstr "**Operating Mechanism:**"
+
+#: ../../source/UserGuide/graph/node.rst:111
+msgid "每个节点接收一个完整的 ``State`` 输入，执行计算逻辑后返回字典类型的状态增量（``StateDelta``）。 引擎会将增量自动合并到全局状态中，并按定义的边结构继续向下传递。"
+msgstr "Each node receives a complete ``State`` input, executes the computation logic, and returns a dictionary-type state delta (``StateDelta``). The engine automatically merges the delta into the global state and passes it down along the defined edge structure."

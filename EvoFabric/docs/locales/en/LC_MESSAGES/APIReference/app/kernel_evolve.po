@@ -1,0 +1,145 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:2
+msgid "evofabric.app.kernel_evolve"
+msgstr "evofabric.app.kernel_evolve"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:10
+msgid "内核演化过程的抽象评估器"
+msgstr "Abstract Evaluator of the Kernel Evolution Process"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:14 ../../source/APIReference/app/kernel_evolve.rst:31
+msgid "执行生成代码的评估"
+msgstr "Execute the evaluation of generated code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:16 ../../source/APIReference/app/kernel_evolve.rst:33
+msgid "内核的初始代码"
+msgstr "Initial kernel code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:18 ../../source/APIReference/app/kernel_evolve.rst:35
+msgid "内核的演化代码"
+msgstr "Kernel evolution code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:20 ../../source/APIReference/app/kernel_evolve.rst:37
+msgid "生成内核代码的评估指标"
+msgstr "Evaluation metrics for generating kernel code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst
+msgid "返回类型"
+msgstr "return type"
+
+#: ../../source/APIReference/app/kernel_evolve.rst
+msgid "raises"
+msgstr "raises"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:22
+msgid "NotImplementedError"
+msgstr "NotImplementedError"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:27
+msgid "基于GPU设备实现的内核演化评估器"
+msgstr "GPU-based Kernel Evolution Evaluator"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:43
+msgid "内核演化的指标类"
+msgstr "Kernel Evolution Indicator Class"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:45
+msgid "内核重写后的加速比"
+msgstr "Speedup Ratio After Kernel Rewrite"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:47
+msgid "初始代码的执行时间"
+msgstr "Initial code execution time"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:49
+msgid "优化后生成代码的执行时间"
+msgstr "Execution time of the optimized generated code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:51
+msgid "评估过程中产生的错误"
+msgstr "Errors generated during the evaluation process"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:53
+msgid "评估过程的错误追踪信息"
+msgstr "Evaluation process error tracking information"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:59 ../../source/APIReference/app/kernel_evolve.rst:91
+msgid "内核演化的LLM配置类"
+msgstr "Kernel Evolution LLM Configuration Class"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:61
+msgid "模型类名"
+msgstr "Model class name"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:63
+msgid "模型名称"
+msgstr "Model Name"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:65
+msgid "模型的API密钥"
+msgstr "Model API Key"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:67
+msgid "模型的基础URL"
+msgstr "Model's base URL"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:69
+msgid "任意关键字参数"
+msgstr "Arbitrary keyword arguments"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:71 ../../source/APIReference/app/kernel_evolve.rst:105
+msgid "**示例用法：**"
+msgstr "**Example Usage:**"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:87
+msgid "内核演化控制器，用于启动内核演化"
+msgstr "Kernel Evolution Controller, for initiating kernel evolution"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:89
+msgid "待演化的操作代码"
+msgstr "Operation Code Pending Evolution"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:93
+msgid "用于生成内核代码的评估器实现"
+msgstr "Evaluator implementation for generating kernel code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:98
+msgid "执行自我演化并返回生成的内核代码"
+msgstr "Execute self-evolution and return the generated kernel code"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:100
+msgid "- flag (boolean): 执行成功的标志 - result (str): 生成的内核代码或错误信息"
+msgstr "- flag (boolean): execution success flag - result (str): generated kernel code or error message"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:101
+msgid "flag (boolean): 执行成功的标志"
+msgstr "flag (boolean): execution success flag"
+
+#: ../../source/APIReference/app/kernel_evolve.rst:102
+msgid "result (str): 生成的内核代码或错误信息"
+msgstr "result (str): generated kernel code or error message"

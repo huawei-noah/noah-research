@@ -1,0 +1,67 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/mem/mem_base.rst:3
+msgid "MemBase"
+msgstr "MemBase"
+
+#: ../../source/UserGuide/mem/mem_base.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/mem/mem_base.rst:9
+msgid "MemBase 定义了Memory与智能体交互基础协议。在使用Evofabric框架时, 可以通过继承MemBase并实现其基础方法完成自定义记忆使用"
+msgstr "MemBase defines the basic protocol for interaction between Memory and agents. When using the Evofabric framework, custom memory usage can be implemented by inheriting MemBase and implementing its basic methods."
+
+#: ../../source/UserGuide/mem/mem_base.rst:13
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/mem/mem_base.rst:15
+msgid "**统一接口**: 所有记忆系统继承自 :py:class:`~evofabric.core.mem.MemBase`，提供一致的调用方式。"
+msgstr "**Unified Interface**: All memory systems inherit from :py:class:`~evofabric.core.mem.MemBase`, providing a consistent calling method."
+
+#: ../../source/UserGuide/mem/mem_base.rst:16
+msgid "**记忆拓展**: 用户可继承MemBase并定义自己的方法。"
+msgstr "**Memory Expansion**: Users can inherit MemBase and define their own methods."
+
+#: ../../source/UserGuide/mem/mem_base.rst:17
+msgid "**示例记忆**: EvoFabric 在MemBase的基础上实现了RetrievalMem，ChatMem和TaskMem三类常用记忆类型，供用户直接使用。"
+msgstr "**Example Memory**: Based on MemBase, EvoFabric implements three commonly used memory types—RetrievalMem, ChatMem, and TaskMem—for direct user use."
+
+#: ../../source/UserGuide/mem/mem_base.rst:20
+msgid "开源记忆适配"
+msgstr "Open Source Memory Adaptation"
+
+#: ../../source/UserGuide/mem/mem_base.rst:21
+msgid "实现其中retrieval_update, add_messages和clear方法（均为异步）"
+msgstr "Implement the retrieval_update, add_messages, and clear methods (all asynchronous)."
+
+#: ../../source/UserGuide/mem/mem_base.rst:58
+msgid "接入Agent"
+msgstr "Access Agent"
+
+#: ../../source/UserGuide/mem/mem_base.rst:59
+msgid "当前Agent支持传入一个或多个Memory系统。 检索：在Agent推理推理前，会依据上下文信息逐个记忆系统检索，并在消息列表中拼接UserMessage信息。入口方法即retrieval_update。 更新：在智能体推理结束后，将上下文信息逐一更新记忆库。入口方法即 add_messages。 以上执行流程均在智能体内部实现，只需将记忆模块接入即可。"
+msgstr ""
+"The current Agent supports passing in one or more Memory systems.\n"
+"Retrieval: Before the Agent's reasoning, it will retrieve from each memory system based on context information and concatenate UserMessage information into the message list.\n"
+"The entry method is retrieval_update.\n"
+"Update: After the Agent's reasoning is complete, the context information will be updated to the memory database one by one.\n"
+"The entry method is add_messages.\n"
+"The above execution process is implemented within the Agent, and it is only necessary to connect the memory module."

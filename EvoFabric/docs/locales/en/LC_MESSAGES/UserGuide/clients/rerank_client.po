@@ -1,0 +1,49 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-30 14:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:3
+msgid "RerankClient"
+msgstr "RerankClient"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:6
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:8
+msgid "RerankClient 提供了统一的Reranker基础接口，对齐该接口可实现自定义的Rerank方案。提供了FlagRerank的实现供用户调用和参考"
+msgstr "RerankClient provides a unified Reranker base interface, enabling the implementation of custom Rerank schemes by aligning with this interface. It provides an implementation of FlagRerank for users to call and for reference."
+
+#: ../../source/UserGuide/clients/rerank_client.rst:11
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:13
+msgid "**统一接口**: 所有客户端继承自 :py:class:`~evofabric.core.clients.RerankClientBase`，提供一致的调用方式。"
+msgstr "**Unified Interface**: All clients inherit from :py:class:`~evofabric.core.clients.RerankClientBase`, providing a consistent calling method."
+
+#: ../../source/UserGuide/clients/rerank_client.rst:14
+msgid "**本地模式**: 支持使用 :py:class:`~evofabric.core.clients.FlagRerankModel` 对接本地部署的Rerank模型"
+msgstr "**Local mode**: Supports using :py:class:`~evofabric.core.clients.FlagRerankModel` to connect to locally deployed Rerank models"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:17
+msgid "基本使用"
+msgstr "Basic Usage"
+
+#: ../../source/UserGuide/clients/rerank_client.rst:37
+msgid "在 RetrievalMem 中使用"
+msgstr "Use in RetrievalMem"

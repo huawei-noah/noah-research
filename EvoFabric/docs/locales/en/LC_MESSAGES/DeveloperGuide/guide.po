@@ -1,0 +1,209 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 18:03+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/DeveloperGuide/guide.rst:2
+msgid "开发者指南"
+msgstr "Developer Guide"
+
+#: ../../source/DeveloperGuide/guide.rst:5
+msgid "参与 EvoFabric"
+msgstr "Participate in EvoFabric"
+
+#: ../../source/DeveloperGuide/guide.rst:7
+msgid "感谢您对 EvoFabric 项目的关注！我们的社区面向所有人开放，欢迎您通过各种形式反馈建议或是发布您的功能组件。您可以通过下述方法参与："
+msgstr "Thank you for your interest in the EvoFabric project! Our community is open to everyone, and we welcome you to submit suggestions in various forms or publish your functional components. You can participate through the following methods:"
+
+#: ../../source/DeveloperGuide/guide.rst:9
+msgid "找到并报告问题或 Bug。"
+msgstr "Find and report issues or bugs."
+
+#: ../../source/DeveloperGuide/guide.rst:11
+msgid "提出需求或新增一个新的特性。"
+msgstr "Propose a requirement or add a new feature."
+
+#: ../../source/DeveloperGuide/guide.rst:13
+msgid "提出需求或新增一个新的组件。"
+msgstr "Propose a requirement or add a new component."
+
+#: ../../source/DeveloperGuide/guide.rst:16
+msgid "License"
+msgstr "License"
+
+#: ../../source/DeveloperGuide/guide.rst:18
+msgid "当前项目使用的License是 `MIT License <../LICENSE>`_."
+msgstr "The license used in the current project is `MIT License <../LICENSE>`_."
+
+#: ../../source/DeveloperGuide/guide.rst:21
+msgid "开发流程"
+msgstr "Development Process"
+
+#: ../../source/DeveloperGuide/guide.rst:23
+msgid "如果您期望贡献您的组件或功能到 EvoFabric ， 我们期望您能遵循下面的开发原则："
+msgstr "If you expect to contribute your components or features to EvoFabric, we expect you to follow the following development principles:"
+
+#: ../../source/DeveloperGuide/guide.rst:25
+msgid "在PR中清晰描述您所提供的组件或功能"
+msgstr "Clearly describe the components or features you are providing in the PR"
+
+#: ../../source/DeveloperGuide/guide.rst:27
+msgid "保证新增的组件继承现有基类，或继承工厂基类 :py:class:`~evofabric.core.factory.BaseComponent` 并保证组件可被 ``pydantic`` 序列化和反序列化"
+msgstr "Ensure that newly added components inherit the existing base class or the factory base class :py:class:`~evofabric.core.factory.BaseComponent`, and that the components can be serialized and deserialized by ``pydantic``."
+
+#: ../../source/DeveloperGuide/guide.rst:29
+msgid "代码遵循 PEP 8 风格"
+msgstr "Code follows PEP 8 style"
+
+#: ../../source/DeveloperGuide/guide.rst:31
+msgid "提供可离线运行的 Unit test 以完整验证您的功能"
+msgstr "Provide unit tests that can run offline to fully verify your functionality"
+
+#: ../../source/DeveloperGuide/guide.rst:33
+msgid "我们将会组织定期审查所有新增的PR，并及时与您沟通进展。"
+msgstr "We will organize regular reviews of all new PRs and promptly communicate the progress to you."
+
+#: ../../source/DeveloperGuide/guide.rst:36
+msgid "版本策略"
+msgstr "Version Strategy"
+
+#: ../../source/DeveloperGuide/guide.rst:38
+msgid "本项目遵循明确的版本策略，以确保开发过程规范、版本管理清晰，并便于社区使用与贡献。版本体系分为三类：主线版本、发布版本和开发版本。"
+msgstr "This project follows a clear versioning strategy to ensure a standardized development process, clear version management, and ease of use and contribution for the community. The versioning system is divided into three categories: mainline versions, release versions, and development versions."
+
+#: ../../source/DeveloperGuide/guide.rst:41
+msgid "版本号命名规则"
+msgstr "Version Number Naming Rules"
+
+#: ../../source/DeveloperGuide/guide.rst:43
+msgid "版本号采用三段式命名规则："
+msgstr "Version numbers use a three-part naming convention:"
+
+#: ../../source/DeveloperGuide/guide.rst:49
+msgid "**主版本号 (MAJOR)**：当项目发生不兼容的 API 变更时，主版本号递增。"
+msgstr "**Major Version (MAJOR)**: The major version number is incremented when incompatible API changes occur."
+
+#: ../../source/DeveloperGuide/guide.rst:50
+msgid "**次版本号 (MINOR)**：当项目新增功能且向下兼容时，次版本号递增。"
+msgstr "**Minor Version (MINOR)**: Increment the minor version number when adding new features in a backward-compatible manner."
+
+#: ../../source/DeveloperGuide/guide.rst:51
+msgid "**修订号 (PATCH)**：当项目进行向下兼容的问题修复时，修订号递增。"
+msgstr "**Patch Number (PATCH)**: Incremented when the project makes backward-compatible bug fixes."
+
+#: ../../source/DeveloperGuide/guide.rst:52
+msgid "**后缀 (Suffix, 可选)**：用于标记开发版本或预发布版本，例如 `-rc1`、`-rc2`、`-beta`。"
+msgstr "**Suffix (Optional):** Used to mark development versions or pre-release versions, for example `-rc1`, `-rc2`, `-beta`."
+
+#: ../../source/DeveloperGuide/guide.rst:56
+msgid "版本类型定义"
+msgstr "Version Type Definition"
+
+#: ../../source/DeveloperGuide/guide.rst:58
+msgid "**主线版本 (Mainline Version)**"
+msgstr "**Mainline Version (Mainline Version)**"
+
+#: ../../source/DeveloperGuide/guide.rst:60
+msgid "描述：项目的核心开发分支，包含最新功能和改进。"
+msgstr "Description: The project's core development branch containing the latest features and improvements."
+
+#: ../../source/DeveloperGuide/guide.rst:61
+msgid "命名：一般无后缀，例如 `1.2.0`。"
+msgstr "Naming: Generally no suffix, e.g., `1.2.0`."
+
+#: ../../source/DeveloperGuide/guide.rst:62 ../../source/DeveloperGuide/guide.rst:72 ../../source/DeveloperGuide/guide.rst:82
+msgid "特点："
+msgstr "Features:"
+
+#: ../../source/DeveloperGuide/guide.rst:64
+msgid "保持与主版本兼容性。"
+msgstr "Maintain compatibility with the main version."
+
+#: ../../source/DeveloperGuide/guide.rst:65
+msgid "可合并到发布版本分支进行正式发布。"
+msgstr "Can be merged into the release version branch for formal release."
+
+#: ../../source/DeveloperGuide/guide.rst:67
+msgid "**发布版本 (Release Version)**"
+msgstr "**Release Version (Release Version)**"
+
+#: ../../source/DeveloperGuide/guide.rst:69
+msgid "描述：经过充分测试、稳定可用的版本，面向用户发布。"
+msgstr "Description: A thoroughly tested, stable, and usable version released to users."
+
+#: ../../source/DeveloperGuide/guide.rst:70
+msgid "命名：遵循版本号规则，不带开发后缀，例如 `1.2.0`。"
+msgstr "Naming: Follow the version number rules, without a development suffix, for example `1.2.0`."
+
+#: ../../source/DeveloperGuide/guide.rst:71
+msgid "发布周期：双月发布。"
+msgstr "Release cycle: Bi-monthly."
+
+#: ../../source/DeveloperGuide/guide.rst:74
+msgid "不包含不稳定功能。"
+msgstr "Does not include unstable features."
+
+#: ../../source/DeveloperGuide/guide.rst:75
+msgid "用于生产环境和社区发布。"
+msgstr "For production environment and community release."
+
+#: ../../source/DeveloperGuide/guide.rst:76
+msgid "每次发布版本应记录更新日志（CHANGELOG）。"
+msgstr "Each version release should record the changelog (CHANGELOG)."
+
+#: ../../source/DeveloperGuide/guide.rst:78
+msgid "**开发版本 (Development Version)**"
+msgstr "**Development Version (Development Version)**"
+
+#: ../../source/DeveloperGuide/guide.rst:80
+msgid "描述：用于日常开发和测试的版本，可能包含不稳定或实验性功能。"
+msgstr "Description: Version for daily development and testing, may contain unstable or experimental features."
+
+#: ../../source/DeveloperGuide/guide.rst:81
+msgid "命名：在修订号后添加 `-dev` 后缀，例如 `1.3.0-dev`。"
+msgstr "Naming: Add the `-dev` suffix after the revision number, for example `1.3.0-dev`."
+
+#: ../../source/DeveloperGuide/guide.rst:84
+msgid "频繁更新，供开发者测试和预览。"
+msgstr "Frequent updates, for developers to test and preview."
+
+#: ../../source/DeveloperGuide/guide.rst:85
+msgid "不推荐直接用于生产环境。"
+msgstr "Not recommended for direct use in production environment."
+
+#: ../../source/DeveloperGuide/guide.rst:88
+msgid "后续版本计划"
+msgstr "Subsequent Version Plan"
+
+#: ../../source/DeveloperGuide/guide.rst:90
+msgid "我们计划后续会陆续更新以下特性："
+msgstr "We plan to gradually roll out the following features in subsequent updates:"
+
+#: ../../source/DeveloperGuide/guide.rst:92
+msgid "EvoFabric 的前端UI，支持显示运行过程中的消息日志（含流式消息）、图结构和节点状态，以及在可视化界面进行调试功能"
+msgstr "EvoFabric's frontend UI supports displaying message logs during runtime (including streaming messages), graph structure, and node status, as well as debugging features in the visual interface."
+
+#: ../../source/DeveloperGuide/guide.rst:94
+msgid "Agent场景的Memory功能"
+msgstr "Agent Scenario's Memory Feature"
+
+#: ../../source/DeveloperGuide/guide.rst:96
+msgid "Magentic-one等Multi-agent模块"
+msgstr "Magentic-one and other Multi-agent modules"
+
+#: ../../source/DeveloperGuide/guide.rst:98
+msgid "Client、工具等资源使用监控"
+msgstr "Client, tools, and other resource usage monitoring"

@@ -1,0 +1,197 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:2
+msgid "快速开始"
+msgstr "Quick Start"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:4
+msgid "本指南将帮助您开始使用 EvoFabric 中的 :py:class:`~evofabric.core.vectorstore` 模块。您将学习如何设置、配置和使用向量数据库来满足您的应用需求。"
+msgstr "This guide will help you get started with the :py:class:`~evofabric.core.vectorstore` module in EvoFabric. You will learn how to set up, configure, and use a vector database to meet your application needs."
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:7
+msgid "先决条件"
+msgstr "Prerequisite"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:9
+msgid "在使用 VectorStore 模块之前，请确保您拥有："
+msgstr "Before using the VectorStore module, please ensure you have:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:11
+msgid "Python 3.11 或更高版本"
+msgstr "Python 3.11 or later"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:13
+msgid "必需的依赖项："
+msgstr "Required dependencies:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:15
+msgid "``chromadb>=1.1.0`` （用于 ChromaDB 后端）"
+msgstr "``chromadb>=1.1.0`` (for ChromaDB backend)"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:18
+msgid "安装"
+msgstr "Install"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:20
+msgid "安装必需的包："
+msgstr "Install required packages:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:26
+msgid "如果您计划使用特定的嵌入模型，请安装相应的客户端："
+msgstr "If you plan to use a specific embedding model, please install the corresponding client:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:37
+msgid "基本设置"
+msgstr "Basic Settings"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:39
+msgid "以下是设置基本向量存储的方法："
+msgstr "Here are the methods for setting up basic vector storage:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:74
+msgid "添加文档"
+msgstr "Add Document"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:76
+msgid "向向量存储中添加文档："
+msgstr "Add document to vector storage:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:101
+msgid "搜索文档"
+msgstr "Search Documents"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:103
+msgid "执行相似性搜索："
+msgstr "Perform similarity search:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:117
+msgid "完整示例"
+msgstr "Complete Example"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:119
+msgid "以下是使用 SentenceTransformer 嵌入的完整工作示例："
+msgstr "Here is a complete working example using SentenceTransformer embeddings:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:178
+msgid "数据库管理"
+msgstr "database management"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:181
+msgid "清理数据库"
+msgstr "Clean up the database"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:183
+msgid "清理向量数据库有两种方式："
+msgstr "There are two ways to clean up the vector database:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:185
+msgid "清除所有文档（推荐）：保留集合结构，只删除文档内容。调用方法 :py:meth:`evofabric.core.vectorstore.VectorDB.clear_db`"
+msgstr "Clear all documents (recommended): Retain the collection structure, delete only the document content. Call method :py:meth:`evofabric.core.vectorstore.VectorDB.clear_db`"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:187
+msgid "示例用法："
+msgstr "Example usage:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:197
+msgid "配置选项"
+msgstr "Configuration Options"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:199
+msgid "VectorStore 支持各种配置选项："
+msgstr "VectorStore supports various configuration options:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:201
+msgid "**collection_name**: 集合名称（必需）"
+msgstr "**collection_name**: Collection Name (Required)"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:202
+msgid "**persist_directory**: 持久化存储目录（可选）。未设置时使用内存模式，设置后启用持久化存储"
+msgstr "**persist_directory**: Persistent storage directory (optional). When not set, use in-memory mode; after setting, enable persistent storage"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:203
+msgid "**embedding**: 用于文本向量化的嵌入客户端（必需）"
+msgstr "**embedding**: embedding client for text vectorization (required)"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:204
+msgid "**top_k**: 相似性搜索的默认结果数量"
+msgstr "**top_k**: default number of results for similarity search"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:207
+msgid "嵌入客户端选项"
+msgstr "Embedded Client Options"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:209
+msgid "嵌入参数接受任何继承自 :py:class:`~evofabric.core.clients.EmbedClientBase` 的客户端："
+msgstr "Embedding parameters accept any client inheriting from :py:class:`~evofabric.core.clients.EmbedClientBase`:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:212
+msgid "嵌入适配器"
+msgstr "Embedded Adapter"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:214
+msgid ":py:class:`~evofabric.core.vectorstore.ChromaDB` 自动提供了嵌入适配器功能，可以将自定义嵌入客户端转换为 ChromaDB 期望的接口格式。适配器支持："
+msgstr ":py:class:`~evofabric.core.vectorstore.ChromaDB` automatically provides embedding adapter functionality, which can convert custom embedding clients to the interface format expected by ChromaDB. Adapter support:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:216
+msgid "**单文本嵌入**：处理单个文本的向量化"
+msgstr "**Single Text Embedding**: Vectorization of a single text"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:217
+msgid "**批量嵌入**：同时处理多个文本的向量化"
+msgstr "**Batch Embedding**: Simultaneous vectorization of multiple texts"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:218
+msgid "**兼容性**：与 ChromaDB 的标准接口完全兼容"
+msgstr "**Compatibility**: Fully compatible with ChromaDB's standard interface"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:220
+msgid ":py:class:`~evofabric.core.clients.SentenceTransformerEmbed` 本地句子转换器模型"
+msgstr ":py:class:`~evofabric.core.clients.SentenceTransformerEmbed` local sentence transformer model"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:222
+msgid "``model``: 模型名称（如 \"all-MiniLM-L6-v2\"）或本地路径"
+msgstr "\"model\": Model name (e.g., \"all-MiniLM-L6-v2\") or local path"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:223
+msgid "``device``: \"cpu\" 或 \"cuda\" 用于 GPU 加速"
+msgstr "\"device\": \"cpu\" or \"cuda\" for GPU acceleration"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:225
+msgid ":py:class:`~evofabric.core.clients.OpenAIEmbedClient` 基于 OpenAI API 的嵌入"
+msgstr ":py:class:`~evofabric.core.clients.OpenAIEmbedClient` Embedding based on OpenAI API"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:227
+msgid "``model``: OpenAI 嵌入模型名称"
+msgstr "``model``: OpenAI embedding model name"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:228
+msgid "``api_key``: OpenAI API 密钥"
+msgstr "``api_key``: OpenAI API key"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:229
+msgid "``base_url``: 自定义 API 端点（可选）"
+msgstr "``base_url``: Custom API endpoint (optional)"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:231
+msgid "示例配置："
+msgstr "Example configuration:"
+
+#: ../../source/UserGuide/vectorstore/getting_started.rst:248
+msgid "你可以根据具体的使用场景、性能需求和可用资源来自定义这些选项。"
+msgstr "You can customize these options based on specific use cases, performance requirements, and available resources."

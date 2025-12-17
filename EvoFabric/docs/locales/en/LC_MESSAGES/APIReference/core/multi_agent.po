@@ -1,0 +1,113 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/multi_agent.rst:2
+msgid "evofabric.core.multi_agent"
+msgstr "evofabric.core.multi_agent"
+
+#: ../../source/APIReference/core/multi_agent.rst:7
+msgid "Swarm"
+msgstr "Swarm"
+
+#: ../../source/APIReference/core/multi_agent.rst:12
+msgid "用于创建“Swarm风格”多智能体协作图的自动化构建器。"
+msgstr "automated builder for creating 'Swarm-style' multi-agent collaboration graph"
+
+#: ../../source/APIReference/core/multi_agent.rst:14
+msgid "Swarm 组件接收一个智能体字典、一个入口点以及一个可选的拓扑定义，用于构建一个可立即运行的图结构。它会动态地为每个智能体注入一个特殊的 ``handoff`` 工具，使其能够在定义的通信路径中将任务委托给其他智能体。"
+msgstr "The Swarm component receives an agent dictionary, an entry point, and an optional topology definition to build an immediately runnable graph structure. It dynamically injects a special ``handoff`` tool into each agent, enabling them to delegate tasks to other agents along the defined communication paths."
+
+#: ../../source/APIReference/core/multi_agent.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/multi_agent.rst:16
+msgid "唯一智能体名称到 ``AgentNode`` 实例或其配置的映射。 内部接受的类型为 ``AgentNodeOrConfig = InstanceOrConfig[AgentNode]``，并且可以包含 ``LazyInstance`` 条目。"
+msgstr "A mapping from the unique agent name to an ``AgentNode`` instance or its configuration. The internally accepted type is ``AgentNodeOrConfig = InstanceOrConfig[AgentNode]``, and it can contain ``LazyInstance`` entries."
+
+#: ../../source/APIReference/core/multi_agent.rst:20
+msgid "定义图共享状态结构的 Pydantic 模型。"
+msgstr "Pydantic model defining the graph shared state structure."
+
+#: ../../source/APIReference/core/multi_agent.rst:23
+msgid "入口智能体名称。必须是 ``agents`` 中的一个键。"
+msgstr "Entry Point Agent Name. Must be one of the keys in ``agents``."
+
+#: ../../source/APIReference/core/multi_agent.rst:26
+msgid "可选的有向边，用于指定允许的任务交接候选，格式为 ``[(source_agent_name, target_agent_name), ...]``。如果为 ``None``，则默认每个智能体都可以将任务交接给其他任意智能体。 注意：这是一个软约束，用于调整 handoff 工具的函数签名和文档说明。"
+msgstr "Optional directed edges for specifying allowed task handoff candidates, formatted as ``[(source_agent_name, target_agent_name), ...]``. If ``None``, each agent can hand off tasks to any other agent by default. Note: This is a soft constraint used to adjust the function signature and documentation of the handoff tool."
+
+#: ../../source/APIReference/core/multi_agent.rst:31
+msgid "编译后图的最大轮次限制，用于防止无限循环。"
+msgstr "Maximum iteration limit for the compiled graph, used to prevent infinite loops."
+
+#: ../../source/APIReference/core/multi_agent.rst:38
+msgid "动态添加一个智能体。将在下次调用 :py:meth:`build` 时生效。"
+msgstr "Dynamically add an agent. It will take effect upon the next call to :py:meth:`build`."
+
+#: ../../source/APIReference/core/multi_agent.rst:40
+msgid "要注册的唯一智能体名称。"
+msgstr "The unique agent name to be registered."
+
+#: ../../source/APIReference/core/multi_agent.rst:42
+msgid "一个 ``AgentNode`` 实例或配置（例如 ``LazyInstance``）。"
+msgstr "an ``AgentNode`` instance or configuration (such as ``LazyInstance``)."
+
+#: ../../source/APIReference/core/multi_agent.rst
+msgid "抛出"
+msgstr "throw out"
+
+#: ../../source/APIReference/core/multi_agent.rst:44
+msgid "如果 ``name`` 已存在。"
+msgstr "If ``name`` already exists."
+
+#: ../../source/APIReference/core/multi_agent.rst:48
+msgid "动态移除一个智能体。将在下次调用 :py:meth:`build` 时生效。"
+msgstr "Dynamically remove an agent. Will take effect on the next call to :py:meth:`build`."
+
+#: ../../source/APIReference/core/multi_agent.rst:50
+msgid "要移除的智能体名称。"
+msgstr "Agent name to be removed"
+
+#: ../../source/APIReference/core/multi_agent.rst:52
+msgid "当智能体不存在，或尝试移除入口智能体时抛出。"
+msgstr "Thrown when the agent does not exist or when attempting to remove the entry agent."
+
+#: ../../source/APIReference/core/multi_agent.rst:56
+msgid "根据当前配置构建并编译 Swarm 图。"
+msgstr "Build and compile the Swarm graph based on the current configuration."
+
+#: ../../source/APIReference/core/multi_agent.rst:58
+msgid "当 Swarm 的配置（例如添加/删除智能体）发生变化时，应调用此方法。"
+msgstr "When the configuration of Swarm (e.g., adding/removing agents) changes, this method should be called."
+
+#: ../../source/APIReference/core/multi_agent.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/multi_agent.rst:60
+msgid "一个已编译的 :py:class:`GraphEngine` 或 :py:class:`GraphEngineDebugger` 实例，准备运行。"
+msgstr "A compiled :py:class:`GraphEngine` or :py:class:`GraphEngineDebugger` instance, ready to run."
+
+#: ../../source/APIReference/core/multi_agent.rst:63
+msgid "**示例代码：**"
+msgstr "**Example code:**"
+
+#: ../../source/APIReference/core/multi_agent.rst:102
+msgid "**通过边进行拓扑定制：**"
+msgstr "**Topology Customization via Edges:**"

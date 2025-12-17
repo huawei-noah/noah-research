@@ -1,0 +1,57 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/clients/embed_client.rst:3
+msgid "EmbedClient"
+msgstr "EmbedClient"
+
+#: ../../source/UserGuide/clients/embed_client.rst:5
+msgid "EmbedClient 核心功能是将文本或文本列表通过Embedding模型转化为特征向量"
+msgstr "EmbedClient's core function is to convert text or a list of texts into feature vectors through an Embedding model"
+
+#: ../../source/UserGuide/clients/embed_client.rst:9
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/clients/embed_client.rst:11
+msgid "EmbedClient 模块提供了统一的接口用于调用本地SentenceTransformer Embedding模型，或OpenAI Embedding模型"
+msgstr "The EmbedClient module provides a unified interface for calling local SentenceTransformer embedding models or OpenAI embedding models."
+
+#: ../../source/UserGuide/clients/embed_client.rst:15
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/clients/embed_client.rst:17
+msgid "**统一接口**: 所有客户端继承自 :py:class:`~evofabric.core.clients.EmbedClientBase`，提供一致的调用方式。"
+msgstr "**Unified Interface**: All clients inherit from :py:class:`~evofabric.core.clients.EmbedClientBase`, providing a consistent calling method."
+
+#: ../../source/UserGuide/clients/embed_client.rst:18
+msgid "**多文本支持**: 可单次并发创建多条文本的Embedding特征。"
+msgstr "**Multi-text Support**: Can create Embedding features of multiple texts in a single concurrent operation."
+
+#: ../../source/UserGuide/clients/embed_client.rst:19
+msgid "**本地模式**: 支持使用 :py:class:`~evofabric.core.clients.SentenceTransformerEmbed` 对接本地部署的Embedding模型"
+msgstr "**Local mode**: Supports using :py:class:`~evofabric.core.clients.SentenceTransformerEmbed` to connect to locally deployed embedding models"
+
+#: ../../source/UserGuide/clients/embed_client.rst:22
+msgid "基本使用"
+msgstr "Basic Usage"
+
+#: ../../source/UserGuide/clients/embed_client.rst:45
+msgid "在 vectorstore 中使用"
+msgstr "Use in vectorstore"

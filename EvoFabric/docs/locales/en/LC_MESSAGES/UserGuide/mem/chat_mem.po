@@ -1,0 +1,53 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-30 14:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:3
+msgid "ChatMem"
+msgstr "ChatMem"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:9
+msgid "ChatMem 是Agent框架的提供的一项高阶记忆能力，可直接接入Agent节点，作为对话记忆，你可以编写定制化提示词来引导记忆关注内容"
+msgstr "ChatMem is a high-level memory capability provided by the Agent framework, which can be directly integrated into Agent nodes as conversation memory, allowing you to write customized prompts to guide the memory to focus on specific content."
+
+#: ../../source/UserGuide/mem/chat_mem.rst:13
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:15
+msgid "**作为记忆模块**: ChatMem 继承自 :py:class:`~evofabric.core.mem.MemBase`，是一个高阶记忆模块，可按用户提示词从特定角度理解上下文信息"
+msgstr "**As a memory module**: ChatMem inherits from :py:class:`~evofabric.core.mem.MemBase`, a high-level memory module that can understand context information from a specific perspective based on user prompts"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:16
+msgid "**高自由度**: 系统提供了直接可运行的ChatMem实施，其中记忆角度、记忆的抽取、记忆的更新策略，均可通过传入提示词自定义"
+msgstr "**High flexibility**: The system provides a directly runnable ChatMem implementation, wherein the memory perspective, memory extraction, and memory update strategies can all be customized through incoming prompts."
+
+#: ../../source/UserGuide/mem/chat_mem.rst:17
+msgid "**上下文Messages拼接方案**：你可以继承 :py:class:`~evofabric.core.mem.CognitiveMem._select_messages` 以及 :py:class:`~evofabric.core.mem.CognitiveMem._message_to_text` 实现自定义的从智能体消息列表转为待处理储存内容的方法。"
+msgstr "**Context Messages Concatenation Scheme**: You can inherit :py:class:`~evofabric.core.mem.CognitiveMem._select_messages` and :py:class:`~evofabric.core.mem.CognitiveMem._message_to_text` to implement a custom method for converting an agent message list into content to be processed and stored."
+
+#: ../../source/UserGuide/mem/chat_mem.rst:20
+msgid "最佳实践"
+msgstr "Best Practices"
+
+#: ../../source/UserGuide/mem/chat_mem.rst:21
+msgid "构建一个ChatMem，及其使用"
+msgstr "Build a ChatMem, and its usage"

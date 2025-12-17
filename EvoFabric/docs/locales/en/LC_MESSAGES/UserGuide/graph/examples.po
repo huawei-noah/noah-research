@@ -1,0 +1,129 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/examples.rst:2
+msgid "示例代码"
+msgstr "Examples"
+
+#: ../../source/UserGuide/graph/examples.rst:6
+msgid "顺序图的构建"
+msgstr "Sequence Diagram Construction"
+
+#: ../../source/UserGuide/graph/examples.rst:69 ../../source/UserGuide/graph/examples.rst:192 ../../source/UserGuide/graph/examples.rst:338 ../../source/UserGuide/graph/examples.rst:561 ../../source/UserGuide/graph/examples.rst:707 ../../source/UserGuide/graph/examples.rst:938 ../../source/UserGuide/graph/examples.rst:1102
+msgid "可视化结果："
+msgstr "Visualization results:"
+
+#: ../../source/UserGuide/graph/examples.rst:85 ../../source/UserGuide/graph/examples.rst:209
+msgid "输出结果："
+msgstr "Output result:"
+
+#: ../../source/UserGuide/graph/examples.rst:130
+msgid "分支图的构建"
+msgstr "Construction of the branch diagram"
+
+#: ../../source/UserGuide/graph/examples.rst:254
+msgid "带有多输入节点的图的构建"
+msgstr "Graph Construction with Multiple Input Nodes"
+
+#: ../../source/UserGuide/graph/examples.rst:257
+msgid "ALL模式"
+msgstr "ALL Mode"
+
+#: ../../source/UserGuide/graph/examples.rst:259
+msgid "节点在具有多个前驱输入时，可以通过设置 ``action_mode='all'`` 来等待所有前置节点运行完成。此时该节点的输入也是所有前置节点的输出按 ``state_schema`` 声明的更新策略合并后的结果。"
+msgstr "When a node has multiple inputs from predecessor nodes, it can set ``action_mode='all'`` to wait for all predecessor nodes to complete execution. At this point, the node's input is also the result of merging all predecessor nodes' outputs according to the update strategy declared by ``state_schema``."
+
+#: ../../source/UserGuide/graph/examples.rst:356 ../../source/UserGuide/graph/examples.rst:580 ../../source/UserGuide/graph/examples.rst:723 ../../source/UserGuide/graph/examples.rst:966 ../../source/UserGuide/graph/examples.rst:1118
+msgid "示例输出："
+msgstr "Example output:"
+
+#: ../../source/UserGuide/graph/examples.rst:410
+msgid "ANY模式"
+msgstr "ANY Mode"
+
+#: ../../source/UserGuide/graph/examples.rst:412
+msgid "将上述代码 ``action_mode`` 改为 ``any`` 时，会发现 ``d`` 节点会被触发两次，这是因为 ``any`` 模式下任意一个前驱节点运行结束都会触发一次当前节点的运行。"
+msgstr "When changing the above code ``action_mode`` to ``any``, you will find that the ``d`` node is triggered twice, because in ``any`` mode, the completion of any predecessor node will trigger the execution of the current node once."
+
+#: ../../source/UserGuide/graph/examples.rst:415
+msgid "示例输出"
+msgstr "Example output"
+
+#: ../../source/UserGuide/graph/examples.rst:478
+msgid "带条件分支图的构建"
+msgstr "Construction of a Graph with Conditional Branches"
+
+#: ../../source/UserGuide/graph/examples.rst:626
+msgid "用条件分支构造自循环"
+msgstr "Use conditional branches to construct a self-loop"
+
+#: ../../source/UserGuide/graph/examples.rst:628
+msgid "自循环可以通过条件边构造。需要注意，如果节点 ``action_mode='all'``，需要单独为自循环条件边指定一个非默认的组名。否则这个节点将永远无法触发。"
+msgstr "Self-loops can be constructed using conditional edges. Note that if the node ``action_mode='all'``, a non-default group name must be specified separately for the self-loop conditional edge. Otherwise, this node will never be triggered."
+
+#: ../../source/UserGuide/graph/examples.rst:630
+msgid "或者可以简单地将改节点的 ``action_mode`` 设为 ``any`` 。"
+msgstr "Alternatively, you can simply set the change node's ``action_mode`` to ``any``."
+
+#: ../../source/UserGuide/graph/examples.rst:787
+msgid "带multi_input_merge_strategy的图"
+msgstr "Graph with multi_input_merge_strategy"
+
+#: ../../source/UserGuide/graph/examples.rst:789
+msgid "当节点需要从一到多组路径下接收多个前驱节点的输入，并指定特殊的合并策略时，可以使用 ``multi_input_merge_strategy`` 按边的组别指定合并策略。"
+msgstr "When a node needs to receive inputs from multiple predecessor nodes through one to multiple path groups and specify a special merging strategy, the ``multi_input_merge_strategy`` can be used to specify the merging strategy by edge group."
+
+#: ../../source/UserGuide/graph/examples.rst:791
+msgid "合并策略要求是一个函数，接收 ``list[State]`` 作为入参，并输出合并后的 ``State`` 状态。"
+msgstr "The merge strategy requires a function that takes ``list[State]`` as input and outputs the merged ``State``."
+
+#: ../../source/UserGuide/graph/examples.rst:795
+msgid "``multi_input_merge_strategy`` 会导致状态根节点的重置和不可恢复。"
+msgstr "``multi_input_merge_strategy`` will cause the reset and irrecoverability of the state root node."
+
+#: ../../source/UserGuide/graph/examples.rst:797 ../../source/UserGuide/graph/examples.rst:1023
+msgid ":doc:`参考状态维护与重构机制 <state_while_running>`"
+msgstr ":doc:`Reference State Maintenance and Refactoring Mechanism <state_while_running>`"
+
+#: ../../source/UserGuide/graph/examples.rst:1007
+msgid "带StateFilter的图"
+msgstr "Graph with StateFilter"
+
+#: ../../source/UserGuide/graph/examples.rst:1009
+msgid "向某些节点传递消息时，有时并不希望子节点看到全量的上下文。"
+msgstr "When passing messages to certain nodes, sometimes it is not desired for child nodes to see the full context."
+
+#: ../../source/UserGuide/graph/examples.rst:1011
+msgid "例如在中控 -> 执行器场景："
+msgstr "For example, in Central Control -> Actuator Scenario:"
+
+#: ../../source/UserGuide/graph/examples.rst:1013
+msgid "执行器往往只需要看到中控器下发的任务来避免潜在的干扰。"
+msgstr "Actuators often only need to see the tasks issued by the central controller to avoid potential interference."
+
+#: ../../source/UserGuide/graph/examples.rst:1015
+msgid "执行器也只需要返回执行结果，而不需要返回执行过程。"
+msgstr "The executor also only needs to return the execution result, but does not need to return the execution process."
+
+#: ../../source/UserGuide/graph/examples.rst:1017
+msgid "此时，可以使用带有 ``state_filter`` 参数的边对状态里的上下文 ``messages`` 做过滤。"
+msgstr "At this point, edges with the ``state_filter`` parameter can be used to filter the context ``messages`` in the state."
+
+#: ../../source/UserGuide/graph/examples.rst:1021
+msgid "由于 ``state_filter`` 会导致状态根节点的重置和不可恢复，如果仍然希望保留历史上下文信息，我们建议您将信息暂存在状态的其他字段中，并在下一次调用时取用。"
+msgstr "Since ``state_filter`` will reset the state root node and make it irreversible, if you still wish to retain historical context information, we recommend temporarily storing the information in other fields of the state and retrieving it during the next invocation."

@@ -1,0 +1,57 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/tool/base_tool.rst:2
+msgid "BaseTool"
+msgstr "BaseTool"
+
+#: ../../source/UserGuide/tool/base_tool.rst:6
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/tool/base_tool.rst:8
+msgid ":py:class:`~evofabric.core.tool.BaseTool` 是单个工具基础类型，它负责记录具体的工具函数接口、解析函数入参、提供工具 ``schema`` 定义、维护工具内部状态等基础功能。它是 :py:class:`~evofabric.core.tool.ToolManager` 管理的基础工具单元。"
+msgstr ":py:class:`~evofabric.core.tool.BaseTool` is the base type for individual tools, responsible for recording specific tool function interfaces, parsing function parameters, providing the tool ``schema`` definition, maintaining the tool's internal state, and other basic functions. It is the basic tool unit managed by :py:class:`~evofabric.core.tool.ToolManager`."
+
+#: ../../source/UserGuide/tool/base_tool.rst:11
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/tool/base_tool.rst:13
+msgid "**工具调用能力**: 通过 :py:class:`~evofabric.core.tool.BaseTool.__call__` 可完成对工具的调用。"
+msgstr "**Tool invocation capability**: Tools can be invoked via :py:class:`~evofabric.core.tool.BaseTool.__call__`."
+
+#: ../../source/UserGuide/tool/base_tool.rst:14
+msgid "**工具状态管理**：在调用工具时，如果工具本身带有 ``inner_state`` 参数，会将 BaseTool 管理的状态填充进工具入参。工具状态还支持导出和重载。"
+msgstr "**Tool State Management**: When calling a tool, if the tool itself has an ``inner_state`` parameter, the state managed by BaseTool will be filled into the tool's input parameters. Tool state also supports export and reload."
+
+#: ../../source/UserGuide/tool/base_tool.rst:15
+msgid "**流式消息管理**: 在调用工具时，如果工具本身带有 ``stream_writer`` 参数，会将 :py:class:`~evofabric.core.graph.StreamWriter` 填充进工具入参，以接收工具输出的流式消息。"
+msgstr "**Streaming Message Management**: When calling a tool, if the tool itself has a ``stream_writer`` parameter, it will fill the :py:class:`~evofabric.core.graph.StreamWriter` into the tool's input parameters to receive the streaming messages output by the tool."
+
+#: ../../source/UserGuide/tool/base_tool.rst:19
+msgid "EvoFabric 框架中工具的内部状态本质上是指该工具需要的输入参数。该参数区别于普通参数的关键在于：该参数的值只需要初始化，之后工具调用时不再需要显式输入，而是依赖于该工具上次调用后该参数的变动结果。"
+msgstr "In the EvoFabric framework, the internal state of a tool essentially refers to the input parameters required by the tool. The key distinction between this parameter and ordinary parameters is that the parameter's value only needs to be initialized once; subsequent tool invocations no longer require explicit input, but instead rely on the parameter's updated value from the previous invocation."
+
+#: ../../source/UserGuide/tool/base_tool.rst:23
+msgid "工具调用 & 获取 ToolSchema"
+msgstr "Tool Call & Get ToolSchema"
+
+#: ../../source/UserGuide/tool/base_tool.rst:55
+msgid "带状态的工具调用"
+msgstr "Stateful Tool Call"

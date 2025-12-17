@@ -1,0 +1,317 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/clients.rst:2
+msgid "evofabric.core.clients"
+msgstr "evofabric.core.clients"
+
+#: ../../source/APIReference/core/clients.rst:7
+msgid "Chat Clients"
+msgstr "Chat Clients"
+
+#: ../../source/APIReference/core/clients.rst:11
+msgid "获取大模型Chat模式响应的基类"
+msgstr "Base class for obtaining responses from large model Chat Mode"
+
+#: ../../source/APIReference/core/clients.rst:16 ../../source/APIReference/core/clients.rst:55 ../../source/APIReference/core/clients.rst:103
+msgid "流式获取大模型的响应。"
+msgstr "Stream the response from the large model."
+
+#: ../../source/APIReference/core/clients.rst
+msgid "参数"
+msgstr "parameter"
+
+#: ../../source/APIReference/core/clients.rst:18 ../../source/APIReference/core/clients.rst:29 ../../source/APIReference/core/clients.rst:57 ../../source/APIReference/core/clients.rst:68 ../../source/APIReference/core/clients.rst:105 ../../source/APIReference/core/clients.rst:119
+msgid "表示多轮历史对话消息序列。"
+msgstr "Represents a sequence of multi-round historical dialogue messages."
+
+#: ../../source/APIReference/core/clients.rst:20 ../../source/APIReference/core/clients.rst:31
+msgid "其他模型推理时需要设置的配置参数"
+msgstr "Configuration parameters that need to be set during inference of other models"
+
+#: ../../source/APIReference/core/clients.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/clients.rst:21 ../../source/APIReference/core/clients.rst:60 ../../source/APIReference/core/clients.rst:110
+msgid "一个异步生成器，流式过程中会持续返回 :py:class:`ChatStreamChunk` 对象记录流式消息，最后返回大模型的响应结果 :py:class:`LLMChatResponse`"
+msgstr "An asynchronous generator that, during the streaming process, continuously returns :py:class:`ChatStreamChunk` objects recording streaming messages, and finally returns the large model's response :py:class:`LLMChatResponse`"
+
+#: ../../source/APIReference/core/clients.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/clients.rst:27
+msgid "非流式获取大模型的响应"
+msgstr "Non-streaming acquisition of large model response"
+
+#: ../../source/APIReference/core/clients.rst:32 ../../source/APIReference/core/clients.rst:71 ../../source/APIReference/core/clients.rst:124
+msgid "大模型的响应结果 :py:class:`LLMChatResponse`"
+msgstr "Response Result of the Large Model :py:class:`LLMChatResponse`"
+
+#: ../../source/APIReference/core/clients.rst:37
+msgid "基于 OpenAI 接口的 Chat 客户端实现，继承自 :py:class:`ChatClientBase` 。"
+msgstr "Chat client implementation based on the OpenAI interface, inheriting from :py:class:`ChatClientBase`."
+
+#: ../../source/APIReference/core/clients.rst:39
+msgid "要使用的 OpenAI 模型名称，如 \"gpt-3.5-turbo\"、\"gpt-4\" 等。"
+msgstr "The OpenAI model name to be used, such as \"gpt-3.5-turbo\", \"gpt-4\", etc."
+
+#: ../../source/APIReference/core/clients.rst:41 ../../source/APIReference/core/clients.rst:82
+msgid "是否默认以流式方式请求模型；为 ``True`` 时，调用 :py:meth:`create_on_stream`；为 ``False`` 时，调用 :py:meth:`create`。"
+msgstr "Whether to default to requesting the model in a streaming manner; when ``True``, call :py:meth:`create_on_stream`; when ``False``, call :py:meth:`create`."
+
+#: ../../source/APIReference/core/clients.rst:43 ../../source/APIReference/core/clients.rst:85
+msgid "用于初始化 ``openai.AsyncOpenAI`` 客户端的额外关键字参数，例如 ``base_url``、``api_key``、``timeout`` 等。"
+msgstr "Additional keyword arguments for initializing the ``openai.AsyncOpenAI`` client, such as ``base_url``, ``api_key``, ``timeout``, etc."
+
+#: ../../source/APIReference/core/clients.rst:45 ../../source/APIReference/core/clients.rst:88
+msgid "用于初始化底层 ``httpx.AsyncClient`` 的关键字参数，例如 ``proxy``、``limits``、``verify`` 等。"
+msgstr "Keyword arguments used to initialize the underlying ``httpx.AsyncClient``, such as ``proxy``, ``limits``, ``verify``, etc."
+
+#: ../../source/APIReference/core/clients.rst:47 ../../source/APIReference/core/clients.rst:91
+msgid "每次调用 ``chat.completions.create()`` 时传递的推理参数，如 ``temperature``、``top_p``、``max_tokens`` 等。"
+msgstr "The inference parameters passed with each call to ``chat.completions.create()``, such as ``temperature``, ``top_p``, ``max_tokens``, etc."
+
+#: ../../source/APIReference/core/clients.rst:49
+msgid "一个异步可调用对象，用于逐块解析 OpenAI 返回的流式数据包，需满足 ``AsyncIterator[str] -> ChatStreamChunk`` 的协议。"
+msgstr "An asynchronous callable object for parsing OpenAI's streaming data packets in chunks, which must satisfy the protocol ``AsyncIterator[str] -> ChatStreamChunk``."
+
+#: ../../source/APIReference/core/clients.rst:59 ../../source/APIReference/core/clients.rst:70 ../../source/APIReference/core/clients.rst:108 ../../source/APIReference/core/clients.rst:122
+msgid "其他模型推理时需要设置的配置参数（会覆盖类属性 inference_kwargs 中的同名参数）"
+msgstr "Configuration parameters that need to be set for inference with other models (will override the same-named parameters in the class attribute inference_kwargs)"
+
+#: ../../source/APIReference/core/clients.rst:66 ../../source/APIReference/core/clients.rst:117
+msgid "非流式获取大模型的响应。"
+msgstr "Non-streaming acquisition of the large model's response."
+
+#: ../../source/APIReference/core/clients.rst:77
+msgid "基于盘古大模型接口的 Chat 客户端实现，继承自 :py:class:`OpenAIChatClient` 。"
+msgstr "Chat client implementation based on the PanGu large model interface, inheriting from :py:class:`OpenAIChatClient`."
+
+#: ../../source/APIReference/core/clients.rst:79
+msgid "要使用的模型名称。"
+msgstr "Model name to be used."
+
+#: ../../source/APIReference/core/clients.rst:94
+msgid "一个异步可调用对象，用于逐块解析盘古返回的流式数据包，需满足 ``AsyncIterator[str] -> ChatStreamChunk`` 的协议。"
+msgstr "An asynchronous callable object used to parse the streaming data packets returned by PanGu in chunks, which must satisfy the protocol ``AsyncIterator[str] -> ChatStreamChunk``."
+
+#: ../../source/APIReference/core/clients.rst:97
+msgid "是否启用“思考”模式。"
+msgstr "Whether to enable 'Thinking' mode."
+
+#: ../../source/APIReference/core/clients.rst:130
+msgid "Embedding Clients"
+msgstr "Embedding Clients"
+
+#: ../../source/APIReference/core/clients.rst:135
+msgid "与任意后端嵌入模型交互的基类客户端。 兼容 LangChain OpenAI 嵌入格式，可直接用于 LangChain、ChromaDB 等生态。"
+msgstr "Base client class for interacting with any backend embedding model. Compatible with LangChain OpenAI embedding format, directly usable in LangChain, ChromaDB, and other ecosystem tools."
+
+#: ../../source/APIReference/core/clients.rst:140
+msgid "同步生成单段文本的嵌入向量。"
+msgstr "Synchronously generate embedding vectors for single-segment text."
+
+#: ../../source/APIReference/core/clients.rst:142 ../../source/APIReference/core/clients.rst:166 ../../source/APIReference/core/clients.rst:242 ../../source/APIReference/core/clients.rst:309
+msgid "待嵌入的文本字符串。"
+msgstr "Text string to be embedded"
+
+#: ../../source/APIReference/core/clients.rst:145 ../../source/APIReference/core/clients.rst:172 ../../source/APIReference/core/clients.rst:248 ../../source/APIReference/core/clients.rst:315
+msgid "长度为 `embedding_dim` 的浮点向量。"
+msgstr "A floating-point vector of length `embedding_dim`."
+
+#: ../../source/APIReference/core/clients.rst:150
+msgid "同步生成多段文本的嵌入向量列表。"
+msgstr "Synchronously generate a list of embedding vectors for multiple text segments."
+
+#: ../../source/APIReference/core/clients.rst:152 ../../source/APIReference/core/clients.rst:180 ../../source/APIReference/core/clients.rst:256 ../../source/APIReference/core/clients.rst:323
+msgid "文本字符串列表。"
+msgstr "Text string list."
+
+#: ../../source/APIReference/core/clients.rst:155 ../../source/APIReference/core/clients.rst:183 ../../source/APIReference/core/clients.rst:259 ../../source/APIReference/core/clients.rst:326
+msgid "额外推理参数，如 `chunk_size`、`retry` 等。"
+msgstr "Additional inference parameters, such as `chunk_size`, `retry`, etc."
+
+#: ../../source/APIReference/core/clients.rst:158 ../../source/APIReference/core/clients.rst:186 ../../source/APIReference/core/clients.rst:262 ../../source/APIReference/core/clients.rst:329
+msgid "与 `texts` 顺序对应的向量列表，每条向量长度为 `embedding_dim`。"
+msgstr "A list of vectors corresponding to the order of `texts`, each vector's length is `embedding_dim`."
+
+#: ../../source/APIReference/core/clients.rst:164 ../../source/APIReference/core/clients.rst:240 ../../source/APIReference/core/clients.rst:307
+msgid "异步生成单段文本的嵌入向量。"
+msgstr "Asynchronous generation of embedding vectors for single text segment."
+
+#: ../../source/APIReference/core/clients.rst:169 ../../source/APIReference/core/clients.rst:245 ../../source/APIReference/core/clients.rst:312
+msgid "额外推理参数。"
+msgstr "Additional inference parameters."
+
+#: ../../source/APIReference/core/clients.rst:178 ../../source/APIReference/core/clients.rst:254 ../../source/APIReference/core/clients.rst:321
+msgid "异步生成多段文本的嵌入向量列表。"
+msgstr "Asynchronously generate a list of embedding vectors for multi-segment text."
+
+#: ../../source/APIReference/core/clients.rst:192
+msgid "基于 OpenAI 接口规范的嵌入模型客户端，支持同步与异步批量嵌入，兼容 Ollama 等 OpenAI-Format 后端。"
+msgstr "Embedding model client based on OpenAI interface specifications, supporting synchronous and asynchronous batch embeddings, compatible with Ollama and other OpenAI-Format backends."
+
+#: ../../source/APIReference/core/clients.rst:194
+msgid "请求端点 URL，默认空字符串时使用官方地址。"
+msgstr "Request endpoint URL, when the default is an empty string, use the official address."
+
+#: ../../source/APIReference/core/clients.rst:196
+msgid "服务访问密钥，默认空字符串时尝试读取环境变量或本地配置。"
+msgstr "Service Access Key. When the default is an empty string, attempt to read environment variables or local configuration."
+
+#: ../../source/APIReference/core/clients.rst:198
+msgid "要调用的嵌入模型名称，例如 ``text-embedding-3-small``。"
+msgstr "The name of the embedding model to be called, for example, ``text-embedding-3-small``."
+
+#: ../../source/APIReference/core/clients.rst:200
+msgid "指定返回向量的维度；模型支持降维时生效，留空则使用模型默认维度。"
+msgstr "Specify the dimension of the returned vector; effective when the model supports dimensionality reduction, leave blank to use the model's default dimension."
+
+#: ../../source/APIReference/core/clients.rst:202
+msgid "请求失败时的最大重试次数，默认 2。"
+msgstr "Maximum number of retries on request failure, default 2."
+
+#: ../../source/APIReference/core/clients.rst:204
+msgid "单次请求最长等待时间（秒），支持浮点数或 (connect, read) 元组。"
+msgstr "Maximum wait time per request (seconds), supports floating-point numbers or (connect, read) tuples."
+
+#: ../../source/APIReference/core/clients.rst:209
+msgid "实例化完成后自动初始化底层 OpenAI 客户端。"
+msgstr "After instantiation, automatically initialize the underlying OpenAI client."
+
+#: ../../source/APIReference/core/clients.rst:213 ../../source/APIReference/core/clients.rst:280
+msgid "批量生成多段文本的嵌入向量。"
+msgstr "Batch generate embedding vectors for multiple text segments."
+
+#: ../../source/APIReference/core/clients.rst:215 ../../source/APIReference/core/clients.rst:282
+msgid "待嵌入文本列表。"
+msgstr "List of text to be embedded."
+
+#: ../../source/APIReference/core/clients.rst:218
+msgid "额外推理参数，如 ``dimensions``、``user`` 等，将透传至底层 API。"
+msgstr "Additional inference parameters, such as ``dimensions``, ``user``, etc., will be transparently passed to the underlying API."
+
+#: ../../source/APIReference/core/clients.rst:221
+msgid "与输入顺序对应的向量矩阵，每行维度由模型或 ``dimensions`` 字段决定。"
+msgstr "Vector matrix corresponding to the input order, with each row's dimension determined by the model or the ``dimensions`` field."
+
+#: ../../source/APIReference/core/clients.rst:226 ../../source/APIReference/core/clients.rst:293
+msgid "生成单段文本的嵌入向量，内部调用 ``embed_documents`` 并返回第一条结果。"
+msgstr "Generates an embedding vector for a single text segment, internally calls ``embed_documents`` and returns the first result."
+
+#: ../../source/APIReference/core/clients.rst:228 ../../source/APIReference/core/clients.rst:295
+msgid "待嵌入文本。"
+msgstr "Text to be embedded."
+
+#: ../../source/APIReference/core/clients.rst:231 ../../source/APIReference/core/clients.rst:298
+msgid "额外推理参数，用法同 ``embed_documents``。"
+msgstr "Additional inference parameters, same as ``embed_documents``."
+
+#: ../../source/APIReference/core/clients.rst:234
+msgid "长度为 ``dimensions``（或模型默认）的浮点向量。"
+msgstr "A floating-point vector of length ``dimensions`` (or model default)."
+
+#: ../../source/APIReference/core/clients.rst:267
+msgid "基于本地 Sentence-Transformer 模型的轻量级嵌入客户端，无需外部 API 即可生成高质量向量，适合离线、私有化及边缘部署场景。"
+msgstr "A lightweight embedding client based on a local Sentence-Transformer model, capable of generating high-quality vectors without external APIs, suitable for offline, private, and edge deployment scenarios."
+
+#: ../../source/APIReference/core/clients.rst:269
+msgid "本地 Sentence-Transformer 模型名称或 HuggingFace Hub ID，例如 ``all-MiniLM-L6-v2``。"
+msgstr "Local Sentence-Transformer model name or HuggingFace Hub ID, for example ``all-MiniLM-L6-v2``."
+
+#: ../../source/APIReference/core/clients.rst:271
+msgid "模型运行设备，默认为 ``\"cpu\"``；可指定 ``\"cuda\"``、``\"mps\"`` 等以启用 GPU 加速。"
+msgstr "Model runtime device, default is ``\"cpu\"``; can specify ``\"cuda\"``, ``\"mps\"``, etc. to enable GPU acceleration."
+
+#: ../../source/APIReference/core/clients.rst:276
+msgid "实例化完成后自动加载本地模型，设备与模型名由字段值注入。"
+msgstr "After instantiation, the local model is automatically loaded, and the device and model name are injected via field values."
+
+#: ../../source/APIReference/core/clients.rst:285
+msgid "额外推理参数，如 ``batch_size``、``normalize_embeddings`` 等，将透传至底层模型。"
+msgstr "Additional inference parameters, such as ``batch_size``, ``normalize_embeddings``, etc., will be passed through to the underlying model."
+
+#: ../../source/APIReference/core/clients.rst:288
+msgid "与输入顺序对应的向量矩阵，每行维度由模型决定。"
+msgstr "Vector matrix corresponding to the input order, each row's dimension determined by the model."
+
+#: ../../source/APIReference/core/clients.rst:301
+msgid "长度为模型输出维度的浮点向量。"
+msgstr "A floating-point vector of length equal to the model output dimension."
+
+#: ../../source/APIReference/core/clients.rst:333
+msgid "Rerank Clients"
+msgstr "Rerank Clients"
+
+#: ../../source/APIReference/core/clients.rst:337
+msgid "与任意后端重排序模型交互的基类客户端，用于对“查询-文本”对进行相关性重排并返回排序后的索引序列。"
+msgstr "A base class client that interacts with any backend re-ranking model to re-rank \"query-text\" pairs based on relevance and return the sorted index sequence."
+
+#: ../../source/APIReference/core/clients.rst:342
+msgid "异步对查询与多条文本进行相关性重排序，返回按相关性从高到低排列的原始索引列表。"
+msgstr "Asynchronously re-rank multiple texts based on their relevance to the query, returning the original index list sorted in descending order of relevance."
+
+#: ../../source/APIReference/core/clients.rst:344 ../../source/APIReference/core/clients.rst:377
+msgid "查询字符串。"
+msgstr "query string."
+
+#: ../../source/APIReference/core/clients.rst:347 ../../source/APIReference/core/clients.rst:380
+msgid "待重排序的文本列表。"
+msgstr "List of texts to be reordered."
+
+#: ../../source/APIReference/core/clients.rst:350
+msgid "其他推理参数，如 `top_n`、`truncate`、`temperature` 等，将透传至底层模型。"
+msgstr "Other inference parameters, such as `top_n`, `truncate`, `temperature`, etc., will be passed through to the underlying model."
+
+#: ../../source/APIReference/core/clients.rst:353
+msgid "按相关性降序排列的原始文本索引列表，长度默认为 `len(texts)` 或 `top_n`（若指定）。"
+msgstr "A list of original text indices sorted in descending order of relevance, with the length defaulting to `len(texts)` or `top_n` (if specified)."
+
+#: ../../source/APIReference/core/clients.rst:359
+msgid "基于 FlagEmbedding 的本地重排序模型实现，无需外部 API 即可对“查询-文本”对进行相关性打分与重排，适用于私有化及离线场景。"
+msgstr "Implementation of a local re-ranking model based on FlagEmbedding, which can perform relevance scoring and re-ranking on 'query-text' pairs without external APIs, is suitable for private deployment and offline scenarios."
+
+#: ../../source/APIReference/core/clients.rst:361
+msgid "本地 FlagRerank 模型名称或 HuggingFace Hub ID，例如 ``BAAI/bge-reranker-base``。"
+msgstr "Local FlagRerank model name or HuggingFace Hub ID, for example ``BAAI/bge-reranker-base``."
+
+#: ../../source/APIReference/core/clients.rst:363
+msgid "返回相关性最高的前 N 条索引，默认 1。"
+msgstr "Return the top N most relevant indexes, default 1."
+
+#: ../../source/APIReference/core/clients.rst:365
+msgid "模型运行设备，默认为 ``\"cpu\"``；可指定 ``\"cuda\"``、``\"cuda:0\"`` 等以启用 GPU 加速。"
+msgstr "Model runtime device, default is ``\"cpu\"``; can specify ``\"cuda\"``, ``\"cuda:0\"``, etc., to enable GPU acceleration."
+
+#: ../../source/APIReference/core/clients.rst:370
+msgid "实例化完成后自动加载本地重排序模型，设备与模型名由字段值注入。"
+msgstr "After instantiation is completed, automatically load the local re-ranking model, with the device and model name injected by field values."
+
+#: ../../source/APIReference/core/clients.rst:375
+msgid "异步对查询与多条文本进行相关性重排序，返回按相关性降序排列的原始索引列表。"
+msgstr "Asynchronously re-rank multiple texts by relevance to the query, returning the original index list sorted in descending order of relevance."
+
+#: ../../source/APIReference/core/clients.rst:383
+msgid "额外推理参数，如 `truncate`、`batch_size` 等，将透传至底层模型。"
+msgstr "Additional inference parameters, such as `truncate`, `batch_size`, etc., will be passed through to the underlying model."
+
+#: ../../source/APIReference/core/clients.rst:386
+msgid "长度不超过 `top_n` 的索引列表，按相关性从高到低排列。"
+msgstr "An index list with length not exceeding `top_n`, sorted in descending order of relevance."

@@ -1,0 +1,146 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-02 10:58+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/tool/controller.rst:2
+msgid "Tool Controller"
+msgstr "Tool Controller"
+
+#: ../../source/UserGuide/tool/controller.rst:5
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/tool/controller.rst:6
+msgid "我们同样支持通过 :py:class:`~evofabric.core.tool.ToolController` 动态管理工具的激活状态，以便Agent框架可以在某些情况下以最小改动关闭或打开某些工具。"
+msgstr "We also support dynamically managing the activation status of tools through :py:class:`~evofabric.core.tool.ToolController`, so that the Agent framework can, under certain circumstances, turn off or on certain tools with minimal changes."
+
+#: ../../source/UserGuide/tool/controller.rst:9
+msgid "核心功能"
+msgstr "Core Functions"
+
+#: ../../source/UserGuide/tool/controller.rst:10
+msgid ":py:class:`~evofabric.core.tool.ToolController` 提供了基于规则的工具状态管理系统，核心功能包括："
+msgstr ":py:class:`~evofabric.core.tool.ToolController` provides a rule-based tool status management system. Core functions include:"
+
+#: ../../source/UserGuide/tool/controller.rst:12
+msgid "**动态控制工具激活状态** - 通过规则模式匹配工具名称并激活/禁用工具"
+msgstr "**Dynamic Control of Tool Activation Status** - Activate/deactivate tools by rule-based pattern matching of tool names."
+
+#: ../../source/UserGuide/tool/controller.rst:13
+msgid "**默认行为配置** - 设置未匹配规则时的默认工具行为"
+msgstr "**Default Behavior Configuration** - Set the default tool behavior when no rules are matched"
+
+#: ../../source/UserGuide/tool/controller.rst:14
+msgid "**规则优先级** - 支持按优先级顺序应用规则，最先匹配的规则生效"
+msgstr "**Rule Priority** - Supports applying rules in priority order, with the first matched rule taking effect."
+
+#: ../../source/UserGuide/tool/controller.rst:15
+msgid "**模式匹配** - 支持通配符模式匹配（如 `math_*` 匹配所有math服务器工具）"
+msgstr "**Pattern Matching** - Supports wildcard pattern matching (e.g., `math_*` matches all math server tools)"
+
+#: ../../source/UserGuide/tool/controller.rst:16
+msgid "**动态工具管理** - 提供API在运行时激活/禁用特定工具"
+msgstr "**Dynamic Tool Management** - provides an API to activate/disable specific tools at runtime"
+
+#: ../../source/UserGuide/tool/controller.rst:19
+msgid "创建工具控制器"
+msgstr "Create tool controller"
+
+#: ../../source/UserGuide/tool/controller.rst:20
+msgid "以下是创建和配置基本工具控制器的示例："
+msgstr "The following is an example of creating and configuring a basic tool controller:"
+
+#: ../../source/UserGuide/tool/controller.rst:47
+msgid "规则详解"
+msgstr "Rule Details"
+
+#: ../../source/UserGuide/tool/controller.rst:48
+msgid "规则是ToolController的核心，每个规则由两部分组成："
+msgstr "Rules are the core of ToolController, and each rule consists of two parts:"
+
+#: ../../source/UserGuide/tool/controller.rst:57
+msgid "模式匹配规则遵循Unix shell通配符规范："
+msgstr "Pattern matching rules follow the Unix shell wildcard specification:"
+
+#: ../../source/UserGuide/tool/controller.rst:69
+msgid "规则优先级示例"
+msgstr "Rule Priority Example"
+
+#: ../../source/UserGuide/tool/controller.rst:70
+msgid "规则按顺序匹配最先匹配的规则生效："
+msgstr "Rules are matched in order, the first matched rule takes effect:"
+
+#: ../../source/UserGuide/tool/controller.rst:88
+msgid "动态工具管理"
+msgstr "Dynamic Tool Management"
+
+#: ../../source/UserGuide/tool/controller.rst:89
+msgid "您可以在运行时激活或禁用特定工具，这些调整会立即生效并具有最高优先级："
+msgstr "You can activate or disable specific tools at runtime. These adjustments will take effect immediately and have the highest priority."
+
+#: ../../source/UserGuide/tool/controller.rst:113
+msgid "过滤工具列表"
+msgstr "Filter Tool List"
+
+#: ../../source/UserGuide/tool/controller.rst:114
+msgid "ToolController提供了工具列表过滤功能，确保只返回激活的工具："
+msgstr "ToolController provides a tool list filtering function to ensure that only active tools are returned:"
+
+#: ../../source/UserGuide/tool/controller.rst:136
+msgid "最佳实践建议"
+msgstr "Best Practices"
+
+#: ../../source/UserGuide/tool/controller.rst:137
+msgid "**规则顺序优化**：将精确匹配规则放在通用规则之前"
+msgstr "**Rule Order Optimization**: Place exact match rules before general rules."
+
+#: ../../source/UserGuide/tool/controller.rst:138
+msgid "**默认模式选择**："
+msgstr "**Default Mode Selection**："
+
+#: ../../source/UserGuide/tool/controller.rst:140
+msgid "`activate`：适合白名单场景（仅管控禁用特定工具）"
+msgstr "`activate`: Suitable for whitelist scenarios (to disable only specific tools)."
+
+#: ../../source/UserGuide/tool/controller.rst:141
+msgid "`deactivate`：适合黑名单场景（仅管控激活特定工具）"
+msgstr "`deactivate`: Suitable for blacklist scenarios (only controlling the activation of specific tools)."
+
+#: ../../source/UserGuide/tool/controller.rst:143
+msgid "**模式命名**："
+msgstr "**Mode Naming**："
+
+#: ../../source/UserGuide/tool/controller.rst:145
+msgid "使用服务器名前缀如 `math_*` 组织规则"
+msgstr "Use server name prefixes, such as `math_*`, to organize rules."
+
+#: ../../source/UserGuide/tool/controller.rst:146
+msgid "避免过于宽泛的通配符（如 `*_*` 会匹配所有工具）"
+msgstr "Avoid overly broad wildcard characters (e.g., `*_*` will match all tools)."
+
+#: ../../source/UserGuide/tool/controller.rst:148
+msgid "**动态管理优先级**：通过 `activate_tool()` 和 `deactivate_tool()` 实现紧急开关"
+msgstr "**Dynamic Priority Management**: Implement an emergency switch through `activate_tool()` and `deactivate_tool()`"
+
+#~ msgid "**默认模式选择**： - `activate`：适合白名单场景（仅管控禁用特定工具） - `deactivate`：适合黑名单场景（仅管控激活特定工具）"
+#~ msgstr "**Default Mode Selection**: - `activate`: Suitable for whitelist scenarios (only control the disabling of specific tools) - `deactivate`: Suitable for blacklist scenarios (only control the activation of specific tools)"
+
+#~ msgid "**模式命名**： - 使用服务器名前缀如 `math_*` 组织规则 - 避免过于宽泛的通配符（如 `*_*` 会匹配所有工具）"
+#~ msgstr ""
+#~ "**Pattern Naming**:\n"
+#~ "- Use server name prefixes like `math_*` to organize rules\n"
+#~ "- Avoid overly broad wildcards (e.g., `*_*` will match all tools)"

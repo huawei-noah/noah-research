@@ -1,0 +1,361 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/factory.rst:2
+msgid "evofabric.core.factory"
+msgstr "evofabric.core.factory"
+
+#: ../../source/APIReference/core/factory.rst:8
+msgid "Factory"
+msgstr "Factory"
+
+#: ../../source/APIReference/core/factory.rst:12
+msgid "用于注册和创建组件实例的工厂类。"
+msgstr "Factory class for registering and creating component instances."
+
+#: ../../source/APIReference/core/factory.rst:16
+msgid "根据给定的名称和参数创建一个类实例。"
+msgstr "Create a class instance using the given name and parameters."
+
+#: ../../source/APIReference/core/factory.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/factory.rst:18
+msgid "组件类的注册名称。"
+msgstr "Component class registration name"
+
+#: ../../source/APIReference/core/factory.rst:21
+msgid "传递给组件类构造函数的关键字参数。"
+msgstr "Keyword arguments passed to the component class constructor."
+
+#: ../../source/APIReference/core/factory.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/factory.rst:24
+msgid "创建的组件实例。"
+msgstr "Created component instance."
+
+#: ../../source/APIReference/core/factory.rst
+msgid "返回类型"
+msgstr "Return Type"
+
+#: ../../source/APIReference/core/factory.rst
+msgid "抛出"
+msgstr "throw out"
+
+#: ../../source/APIReference/core/factory.rst:27
+msgid "如果未找到指定名称的组件。"
+msgstr "If a component with the specified name is not found."
+
+#: ../../source/APIReference/core/factory.rst:31
+msgid "将一个类注册到工厂中。"
+msgstr "Register a class with the factory."
+
+#: ../../source/APIReference/core/factory.rst:33
+msgid "注册时使用的名称。"
+msgstr "The name used during registration."
+
+#: ../../source/APIReference/core/factory.rst:36
+msgid "要注册的组件类。"
+msgstr "component class to register"
+
+#: ../../source/APIReference/core/factory.rst:39
+msgid "如果该名称已被注册。"
+msgstr "If the name has been registered."
+
+#: ../../source/APIReference/core/factory.rst:43
+msgid "检查指定名称是否已注册。"
+msgstr "Check if the specified name has been registered."
+
+#: ../../source/APIReference/core/factory.rst:45
+msgid "要检查的组件名称。"
+msgstr "Component name to be checked."
+
+#: ../../source/APIReference/core/factory.rst:48
+msgid "如果名称已注册返回 ``True``，否则返回 ``False``。"
+msgstr "If the name is already registered, return ``True``, otherwise return ``False``."
+
+#: ../../source/APIReference/core/factory.rst:55
+msgid "所有组件类的基类，继承自 :py:class:`pydantic.BaseModel`，提供文档生成、懒加载实例等功能。"
+msgstr "The base class for all component classes, inheriting from :py:class:`pydantic.BaseModel`, provides features such as documentation generation and lazy-loaded instances."
+
+#: ../../source/APIReference/core/factory.rst:57
+msgid "继承了该基类的子类，会自动注册到 :py:class:`ComponentFactory` 中，允许后续通过工厂创建该类的实例。"
+msgstr "Subclasses inheriting from this base class will be automatically registered in :py:class:`ComponentFactory`, allowing subsequent creation of instances of the class through the factory."
+
+#: ../../source/APIReference/core/factory.rst:64
+msgid "一个用于 Pydantic V2 的类型适配器，支持将字典序列化/反序列化为 :py:class:`BaseComponent` 及其子类实例。该类通过 `__class_name__` 字段识别具体组件类型，并借助 :py:class:`ComponentFactory` 进行实例创建。"
+msgstr "A type adapter for Pydantic V2 that supports serializing/deserializing dictionaries into instances of :py:class:`BaseComponent` and its subclasses. This class identifies the specific component type through the `__class_name__` field and uses :py:class:`ComponentFactory` for instance creation."
+
+#: ../../source/APIReference/core/factory.rst:68
+msgid "生成 Pydantic 核心 schema，用于支持从字典到 :py:class:`BaseComponent` 实例的验证和序列化。"
+msgstr "Generate a Pydantic core schema to support validation and serialization from dictionary to :py:class:`BaseComponent` instances."
+
+#: ../../source/APIReference/core/factory.rst:70
+msgid "被装饰的原始类型。"
+msgstr "Decorated primitive type."
+
+#: ../../source/APIReference/core/factory.rst:73
+msgid "Pydantic 提供的 schema 处理函数。"
+msgstr "Pydantic-provided schema processing functions."
+
+#: ../../source/APIReference/core/factory.rst:76
+msgid "返回一个支持字典与 :py:class:`BaseComponent` 之间相互转换的 schema。"
+msgstr "Return a schema that supports bidirectional conversion between dictionary and :py:class:`BaseComponent`."
+
+#: ../../source/APIReference/core/factory.rst:81
+msgid "Function Serializer"
+msgstr "Function Serializer"
+
+#: ../../source/APIReference/core/factory.rst:85
+msgid "定义了函数序列化与反序列化方法的协议类，用于在模块中存储和重新加载 DSL 文件时处理 Python 函数句柄。"
+msgstr "A protocol class defining methods for serializing and deserializing functions, used to handle Python function handles when storing and reloading DSL files within a module."
+
+#: ../../source/APIReference/core/factory.rst:89
+msgid "将给定对象序列化为字符串。"
+msgstr "Serialize the given object into a string."
+
+#: ../../source/APIReference/core/factory.rst:91
+msgid "需要序列化的对象。"
+msgstr "Object to be serialized."
+
+#: ../../source/APIReference/core/factory.rst:94 ../../source/APIReference/core/factory.rst:101
+msgid "序列化后的字符串。"
+msgstr "Serialized string."
+
+#: ../../source/APIReference/core/factory.rst:99
+msgid "从字符串中反序列化出原始对象。"
+msgstr "Deserialize the original object from a string."
+
+#: ../../source/APIReference/core/factory.rst:104
+msgid "反序列化后的对象。"
+msgstr "Deserialized object."
+
+#: ../../source/APIReference/core/factory.rst:112
+msgid "使用 ``cloudpickle`` 实现的函数序列化器，支持对复杂 Python 函数对象（包括闭包、lambda 等）进行序列化与反序列化。"
+msgstr "Function serializer implemented using ``cloudpickle`` supports serialization and deserialization of complex Python function objects (including closures, lambdas, etc.)."
+
+#: ../../source/APIReference/core/factory.rst:116
+msgid "将一个可调用对象序列化为 Base64 编码的字符串。"
+msgstr "Serialize a callable object into a Base64-encoded string."
+
+#: ../../source/APIReference/core/factory.rst:118
+msgid "需要序列化的函数或可调用对象。"
+msgstr "Functions or callable objects that need to be serialized."
+
+#: ../../source/APIReference/core/factory.rst:121
+msgid "序列化后的 Base64 字符串。"
+msgstr "Serialized Base64 string."
+
+#: ../../source/APIReference/core/factory.rst:126
+msgid "从 Base64 编码的字符串中反序列化出函数对象。"
+msgstr "Deserialize a function object from a Base64-encoded string."
+
+#: ../../source/APIReference/core/factory.rst:128
+msgid "已序列化的函数字符串。"
+msgstr "Serialized function string."
+
+#: ../../source/APIReference/core/factory.rst:131
+msgid "反序列化前需要导入的模块列表，用于确保依赖类型正确加载。"
+msgstr "List of modules to be imported before deserialization to ensure correct loading of dependent types."
+
+#: ../../source/APIReference/core/factory.rst:134
+msgid "反序列化后的函数对象。"
+msgstr "Deserialized function object."
+
+#: ../../source/APIReference/core/factory.rst:142
+msgid "注册反序列化过程中可能需要用到的模块列表。默认包含了："
+msgstr "List of modules to register that may be needed during deserialization. Default includes:"
+
+#: ../../source/APIReference/core/factory.rst:160
+msgid "模块名称列表，每个名称应为合法的 Python 模块路径字符串。"
+msgstr "List of module names, each name should be a valid Python module path string."
+
+#: ../../source/APIReference/core/factory.rst:163 ../../source/APIReference/core/factory.rst:185
+msgid "无返回值。"
+msgstr "No return value."
+
+#: ../../source/APIReference/core/factory.rst:166
+msgid "使用示例："
+msgstr "Usage Example:"
+
+#: ../../source/APIReference/core/factory.rst:180
+msgid "设置全局使用的函数序列化器实现。"
+msgstr "Set the global function serializer implementation."
+
+#: ../../source/APIReference/core/factory.rst:182
+msgid "一个实现了 :py:class:`FunctionSerializerProto` 协议的对象；若为 ``None``，则默认使用 :py:class:`FunctionSerializerCloudPickle`。"
+msgstr "An object that implements the :py:class:`FunctionSerializerProto` protocol; if it is ``None``, the default is to use :py:class:`FunctionSerializerCloudPickle`."
+
+#: ../../source/APIReference/core/factory.rst:192
+msgid "获取当前全局使用的函数序列化器实例。"
+msgstr "Get the current global function serializer instance."
+
+#: ../../source/APIReference/core/factory.rst:194
+msgid "当前的函数序列化器实现。"
+msgstr "Current function serializer implementation."
+
+#: ../../source/APIReference/core/factory.rst:199
+msgid "State Schema Serializer"
+msgstr "State Schema Serializer"
+
+#: ../../source/APIReference/core/factory.rst:203
+msgid "将 Pydantic 的 BaseModel 类型或 TypedDict 类型转换为包含注解信息的字典结构，便于序列化和传输。"
+msgstr "Convert Pydantic's BaseModel type or TypedDict type into a dictionary containing annotation information, facilitating serialization and transmission."
+
+#: ../../source/APIReference/core/factory.rst:205
+msgid "要转换的 BaseModel 或 TypedDict 类型。"
+msgstr "The BaseModel or TypedDict type to be converted."
+
+#: ../../source/APIReference/core/factory.rst:208
+msgid "包含类型名称、类型类别（BaseModel 或 TypedDict）及字段详细信息的字典。"
+msgstr "A dictionary containing the type name, type category (BaseModel or TypedDict), and field details."
+
+#: ../../source/APIReference/core/factory.rst:214
+msgid "根据包含注解信息的字典结构，还原出对应的 BaseModel 或 TypedDict 类型。"
+msgstr "Based on the dictionary structure containing annotation information, reconstruct the corresponding BaseModel or TypedDict type."
+
+#: ../../source/APIReference/core/factory.rst:216
+msgid "由 :py:func:`dump_schema_annotated_info` 生成的类型描述信息。"
+msgstr "Type description information generated by :py:func:`dump_schema_annotated_info`."
+
+#: ../../source/APIReference/core/factory.rst:219
+msgid "还原后的 BaseModel 或 TypedDict 类型。"
+msgstr "The restored BaseModel or TypedDict type."
+
+#: ../../source/APIReference/core/factory.rst:225
+msgid "提供对状态 schema 的序列化与反序列化功能，通过继承该类，可以自动为子类添加对 ``state_schema: type[Union[BaseModel, TypedDict]]`` 属性的序列化、反序列化方法。"
+msgstr "Provides serialization and deserialization functionality for the state schema. By inheriting this class, serialization and deserialization methods for the `state_schema: type[Union[BaseModel, TypedDict]]` property are automatically added to subclasses."
+
+#: ../../source/APIReference/core/factory.rst:229
+msgid "Utils"
+msgstr "Utils"
+
+#: ../../source/APIReference/core/factory.rst:233
+msgid "判断给定类型是否为 ``TypedDict``。"
+msgstr "Check whether the given type is ``TypedDict``."
+
+#: ../../source/APIReference/core/factory.rst:235 ../../source/APIReference/core/factory.rst:245 ../../source/APIReference/core/factory.rst:255
+msgid "待判断的类型。"
+msgstr "Type to be determined."
+
+#: ../../source/APIReference/core/factory.rst:238
+msgid "如果是 ``TypedDict`` 类型则返回 ``True``，否则返回 ``False``。"
+msgstr "Return ``True`` if it is a ``TypedDict`` type, otherwise return ``False``."
+
+#: ../../source/APIReference/core/factory.rst:243
+msgid "判断给定类型是否为 Pydantic 的 ``BaseModel`` 子类。"
+msgstr "Determine whether the given type is a subclass of Pydantic's ``BaseModel``."
+
+#: ../../source/APIReference/core/factory.rst:248
+msgid "如果是 ``BaseModel`` 的子类则返回 ``True``，否则返回 ``False``。"
+msgstr "Returns True if it is a subclass of ``BaseModel``, otherwise returns False."
+
+#: ../../source/APIReference/core/factory.rst:253
+msgid "判断给定类型是否为 Pyd 3.7+ 标准库中的 ``dataclass`` 或 Pydantic 模型（通过 ``__pydantic_config__`` 判断）。"
+msgstr "Determine if the given type is a ``dataclass`` in the Pyd 3.7+ standard library or a Pydantic model (determined via ``__pydantic_config__``)."
+
+#: ../../source/APIReference/core/factory.rst:258
+msgid "如果是 ``dataclass`` 或 Pydantic 模型则返回 ``True``，否则返回 ``False``。"
+msgstr "Return ``True`` if it is a ``dataclass`` or Pydantic model, otherwise return ``False``."
+
+#: ../../source/APIReference/core/factory.rst:263
+msgid "若类型被 ``typing.Annotated`` 包装，则返回其原始类型；否则原样返回。"
+msgstr "If the type is wrapped by ``typing.Annotated``, return its original type; otherwise, return it as is."
+
+#: ../../source/APIReference/core/factory.rst:265
+msgid "可能被 ``Annotated`` 包装的类型。"
+msgstr "The types that may be wrapped by ``Annotated``."
+
+#: ../../source/APIReference/core/factory.rst:268
+msgid "原始未包装的类型。"
+msgstr "Primitive unwrapped type."
+
+#: ../../source/APIReference/core/factory.rst:273
+msgid "递归地将对象中所有值转换为字典形式。支持 ``BaseModel``、``dict``、``list`` 和 ``tuple`` 类型。"
+msgstr "Recursively convert all values in the object to dictionary form. Supports ``BaseModel``, ``dict``, ``list``, and ``tuple`` types."
+
+#: ../../source/APIReference/core/factory.rst:275
+msgid "需要转换的对象。"
+msgstr "The object to be converted."
+
+#: ../../source/APIReference/core/factory.rst:278
+msgid "转换后的嵌套字典结构。"
+msgstr "Converted nested dictionary structure."
+
+#: ../../source/APIReference/core/factory.rst:283
+msgid "为 ``BaseModel`` 或 ``TypedDict`` 填充默认字段值，并可选地合并额外字段。"
+msgstr "Populate default field values for ``BaseModel`` or ``TypedDict``, and optionally merge additional fields."
+
+#: ../../source/APIReference/core/factory.rst:285
+msgid "目标模型或类型。"
+msgstr "Target model or type."
+
+#: ../../source/APIReference/core/factory.rst:288
+msgid "可选的额外字段值字典。"
+msgstr "Dictionary of optional additional field values."
+
+#: ../../source/APIReference/core/factory.rst:291
+msgid "包含默认值和额外字段的完整字段字典。"
+msgstr "Complete field dictionary containing default values and additional fields."
+
+#: ../../source/APIReference/core/factory.rst:296
+msgid "安全地从 ``BaseModel`` 等对象或字典中获取属性值。"
+msgstr "Safely retrieve attribute values from objects like ``BaseModel`` or dictionaries."
+
+#: ../../source/APIReference/core/factory.rst:298 ../../source/APIReference/core/factory.rst:314
+msgid "数据源，可以是对象或字典。"
+msgstr "Data source, can be an object or a dictionary."
+
+#: ../../source/APIReference/core/factory.rst:301 ../../source/APIReference/core/factory.rst:317
+msgid "属性名称。"
+msgstr "Attribute name."
+
+#: ../../source/APIReference/core/factory.rst:304
+msgid "默认值，当属性不存在时返回该值。"
+msgstr "Default value, returns this value when the attribute does not exist."
+
+#: ../../source/APIReference/core/factory.rst:307
+msgid "获取到的属性值或默认值。"
+msgstr "Retrieved attribute value or default value."
+
+#: ../../source/APIReference/core/factory.rst:312
+msgid "安全地为 ``BaseModel`` 等对象或字典设置属性值。"
+msgstr "Safely set property values for objects such as ``BaseModel`` or dictionaries."
+
+#: ../../source/APIReference/core/factory.rst:320
+msgid "要设置的属性值。"
+msgstr "The attribute value to be set."
+
+#: ../../source/APIReference/core/factory.rst:325
+msgid "将数据安全地转换为目标 schema 类型（如 Pydantic 模型）。"
+msgstr "Securely convert data to the target schema type (e.g., Pydantic models)."
+
+#: ../../source/APIReference/core/factory.rst:327
+msgid "输入数据，可以是字典、对象或 BaseModel 实例。"
+msgstr "Input data, can be a dictionary, object, or BaseModel instance."
+
+#: ../../source/APIReference/core/factory.rst:330
+msgid "目标 schema 类型，应为 Pydantic 模型类。"
+msgstr "Target schema type, should be a Pydantic model class."
+
+#: ../../source/APIReference/core/factory.rst:333
+msgid "转换后的 schema 实例或字典。"
+msgstr "Converted schema instance or dictionary."

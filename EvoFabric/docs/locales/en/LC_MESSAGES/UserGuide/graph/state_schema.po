@@ -1,0 +1,225 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/state_schema.rst:2
+msgid "声明状态"
+msgstr "Statement Status"
+
+#: ../../source/UserGuide/graph/state_schema.rst:4
+msgid "EvoFabric 框架通过在节点之间传递的是状态，有如下特点："
+msgstr "The EvoFabric framework, which passes state between nodes, has the following characteristics:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:6
+msgid "在图运行过程中，每个节点的输入是一个完整的 ``State`` 状态变量，节点输出是状态的增量 ``StateDelta`` 。"
+msgstr "During the graph execution, each node's input is a complete ``State`` variable, and the node output is the state increment ``StateDelta``."
+
+#: ../../source/UserGuide/graph/state_schema.rst:8
+msgid "增量状态会通过 **注册过的更新机制** 和状态合并在一起，新的状态会通过边传递给下一个节点。"
+msgstr "The incremental state will be merged with the state through the **registered update mechanism**, and the new state will be passed through edges to the next node."
+
+#: ../../source/UserGuide/graph/state_schema.rst:10
+msgid "在构建图引擎时，需要您首先对图中的状态需要的字段 , 数据类型和更新机制进行声明，如果您需要用到自定义的更新机制，还需要将自定义的更新进行注册。"
+msgstr "When building the graph engine, you first need to declare the fields, data types, and update mechanisms required for the states in the graph. If you need to use a custom update mechanism, you also need to register the custom update."
+
+#: ../../source/UserGuide/graph/state_schema.rst:13
+msgid "状态声明和默认更新机制"
+msgstr "State Declaration and Default Update Mechanism"
+
+#: ../../source/UserGuide/graph/state_schema.rst:15
+msgid "状态的声明支持 ``pydantic.BaseModel`` 和 ``TypedDict`` 两种类型，通过Annotated声明数据类型和更新机制。"
+msgstr "State declarations support two types, ``pydantic.BaseModel`` and ``TypedDict``, and use Annotated to declare data types and update mechanisms."
+
+#: ../../source/UserGuide/graph/state_schema.rst:17
+msgid "Annotated中第一个变量用来声明数据类型，第二个变量来声明更新机制（字符串格式，代表注册到 :py:class:`~evofabric.core.graph.StateUpdater` 中的更新机制名字）"
+msgstr "In Annotated, the first variable is used to declare the data type, and the second variable is used to declare the update mechanism (in string format, representing the name of the update mechanism registered to :py:class:`~evofabric.core.graph.StateUpdater`)."
+
+#: ../../source/UserGuide/graph/state_schema.rst:19
+msgid "我们已经在 :py:class:`~evofabric.core.graph.StateUpdater` 中预置了两种更新机制："
+msgstr "We have already pre-configured two update mechanisms in :py:class:`~evofabric.core.graph.StateUpdater`:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:21
+msgid ":py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` 用来记录大模型的上下文（只支持 list[ :py:class:`~evofabric.core.typing.StateMessage` ] 类型），会将大模型的输出消息添加对应的 ``messages`` 列表中，并自动去重。"
+msgstr ":py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` is used to record the context of the large model (only supports the `list[~evofabric.core.typing.StateMessage]` type), adding the large model's output messages to the corresponding ``messages`` list and automatically deduplicating."
+
+#: ../../source/UserGuide/graph/state_schema.rst:23
+msgid ":py:func:`overwrite <evofabric.core.graph._state_update._overwrite_state_update_strategy>` 代表节点输出的状态增量会直接覆盖原有值。"
+msgstr ":py:func:`overwrite <evofabric.core.graph._state_update._overwrite_state_update_strategy>` represents that the state increment of the node output will directly overwrite the existing value."
+
+#: ../../source/UserGuide/graph/state_schema.rst:28
+msgid "如果期望使用 :py:class:`~evofabric.core.agent.AgentNode` 和 :py:class:`~evofabric.core.agent.UserNode` 等依赖LLM类型的节点，必须声明 ``messages`` 字段。"
+msgstr "If you expect to use :py:class:`~evofabric.core.agent.AgentNode` and :py:class:`~evofabric.core.agent.UserNode` and other LLM-dependent nodes, you must declare the ``messages`` field."
+
+#: ../../source/UserGuide/graph/state_schema.rst:30
+msgid "状态声明示例："
+msgstr "Status Declaration Example:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:48
+msgid "状态的类型和节点的输入类型是一致的。"
+msgstr "The state type and the node's input type are consistent."
+
+#: ../../source/UserGuide/graph/state_schema.rst:50
+msgid "即：状态声明为 ``BaseModel`` 类型，节点的输入也是 ``BaseModel`` 类型，需要通过 ``state.messages`` 取值。 反之，需要通过 ``state[\"messages\"]`` 取值。 如果期望对取值方法不做区分，我们也提供 :py:func:`~evofabric.core.factory.safe_get_attr()` 来自适应取值逻辑。"
+msgstr "Namely: The state is declared as a ``BaseModel`` type, and the node's input is also of type ``BaseModel``; the value must be retrieved via ``state.messages``. Conversely, the value must be retrieved via ``state[\"messages\"]``. If you do not wish to distinguish between the value retrieval methods, we also provide :py:func:`~evofabric.core.factory.safe_get_attr()` to adapt the value retrieval logic."
+
+#: ../../source/UserGuide/graph/state_schema.rst:56
+msgid "注册自定义更新机制"
+msgstr "Register custom update mechanism"
+
+#: ../../source/UserGuide/graph/state_schema.rst:58
+msgid ":py:class:`~evofabric.core.graph.StateUpdater` 负责记录状态的更新机制，在您需要自定义状态更新机制时，需要通过 :py:meth:`@StateUpdater.register(\"update_name\") <evofabric.core.graph.StateUpdater.register>` 装饰器注册更新函数。"
+msgstr ":py:class:`~evofabric.core.graph.StateUpdater` is responsible for recording the state update mechanism. When you need to customize the state update mechanism, you need to register the update function using the :py:meth:`@StateUpdater.register(\"update_name\") <evofabric.core.graph.StateUpdater.register>` decorator."
+
+#: ../../source/UserGuide/graph/state_schema.rst:60
+msgid "被注册的更新函数需要实现给定一个旧值 ( ``old`` )和增量值 ( ``new`` )，返回合并后的新值的逻辑。"
+msgstr "The registered update function must implement the logic that, given an old value (``old``) and an increment value (``new``), returns the new value after merging."
+
+#: ../../source/UserGuide/graph/state_schema.rst:62
+msgid "下面提供了一个实现了列表扩展的更新机制："
+msgstr "The following provides an update mechanism that implements list expansion:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:88
+msgid "动态创建状态声明"
+msgstr "Dynamic creation of state declaration"
+
+#: ../../source/UserGuide/graph/state_schema.rst:90
+msgid "通过调用 :py:func:`~evofabric.core.graph.generate_state_schema` 方法可以动态创建状态声明。该方法会默认创建一个 ``messages`` 字段，并将输入的其他字段添加到声明中。"
+msgstr "The state declaration can be dynamically created by calling the :py:func:`~evofabric.core.graph.generate_state_schema` method. This method by default creates a ``messages`` field and adds other input fields to the declaration."
+
+#: ../../source/UserGuide/graph/state_schema.rst:94
+msgid "变量名必须符合 Python 的变量命名规范。"
+msgstr "Variable names must follow Python's variable naming conventions."
+
+#: ../../source/UserGuide/graph/state_schema.rst:96
+msgid "变量类型必须是以下之一： ``str`` , ``int`` , ``float`` , ``list`` , ``tuple`` , ``dict``。"
+msgstr "The variable type must be one of the following: ``str``, ``int``, ``float``, ``list``, ``tuple``, ``dict``."
+
+#: ../../source/UserGuide/graph/state_schema.rst:98
+msgid "示例："
+msgstr "Example:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:108
+msgid "状态维护与重构机制"
+msgstr "State Maintenance and Refactoring Mechanism"
+
+#: ../../source/UserGuide/graph/state_schema.rst:110
+msgid "在图引擎的运行过程中，系统通过树形结构维护状态信息，以实现状态的可追溯与高效重构。"
+msgstr "During the operation of the graph engine, the system maintains state information through a tree structure to achieve state traceability and efficient reconstruction."
+
+#: ../../source/UserGuide/graph/state_schema.rst:112
+msgid "**状态树结构**"
+msgstr "**State Tree Structure**"
+
+#: ../../source/UserGuide/graph/state_schema.rst:114
+msgid "每个节点的输入是一个完整的 ``State`` 对象。"
+msgstr "Each node's input is a complete ``State`` object."
+
+#: ../../source/UserGuide/graph/state_schema.rst:115
+msgid "节点的输出不是完整状态，而是该节点的 **状态增量（delta）**。"
+msgstr "The node's output is not the full state, but rather the **state delta (delta)** of the node."
+
+#: ../../source/UserGuide/graph/state_schema.rst:116
+msgid "在运行过程中，所有状态以树的形式存储："
+msgstr "During runtime, all states are stored as a tree:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:118
+msgid "根节点表示输入状态。"
+msgstr "The root node represents the input state."
+
+#: ../../source/UserGuide/graph/state_schema.rst:119
+msgid "每个子节点包含其父节点引用和当前节点的 ``delta``。"
+msgstr "Each child node contains its parent node reference and the current node's ``delta``."
+
+#: ../../source/UserGuide/graph/state_schema.rst:120
+msgid "状态恢复时，会递归地从父节点向上合并，逐级重构完整状态。"
+msgstr "During state recovery, it will recursively merge upward from the parent node, reconstructing the complete state level by level."
+
+#: ../../source/UserGuide/graph/state_schema.rst:122
+msgid "**状态重构逻辑**"
+msgstr "**State Reconstruction Logic**"
+
+#: ../../source/UserGuide/graph/state_schema.rst:124
+msgid "当节点或边需要使用完整状态时，图引擎会执行如下步骤："
+msgstr "When nodes or edges require the complete state, the graph engine will execute the following steps:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:126
+msgid "从当前节点向上递归合并所有 ``delta``。"
+msgstr "Recursively merge all ``delta`` upward from the current node."
+
+#: ../../source/UserGuide/graph/state_schema.rst:127
+msgid "按声明的 **更新策略（update strategy）** 逐层融合状态。"
+msgstr "Fuse states layer by layer according to the declared **update strategy (update strategy)**."
+
+#: ../../source/UserGuide/graph/state_schema.rst:128
+msgid "将得到的完整状态进行深拷贝后，传递给节点或边执行。"
+msgstr "After performing a deep copy of the complete state obtained, pass it to nodes or edges for execution."
+
+#: ../../source/UserGuide/graph/state_schema.rst:132
+msgid "节点和边对输入状态的修改不会影响引擎内部维护的状态树，因为传入的是深拷贝的状态对象。"
+msgstr "Modifications to the input state by nodes and edges will not affect the state tree maintained internally by the engine, because the passed-in state object is a deep copy."
+
+#: ../../source/UserGuide/graph/state_schema.rst:134
+msgid "**特殊策略的影响**"
+msgstr "**The Impact of Special Strategies**"
+
+#: ../../source/UserGuide/graph/state_schema.rst:136
+msgid "图引擎中存在两类特殊策略，可能导致状态树的根被重置："
+msgstr "There are two types of special strategies in the graph engine that may cause the root of the state tree to be reset:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:138
+msgid "节点的 ``multi_input_merge_strategy``"
+msgstr "node's ``multi_input_merge_strategy``"
+
+#: ../../source/UserGuide/graph/state_schema.rst:139
+msgid "边的 ``state_filter``"
+msgstr "edge's ``state_filter``"
+
+#: ../../source/UserGuide/graph/state_schema.rst:141
+msgid "由于这两者都是用户可自定义的合并逻辑，引擎无法保证其结果与原状态完全兼容。因此："
+msgstr "Since both of these are user-customizable merge logic, the engine cannot guarantee that the results are fully compatible with the original state. Therefore:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:143
+msgid "一旦执行上述策略，根节点会被重置为策略输出的状态。"
+msgstr "Once the above strategy is executed, the root node will be reset to the state output by the strategy."
+
+#: ../../source/UserGuide/graph/state_schema.rst:144
+msgid "如果这些策略删除了部分状态信息，这些信息将无法在后续节点中恢复。"
+msgstr "If these strategies delete some state information, this information cannot be recovered in subsequent nodes."
+
+#: ../../source/UserGuide/graph/state_schema.rst:146
+msgid "**最终状态输出**"
+msgstr "**Final State Output**"
+
+#: ../../source/UserGuide/graph/state_schema.rst:148
+msgid "图执行结束时， ``end`` 节点会收集所有流入的状态，并构建一个 **状态队列**："
+msgstr "When the graph execution ends, the ``end`` node collects all incoming states and builds a **state queue**:"
+
+#: ../../source/UserGuide/graph/state_schema.rst:150
+msgid "队列中的状态按路由顺序排列。"
+msgstr "The states in the queue are arranged in routing order."
+
+#: ../../source/UserGuide/graph/state_schema.rst:151
+msgid "引擎将根据定义的更新策略，依次合并队列中的状态。"
+msgstr "The engine will sequentially merge the states in the queue according to the defined update strategy."
+
+#: ../../source/UserGuide/graph/state_schema.rst:152
+msgid "最终输出即为所有状态合并后的完整 ``State`` 对象。"
+msgstr "The final output is the complete ``State`` object after merging all states."
+
+#: ../../source/UserGuide/graph/state_schema.rst:154
+msgid "通过这种机制，图引擎能够在保证状态一致性的同时，实现灵活的状态重构与可追溯性。"
+msgstr "Through this mechanism, the graph engine can ensure state consistency while achieving flexible state reconstruction and traceability."

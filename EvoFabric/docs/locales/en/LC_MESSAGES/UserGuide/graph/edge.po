@@ -1,0 +1,177 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/edge.rst:2
+msgid "添加边"
+msgstr "Add Edge"
+
+#: ../../source/UserGuide/graph/edge.rst:5 ../../source/UserGuide/graph/edge.rst:9 ../../source/UserGuide/graph/edge.rst:13
+msgid "边类型"
+msgstr "edge type"
+
+#: ../../source/UserGuide/graph/edge.rst:7
+msgid "EvoFabric 提供两类边：**普通边** 与 **条件边**，用于描述节点之间的状态传递逻辑。"
+msgstr "EvoFabric provides two types of edges: **ordinary edges** and **conditional edges**, used to describe the state transition logic between nodes."
+
+#: ../../source/UserGuide/graph/edge.rst:14
+msgid "继承类"
+msgstr "Derived class"
+
+#: ../../source/UserGuide/graph/edge.rst:15
+msgid "功能说明"
+msgstr "Function Description"
+
+#: ../../source/UserGuide/graph/edge.rst:16
+msgid "普通边"
+msgstr "Ordinary edge"
+
+#: ../../source/UserGuide/graph/edge.rst:17
+msgid ":class:`~evofabric.core.graph.EdgeSpec`"
+msgstr ":class:`~evofabric.core.graph.EdgeSpec`"
+
+#: ../../source/UserGuide/graph/edge.rst:18
+msgid "固定从源节点到单一目标节点，可选地附带 ``state_filter`` 对状态进行过滤或改写。"
+msgstr "Fixed path from the source node to a single target node, optionally with ``state_filter`` to filter or rewrite the state."
+
+#: ../../source/UserGuide/graph/edge.rst:19
+msgid "条件边"
+msgstr "Conditional edge"
+
+#: ../../source/UserGuide/graph/edge.rst:20
+msgid ":class:`~evofabric.core.graph.ConditionEdgeSpec`"
+msgstr ":class:`~evofabric.core.graph.ConditionEdgeSpec`"
+
+#: ../../source/UserGuide/graph/edge.rst:21
+msgid "通过 ``router`` 函数在运行时动态决定下一跳目标节点，可返回一个或多个目标节点，以及每个节点的 ``state_filter`` 函数。"
+msgstr "The ``router`` function dynamically determines the next hop target node at runtime, returning one or more target nodes and the ``state_filter`` function for each node."
+
+#: ../../source/UserGuide/graph/edge.rst:25
+msgid "添加普通边"
+msgstr "Add Ordinary Edge"
+
+#: ../../source/UserGuide/graph/edge.rst:27
+msgid "调用 :py:meth:`~evofabric.core.graph.GraphBuilder.add_edge` 方法可在两个节点间建立一条普通边。"
+msgstr "Call the :py:meth:`~evofabric.core.graph.GraphBuilder.add_edge` method to establish an ordinary edge between two nodes."
+
+#: ../../source/UserGuide/graph/edge.rst:29
+msgid "该方法的典型使用场景是固定地连接两个节点，常用于线性或分支逻辑较少的工作流。"
+msgstr "The typical use case for this method is to fixedly connect two nodes, commonly used in linear or workflows with less branching logic."
+
+#: ../../source/UserGuide/graph/edge.rst:47 ../../source/UserGuide/graph/edge.rst:88
+msgid "**参数说明：**"
+msgstr "**Parameter Description:**"
+
+#: ../../source/UserGuide/graph/edge.rst:49
+msgid "``source`` : 源节点名称，必须是已经添加到图中的节点。"
+msgstr "``source`` : Source node name, must be a node already added to the graph."
+
+#: ../../source/UserGuide/graph/edge.rst:50
+msgid "``target`` : 目标节点名称，必须是已存在的节点。"
+msgstr "``target`` : Target node name, must be an existing node."
+
+#: ../../source/UserGuide/graph/edge.rst:51
+msgid "``group`` : 边所属组名。多个组可用于区分逻辑通道或执行路径，默认值为 ``all``。"
+msgstr "``group`` : The group name to which the edge belongs. Multiple groups can be used to distinguish logical channels or execution paths, with a default value of ``all``."
+
+#: ../../source/UserGuide/graph/edge.rst:52
+msgid "``state_filter`` : 可选状态过滤函数，用于在状态传递时对 ``State`` 进行改写。"
+msgstr "``state_filter``: Optional state filtering function used to rewrite the ``State`` during state passing."
+
+#: ../../source/UserGuide/graph/edge.rst:54 ../../source/UserGuide/graph/edge.rst:106
+msgid "**运行机制：**"
+msgstr "**Operating Mechanism:**"
+
+#: ../../source/UserGuide/graph/edge.rst:56
+msgid "当源节点执行完毕后，其输出状态将沿此边流向目标节点。 若提供了 ``state_filter``，状态将在到达目标节点前经过该函数处理。"
+msgstr "When the source node completes execution, its output state will flow along this edge to the target node. If ``state_filter`` is provided, the state will be processed by this function before reaching the target node."
+
+#: ../../source/UserGuide/graph/edge.rst:61
+msgid "添加条件边"
+msgstr "Add conditional edge"
+
+#: ../../source/UserGuide/graph/edge.rst:63
+msgid "当下一跳节点需要根据运行时状态动态决定时，可使用 :py:meth:`~evofabric.core.graph.GraphBuilder.add_condition_edge` 添加条件边。"
+msgstr "When the next hop node needs to dynamically determine based on runtime state, you can use :py:meth:`~evofabric.core.graph.GraphBuilder.add_condition_edge` to add a conditional edge."
+
+#: ../../source/UserGuide/graph/edge.rst:65
+msgid "此类边的行为由 ``router`` 函数决定，可灵活实现多路径分支逻辑。"
+msgstr "The behavior of such edges is determined by the ``router`` function, which can flexibly implement multi-path branching logic."
+
+#: ../../source/UserGuide/graph/edge.rst:90
+msgid "``source`` : 源节点名称。"
+msgstr "``source`` : Source node name."
+
+#: ../../source/UserGuide/graph/edge.rst:91
+msgid "``router`` : 路由函数，输入为当前节点输出后的完整 ``State``，返回下一跳节点或节点列表。"
+msgstr "``router`` : routing function, input is the complete ``State`` after the current node's output, returns the next hop node or node list."
+
+#: ../../source/UserGuide/graph/edge.rst:93
+msgid "支持以下返回形式："
+msgstr "Support the following return formats:"
+
+#: ../../source/UserGuide/graph/edge.rst:95
+msgid "``str``：单一目标节点。"
+msgstr "``str``: single target node."
+
+#: ../../source/UserGuide/graph/edge.rst:96
+msgid "``List[str]``：多个目标节点。"
+msgstr "``List[str]``: multiple target nodes."
+
+#: ../../source/UserGuide/graph/edge.rst:97
+msgid "``Tuple[str, Callable]``：目标节点 + 该边专用的状态过滤函数。"
+msgstr "``Tuple[str, Callable]``: target node + edge-specific state filtering function."
+
+#: ../../source/UserGuide/graph/edge.rst:98
+msgid "``List[Tuple[str, Callable]]``：多个（目标节点, 状态过滤函数）对。"
+msgstr "``List[Tuple[str, Callable]]``: multiple (target node, state filter function) pairs."
+
+#: ../../source/UserGuide/graph/edge.rst:101
+msgid "``router`` 函数接收到的是 **完整状态** （即输入状态与源节点输出的增量状态合并后的结果）。"
+msgstr "The `router` function receives the **complete state** (i.e., the result of merging the input state with the incremental state output by the source node)."
+
+#: ../../source/UserGuide/graph/edge.rst:103
+msgid "``possible_targets`` : 所有允许路由到的目标节点集合，用于校验与优化。"
+msgstr "``possible_targets`` : the set of all target nodes allowed to be routed to, used for validation and optimization."
+
+#: ../../source/UserGuide/graph/edge.rst:104
+msgid "``group`` : 边所属组名，默认为 ``all``。"
+msgstr "``group`` : the group name the edge belongs to, default to ``all``."
+
+#: ../../source/UserGuide/graph/edge.rst:108
+msgid "条件边会在运行时调用 ``router`` 函数，根据状态决定目标节点列表。 系统会自动校验返回的目标节点是否包含在 ``possible_targets`` 中，并统一封装为 ``(目标节点, 状态过滤器)`` 列表格式传递。"
+msgstr "Conditional edges will call the ``router`` function at runtime to determine the target node list based on the state. The system will automatically verify that the returned target nodes are included in ``possible_targets`` and uniformly encapsulate them into a list in the format ``(target node, state filter)`` for transmission."
+
+#: ../../source/UserGuide/graph/edge.rst:113
+msgid "条件边通常用于需要根据上下文状态分支、重试或动态路由的场景， 例如根据Agent的输出分流到不同的处理节点、根据模型置信度判断是否进入 ``retry`` 流程等。"
+msgstr "Conditional edges are typically used in scenarios requiring branching, retrying, or dynamic routing based on context state, such as diverting to different processing nodes based on the Agent's output, or determining whether to enter the ``retry`` process based on model confidence, etc."
+
+#: ../../source/UserGuide/graph/edge.rst:118
+msgid "边的分组机制"
+msgstr "Edge grouping mechanism"
+
+#: ../../source/UserGuide/graph/edge.rst:120
+msgid "EvoFabric 支持为边设置 ``group`` 参数，用于对不同通道的状态传递进行分组管理。"
+msgstr "EvoFabric supports setting the ``group`` parameter for edges to group state propagation across different channels."
+
+#: ../../source/UserGuide/graph/edge.rst:122
+msgid "同一组内的边在目标节点触发逻辑中将被统一处理，可配合节点的 ``action_mode`` 与 ``multi_input_merge_strategy`` 实现更复杂的执行控制。"
+msgstr "Edges within the same group will be uniformly processed in the target node's trigger logic, and can be combined with the node's ``action_mode`` and ``multi_input_merge_strategy`` to achieve more complex execution control."
+
+#: ../../source/UserGuide/graph/edge.rst:126
+msgid "当一个节点的 ``action_mode`` 设置为 ``all`` 时，通过条件边添加的自循环和退出逻辑应当指定单独的分组。否则，该节点可能永远无法被执行。 因为 ``all`` 模式下，其自循环逻辑所在的分组始终无法满足“所有前驱节点均已执行完毕”的条件。"
+msgstr "When a node's ``action_mode`` is set to ``all``, the self-loop and exit logic added via conditional edges should specify separate groups. Otherwise, the node may never be executed. Because under the ``all`` mode, the group containing the self-loop logic can never satisfy the condition that \"all predecessor nodes have been executed.\""

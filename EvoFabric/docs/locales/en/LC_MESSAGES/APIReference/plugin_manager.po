@@ -1,0 +1,113 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/plugin_manager.rst:2
+msgid "Plugin_manager"
+msgstr "Plugin_manager"
+
+#: ../../source/APIReference/plugin_manager.rst:8
+msgid "插件类型字典，映射基础类到其对应的字符串标识。用于动态加载和注册插件。"
+msgstr "Plugin type dictionary, mapping base classes to their corresponding string identifiers. Used for dynamic loading and registration of plugins."
+
+#: ../../source/APIReference/plugin_manager.rst
+msgid "type"
+msgstr "type"
+
+#: ../../source/APIReference/plugin_manager.rst:10
+msgid "Dict[type, str]"
+msgstr "Dict[type, str]"
+
+#: ../../source/APIReference/plugin_manager.rst
+msgid "example"
+msgstr "example"
+
+#: ../../source/APIReference/plugin_manager.rst:12
+msgid "PluginTypeDict = {"
+msgstr "PluginTypeDict = {"
+
+#: ../../source/APIReference/plugin_manager.rst:13
+msgid "ChatClientBase: \"ChatClientBase\", EmbedClientBase: \"EmbedClientBase\", RerankClientBase: \"RerankClientBase\", SyncNode: \"SyncNode\", AsyncNode: \"AsyncNode\", SyncStreamNode: \"SyncStreamNode\", AsyncStreamNode: \"AsyncStreamNode\", MemBase: \"MemBase\", ToolManager: \"ToolManager\", McpToolManager: \"McpToolManager\", CodeSandbox: \"CodeSandbox\", DBBase: \"DBBase\""
+msgstr "ChatClientBase: \"ChatClientBase\", EmbedClientBase: \"EmbedClientBase\", RerankClientBase: \"RerankClientBase\", SyncNode: \"SyncNode\", AsyncNode: \"AsyncNode\", SyncStreamNode: \"SyncStreamNode\", AsyncStreamNode: \"AsyncStreamNode\", MemBase: \"MemBase\", ToolManager: \"ToolManager\", McpToolManager: \"McpToolManager\", CodeSandbox: \"CodeSandbox\", DBBase: \"DBBase\""
+
+#: ../../source/APIReference/plugin_manager.rst:25
+msgid "}"
+msgstr "}"
+
+#: ../../source/APIReference/plugin_manager.rst:30
+msgid "动态加载指定类型的插件，并返回插件类字典。"
+msgstr "Dynamically load plugins of the specified type and return a plugin class dictionary."
+
+#: ../../source/APIReference/plugin_manager.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/plugin_manager.rst:32
+msgid "插件基类，加载的插件类会继承此类。"
+msgstr "Plugin base class, loaded plugin classes will inherit from this class."
+
+#: ../../source/APIReference/plugin_manager.rst:35
+msgid "插件类型字符串，对应 entry points 的 group 名称。"
+msgstr "Plugin type string, corresponding to the group name of entry points."
+
+#: ../../source/APIReference/plugin_manager.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/plugin_manager.rst:38
+msgid "加载的插件字典，键为 entry point 名称，值为动态生成的插件类。"
+msgstr "The loaded plugin dictionary, where keys are entry point names and values are dynamically generated plugin classes."
+
+#: ../../source/APIReference/plugin_manager.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/plugin_manager.rst:42
+msgid "使用 importlib.metadata.entry_points 获取指定 group 下的所有 entry points。"
+msgstr "Use importlib.metadata.entry_points to get all entry points for the specified group."
+
+#: ../../source/APIReference/plugin_manager.rst:43
+msgid "调用每个 entry point 的注册函数获取插件的完整类路径。"
+msgstr "Call the registration function of each entry point to obtain the plugin's full class path."
+
+#: ../../source/APIReference/plugin_manager.rst:44
+msgid "动态导入模块并获取插件类对象。"
+msgstr "Dynamically import a module and obtain the plugin class object."
+
+#: ../../source/APIReference/plugin_manager.rst:45
+msgid "使用 type 动态创建一个新类，继承自 parent_cls 和插件类。"
+msgstr "Use type to dynamically create a new class that inherits from parent_cls and plugin class."
+
+#: ../../source/APIReference/plugin_manager.rst:46
+msgid "将新类添加到返回字典中。"
+msgstr "Add the new class to the returned dictionary."
+
+#: ../../source/APIReference/plugin_manager.rst:51
+msgid "初始化所有插件，依据 :py:data:`PluginTypeDict` 自动加载对应的插件。"
+msgstr "Initialize all plugins, automatically loading the corresponding plugins based on :py:data:`PluginTypeDict`."
+
+#: ../../source/APIReference/plugin_manager.rst:54
+msgid "遍历 PluginTypeDict 中的每个 (插件基类, 工具类型) 对。"
+msgstr "Iterate through each (plugin base class, tool type) pair in PluginTypeDict."
+
+#: ../../source/APIReference/plugin_manager.rst:55
+msgid "对每个基类和工具类型调用 :py:func:`load_plugins` 进行插件加载。"
+msgstr "Call :py:func:`load_plugins` for each base class and tool type to load plugins."
+
+#: ../../source/APIReference/plugin_manager.rst:56
+msgid "该函数主要用于在系统启动时统一初始化所有插件。"
+msgstr "This function is mainly used for the unified initialization of all plugins during system startup."

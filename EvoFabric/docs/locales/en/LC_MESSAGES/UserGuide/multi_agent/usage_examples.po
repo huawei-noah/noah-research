@@ -1,0 +1,45 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:2
+msgid "使用示例"
+msgstr "Usage Example"
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:5
+msgid "示例一：问天气（Star 拓扑）"
+msgstr "Example 1: Weather Inquiry (Star Topology)"
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:7
+msgid "Planner 统筹，其他 Agent 各司其职。用户仅输入自然语言，不需要明确知道系统内部如何分工。"
+msgstr "Planner coordinates, other Agents each perform their respective duties. Users only input natural language and do not need to know how the system is internally divided."
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:78
+msgid "示例二：运行时扩展能力（动态添加 Agent）"
+msgstr "Example 2: Runtime Extension Capability (Dynamic Agent Addition)"
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:80
+msgid "先以全连接启动，运行时引入新的 ``time_agent``，然后重新 ``build()`` 使生效。"
+msgstr "First start with a fully connected configuration, then introduce the new ``time_agent`` at runtime, and re-``build()`` to take effect."
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:103
+msgid "示例三：捕获路由日志进行调试"
+msgstr "Example 3: Capture route logs for debugging"
+
+#: ../../source/UserGuide/multi_agent/usage_examples.rst:105
+msgid "运行时 Swarm 会打印路由跳转日志。可以捕获并分析，验证是否遵循你的拓扑约束与预期规划路径。"
+msgstr "At runtime, Swarm will print routing jump logs. These can be captured and analyzed to verify whether they follow your topology constraints and expected planned paths."

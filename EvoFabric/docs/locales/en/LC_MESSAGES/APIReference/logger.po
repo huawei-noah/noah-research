@@ -1,0 +1,57 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/logger.rst:2
+msgid "Logger"
+msgstr "Logger"
+
+#: ../../source/APIReference/logger.rst:7
+msgid "get_logger"
+msgstr "get_logger"
+
+#: ../../source/APIReference/logger.rst:11
+msgid "获取全局日志记录器。如果尚未初始化，则使用 ``loguru.logger`` 。"
+msgstr "Get the global logger. If not yet initialized, use ``loguru.logger``."
+
+#: ../../source/APIReference/logger.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/logger.rst:13
+msgid "全局日志记录器对象"
+msgstr "Global Logger Object"
+
+#: ../../source/APIReference/logger.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/logger.rst:18
+msgid "set_logger"
+msgstr "set_logger"
+
+#: ../../source/APIReference/logger.rst:22
+msgid "设置全局日志记录器。"
+msgstr "Set the global logger."
+
+#: ../../source/APIReference/logger.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/logger.rst:24
+msgid "要设置为全局使用的日志记录器"
+msgstr "Global Logger"

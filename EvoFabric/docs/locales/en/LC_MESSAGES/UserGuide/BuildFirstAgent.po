@@ -1,0 +1,129 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:2
+msgid "构建您的第一个智能体应用"
+msgstr "Build Your First Agent Application"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:5
+msgid "安装 EvoFabric"
+msgstr "Install EvoFabric"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:7
+msgid "您可以使用 pip 命令安装 EvoFabric:"
+msgstr "You can use the pip command to install EvoFabric:"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:14
+msgid "定义StateSchema"
+msgstr "Define StateSchema"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:16
+msgid "图的构建需要首先声明图中传递的状态和更新机制。目的是为了清楚定义节点之间传递的消息是什么、消息应该如何更新。"
+msgstr "The construction of the graph requires first declaring the states being passed and the update mechanism within the graph. The purpose is to clearly define what messages are passed between nodes and how the messages should be updated."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:18
+msgid "其中，"
+msgstr "Among them,"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:20
+msgid "StateSchema支持 ``BaseModel`` 和 ``TypedDict`` 两种类型。"
+msgstr "StateSchema supports two types: ``BaseModel`` and ``TypedDict``."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:22
+msgid "所有参数都必须使用Annotated声明变量类型和更新机制。"
+msgstr "All parameters must use Annotated to declare variable types and update mechanism."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:24
+msgid "更新机制需提前使用 :py:meth:`@StateUpdater.register(\"update_name\") <evofabric.core.graph.StateUpdater.register>` 注册，框架已经提供两种更新机制 :py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` 和 :py:func:`overwrite <evofabric.core.graph._state_update._overwrite_state_update_strategy>`。"
+msgstr "The update mechanism needs to be registered in advance using :py:meth:`@StateUpdater.register(\"update_name\") <evofabric.core.graph.StateUpdater.register>`, and the framework has already provided two update mechanisms: :py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` and :py:func:`overwrite <evofabric.core.graph._state_update._overwrite_state_update_strategy>`."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:25
+msgid "需要在图中引入AgentNode时，必须声明 ``messages: Annotated[list[StateMessage], \"append_messages\"]`` ，它维护了AgentNode所需的大模型上下文。(:py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` 更新会将每个节点输出的消息加入消息列表中。)"
+msgstr "When introducing AgentNode into the graph, it is necessary to declare ``messages: Annotated[list[StateMessage], \"append_messages\"]``, which maintains the large model context required by AgentNode. (:py:func:`append_messages <evofabric.core.graph._state_update._append_messages>` appends each node's output messages to the message list.)"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:29
+msgid ":doc:`更多了解关于状态的声明和自定义更新机制注册？ </UserGuide/graph/state_schema>`"
+msgstr ":doc:`Learn more about state declarations and custom update mechanism registration? </UserGuide/graph/state_schema>`"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:32 ../../source/UserGuide/BuildFirstAgent.rst:51 ../../source/UserGuide/BuildFirstAgent.rst:90
+msgid "示例："
+msgstr "Example:"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:40
+msgid "定义节点"
+msgstr "Define Node"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:42
+msgid "我们目前提供 :py:class:`~evofabric.core.agent.AgentNode` 和 :py:class:`~evofabric.core.agent.UserNode` 两种预定义Node类型，并支持用户定义通过多种方式自定义节点。"
+msgstr "We currently provide two predefined Node types: :py:class:`~evofabric.core.agent.AgentNode` and :py:class:`~evofabric.core.agent.UserNode`, and support users in customizing nodes through various methods."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:44
+msgid ":py:class:`~evofabric.core.agent.AgentNode` 通过Chat模式获取大模型输出，并具有工具调用、记忆管理、输入格式、输出格式化功能。"
+msgstr ":py:class:`~evofabric.core.agent.AgentNode` obtains large model outputs via Chat mode and has tool calling, memory management, input formatting, and output formatting features."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:46
+msgid ":py:class:`~evofabric.core.agent.UserNode` 允许用户在控制台输入信息作为 :py:class:`~evofabric.core.typing.UserMessage` 补充进 ``messages`` 列表。"
+msgstr ":py:class:`~evofabric.core.agent.UserNode` allows users to input information via the console as a :py:class:`~evofabric.core.typing.UserMessage` added to the ``messages`` list."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:49
+msgid ":doc:`如何声明自定义节点？ </UserGuide/graph/node>`"
+msgstr ":doc:`How to declare a custom node? </UserGuide/graph/node>`"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:75
+msgid "在图中添加节点和边"
+msgstr "Add nodes and edges"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:78
+msgid "图的构建需要需要先后添加节点、边，并设置图的起始节点。随后调用 :py:meth:`~evofabric.core.graph.GraphBuilder.build()` 方法获取一个可运行的图引擎。"
+msgstr "Graph construction requires first adding nodes and edges, and then setting the graph's starting node. Subsequently, call the :py:meth:`~evofabric.core.graph.GraphBuilder.build()` method to obtain a runnable graph engine."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:80
+msgid "在构建节点时，需要指定节点名、节点实例、节点的动作模式( ``any`` 和 ``all`` )，以及多输入节点需要的状态合并策略（可选）。"
+msgstr "When constructing a node, need to specify node name, node instance, node's action mode (``any`` and ``all``), and state merging strategy required for multi-input nodes (optional)."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:82
+msgid "添加普通边时，需要指定源节点和目标节点。(参考 :py:meth:`~evofabric.core.graph.GraphBuilder.add_edge`)"
+msgstr "When adding an ordinary edge, you need to specify the source node and target node. (See :py:meth:`~evofabric.core.graph.GraphBuilder.add_edge`)"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:84
+msgid "添加条件边时，需要指定源节点、一个路由函数以及路由函数会返回的目标节点全集。(参考 :py:meth:`~evofabric.core.graph.GraphBuilder.add_condition_edge`)"
+msgstr "When adding a conditional edge, specify the source node, a routing function, and the full set of target nodes returned by the routing function. (Reference :py:meth:`~evofabric.core.graph.GraphBuilder.add_condition_edge`)"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:88
+msgid "条件边执行时，如果路由函数返回了一个不在目标节点全集里的节点名，会抛出异常。"
+msgstr "When conditional edges are executed, if the routing function returns a node name not in the complete set of target nodes, an exception is thrown."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:120
+msgid "运行图"
+msgstr "running diagram"
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:122
+msgid "图运行可以使用 :py:meth:`~evofabric.core.graph.GraphEngine.run()` 方法，输入是一个和 ``StateSchema`` 的声明严格对应的字典。"
+msgstr "Graph execution can use the :py:meth:`~evofabric.core.graph.GraphEngine.run()` method, with the input being a dictionary strictly corresponding to the declaration of ``StateSchema``."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:126
+msgid "没有在 ``StateSchema`` 中声明过的字段会被丢弃。"
+msgstr "Fields not declared in ``StateSchema`` will be discarded."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:128
+msgid "不需要全量声明 ``StateSchema`` 中的所有字段，所有未赋值的字段都会根据类型给出默认值。"
+msgstr "It is not necessary to fully declare all fields in ``StateSchema``; all unassigned fields will be given default values based on their types."
+
+#: ../../source/UserGuide/BuildFirstAgent.rst:140
+msgid "完整Demo"
+msgstr "Complete Demo"

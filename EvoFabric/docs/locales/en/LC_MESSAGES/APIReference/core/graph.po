@@ -1,0 +1,1274 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version:  EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 18:00+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/graph.rst:2
+msgid "evofabric.core.graph"
+msgstr "evofabric.core.graph"
+
+#: ../../source/APIReference/core/graph.rst:7
+msgid "Graph Builder"
+msgstr "Graph Builder"
+
+#: ../../source/APIReference/core/graph.rst:11
+msgid ""
+"基于状态驱动的图构建器，用于编排节点与边的执行逻辑，继承自 "
+":py:class:`~evofabric.core.factory.BaseComponent`。"
+msgstr ""
+"State-driven graph builder for orchestrating the execution logic of nodes"
+" and edges, inheriting from "
+":py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/graph.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/graph.rst:13
+msgid "本图所使用的状态模式，可为 ``dict`` 或 ``pydantic.BaseModel`` 子类。"
+msgstr ""
+"The state pattern used in this figure can be a subclass of ``dict`` or "
+"``pydantic.BaseModel``."
+
+#: ../../source/APIReference/core/graph.rst:18
+msgid "向图中添加一个节点。"
+msgstr "Add a node to the graph."
+
+#: ../../source/APIReference/core/graph.rst:20
+msgid "节点名称，需在图内唯一。不可以使用 ``start``和``end``，这两个节点是图引擎预留的特殊节点。"
+msgstr ""
+"Node names must be unique within the graph. Do not use ``start`` and "
+"``end``, as these are reserved special nodes by the graph engine."
+
+#: ../../source/APIReference/core/graph.rst:23
+msgid "节点执行体，可以是普通 Python 函数或 ``NodeBase`` 子类实例。"
+msgstr ""
+"Node execution body, can be a regular Python function or an instance of a"
+" subclass of ``NodeBase``."
+
+#: ../../source/APIReference/core/graph.rst:26
+msgid ""
+"节点触发策略。默认是 ``any`` ``\"all\"`` 表示所有前驱节点执行完毕后才触发； ``\"any\"`` "
+"表示任意前驱节点执行完毕即触发。"
+msgstr ""
+"Node Trigger Strategy. The default is ``any``. ``\"all\"`` means "
+"triggering only after all predecessor nodes have completed; ``\"any\"`` "
+"means triggering as soon as any predecessor node completes."
+
+#: ../../source/APIReference/core/graph.rst:31
+msgid "按通道名指定多前驱状态合并策略， key为通道名，值为 ``Callable[[List[State] -> State]]`` 的可调用对象。"
+msgstr ""
+"Specify the multi-predecessor state merging strategy by channel name, "
+"where the key is the channel name and the value is a callable object of "
+"type ``Callable[[List[State] -> State]]``."
+
+#: ../../source/APIReference/core/graph.rst:37
+msgid "在两个节点之间建立一条普通边。"
+msgstr "Establish an ordinary edge between two nodes."
+
+#: ../../source/APIReference/core/graph.rst:39
+#: ../../source/APIReference/core/graph.rst:62
+#: ../../source/APIReference/core/graph.rst:549
+#: ../../source/APIReference/core/graph.rst:580
+#: ../../source/APIReference/core/graph.rst:617
+msgid "源节点名称。"
+msgstr "Source node name."
+
+#: ../../source/APIReference/core/graph.rst:42
+#: ../../source/APIReference/core/graph.rst:207
+#: ../../source/APIReference/core/graph.rst:589
+msgid "目标节点名称。"
+msgstr "Target node name."
+
+#: ../../source/APIReference/core/graph.rst:45
+msgid "边所属组名，用于批量控制或可视化分组。"
+msgstr "Edge's group name, used for batch control or visualization grouping."
+
+#: ../../source/APIReference/core/graph.rst:48
+msgid "可选的状态过滤函数，对流经该边的状态进行拦截与改写。"
+msgstr ""
+"Optional state filtering function that intercepts and rewrites the states"
+" passing through this edge."
+
+#: ../../source/APIReference/core/graph.rst:53
+msgid "为指定源节点添加条件路由边。"
+msgstr "Add a conditional routing edge to the specified source node."
+
+#: ../../source/APIReference/core/graph.rst:55
+msgid "``router`` 支持解析四种类型的返回结果："
+msgstr "``router`` supports parsing four types of return results:"
+
+#: ../../source/APIReference/core/graph.rst:57
+msgid "单个 ``str``：下一跳目标节点名；"
+msgstr "Single ``str``: next hop target node name;"
+
+#: ../../source/APIReference/core/graph.rst:58
+msgid "``List[str]``：多个下一跳目标节点名；"
+msgstr "``List[str]``: multiple next-hop target node names;"
+
+#: ../../source/APIReference/core/graph.rst:59
+msgid "``Tuple[str, Callable]``：目标节点名 + 该边专用状态过滤函数；"
+msgstr ""
+"``Tuple[str, Callable]``: target node name + edge-specific state "
+"filtering function;"
+
+#: ../../source/APIReference/core/graph.rst:60
+msgid "``List[Tuple[str, Callable]]``：多组（目标节点名, 状态过滤函数）。"
+msgstr ""
+"``List[Tuple[str, Callable]]``: Multiple groups (target node name, state "
+"filter function)."
+
+#: ../../source/APIReference/core/graph.rst:65
+msgid ""
+"路由函数，按运行时的状态决定下一跳，输入是源节点输出的完整State状态。  .. note::     "
+"注意：每个节点的输出是state的增量信息。但router函数的输入是：该节点输出的增量信息和输入state合并后的完整state。"
+msgstr ""
+"Routing function that determines the next hop based on runtime state, "
+"with input being the full State output by the source node.  .. note::"
+"     Note: Each node's output is incremental state information. However, "
+"the input to the router function is the complete state formed by merging "
+"the node's incremental output with the input state."
+
+#: ../../source/APIReference/core/graph.rst:65
+msgid "路由函数，按运行时的状态决定下一跳，输入是源节点输出的完整State状态。"
+msgstr ""
+"Routing function, determines the next hop based on runtime state, input "
+"is the complete State status output by the source node."
+
+#: ../../source/APIReference/core/graph.rst:68
+msgid "注意：每个节点的输出是state的增量信息。但router函数的输入是：该节点输出的增量信息和输入state合并后的完整state。"
+msgstr ""
+"Note: Each node's output is the incremental information of the state. "
+"However, the input to the router function is the complete state formed by"
+" merging the node's output incremental information with the input state."
+
+#: ../../source/APIReference/core/graph.rst:72
+msgid "所有可能被路由到的目标节点名，用于校验与优化。"
+msgstr ""
+"All target node names that may be routed to, used for verification and "
+"optimization."
+
+#: ../../source/APIReference/core/graph.rst:75
+msgid "边所属组名。"
+msgstr "Edge's group name."
+
+#: ../../source/APIReference/core/graph.rst:80
+msgid "设置图的唯一入口节点。"
+msgstr "Set the graph's unique entry node."
+
+#: ../../source/APIReference/core/graph.rst:82
+msgid "入口节点名称，需已通过 ``add_node`` 添加。"
+msgstr "Ingress node name, must have been added via ``add_node``."
+
+#: ../../source/APIReference/core/graph.rst:87
+msgid "根据已添加的节点与边构建出可执行图实例。"
+msgstr "Construct an executable graph instance based on the added nodes and edges."
+
+#: ../../source/APIReference/core/graph.rst:89
+msgid "若为 ``True``，自动为所有无后继的节点连接至内置 END 节点。"
+msgstr ""
+"If set to ``True``, automatically connect all nodes without successors to"
+" the built-in END node."
+
+#: ../../source/APIReference/core/graph.rst:92
+msgid "图最大运行轮数，防止无限循环。"
+msgstr "Maximum number of graph runs, prevent infinite loops."
+
+#: ../../source/APIReference/core/graph.rst:95
+msgid "图运行总超时时间（秒）。"
+msgstr "Graph run total timeout time (seconds)."
+
+#: ../../source/APIReference/core/graph.rst:98
+msgid "图运行模式，默认 ``run`` 表示执行模式， ``debug`` 表示调试模式。"
+msgstr ""
+"Graph run mode, default ``run`` means execution mode, ``debug`` means "
+"debug mode."
+
+#: ../../source/APIReference/core/graph.rst:101
+msgid "持久化数据库文件路径，用于在debug模式下存储图状态快照。"
+msgstr ""
+"Persistent database file path, used for storing graph state snapshots in "
+"debug mode."
+
+#: ../../source/APIReference/core/graph.rst:104
+msgid "数据库名称。"
+msgstr "Database name."
+
+#: ../../source/APIReference/core/graph.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/graph.rst:107
+msgid "可执行的 :py:class:`GraphEngine` 或 :py:class:`GraphEngineDebugger` 图引擎实例"
+msgstr ""
+"An executable :py:class:`GraphEngine` or :py:class:`GraphEngineDebugger` "
+"graph engine instance"
+
+#: ../../source/APIReference/core/graph.rst:112
+msgid "将当前图构建器中的节点与边序列化为字典配置。"
+msgstr ""
+"Serialize the nodes and edges in the current graph builder into a "
+"dictionary configuration."
+
+#: ../../source/APIReference/core/graph.rst:114
+#: ../../source/APIReference/core/graph.rst:130
+msgid "图名称，默认为 \"graph\"。"
+msgstr "Graph name, default is \"graph\"."
+
+#: ../../source/APIReference/core/graph.rst:117
+#: ../../source/APIReference/core/graph.rst:133
+msgid "配置版本号，默认为 \"1.0\"。"
+msgstr "Configuration version number, default is \"1.0\"."
+
+#: ../../source/APIReference/core/graph.rst:120
+msgid "包含图名称、版本、状态模式、节点、边及是否设置入口点的字典。"
+msgstr ""
+"A dictionary containing the graph name, version, state mode, nodes, "
+"edges, and whether the entry point is set."
+
+#: ../../source/APIReference/core/graph.rst
+msgid "返回类型"
+msgstr "return type"
+
+#: ../../source/APIReference/core/graph.rst:125
+msgid "将当前图构建器中的内容序列化并保存到指定文件。"
+msgstr ""
+"Serialize and save the content of the current graph builder to the "
+"specified file."
+
+#: ../../source/APIReference/core/graph.rst:127
+msgid "保存路径。"
+msgstr "Save path."
+
+#: ../../source/APIReference/core/graph.rst:138
+msgid "从文件中加载已构建的图构建器。"
+msgstr "Load the pre-built graph builder from the file."
+
+#: ../../source/APIReference/core/graph.rst:140
+msgid "文件路径。"
+msgstr "File path."
+
+#: ../../source/APIReference/core/graph.rst:143
+#: ../../source/APIReference/core/graph.rst:153
+msgid "加载后的 GraphBuilder 实例。"
+msgstr "The GraphBuilder instance after loading."
+
+#: ../../source/APIReference/core/graph.rst:148
+msgid "从配置字典中加载已构建的图构建器。"
+msgstr "Load the pre-built graph builder from the configuration dictionary."
+
+#: ../../source/APIReference/core/graph.rst:150
+msgid "包含图配置的字典。"
+msgstr "Dictionary containing graph configuration."
+
+#: ../../source/APIReference/core/graph.rst:158
+msgid "Graph Engine"
+msgstr "Graph Engine"
+
+#: ../../source/APIReference/core/graph.rst:163
+msgid "图执行引擎，负责解析并驱动整个图（节点+边）的运行，支持状态检查点、最大轮次与超时控制。"
+msgstr ""
+"Graph Execution Engine, responsible for parsing and driving the execution"
+" of the entire graph (nodes + edges), supporting state checkpoints, "
+"maximum rounds, and timeout control."
+
+#: ../../source/APIReference/core/graph.rst:165
+msgid "图中所有节点的规格映射，键为节点名，值为 :py:class:`GraphNodeSpec` 对象。"
+msgstr ""
+"The specification mapping of all nodes in the diagram, where the keys are"
+" node names and the values are :py:class:`GraphNodeSpec` objects."
+
+#: ../../source/APIReference/core/graph.rst:168
+msgid "图中所有边的规格映射，键为源节点名，值为该节点出发的 :py:class:`EdgeSpecBase` 列表。"
+msgstr ""
+"Mapping of all edge specifications in the graph, where keys are source "
+"node names and values are lists of :py:class:`EdgeSpecBase` for edges "
+"originating from those nodes."
+
+#: ../../source/APIReference/core/graph.rst:171
+msgid "状态模式类型，用于运行时状态校验；为 ``None`` 时不做校验。"
+msgstr ""
+"State pattern type, used for runtime state validation; when set to "
+"``None``, no validation is performed."
+
+#: ../../source/APIReference/core/graph.rst:174
+msgid "允许的最大节点调用次数；超过即强制终止已运行的图，但已到达 END 节点的输出仍保留；为 ``None`` 表示无限制。"
+msgstr ""
+"Maximum allowed number of node calls; exceeding this will forcibly "
+"terminate the running graph, but outputs that have reached the END node "
+"are still retained; a value of ``None`` indicates no limit."
+
+#: ../../source/APIReference/core/graph.rst:177
+msgid "单个节点执行的超时时间（秒）；为 ``None`` 表示不限制。"
+msgstr ""
+"Timeout duration for a single node execution (seconds); setting to "
+"``None`` means no limit."
+
+#: ../../source/APIReference/core/graph.rst:183
+msgid "异步启动图运行。"
+msgstr "Asynchronously start graph execution."
+
+#: ../../source/APIReference/core/graph.rst:185
+msgid "初始输入数据，将注入 ``start`` 节点的状态，key和value需要严格对应 ``StateSchema`` 。"
+msgstr ""
+"Initial input data will be injected into the state of the ``start`` node,"
+" with keys and values strictly corresponding to ``StateSchema``."
+
+#: ../../source/APIReference/core/graph.rst:188
+msgid "运行结束后的最终状态。"
+msgstr "Final state after the run ends."
+
+#: ../../source/APIReference/core/graph.rst:193
+msgid "生成图的可视化 HTML 文件。"
+msgstr "Generate a graph visualization HTML file."
+
+#: ../../source/APIReference/core/graph.rst:195
+msgid "文件保存路径；为 ``None`` 时不落盘。"
+msgstr "File save path; when it is ``None``, do not persist to disk."
+
+#: ../../source/APIReference/core/graph.rst:198
+msgid "生成后是否自动用浏览器打开。"
+msgstr "Open in browser automatically after generation."
+
+#: ../../source/APIReference/core/graph.rst:205
+msgid "用于描述在图执行过程中需要被调度的节点任务及其相关状态与过滤条件。"
+msgstr ""
+"Used to describe node tasks that need to be scheduled during graph "
+"execution and their related states and filtering conditions."
+
+#: ../../source/APIReference/core/graph.rst:210
+msgid "当前任务对应的 :py:class:`StateCkpt` ；支持单个 :py:class:`StateCkpt` 或列表。"
+msgstr ""
+"The :py:class:`StateCkpt` corresponding to the current task; supports a "
+"single :py:class:`StateCkpt` or a list."
+
+#: ../../source/APIReference/core/graph.rst:213
+msgid "当前任务所属边的分组名称，用于在并行或条件分支中区分不同边集合。"
+msgstr ""
+"The group name of the edge to which the current task belongs, used to "
+"distinguish different edge sets in parallel or conditional branches."
+
+#: ../../source/APIReference/core/graph.rst:216
+msgid "前驱节点名称；支持单个节点名或节点名列表，为 ``None`` 时表示无前驱节点。"
+msgstr ""
+"Predecessor node name; supports a single node name or a list of node "
+"names, with ``None`` indicating no predecessor node."
+
+#: ../../source/APIReference/core/graph.rst:219
+msgid "应用于边的 **状态过滤函数**，签名需满足 ``Callable[[Any], bool]``；为 ``None`` 时不进行额外过滤。"
+msgstr ""
+"The **state filter function** applied to edges must have a signature of "
+"``Callable[[Any], bool]``; if None, no additional filtering is performed."
+
+#: ../../source/APIReference/core/graph.rst:222
+msgid "已执行的节点轨迹，按顺序记录沿途经过的节点名；默认空列表。"
+msgstr ""
+"Executed node trajectory, recording the node names in order along the "
+"path; default empty list."
+
+#: ../../source/APIReference/core/graph.rst:227
+msgid "Graph Engine Debugger"
+msgstr "Graph Engine Debugger"
+
+#: ../../source/APIReference/core/graph.rst:231
+msgid "可调试版本的 :py:class:`GraphEngine`，支持断点、步进执行、状态恢复及节点输出修改。"
+msgstr ""
+"Debuggable version of :py:class:`GraphEngine`, supporting breakpoints, "
+"step execution, state restoration, and node output modification."
+
+#: ../../source/APIReference/core/graph.rst:233
+msgid "用于状态存储的数据库文件路径。默认值 ``\".state_storage.db\"``"
+msgstr ""
+"Database file path for state storage. Default value "
+"``\".state_storage.db\"``"
+
+#: ../../source/APIReference/core/graph.rst:236
+msgid "数据库名称。默认值 ``\"graph state\"``"
+msgstr "Database name. Default value ``\"graph state\"``"
+
+#: ../../source/APIReference/core/graph.rst:241
+msgid "在模型创建后初始化内部结构。"
+msgstr "Initialize the internal structure after model creation."
+
+#: ../../source/APIReference/core/graph.rst:245
+msgid "重置所有内部状态，包括跟踪树和断点。"
+msgstr "Reset all internal states, including tracking tree and breakpoints."
+
+#: ../../source/APIReference/core/graph.rst:249
+msgid "在指定节点上设置断点。"
+msgstr "Set a breakpoint at the specified node."
+
+#: ../../source/APIReference/core/graph.rst:251
+msgid "要设置断点的节点名称。"
+msgstr "The node name to set a breakpoint on."
+
+#: ../../source/APIReference/core/graph.rst:254
+#: ../../source/APIReference/core/graph.rst:257
+#: ../../source/APIReference/core/graph.rst:269
+#: ../../source/APIReference/core/graph.rst:272
+msgid "断点条件（暂不支持）。"
+msgstr "Breakpoint Condition (Temporarily Not Supported)"
+
+#: ../../source/APIReference/core/graph.rst
+msgid "抛出"
+msgstr "throw out"
+
+#: ../../source/APIReference/core/graph.rst:260
+#: ../../source/APIReference/core/graph.rst:275
+msgid "当 ``node_name_bp`` 为 ``None`` 时抛出。"
+msgstr "Raises an exception when ``node_name_bp`` is ``None``."
+
+#: ../../source/APIReference/core/graph.rst:264
+msgid "清除指定节点的断点。"
+msgstr "Clear the breakpoint at the specified node."
+
+#: ../../source/APIReference/core/graph.rst:266
+msgid "要清除断点的节点名称。"
+msgstr "Node name to clear the breakpoint."
+
+#: ../../source/APIReference/core/graph.rst:279
+msgid "清除所有断点。"
+msgstr "Clear all breakpoints."
+
+#: ../../source/APIReference/core/graph.rst:284
+msgid "从当前断点或指定的 ``RuntimeTask`` 队列继续执行。"
+msgstr ""
+"Continue from the current breakpoint or the specified ``RuntimeTask`` "
+"queue."
+
+#: ../../source/APIReference/core/graph.rst:286
+msgid "待恢复任务队列；若为 ``None``，则从非断点的叶节点恢复。"
+msgstr "Pending task queue; if ``None``, restore from non-checkpoint leaf nodes."
+
+#: ../../source/APIReference/core/graph.rst:289
+#: ../../source/APIReference/core/graph.rst:302
+msgid "一步执行结果。"
+msgstr "Single-step execution result."
+
+#: ../../source/APIReference/core/graph.rst:292
+msgid "当图引擎已经启动时抛出。"
+msgstr "Thrown when the graph engine has already been started."
+
+#: ../../source/APIReference/core/graph.rst:297
+msgid "跳过当前断点或指定节点。"
+msgstr "Skip the current breakpoint or specified node."
+
+#: ../../source/APIReference/core/graph.rst:299
+msgid "要跳过的节点UUID；若为 ``None``，则跳过所有当前节点。"
+msgstr "UUID of the node to skip; if ``None``, skip all current nodes."
+
+#: ../../source/APIReference/core/graph.rst:307
+msgid "恢复上一步执行操作。"
+msgstr "Undo the last operation."
+
+#: ../../source/APIReference/core/graph.rst:309
+msgid "要恢复的节点UUID；若为 ``None``，则恢复上一步操作。"
+msgstr ""
+"The UUID of the node to be restored; if ``None``, restore the previous "
+"step."
+
+#: ../../source/APIReference/core/graph.rst:315
+msgid "执行图中的一个步骤。"
+msgstr "Execute a step in the diagram."
+
+#: ../../source/APIReference/core/graph.rst:317
+msgid "待执行任务队列。"
+msgstr "Pending Task Queue."
+
+#: ../../source/APIReference/core/graph.rst:320
+msgid "输出结果与下一批候选任务节点。"
+msgstr "Output results and the next batch of candidate task nodes."
+
+#: ../../source/APIReference/core/graph.rst:326
+msgid "启动调试会话并注入初始输入。"
+msgstr "Start the debugging session and inject the initial input."
+
+#: ../../source/APIReference/core/graph.rst:328
+msgid "初始状态字典。"
+msgstr "Initial state dictionary."
+
+#: ../../source/APIReference/core/graph.rst:331
+msgid "调试完成后的最终结果。"
+msgstr "Final result after debugging"
+
+#: ../../source/APIReference/core/graph.rst:336
+msgid "在节点间修改输出值。"
+msgstr "Modify the output value between nodes."
+
+#: ../../source/APIReference/core/graph.rst:338
+msgid "源节点UUID。"
+msgstr "Source Node UUID."
+
+#: ../../source/APIReference/core/graph.rst:341
+msgid "目标节点UUID。"
+msgstr "Target Node UUID."
+
+#: ../../source/APIReference/core/graph.rst:344
+msgid "要修改的键。"
+msgstr "Key to be modified"
+
+#: ../../source/APIReference/core/graph.rst:347
+msgid "新的键值。"
+msgstr "New key-value."
+
+#: ../../source/APIReference/core/graph.rst:350
+msgid "当目标节点不是当前叶节点时抛出。"
+msgstr "Throw when the target node is not the current leaf node."
+
+#: ../../source/APIReference/core/graph.rst:352
+msgid "**示例**"
+msgstr "**Example**"
+
+#: ../../source/APIReference/core/graph.rst:404
+msgid "Node"
+msgstr "Node"
+
+#: ../../source/APIReference/core/graph.rst:408
+msgid ""
+"所有节点的抽象基类，继承自 :py:class:`~evofabric.core.factory.BaseComponent`。 子类需实现 "
+"``__call__`` 协议，以定义节点在被调用时的具体行为。"
+msgstr ""
+"Abstract base class for all nodes, inheriting from "
+":py:class:`~evofabric.core.factory.BaseComponent`. Subclasses must "
+"implement the ``__call__`` protocol to define the specific behavior of "
+"the node when called."
+
+#: ../../source/APIReference/core/graph.rst:413
+msgid "同步执行节点，继承自 :py:class:`NodeBase`。 在调用时以同步方式接收当前状态并返回状态增量。"
+msgstr ""
+"Synchronous execution node, inheriting from :py:class:`NodeBase`. When "
+"called, it receives the current state synchronously and returns the state"
+" increment."
+
+#: ../../source/APIReference/core/graph.rst:418
+msgid "同步执行节点逻辑。"
+msgstr "Synchronous execution of node logic."
+
+#: ../../source/APIReference/core/graph.rst:420
+#: ../../source/APIReference/core/graph.rst:436
+#: ../../source/APIReference/core/graph.rst:452
+#: ../../source/APIReference/core/graph.rst:472
+msgid "当前工作流状态。"
+msgstr "Current workflow status."
+
+#: ../../source/APIReference/core/graph.rst:423
+#: ../../source/APIReference/core/graph.rst:439
+#: ../../source/APIReference/core/graph.rst:458
+#: ../../source/APIReference/core/graph.rst:478
+msgid "相对于当前状态的变化量。"
+msgstr "The amount of change relative to the current state."
+
+#: ../../source/APIReference/core/graph.rst:428
+msgid "异步执行节点，继承自 :py:class:`NodeBase`。 在调用时以异步方式接收当前状态并返回状态增量。"
+msgstr ""
+"Asynchronous Execution Node, inheriting from :py:class:`NodeBase`. When "
+"called, it receives the current state asynchronously and returns a state "
+"increment."
+
+#: ../../source/APIReference/core/graph.rst:434
+msgid "异步执行节点逻辑。"
+msgstr "Asynchronous execution of node logic."
+
+#: ../../source/APIReference/core/graph.rst:445
+msgid ""
+"支持同步流式输出的节点，继承自 :py:class:`NodeBase`。 在调用过程中可通过 ``stream_writer`` "
+"实时向外发送流式数据块。"
+msgstr ""
+"Nodes supporting synchronous streaming output inherit from "
+":py:class:`NodeBase`. During the call, streaming data blocks can be sent "
+"in real time via ``stream_writer``."
+
+#: ../../source/APIReference/core/graph.rst:450
+msgid "同步流式执行节点逻辑。"
+msgstr "Synchronous streaming execution node logic."
+
+#: ../../source/APIReference/core/graph.rst:455
+#: ../../source/APIReference/core/graph.rst:475
+msgid "用于实时输出流式数据的写入器。"
+msgstr "Writer for real-time output of streaming data."
+
+#: ../../source/APIReference/core/graph.rst:464
+msgid ""
+"支持异步流式输出的节点，继承自 :py:class:`NodeBase`。 在调用过程中可通过 ``stream_writer`` "
+"实时向外发送流式数据块。"
+msgstr ""
+"Nodes supporting asynchronous streaming output inherit from "
+":py:class:`NodeBase`. During the call, streaming data blocks can be sent "
+"in real-time via ``stream_writer``."
+
+#: ../../source/APIReference/core/graph.rst:470
+msgid "异步流式执行节点逻辑。"
+msgstr "Asynchronous streaming execution node logic."
+
+#: ../../source/APIReference/core/graph.rst:485
+msgid ""
+"该节点在图引擎中使用，会首先将图运行信息注入到上下文中，随后根据不同节点类型决定调用方式并分发不同入参。继承自 "
+":py:class:`~evofabric.core.factory.BaseComponent`。"
+msgstr ""
+"This node is used in the graph engine, first injecting graph runtime "
+"information into the context, then determining the invocation method "
+"based on different node types and distributing different input "
+"parameters. Inherited from "
+":py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/graph.rst:487
+msgid "节点实例，必须继承自 :py:class:`NodeBase`。"
+msgstr "Node instance must inherit from :py:class:`NodeBase`."
+
+#: ../../source/APIReference/core/graph.rst:490
+msgid "节点在图中的可读名称。"
+msgstr "The human-readable name of the node in the graph."
+
+#: ../../source/APIReference/core/graph.rst:493
+msgid "节点执行模式，默认 ``NodeActionMode.ALL``。"
+msgstr "Node execution mode, default ``NodeActionMode.ALL``."
+
+#: ../../source/APIReference/core/graph.rst:496
+msgid "可选的流式写手指针，用于把节点中间结果实时推送出去。"
+msgstr ""
+"Optional streaming write pointer, used to push the node's intermediate "
+"results in real-time."
+
+#: ../../source/APIReference/core/graph.rst:499
+msgid "当节点存在多路输入时，按 key 指定自定义合并函数 ``Callable[[List[State]], State]``；若未提供则使用默认策略。"
+msgstr ""
+"When a node has multiple inputs, specify a custom merge function by key "
+"``Callable[[List[State]], State]``; if not provided, use the default "
+"strategy."
+
+#: ../../source/APIReference/core/graph.rst:502
+msgid "节点全局唯一标识，默认自动生成 UUID。"
+msgstr "Node global unique identifier, default auto-generated UUID."
+
+#: ../../source/APIReference/core/graph.rst:507
+msgid "``@property`` 类型。当前节点是否处于激活状态。"
+msgstr ""
+"@property\n"
+"Type. Whether the current node is active."
+
+#: ../../source/APIReference/core/graph.rst:509
+msgid "激活返回 ``True``，否则 ``False``。"
+msgstr "Returns ``True`` if activated, otherwise ``False``."
+
+#: ../../source/APIReference/core/graph.rst:515
+msgid ""
+"通过 :py:func:`evofabric.core.graph.stream_writer_env` "
+"注入节点执行信息，并在异步锁保护下执行节点逻辑。"
+msgstr ""
+"Inject node execution information via "
+":py:func:`evofabric.core.graph.stream_writer_env` and execute node logic "
+"under asynchronous lock protection."
+
+#: ../../source/APIReference/core/graph.rst:517
+msgid "输入状态对象。"
+msgstr "Input status object."
+
+#: ../../source/APIReference/core/graph.rst:520
+msgid "节点执行后产生的状态增量。"
+msgstr "The state increment generated after node execution."
+
+#: ../../source/APIReference/core/graph.rst:526
+msgid "将任意可调用对象（函数或实现了 ``__call__`` 方法的类实例）自动转换为对应的节点类型实例。"
+msgstr ""
+"Automatically convert any callable object (function or class instance "
+"that implements the ``__call__`` method) to the corresponding node type "
+"instance."
+
+#: ../../source/APIReference/core/graph.rst:528
+msgid "函数会根据目标对象的定义特征自动判断其类型："
+msgstr ""
+"The function will automatically determine its type based on the defining "
+"characteristics of the target object:"
+
+#: ../../source/APIReference/core/graph.rst:530
+msgid "若为 **异步函数** 且带有 ``stream_writer`` 参数 → 转换为异步流式节点。"
+msgstr ""
+"If it is an **asynchronous function** and has the ``stream_writer`` "
+"parameter → convert to asynchronous streaming node."
+
+#: ../../source/APIReference/core/graph.rst:531
+msgid "若为 **异步函数** 且不带 ``stream_writer`` 参数 → 转换为异步普通节点。"
+msgstr ""
+"If it is an **asynchronous function** and does not have the "
+"``stream_writer`` parameter → convert to asynchronous ordinary node."
+
+#: ../../source/APIReference/core/graph.rst:532
+msgid "若为 **同步函数** 且带有 ``stream_writer`` 参数 → 转换为同步流式节点。"
+msgstr ""
+"If it is a **synchronous function** and has the ``stream_writer`` "
+"parameter → convert to a synchronous streaming node."
+
+#: ../../source/APIReference/core/graph.rst:533
+msgid "若为 **同步函数** 且不带 ``stream_writer`` 参数 → 转换为同步普通节点。"
+msgstr ""
+"If it is a **synchronous function** and does not have the "
+"``stream_writer`` parameter → convert to synchronous ordinary node."
+
+#: ../../source/APIReference/core/graph.rst:535
+msgid "任意可调用对象，可以是函数、方法或实现了 ``__call__`` 的类实例。"
+msgstr ""
+"Any callable object, which can be a function, a method, or a class "
+"instance that implements ``__call__``."
+
+#: ../../source/APIReference/core/graph.rst:538
+msgid "对应的节点类型实例，类型为 :py:class:`NodeBase` 的子类。"
+msgstr ""
+"The corresponding node type instance, whose type is a subclass of "
+":py:class:`NodeBase`."
+
+#: ../../source/APIReference/core/graph.rst:543
+msgid "Edge"
+msgstr "Edge"
+
+#: ../../source/APIReference/core/graph.rst:547
+msgid ""
+"边规范的抽象基类，定义图中边的基本属性与接口。继承自 :py:class:`ABC` 与 "
+":py:class:`~evofabric.core.factory.BaseComponent`。"
+msgstr ""
+"Abstract base class for edge specifications, defining the basic "
+"properties and interfaces of edges in a graph. Inherits from "
+":py:class:`ABC` and :py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/graph.rst:552
+#: ../../source/APIReference/core/graph.rst:583
+#: ../../source/APIReference/core/graph.rst:620
+msgid "边所属分组，默认为 ``DEFAULT_EDGE_GROUP``。"
+msgstr "The group the edge belongs to, default is ``DEFAULT_EDGE_GROUP``."
+
+#: ../../source/APIReference/core/graph.rst:555
+msgid "边的类型标识，默认为 ``\"base\"``。"
+msgstr "Edge type identifier, default is ``\"base\"``."
+
+#: ../../source/APIReference/core/graph.rst:560
+msgid "抽象方法。根据当前状态返回下一步的目标节点及其对应的状态过滤器。"
+msgstr ""
+"Abstract method. Returns the target node for the next step and its "
+"corresponding state filter based on the current state."
+
+#: ../../source/APIReference/core/graph.rst:562
+msgid "当前图状态。"
+msgstr "Current graph status."
+
+#: ../../source/APIReference/core/graph.rst:565
+msgid "目标节点与状态过滤器的列表。"
+msgstr "List of target nodes and state filters."
+
+#: ../../source/APIReference/core/graph.rst:570
+msgid "抽象方法。返回该边在静态分析中可能到达的所有目标节点。"
+msgstr ""
+"Abstract method. Returns all target nodes that this edge may reach in "
+"static analysis."
+
+#: ../../source/APIReference/core/graph.rst:572
+#: ../../source/APIReference/core/graph.rst:646
+msgid "所有可能的目标节点名称。"
+msgstr "All possible target node names."
+
+#: ../../source/APIReference/core/graph.rst:578
+msgid "普通边类型，仅连接一个目标节点。继承自 :py:class:`EdgeSpecBase`。"
+msgstr ""
+"Normal edge type, connects only one target node. Inherits from "
+":py:class:`EdgeSpecBase`."
+
+#: ../../source/APIReference/core/graph.rst:586
+msgid "边的类型标识，固定为 ``\"edge\"``。"
+msgstr "Edge type identifier, fixed as ``\"edge\"``."
+
+#: ../../source/APIReference/core/graph.rst:592
+msgid "状态过滤函数，可选，用于控制边的触发条件。"
+msgstr ""
+"State filtering function, optional, used to control the trigger "
+"conditions of edges."
+
+#: ../../source/APIReference/core/graph.rst:597
+msgid "返回目标节点及其状态过滤器，适配统一接口。"
+msgstr ""
+"Return the target node and its status filter, compatible with the unified"
+" interface."
+
+#: ../../source/APIReference/core/graph.rst:599
+#: ../../source/APIReference/core/graph.rst:636
+msgid "当前状态。"
+msgstr "Current status."
+
+#: ../../source/APIReference/core/graph.rst:602
+msgid "(目标节点, 状态过滤器) 的列表。"
+msgstr "List of (target node, status filter)."
+
+#: ../../source/APIReference/core/graph.rst:607
+msgid "返回当前边的所有可能目标节点（对普通边为单一节点）。"
+msgstr ""
+"Return all possible target nodes for the current edge (a single node for "
+"ordinary edges)."
+
+#: ../../source/APIReference/core/graph.rst:609
+msgid "目标节点名称列表。"
+msgstr "Target node name list."
+
+#: ../../source/APIReference/core/graph.rst:615
+msgid "条件边类型，支持根据状态动态决定目标节点。继承自 :py:class:`EdgeSpecBase`。"
+msgstr ""
+"Conditional edge type, supports dynamically determining the target node "
+"based on state. Inherits from :py:class:`EdgeSpecBase`."
+
+#: ../../source/APIReference/core/graph.rst:623
+msgid "边的类型标识，固定为 ``\"conditional\"``。"
+msgstr "Edge type identifier, fixed as ``\"conditional\"``."
+
+#: ../../source/APIReference/core/graph.rst:626
+msgid "路由函数，接受 ``State`` 作为输入，返回目标节点或节点列表，可附带状态过滤函数。"
+msgstr ""
+"Routing function, accepts ``State`` as input, returns target node or node"
+" list, may include a state filtering function."
+
+#: ../../source/APIReference/core/graph.rst:629
+msgid "所有允许的目标节点列表。"
+msgstr "List of all allowed target nodes."
+
+#: ../../source/APIReference/core/graph.rst:634
+msgid "调用 ``router`` 函数，根据当前状态获取下一步目标节点，并统一格式化为 ``[(节点名, 状态过滤函数)]``。"
+msgstr ""
+"Call the `router` function to obtain the next target node based on the "
+"current state, and uniformly format it as `[(node name, state filter "
+"function)]`."
+
+#: ../../source/APIReference/core/graph.rst:639
+msgid "目标节点与状态过滤函数列表。"
+msgstr "List of target nodes and state filtering functions."
+
+#: ../../source/APIReference/core/graph.rst:644
+msgid "返回条件边在静态分析下的所有可能目标节点。"
+msgstr ""
+"Return all possible target nodes of conditional edges under static "
+"analysis."
+
+#: ../../source/APIReference/core/graph.rst:652
+msgid ""
+"根据输入字典中的 ``edge_type`` 字段自动判别边的类型，并反序列化为对应的 :py:class:`EdgeSpec` 或 "
+":py:class:`ConditionEdgeSpec` 实例。"
+msgstr ""
+"Automatically determine the edge type based on the ``edge_type`` field in"
+" the input dictionary and deserialize it into the corresponding "
+":py:class:`EdgeSpec` or :py:class:`ConditionEdgeSpec` instance."
+
+#: ../../source/APIReference/core/graph.rst:654
+msgid "包含边定义的字典对象。"
+msgstr "Dictionary object containing edge definitions."
+
+#: ../../source/APIReference/core/graph.rst:657
+msgid "解析后的边对象。"
+msgstr "Parsed edge object."
+
+#: ../../source/APIReference/core/graph.rst:662
+msgid "State & Update"
+msgstr "State & Update"
+
+#: ../../source/APIReference/core/graph.rst:666
+msgid "用于注册和管理状态更新策略的类。"
+msgstr "Class for registering and managing state update strategies."
+
+#: ../../source/APIReference/core/graph.rst:668
+msgid "通过该类，可以将自定义的状态合并函数注册为命名策略，并在需要时通过名称获取对应的策略函数。"
+msgstr ""
+"Through this class, custom state merge functions can be registered as "
+"named strategies and retrieved by name when needed."
+
+#: ../../source/APIReference/core/graph.rst:670
+#: ../../source/APIReference/core/graph.rst:909
+#: ../../source/APIReference/core/graph.rst:938
+msgid "使用示例："
+msgstr "Usage Example:"
+
+#: ../../source/APIReference/core/graph.rst:683
+msgid "类方法，用于注册一个新的状态更新策略。"
+msgstr "Class method for registering a new state update strategy."
+
+#: ../../source/APIReference/core/graph.rst:685
+msgid "策略名称，注册后可通过该名称获取对应的策略函数。"
+msgstr ""
+"Strategy Name, after registration, the corresponding strategy function "
+"can be obtained through this name."
+
+#: ../../source/APIReference/core/graph.rst:688
+msgid "一个装饰器函数，用于装饰实际的状态更新函数。"
+msgstr "A decorator function used to decorate the actual state update function."
+
+#: ../../source/APIReference/core/graph.rst:691
+msgid "如果策略名称已存在，则抛出异常。"
+msgstr "If the strategy name already exists, throw an exception."
+
+#: ../../source/APIReference/core/graph.rst:695
+msgid "类方法，根据名称获取已注册的状态更新策略函数。"
+msgstr ""
+"Class method, retrieves the registered state update strategy function by "
+"name."
+
+#: ../../source/APIReference/core/graph.rst:697
+#: ../../source/APIReference/core/graph.rst:716
+msgid "策略名称。"
+msgstr "Strategy Name."
+
+#: ../../source/APIReference/core/graph.rst:700
+msgid "对应的状态更新函数，接受旧状态和新状态作为参数，返回合并后的状态。"
+msgstr ""
+"The corresponding state update function accepts the old state and the new"
+" state as parameters and returns the merged state."
+
+#: ../../source/APIReference/core/graph.rst:703
+msgid "如果策略名称未注册，则抛出异常。"
+msgstr "If the strategy name is not registered, throw an exception."
+
+#: ../../source/APIReference/core/graph.rst:707
+msgid "类方法，返回所有已注册策略的名称列表。"
+msgstr "Class method, returns a list of all registered policy names."
+
+#: ../../source/APIReference/core/graph.rst:709
+msgid "包含所有策略名称的列表。"
+msgstr "List of all strategy names"
+
+#: ../../source/APIReference/core/graph.rst:714
+msgid "类方法，判断指定名称的策略是否已注册。"
+msgstr ""
+"Class method, determines whether a strategy with the specified name has "
+"been registered."
+
+#: ../../source/APIReference/core/graph.rst:719
+msgid "如果策略已注册返回 ``True``，否则返回 ``False``。"
+msgstr ""
+"If the strategy is registered, return ``True``; otherwise, return "
+"``False``."
+
+#: ../../source/APIReference/core/graph.rst:725
+msgid "表示状态检查点，继承自 :py:class:`~evofabric.core.factory.BaseComponent`，用于管理状态及其变化。"
+msgstr ""
+"Represents a state checkpoint inheriting from "
+":py:class:`~evofabric.core.factory.BaseComponent`, used for managing "
+"states and their changes."
+
+#: ../../source/APIReference/core/graph.rst:727
+msgid "状态的变化量（增量），可选。"
+msgstr "Change in state (increment), optional."
+
+#: ../../source/APIReference/core/graph.rst:730
+msgid "父节点，用于构建状态链，可选。"
+msgstr "Parent node, used for building a state chain, optional."
+
+#: ../../source/APIReference/core/graph.rst:733
+msgid "状态结构的类型定义，可选。"
+msgstr "Type definition of the state structure, optional."
+
+#: ../../source/APIReference/core/graph.rst:736
+msgid "缓存的具体化状态，初始化时默认为 None，不参与初始化参数传递。"
+msgstr ""
+"The specific state of the cache, which defaults to None upon "
+"initialization and is not included in the initialization parameters."
+
+#: ../../source/APIReference/core/graph.rst:741
+msgid "递归追溯父节点，合并状态增量，获得完整的 :py:class:`State` 状态。"
+msgstr ""
+"Recursively backtrack to parent nodes, merge state increments, obtain the"
+" complete :py:class:`State` state."
+
+#: ../../source/APIReference/core/graph.rst:743
+msgid "具体化的状态对象，类型为 :py:class:`State` 或 :py:class:`StateSchema`。"
+msgstr "Concrete state object, type :py:class:`State` or :py:class:`StateSchema`."
+
+#: ../../source/APIReference/core/graph.rst:748
+msgid "合并多个状态为一个新的状态。"
+msgstr "Merge multiple states into a new state."
+
+#: ../../source/APIReference/core/graph.rst:750
+msgid "需要合并的状态列表。"
+msgstr "List of states to be merged."
+
+#: ../../source/APIReference/core/graph.rst:753
+msgid "合并策略函数，接收多个状态并返回合并后的状态。若未提供，则使用:py:class:`StateSchema`中声明的默认逻辑。"
+msgstr ""
+"Merge strategy function, receives multiple states and returns the merged "
+"state. If not provided, use the default logic declared in "
+":py:class:`StateSchema`."
+
+#: ../../source/APIReference/core/graph.rst:756
+msgid "合并后的新状态。"
+msgstr "New State After Merging"
+
+#: ../../source/APIReference/core/graph.rst:761
+msgid "对给定的状态应用过滤策略，生成新的状态。"
+msgstr "Apply the filtering strategy to the given state to generate a new state."
+
+#: ../../source/APIReference/core/graph.rst:763
+msgid "需要过滤的状态。"
+msgstr "Statuses that need to be filtered."
+
+#: ../../source/APIReference/core/graph.rst:766
+msgid "过滤策略函数，接收一个状态并返回处理后的状态。"
+msgstr ""
+"Filtering strategy function, receives a state and returns the processed "
+"state."
+
+#: ../../source/APIReference/core/graph.rst:769
+msgid "应用过滤策略后的新状态检查点。"
+msgstr "New state checkpoint after applying the filtering strategy."
+
+#: ../../source/APIReference/core/graph.rst:774
+msgid "静态方法，用于将状态和增量合并为新的状态。"
+msgstr "Static method used to merge state and increment into a new state."
+
+#: ../../source/APIReference/core/graph.rst:776
+msgid "原始状态。"
+msgstr "Original state."
+
+#: ../../source/APIReference/core/graph.rst:779
+msgid "状态增量。"
+msgstr "State increment."
+
+#: ../../source/APIReference/core/graph.rst:782
+msgid "状态结构定义，用于类型转换。"
+msgstr "State structure definition, used for type conversion."
+
+#: ../../source/APIReference/core/graph.rst:785
+msgid "合并后的新状态，类型为字典或 :py:class:`StateSchema`。"
+msgstr ""
+"The new state after merging, type is dictionary or "
+":py:class:`StateSchema`."
+
+#: ../../source/APIReference/core/graph.rst:791
+msgid "声明图引擎中传递的状态信息的变量名称和类型。"
+msgstr ""
+"Declare the variable names and types for the state information passed "
+"within the graph engine."
+
+#: ../../source/APIReference/core/graph.rst:793
+msgid "注意事项："
+msgstr "Precautions:"
+
+#: ../../source/APIReference/core/graph.rst:794
+msgid "变量名必须符合 Python 的变量命名规范。"
+msgstr "Variable names must conform to Python's variable naming conventions."
+
+#: ../../source/APIReference/core/graph.rst:795
+msgid "变量类型必须是以下之一：str、int、float、list、tuple、dict。"
+msgstr ""
+"The variable type must be one of the following: str, int, float, list, "
+"tuple, dict."
+
+#: ../../source/APIReference/core/graph.rst:796
+msgid "存在一个名为 ``messages`` 的常量变量用于记录代理上下文；请避免使用相同名称定义其他变量。"
+msgstr ""
+"There exists a constant variable named ``messages`` used to record agent "
+"context; please avoid defining other variables with the same name."
+
+#: ../../source/APIReference/core/graph.rst:798
+msgid "**示例：**"
+msgstr "**Example:**"
+
+#: ../../source/APIReference/core/graph.rst:807
+msgid "一个由元组组成的列表，每个元组包含变量名、变量类型和更新策略。"
+msgstr ""
+"A list of tuples, each containing variable name, variable type, and "
+"update strategy."
+
+#: ../../source/APIReference/core/graph.rst:810
+msgid "根据提供的变量动态生成的 Pydantic 模型类，表示状态结构。"
+msgstr ""
+"The Pydantic model class dynamically generated based on the provided "
+"variables, represents the state structure."
+
+#: ../../source/APIReference/core/graph.rst:813
+msgid "如果变量类型无效。"
+msgstr "If the variable type is invalid."
+
+#: ../../source/APIReference/core/graph.rst:814
+msgid "如果变量名与保留字段冲突或重复定义。"
+msgstr "If the variable name conflicts with a reserved field or is redefined."
+
+#: ../../source/APIReference/core/graph.rst:815
+msgid "如果更新策略未在 StateUpdater 中注册。"
+msgstr "If the update strategy is not registered in StateUpdater."
+
+#: ../../source/APIReference/core/graph.rst:820
+msgid "更新策略 ``overwrite`` 的具体实现。"
+msgstr "The specific implementation of the update strategy ``overwrite``."
+
+#: ../../source/APIReference/core/graph.rst:822
+msgid "使用新值覆盖旧值的策略函数。"
+msgstr "The strategy function that overwrites the old value with the new value."
+
+#: ../../source/APIReference/core/graph.rst:824
+msgid "如果新值为MISSING，则返回旧值；"
+msgstr "If the new value is MISSING, return the old value;"
+
+#: ../../source/APIReference/core/graph.rst:826
+msgid "旧状态值，默认为MISSING。"
+msgstr "Old state value, default is MISSING."
+
+#: ../../source/APIReference/core/graph.rst:829
+msgid "新状态值，默认为MISSING。"
+msgstr "New status value, default is MISSING."
+
+#: ../../source/APIReference/core/graph.rst:832
+msgid "更新后的状态值。"
+msgstr "Updated status value."
+
+#: ../../source/APIReference/core/graph.rst:838
+msgid "更新策略 ``append_messages`` 的具体实现。"
+msgstr "Specific implementation of the update strategy ``append_messages``."
+
+#: ../../source/APIReference/core/graph.rst:840
+msgid "将新消息列表追加到旧消息列表末尾的策略函数，自动去重。"
+msgstr ""
+"The strategy function that appends the new message list to the end of the"
+" old message list, automatically deduplicates."
+
+#: ../../source/APIReference/core/graph.rst:842
+msgid "如果旧值或新值为MISSING，则视为空列表。"
+msgstr "If the old value or new value is MISSING, it is considered an empty list."
+
+#: ../../source/APIReference/core/graph.rst:844
+msgid "旧消息列表，默认为MISSING。"
+msgstr "Old Message List, default is MISSING."
+
+#: ../../source/APIReference/core/graph.rst:847
+msgid "新消息列表，默认为MISSING。"
+msgstr "New message list, default is MISSING."
+
+#: ../../source/APIReference/core/graph.rst:850
+msgid "合并后的消息列表，已去重。"
+msgstr "Merged message list, deduplicated."
+
+#: ../../source/APIReference/core/graph.rst:854
+msgid "Streaming & Context"
+msgstr "Streaming & Context"
+
+#: ../../source/APIReference/core/graph.rst:859
+msgid ""
+"流式消息写入器，用于在异步流式处理过程中发送消息块。该类继承自 "
+":py:class:`~evofabric.core.factory.BaseComponent` 。"
+msgstr ""
+"Stream Message Writer, used for sending message chunks during "
+"asynchronous streaming processing. This class inherits from "
+":py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/graph.rst:863
+msgid "将流式消息内容放入写入器，并触发已注册的消息回调函数。"
+msgstr ""
+"Place the streaming message content into the writer and trigger the "
+"registered message callback function."
+
+#: ../../source/APIReference/core/graph.rst:865
+msgid "要发送的流式数据内容，可以是任意类型。"
+msgstr "The streaming data content to be sent can be any type."
+
+#: ../../source/APIReference/core/graph.rst:868
+#: ../../source/APIReference/core/graph.rst:921
+msgid "无返回值"
+msgstr "No return value"
+
+#: ../../source/APIReference/core/graph.rst:875
+msgid "表示流式处理上下文信息的数据模型，继承自 :py:class:`BaseModel` 。"
+msgstr ""
+"Data model representing stream processing context information, inheriting"
+" from :py:class:`BaseModel`."
+
+#: ../../source/APIReference/core/graph.rst:877
+msgid "当前节点名称（可选）。"
+msgstr "Current node name (optional)."
+
+#: ../../source/APIReference/core/graph.rst:880
+msgid "当前调用 ID（可选）。"
+msgstr "Current Call ID (Optional)"
+
+#: ../../source/APIReference/core/graph.rst:883
+msgid "当前工具名称（可选）。"
+msgstr "Current tool name (optional)"
+
+#: ../../source/APIReference/core/graph.rst:886
+msgid "当前工具调用 ID（可选）。"
+msgstr "Current tool call ID (optional)."
+
+#: ../../source/APIReference/core/graph.rst:891
+msgid "判断当前上下文是否为空。若所有属性都为空，则返回 ``False``，否则返回 ``True``。"
+msgstr ""
+"Determine if the current context is empty. If all attributes are empty, "
+"return ``False``, otherwise return ``True``."
+
+#: ../../source/APIReference/core/graph.rst:893
+msgid "上下文是否存在有效信息"
+msgstr "Is there valid information in the context?"
+
+#: ../../source/APIReference/core/graph.rst:898
+msgid "返回当前上下文的字符串表示形式。"
+msgstr "Returns the string representation of the current context."
+
+#: ../../source/APIReference/core/graph.rst:900
+msgid "描述当前上下文的字符串"
+msgstr "String describing current context"
+
+#: ../../source/APIReference/core/graph.rst:907
+msgid "注册一个用于处理流式消息的回调函数。"
+msgstr "Register a callback function for processing streaming messages."
+
+#: ../../source/APIReference/core/graph.rst:918
+msgid "设置处理流式消息的回调函数，支持同步、异步类型。"
+msgstr ""
+"Set the callback function for processing streaming messages, supporting "
+"synchronous and asynchronous types."
+
+#: ../../source/APIReference/core/graph.rst:928
+msgid "获取当前线程/协程中的流式处理上下文。"
+msgstr "Obtain the stream processing context in the current thread/coroutine."
+
+#: ../../source/APIReference/core/graph.rst:930
+msgid "当前的流式处理上下文对象"
+msgstr "Current Stream Processing Context Object"
+
+#: ../../source/APIReference/core/graph.rst:936
+msgid "创建一个临时的流式处理上下文环境，在该上下文中执行代码块。"
+msgstr ""
+"Create a temporary stream processing context, and execute the code block "
+"within this context."
+
+#: ../../source/APIReference/core/graph.rst:950
+msgid "用于更新当前上下文的新字段值。"
+msgstr "New field value for updating the current context."
+
+#: ../../source/APIReference/core/graph.rst:953
+msgid "上下文管理器，可用于 with 语句中。"
+msgstr "Context manager, used with the with statement."
+
+#: ../../source/APIReference/core/graph.rst:959
+msgid "获取全局共享的 StreamWriter 实例。"
+msgstr "Get a globally shared StreamWriter instance."
+
+#: ../../source/APIReference/core/graph.rst:961
+msgid "全局 StreamWriter 实例"
+msgstr "Global StreamWriter instance"
+
+#~ msgid ""
+#~ "设置处理流式消息的回调函数，支持同步、异步类型。  使用示例：  .. code-"
+#~ "block:: python      def print_handler(payload):"
+#~ "         print(payload)      "
+#~ "set_streaming_handler(print_handler)"
+#~ msgstr ""
+#~ "Set the callback function for processing"
+#~ " streaming messages, supporting synchronous "
+#~ "and asynchronous types. Usage example:\n"
+#~ "\n"
+#~ ".. code-block:: python\n"
+#~ "    def print_handler(payload):\n"
+#~ "        print(payload)\n"
+#~ "    set_streaming_handler(print_handler)"
+

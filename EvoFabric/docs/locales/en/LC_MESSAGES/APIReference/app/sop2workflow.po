@@ -1,0 +1,328 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-25 17:17+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/app/sop2workflow.rst:2
+msgid "evofabric.app.sop2workflow"
+msgstr "evofabric.app.sop2workflow"
+
+#: ../../source/APIReference/app/sop2workflow.rst:10
+msgid "从给定字符串中提取位于指定起始和结束标记之间的子字符串。"
+msgstr "Extract the substring between the specified start and end markers from the given string."
+
+#: ../../source/APIReference/app/sop2workflow.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/app/sop2workflow.rst:12
+msgid "原始文本。"
+msgstr "Original text."
+
+#: ../../source/APIReference/app/sop2workflow.rst:15
+msgid "起始标记字符串。"
+msgstr "Start marker string"
+
+#: ../../source/APIReference/app/sop2workflow.rst:18
+msgid "结束标记字符串。"
+msgstr "End marker string."
+
+#: ../../source/APIReference/app/sop2workflow.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/app/sop2workflow.rst:21
+msgid "如果成功找到起始和结束标记，则返回两者之间的子字符串；否则返回 ``None``。"
+msgstr "If the start and end markers are successfully found, return the substring between them; otherwise return ``None``."
+
+#: ../../source/APIReference/app/sop2workflow.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/app/sop2workflow.rst:28
+msgid "生成一个条件路由函数，可以注入到决策节点的系统提示中，用于根据模型输出决定下一步执行的节点。"
+msgstr "Generate a conditional routing function that can be injected into the system prompt of a decision node, used to determine the next node to execute based on the model's output."
+
+#: ../../source/APIReference/app/sop2workflow.rst:30
+msgid "当前决策节点的名称。"
+msgstr "The name of the current decision node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:33
+msgid "当前节点可能跳转到的目标节点名称列表。"
+msgstr "List of target node names the current node may jump to."
+
+#: ../../source/APIReference/app/sop2workflow.rst:36
+msgid "当模型返回未知或空选择时，默认跳转到的节点名称。默认为 ``end``。"
+msgstr "The default node name to which the model redirects when it returns an unknown or empty selection. Default: ``end``"
+
+#: ../../source/APIReference/app/sop2workflow.rst:39
+msgid "可选参数。如果提供，模型可以通过调用该名称的工具函数立即跳转到 ``end`` 节点（紧急退出）。"
+msgstr "Optional parameter. If provided, the model can immediately jump to the ``end`` node (emergency exit) by calling the tool function with that name."
+
+#: ../../source/APIReference/app/sop2workflow.rst:42
+msgid "一个路由函数，接收状态对象 ``state`` 作为输入，返回目标节点名称。"
+msgstr "A routing function that takes the state object ``state`` as input and returns the target node name."
+
+#: ../../source/APIReference/app/sop2workflow.rst:50
+msgid "用户反馈路由函数。查找最后一条助手消息，并将流程跳转回该消息对应的节点。"
+msgstr "User feedback routing function. Find the last assistant message and redirect the flow back to the node corresponding to that message."
+
+#: ../../source/APIReference/app/sop2workflow.rst:52
+msgid "当前状态对象，需包含 ``messages`` 属性。"
+msgstr "Current state object, must include the ``messages`` attribute."
+
+#: ../../source/APIReference/app/sop2workflow.rst:55
+msgid "目标节点名称，若未找到则返回 ``end``。"
+msgstr "Target node name, if not found, return ``end``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:63
+msgid "节点的描述信息，继承自 :py:class:`BaseModel` 。"
+msgstr "Node description information, inherited from :py:class:`BaseModel`."
+
+#: ../../source/APIReference/app/sop2workflow.rst:65 ../../source/APIReference/app/sop2workflow.rst:160
+msgid "节点名称。"
+msgstr "node name."
+
+#: ../../source/APIReference/app/sop2workflow.rst:68
+msgid "该节点使用的工具名称列表。"
+msgstr "List of tool names used by the node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:71
+msgid "该节点使用的记忆名称列表。"
+msgstr "List of memory names used by this node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:74
+msgid "该节点的指令内容。"
+msgstr "The command content of this node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:77
+msgid "构建该节点时使用的标准操作流程（SOP）片段。"
+msgstr "The Standard Operating Procedure (SOP) fragment used when building this node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:84
+msgid "图中边的描述信息，继承自 :py:class:`BaseModel` 。"
+msgstr "Description information of edges in the diagram, inherits from :py:class:`BaseModel`"
+
+#: ../../source/APIReference/app/sop2workflow.rst:86
+msgid "边的起始节点名称。"
+msgstr "Name of the starting node of the edge."
+
+#: ../../source/APIReference/app/sop2workflow.rst:89
+msgid "边可能指向的目标节点名称列表。"
+msgstr "The list of target node names that the edge may point to."
+
+#: ../../source/APIReference/app/sop2workflow.rst:92
+msgid "边的类型，默认为 ``condition``。"
+msgstr "Edge type, default: ``condition``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:100
+msgid "整个图结构的描述信息，继承自 :py:class:`BaseModel` 。"
+msgstr "The description information of the entire graph structure, inherits from :py:class:`BaseModel`."
+
+#: ../../source/APIReference/app/sop2workflow.rst:102
+msgid "图中所有节点的列表。"
+msgstr "List of all nodes in the figure."
+
+#: ../../source/APIReference/app/sop2workflow.rst:105
+msgid "图中所有边的列表。"
+msgstr "List of all edges in the figure."
+
+#: ../../source/APIReference/app/sop2workflow.rst:108
+msgid "图的入口节点名称。"
+msgstr "Graph's entry node name"
+
+#: ../../source/APIReference/app/sop2workflow.rst:111 ../../source/APIReference/app/sop2workflow.rst:194
+msgid "所有节点共享的全局指令。"
+msgstr "Global command shared by all nodes."
+
+#: ../../source/APIReference/app/sop2workflow.rst:118
+msgid "工作流生成器的基类，继承自 :py:class:`BaseComponent` 。"
+msgstr "The base class for the workflow generator, inheriting from :py:class:`BaseComponent`."
+
+#: ../../source/APIReference/app/sop2workflow.rst:120
+msgid "用于生成工作流的标准操作流程（SOP）。"
+msgstr "Standard Operating Procedure (SOP) for generating workflows."
+
+#: ../../source/APIReference/app/sop2workflow.rst:125
+msgid "使用标准操作流程（SOP）生成一个可运行的图引擎。"
+msgstr "Use Standard Operating Procedure (SOP) to generate a runnable graph engine."
+
+#: ../../source/APIReference/app/sop2workflow.rst:127
+msgid "生成的图引擎实例。"
+msgstr "Generated graph engine instance."
+
+#: ../../source/APIReference/app/sop2workflow.rst:132
+msgid "静态方法。加载指定路径的 YAML 文件内容。"
+msgstr "Static method. Loads the content of the YAML file at the specified path."
+
+#: ../../source/APIReference/app/sop2workflow.rst:134 ../../source/APIReference/app/sop2workflow.rst:147
+msgid "YAML 文件路径。"
+msgstr "YAML file path."
+
+#: ../../source/APIReference/app/sop2workflow.rst:137
+msgid "加载的 YAML 数据，如果文件不存在则返回 ``None``。"
+msgstr "Loaded YAML data, if the file does not exist, return ``None``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:142
+msgid "静态方法。将数据写入指定路径的 YAML 文件。"
+msgstr "Static method. Write data to a YAML file at the specified path."
+
+#: ../../source/APIReference/app/sop2workflow.rst:144
+msgid "要写入的数据。"
+msgstr "Data to be written"
+
+#: ../../source/APIReference/app/sop2workflow.rst:150
+msgid "无返回值。"
+msgstr "No return value."
+
+#: ../../source/APIReference/app/sop2workflow.rst:158
+msgid "描述一个分解后的SOP工作流节点。"
+msgstr "Describe a decomposed SOP workflow node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:163
+msgid "节点类型，只能是 ``sop`` 或 ``connect``。其中 ``sop`` 类型的节点严格执行SOP片段；``connect`` 类型是用于连接各节点的路由节点。"
+msgstr "Node type can only be ``sop`` or ``connect``. Nodes of the ``sop`` type strictly enforce SOP fragments; ``connect`` type nodes are routing nodes used to connect various nodes."
+
+#: ../../source/APIReference/app/sop2workflow.rst:166
+msgid "该节点的职责说明。"
+msgstr "This Node's Responsibility Description"
+
+#: ../../source/APIReference/app/sop2workflow.rst:169
+msgid "该节点的执行指令。"
+msgstr "This node's execution instruction."
+
+#: ../../source/APIReference/app/sop2workflow.rst:172
+msgid "该节点的路由规则，键为目标节点名，值为触发条件。"
+msgstr "The routing rules of this node, where the key is the target node name and the value is the trigger condition."
+
+#: ../../source/APIReference/app/sop2workflow.rst:177
+msgid "根据全局指令和节点自身信息，生成完整的节点执行指令。"
+msgstr "Based on global instructions and the node's own information, generate complete node execution instructions."
+
+#: ../../source/APIReference/app/sop2workflow.rst:179
+msgid "全局执行策略或说明。"
+msgstr "Global execution strategy or explanation."
+
+#: ../../source/APIReference/app/sop2workflow.rst:182
+msgid "完整的节点执行指令文本。"
+msgstr "Complete node execution instruction text."
+
+#: ../../source/APIReference/app/sop2workflow.rst:189
+msgid "描述一个分解后的SOP工作流图结构。"
+msgstr "Describe a decomposed SOP workflow diagram structure."
+
+#: ../../source/APIReference/app/sop2workflow.rst:191
+msgid "节点列表。"
+msgstr "Node list."
+
+#: ../../source/APIReference/app/sop2workflow.rst:197
+msgid "工作流的入口节点名称。"
+msgstr "Name of the workflow entry node."
+
+#: ../../source/APIReference/app/sop2workflow.rst:204
+msgid "基于SOP（标准操作流程）自动生成工作流图（Graph）的组件，继承自 :py:class:`WorkflowGeneratorBase` 和 :py:class:`BaseComponent`。"
+msgstr "A component that automatically generates workflow graph (Graph) based on SOP (Standard Operating Procedure), inheriting from :py:class:`WorkflowGeneratorBase` and :py:class:`BaseComponent`."
+
+#: ../../source/APIReference/app/sop2workflow.rst:206
+msgid "用于生成图结构的大模型客户端。"
+msgstr "Large model client for generating graph structures."
+
+#: ../../source/APIReference/app/sop2workflow.rst:209
+msgid "用于完善节点信息的大模型客户端。"
+msgstr "Large model client for improving node information."
+
+#: ../../source/APIReference/app/sop2workflow.rst:212
+msgid "用于运行生成图的大模型客户端。"
+msgstr "Client for running large models that generate images."
+
+#: ../../source/APIReference/app/sop2workflow.rst:215
+msgid "当大模型响应解析失败时的重试次数，默认为5次。"
+msgstr "The number of retries when large model response parsing fails, default: 5."
+
+#: ../../source/APIReference/app/sop2workflow.rst:218
+msgid "用于缓存生成的图描述文件的目录。如果为 ``None``，每次都会重新生成；如果提供目录路径，将尝试加载已有文件以跳过生成步骤。"
+msgstr "Directory for caching generated graph description files. If set to ``None``, the files will be regenerated each time; if a directory path is provided, it will attempt to load existing files to skip the generation step."
+
+#: ../../source/APIReference/app/sop2workflow.rst:221
+msgid "工作流中节点可使用的工具管理器列表。"
+msgstr "List of tool managers available to nodes in the workflow."
+
+#: ../../source/APIReference/app/sop2workflow.rst:224
+msgid "工作流中节点可访问的记忆模块字典，键为自定义名称，值为（描述，实例）元组。"
+msgstr "The dictionary of memory modules accessible by nodes in a workflow, where keys are custom names and values are (description, instance) tuples."
+
+#: ../../source/APIReference/app/sop2workflow.rst:227
+msgid "除默认的 ``messages`` 字段外，额外添加到状态中的字段定义列表。格式为：``[(字段名, 字段类型, 字段描述), ...]``。"
+msgstr "A list of field definitions to be added to the state in addition to the default ``messages`` field. Format: ``[(field name, field type, field description), ...]``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:230
+msgid "添加到每个节点系统提示中的全局指令片段。"
+msgstr "Global instruction snippet added to each node's system prompt."
+
+#: ../../source/APIReference/app/sop2workflow.rst:233
+msgid "当节点需要与用户交互时使用的保留节点。"
+msgstr "The reserved node used when a node needs to interact with the user."
+
+#: ../../source/APIReference/app/sop2workflow.rst:236
+msgid "当节点跳转目标无效或缺失时的默认跳转节点。"
+msgstr "The default jump node when the node jump target is invalid or missing."
+
+#: ../../source/APIReference/app/sop2workflow.rst:239
+msgid "是否默认允许节点跳转到自身。"
+msgstr "Whether to allow nodes to jump to themselves by default."
+
+#: ../../source/APIReference/app/sop2workflow.rst:242
+msgid "用于将完整SOP拆解为工作流节点的提示模板。"
+msgstr "Prompt template for decomposing complete SOP into workflow nodes"
+
+#: ../../source/APIReference/app/sop2workflow.rst:245
+msgid "用于完善每个节点信息（如工具、记忆、指令等）的提示模板。"
+msgstr "Prompt template for refining each node's information (e.g., tools, memory, instructions, etc.)"
+
+#: ../../source/APIReference/app/sop2workflow.rst:248
+msgid "控制节点如何获取工具列表，可选 ``all``（全部）或 ``select``（按LLM选择）。"
+msgstr "How the control node obtains the tool list, optional ``all`` (all) or ``select`` (select by LLM)."
+
+#: ../../source/APIReference/app/sop2workflow.rst:251
+msgid "控制节点如何获取记忆模块列表，可选 ``all``（全部）或 ``select``（按LLM选择）。"
+msgstr "How the control node retrieves the memory module list, optional ``all`` (all) or ``select`` (select by LLM)."
+
+#: ../../source/APIReference/app/sop2workflow.rst:254
+msgid "用于保存图描述的文件名，默认为 ``_skeleton.yaml``。"
+msgstr "The filename for saving the graph description, default: ``_skeleton.yaml``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:257
+msgid "禁止由LLM生成的保留节点名称列表，默认为 ``[\"start\", \"end\", \"user\"]``。"
+msgstr "List of reserved node names prohibited from being generated by LLM, default is ``[\"start\", \"end\", \"user\"]``."
+
+#: ../../source/APIReference/app/sop2workflow.rst:260
+msgid "当调用该工具时立即跳转到 ``end`` 节点的函数名称。"
+msgstr "The function name that immediately jumps to the ``end`` node when the tool is called."
+
+#: ../../source/APIReference/app/sop2workflow.rst:263
+msgid "传递给 :py:meth:`evofabric.core.graph.GraphBuilder.build` 的额外参数。"
+msgstr "Additional parameters passed to :py:meth:`evofabric.core.graph.GraphBuilder.build`"
+
+#: ../../source/APIReference/app/sop2workflow.rst:268
+msgid "异步生成完整的工作流图引擎对象。"
+msgstr "Asynchronously generate a complete workflow diagram engine object."
+
+#: ../../source/APIReference/app/sop2workflow.rst:270
+msgid "可运行的 :py:class:`~evofabric.core.graph.GraphEngine` 实例。"
+msgstr "Runnable :py:class:`~evofabric.core.graph.GraphEngine` instance."
+
+#~ msgid "工作流中节点可使用的工具列表。每个元素必须是 :py:class:`BaseTool` 的实例。"
+#~ msgstr "List of tools available for nodes in a workflow. Each element must be an instance of :py:class:`BaseTool`."

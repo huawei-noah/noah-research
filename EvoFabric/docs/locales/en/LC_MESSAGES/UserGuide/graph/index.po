@@ -1,0 +1,45 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/index.rst:2
+msgid "图引擎"
+msgstr "Graph Engine"
+
+#: ../../source/UserGuide/graph/index.rst:4
+msgid "本指南提供了 EvoFabric 中图引擎模块的全面文档。"
+msgstr "This guide provides comprehensive documentation for the Graph Engine Module in EvoFabric."
+
+#: ../../source/UserGuide/graph/index.rst:6
+msgid "一个完整的图引擎主要由以下三部分组成："
+msgstr "A complete graph engine mainly consists of the following three parts:"
+
+#: ../../source/UserGuide/graph/index.rst:8
+msgid "状态声明，声明图中传递的状态变量类型和更新机制。"
+msgstr "State declaration: declares the type of state variables and the update mechanism passed in the diagram."
+
+#: ../../source/UserGuide/graph/index.rst:10
+msgid "节点，是图中处理任务的最小单元，节点的输入是状态，输出是状态的增量。"
+msgstr "Node, is the smallest unit for processing tasks in a graph, the input of the node is the state, the output is the state increment."
+
+#: ../../source/UserGuide/graph/index.rst:12
+msgid "边，边帮助节点将状态传递给下一个节点，支持条件判断、状态过滤、分组等特性。"
+msgstr "Edge, edge helps nodes pass the state to the next node, supports conditional judgment, state filtering, grouping, and other features."
+
+#: ../../source/UserGuide/graph/index.rst:14
+msgid "接下来，会分别介绍状态声明、添加节点、添加边、可视化等功能特性和用法。"
+msgstr "Next, the functional characteristics and usage of state declaration, adding nodes, adding edges, and visualization will be introduced separately."

@@ -1,0 +1,101 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:2
+msgid "模式与最佳实践"
+msgstr "Patterns and Best Practices"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:5
+msgid "常见拓扑模式"
+msgstr "Common Topology Patterns"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:7
+msgid "Star（中心化 Planner） - 边只在 Planner 与其他 Agent 之间往返 - 便于集中调度与约束 - 示例："
+msgstr "Star (Centralized Planner) - Edges only flow back and forth between the Planner and other Agents - Facilitates centralized scheduling and constraints - Example:"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:20
+msgid "Pipeline（流水线） - 线性顺序：A -> B -> C -> Sink - 适合固定流程与严格阶段划分 - 示例："
+msgstr "Pipeline (pipeline) - Linear sequence: A -> B -> C -> Sink - Suitable for fixed processes and strict stage division - Example:"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:29
+msgid "All-to-All（全连接） - 快速试验，最高自由度 - 易出现循环，建议设置较小 ``max_turns`` 并在 Agent 提示中强调“完成即 FINISHED”"
+msgstr "All-to-All (Fully Connected) - Quick Experiment, Highest Degree of Freedom - Prone to Cycles, Recommend Setting a Smaller ``max_turns`` and Emphasize in Agent Prompt 'Complete as FINISHED'"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:33
+msgid "Hybrid（混合） - 例如 Planner 统筹主线，但某些专家 Agent 之间允许直接协作 - 示例："
+msgstr "Hybrid (hybrid) - For example: Planner coordinates the main line, but certain expert Agents are allowed to collaborate directly - Example:"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:46
+msgid "编写 Agent 提示的要点"
+msgstr "Key Points for Writing Agent Prompts"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:48
+msgid "明确角色分工：能力边界与工具限制，避免 Agent 主动向用户追问"
+msgstr "Clarify role division: Capability boundaries and tool limitations, avoid Agent proactively asking users for follow-up questions."
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:50
+msgid "移交流程清晰：说明何时使用 ``handoff``，应携带的 ``info``（上下文/需求/结果）"
+msgstr "Clear handoff process: explain when to use ``handoff``, and the ``info`` to carry (context/requirements/results)"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:52
+msgid "终止协议统一：当可以直接回答用户时，回复末尾必须包含 ``FINISHED``"
+msgstr "Unified Termination Protocol: When a direct answer to the user can be provided, the reply must end with ``FINISHED``"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:54
+msgid "一次只移交一个 Agent：避免并行造成的竞争与混乱（可在 Planner 的提示中强调）"
+msgstr "Transfer only one Agent at a time: Avoid competition and chaos caused by parallel processing (can be emphasized in the Planner's prompt)"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:58
+msgid "handoff 工具的语义"
+msgstr "Handoff tool semantics"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:60
+msgid "Swarm 为每个 Agent 注入定制化的 ``handoff`` 工具"
+msgstr "Swarm injects customized ``handoff`` tools for each Agent"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:62
+msgid "``target_agent`` 的可选值来源于 ``edges``（若无 edges 则为“所有其他 Agent”）"
+msgstr "The optional values for ``target_agent`` come from ``edges`` (if no edges then \"All Other Agents\")"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:64
+msgid "工具文档字符串包含明确的目标列表，有助于 LLM 正确调用"
+msgstr "The tool documentation string contains a clear list of goals, helping the LLM correctly invoke"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:67
+msgid "严格约束拓扑（高级）"
+msgstr "Strictly Constrained Topology (Advanced)"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:69
+msgid "``edges`` 默认作为“软约束”：路由器仍允许跳转到任何已注册 Agent（前提是消息中的工具调用指定了该目标）。若需“硬约束”，可通过继承 Swarm 并重写路由器来实现："
+msgstr "``edges`` default to \"soft constraint\": the router still allows jumping to any registered Agent (provided that the tool call in the message specifies the target). If a \"hard constraint\" is required, it can be achieved by inheriting Swarm and overriding the router:"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:90
+msgid "其他建议"
+msgstr "Other suggestions"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:92
+msgid "设置合理的 ``max_turns``，防止 LLM 在边界条件下进入循环"
+msgstr "Set a reasonable ``max_turns`` to prevent the LLM from entering a loop under boundary conditions"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:93
+msgid "通过 ``print`` 路由日志或捕获标准输出，分析真实的跳转路径"
+msgstr "Through printing routing logs or capturing standard output, analyze the actual redirect path"
+
+#: ../../source/UserGuide/multi_agent/patterns_and_best_practices.rst:94
+msgid "若 Agent 无出边，它不会注入 handoff 工具，可作为“汇聚/终点”角色"
+msgstr "If the Agent has no outgoing edges, it will not inject the handoff tool and can serve as the \"convergence/endpoint\" role"

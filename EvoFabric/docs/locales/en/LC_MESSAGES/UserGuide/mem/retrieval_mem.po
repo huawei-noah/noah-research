@@ -1,0 +1,53 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 16:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:3
+msgid "RetrievalMem"
+msgstr "RetrievalMem"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:7
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:9
+msgid "RetrievalMem 是Agent框架的提供的一项记忆功能，可直接接入Agent节点，作为RAG功能使用"
+msgstr "RetrievalMem is a memory function provided by the Agent framework, which can be directly connected to Agent nodes and used as a RAG function."
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:13
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:15
+msgid "**作为记忆模块**: RetrievalMem 继承自 :py:class:`~evofabric.core.mem.MemBase`，是一个记忆模块，可接入Agent系统"
+msgstr "**As a memory module**: RetrievalMem inherits from :py:class:`~evofabric.core.mem.MemBase`, is a memory module that can be integrated into the Agent system"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:16
+msgid "**RAG功能**: RetrievalMem 本质上实现的是RAG功能，可以基于RetrievalMem直接实现RAG"
+msgstr "**RAG Function**: RetrievalMem essentially implements the RAG function, and RAG can be directly implemented based on RetrievalMem"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:17
+msgid "**记忆储存**: RetrievalMem中的记忆内容并不会在Agent执行过程中根据上下文刷新，而需要用户通过add_texts方法传入文本列表，如文档的切片列表。"
+msgstr "**Memory Storage**: The memory content in RetrievalMem will not be refreshed based on context during the Agent's execution process, but requires the user to pass a list of texts through the add_texts method, such as a list of document slices."
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:20
+msgid "最佳实践"
+msgstr "Best Practices"
+
+#: ../../source/UserGuide/mem/retrieval_mem.rst:21
+msgid "基于RetrievalMem构建一个含Retrival和Rerank的RAG模块"
+msgstr "Build a RAG module containing Retrival and Rerank based on RetrievalMem"

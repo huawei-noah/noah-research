@@ -1,0 +1,89 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/build_graph.rst:2
+msgid "构建图并可视化"
+msgstr "Construct and visualize the graph"
+
+#: ../../source/UserGuide/graph/build_graph.rst:4
+msgid "在完成 :doc:`添加节点 <node>` 和 :doc:`添加边 <edge>` 后，就可以继续完成图引擎的生成。"
+msgstr "After completing :doc:`Add Nodes <node>` and :doc:`Add Edges <edge>`, you can continue to complete the generation of the graph engine."
+
+#: ../../source/UserGuide/graph/build_graph.rst:7
+msgid "指定入口节点"
+msgstr "Designated Entry Node"
+
+#: ../../source/UserGuide/graph/build_graph.rst:9
+msgid "首先，调用 :py:meth:`~evofabric.core.graph.GraphBuilder.set_entry_point` 方法，指定图中唯一的入口节点（entry point）。入口节点是图运行时的起始节点，必须已通过 :py:meth:`~evofabric.core.graph.GraphBuilder.add_node` 添加。"
+msgstr "First, call the :py:meth:`~evofabric.core.graph.GraphBuilder.set_entry_point` method to specify the unique entry point in the graph. The entry point is the starting node at runtime and must have been added using :py:meth:`~evofabric.core.graph.GraphBuilder.add_node`."
+
+#: ../../source/UserGuide/graph/build_graph.rst:19
+msgid "入口节点可以有前驱节点。但运行时会从入口节点向后运行，无法触发前驱节点。"
+msgstr "The entry node can have predecessor nodes. However, at runtime, it runs backward from the entry node, unable to trigger predecessor nodes."
+
+#: ../../source/UserGuide/graph/build_graph.rst:22
+msgid "构建图实例"
+msgstr "Construct Graph Instance"
+
+#: ../../source/UserGuide/graph/build_graph.rst:24
+msgid "通过 :py:meth:`~evofabric.core.graph.GraphBuilder.build` 方法构建图实例。构建完成可得到 ``run`` 模式的 :py:class:`~evofabric.core.graph.GraphEngine` 或 ``debug`` 模式的 :py:class:`~evofabric.core.graph.GraphEngineDebugger`。"
+msgstr "Build the graph instance using the :py:meth:`~evofabric.core.graph.GraphBuilder.build` method. Upon completion, you can obtain a :py:class:`~evofabric.core.graph.GraphEngine` in ``run`` mode or a :py:class:`~evofabric.core.graph.GraphEngineDebugger` in ``debug`` mode."
+
+#: ../../source/UserGuide/graph/build_graph.rst:35
+msgid "主要参数说明："
+msgstr "Main Parameters Description:"
+
+#: ../../source/UserGuide/graph/build_graph.rst:37
+msgid "``auto_conn_end`` : bool，是否自动将所有无后继节点连接到内置 ``END`` 节点，默认 ``True``。"
+msgstr "``auto_conn_end``: bool, whether to automatically connect all nodes without successors to the built-in ``END`` node, default ``True``."
+
+#: ../../source/UserGuide/graph/build_graph.rst:38
+msgid "``max_turn`` : int，图最大运行轮数，用于防止无限循环。"
+msgstr "``max_turn`` : int, maximum number of rounds for the graph, used to prevent infinite loops."
+
+#: ../../source/UserGuide/graph/build_graph.rst:39
+msgid "``timeout`` : int，单个节点运行的超时时间（秒）。"
+msgstr "``timeout``: int, the timeout for a single node's execution (seconds)."
+
+#: ../../source/UserGuide/graph/build_graph.rst:40
+msgid "``graph_mode`` : str，图的运行模式，``run`` 表示执行模式，``debug`` 表示调试模式。"
+msgstr "``graph_mode``: str, the graph's running mode, ``run`` indicates execution mode, ``debug`` indicates debug mode."
+
+#: ../../source/UserGuide/graph/build_graph.rst:41
+msgid "``db_file_path`` : str，持久化数据库文件路径，用于在调试模式下存储状态快照。"
+msgstr "``db_file_path`` : str, persistent database file path, used to store state snapshots in debug mode."
+
+#: ../../source/UserGuide/graph/build_graph.rst:42
+msgid "``db_name`` : str，数据库名称。"
+msgstr "``db_name`` : str, database name."
+
+#: ../../source/UserGuide/graph/build_graph.rst:46
+msgid "可视化图结构"
+msgstr "Graph Structure Visualization"
+
+#: ../../source/UserGuide/graph/build_graph.rst:48
+msgid "EvoFabric 支持在构建完成后可视化图结构，便于调试和理解节点之间的执行关系。使用 :py:meth:`~evofabric.core.graph.GraphEngine.draw_graph` 方法可以生成图的可视化表示。"
+msgstr "EvoFabric supports visualizing the graph structure after the build is completed, facilitating debugging and understanding the execution relationships between nodes. You can use the :py:meth:`~evofabric.core.graph.GraphEngine.draw_graph` method to generate a visual representation of the graph."
+
+#: ../../source/UserGuide/graph/build_graph.rst:97
+msgid "画图结果："
+msgstr "Drawing result:"
+
+#: ../../source/UserGuide/graph/build_graph.rst:99
+msgid "画图结果"
+msgstr "Drawing Result"

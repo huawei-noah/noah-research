@@ -1,0 +1,943 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-02 15:01+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/tool.rst:2
+msgid "evofabric.core.tool"
+msgstr "evofabric.core.tool"
+
+#: ../../source/APIReference/core/tool.rst:8
+msgid "Base Tool"
+msgstr "Base Tool"
+
+#: ../../source/APIReference/core/tool.rst:11
+msgid "基础工具类，用于封装可调用对象并管理其内部状态与工具模式。"
+msgstr "Basic tool class, used to encapsulate callable objects and manage its internal state and tool mode."
+
+#: ../../source/APIReference/core/tool.rst:13
+msgid "继承自 :py:class:`~evofabric.core.factory.BaseComponent`"
+msgstr "inherits from :py:class:`~evofabric.core.factory.BaseComponent`"
+
+#: ../../source/APIReference/core/tool.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/tool.rst:15 ../../source/APIReference/core/tool.rst:67
+msgid "要调用的函数，可以是同步或异步函数"
+msgstr "The function to be called can be a synchronous or asynchronous function."
+
+#: ../../source/APIReference/core/tool.rst:17 ../../source/APIReference/core/tool.rst:77
+msgid "在工具模式中排除显示的参数名称列表"
+msgstr "List of parameter names excluded from display in tool mode"
+
+#: ../../source/APIReference/core/tool.rst:19
+msgid "工具的内部状态。如果工具的输入参数定义了 `inner_state: ToolInnerState`，此参数会被传递给工具，工具可读取、修改并实时更新该状态"
+msgstr "The internal state of the tool. If the tool's input parameters define `inner_state: ToolInnerState`, this parameter will be passed to the tool, which can read, modify, and update the state in real time."
+
+#: ../../source/APIReference/core/tool.rst:21 ../../source/APIReference/core/tool.rst:69
+msgid "工具的名称，未提供则使用函数名称"
+msgstr "Tool name, if not provided, use the function name"
+
+#: ../../source/APIReference/core/tool.rst:23 ../../source/APIReference/core/tool.rst:71
+msgid "工具的描述，未提供则使用函数文档字符串"
+msgstr "Tool description, if not provided, use the function docstring"
+
+#: ../../source/APIReference/core/tool.rst:25 ../../source/APIReference/core/tool.rst:73
+msgid "OpenAI 风格的工具模式"
+msgstr "OpenAI-style tool mode"
+
+#: ../../source/APIReference/core/tool.rst:28 ../../source/APIReference/core/tool.rst:176 ../../source/APIReference/core/tool.rst:529
+msgid "使用示例："
+msgstr "Usage example:"
+
+#: ../../source/APIReference/core/tool.rst:51
+msgid "调用该工具的方法。"
+msgstr "Method for calling the tool."
+
+#: ../../source/APIReference/core/tool.rst:53
+msgid "工具调用时的参数，如果工具在 `exclude_params` 中排除了 `inner_state` 或 `stream_writer`，会自动传入内部状态或流写入器。"
+msgstr "During tool invocation, if the tool excludes `inner_state` or `stream_writer` in `exclude_params`, the internal state or stream writer will be automatically passed."
+
+#: ../../source/APIReference/core/tool.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/tool.rst:54
+msgid "工具执行结果，如果工具为异步函数，则返回 awaitable 对象"
+msgstr "Tool execution result. If the tool is an asynchronous function, return an awaitable object."
+
+#: ../../source/APIReference/core/tool.rst:58
+msgid "在 Pydantic 验证完成后初始化 BaseTool。"
+msgstr "Initialize BaseTool after Pydantic validation."
+
+#: ../../source/APIReference/core/tool.rst:60
+msgid "Pydantic 验证的上下文信息"
+msgstr "Context information for Pydantic validation"
+
+#: ../../source/APIReference/core/tool.rst:65
+msgid "将可调用对象封装为 BaseTool 实例。"
+msgstr "Encapsulate the callable object as a BaseTool instance."
+
+#: ../../source/APIReference/core/tool.rst:75
+msgid "工具的内部状态。如果工具的输入参数定义了 `inner_state: ToolInnerState`，此参数会被传递给工具"
+msgstr "Internal state of the tool. If the tool's input parameters define `inner_state: ToolInnerState`, this parameter will be passed to the tool"
+
+#: ../../source/APIReference/core/tool.rst:79
+msgid "封装后的 BaseTool 实例"
+msgstr "Encapsulated BaseTool instance"
+
+#: ../../source/APIReference/core/tool.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/tool.rst:84
+msgid "获取 BaseTool 实例的 OpenAI 风格工具 Schema 描述。"
+msgstr "Get the OpenAI-style tool Schema description of a BaseTool instance."
+
+#: ../../source/APIReference/core/tool.rst:86
+msgid "工具 Schema 描述"
+msgstr "Tool Schema Description"
+
+#: ../../source/APIReference/core/tool.rst:91
+msgid "获取 BaseTool 实例的当前内部状态。"
+msgstr "Get the current internal state of the BaseTool instance."
+
+#: ../../source/APIReference/core/tool.rst:93
+msgid "工具的内部状态"
+msgstr "Internal state of the tool"
+
+#: ../../source/APIReference/core/tool.rst:98
+msgid "加载指定状态以更新 BaseTool 实例的内部状态。"
+msgstr "Load the specified state to update the internal state of the BaseTool instance."
+
+#: ../../source/APIReference/core/tool.rst:100
+msgid "要加载的内部状态"
+msgstr "Internal state to be loaded"
+
+#: ../../source/APIReference/core/tool.rst:106
+msgid "Tool Manager"
+msgstr "Tool Manager"
+
+#: ../../source/APIReference/core/tool.rst:111
+msgid "工具管理系统的基础抽象类，定义工具管理相关接口。 继承自 :py:class:`abc.ABC` 和 :py:class:`~evofabric.core.factory.BaseComponent`。"
+msgstr "Abstract base class for the tool management system, defining tool management-related interfaces. Inherits from :py:class:`abc.ABC` and :py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/tool.rst:116
+msgid "以 OpenAI 风格返回工具模式列表。"
+msgstr "Return a list of tool modes in OpenAI style."
+
+#: ../../source/APIReference/core/tool.rst
+msgid "raises"
+msgstr "raises"
+
+#: ../../source/APIReference/core/tool.rst:118 ../../source/APIReference/core/tool.rst:126 ../../source/APIReference/core/tool.rst:132 ../../source/APIReference/core/tool.rst:138 ../../source/APIReference/core/tool.rst:144 ../../source/APIReference/core/tool.rst:152 ../../source/APIReference/core/tool.rst:160
+msgid "NotImplementedError  # 子类必须实现此方法"
+msgstr "NotImplementedError  # Subclasses must implement this method"
+
+#: ../../source/APIReference/core/tool.rst:122
+msgid "根据提供的工具调用任务列表执行工具调用。"
+msgstr "Execute tool calls based on the provided tool call task list."
+
+#: ../../source/APIReference/core/tool.rst:124
+msgid "工具调用任务列表"
+msgstr "Tool Call Task List"
+
+#: ../../source/APIReference/core/tool.rst:130
+msgid "启动工具管理系统所依赖的资源。"
+msgstr "The resources required to launch the tool management system."
+
+#: ../../source/APIReference/core/tool.rst:136
+msgid "停止工具管理系统所依赖的资源。"
+msgstr "Stop the resources that the tool management system relies on."
+
+#: ../../source/APIReference/core/tool.rst:142
+msgid "重置工具管理系统所依赖的资源。"
+msgstr "Reset the resources that the tool management system depends on."
+
+#: ../../source/APIReference/core/tool.rst:148
+msgid "将工具管理系统中工具的内部状态保存到指定路径。"
+msgstr "Save the internal state of the tools in the tool management system to the specified path."
+
+#: ../../source/APIReference/core/tool.rst:150
+msgid "保存工具内部状态的路径"
+msgstr "Path to save the tool's internal state"
+
+#: ../../source/APIReference/core/tool.rst:156
+msgid "从指定路径加载工具内部状态到工具管理系统中对应的工具。"
+msgstr "Load the tool's internal state from the specified path into the corresponding tool in the tool management system."
+
+#: ../../source/APIReference/core/tool.rst:158 ../../source/APIReference/core/tool.rst:265
+msgid "包含工具内部状态的文件路径"
+msgstr "File path containing the tool's internal state"
+
+#: ../../source/APIReference/core/tool.rst:165
+msgid "常规工具管理系统的实现类。"
+msgstr "Implementation class of the conventional tool management system."
+
+#: ../../source/APIReference/core/tool.rst:167
+msgid "继承自 :py:class:`ToolManagerBase`，实现其所有抽象方法，提供工具管理、调用、导入、删除、更新及状态管理功能。"
+msgstr "Inherits from :py:class:`ToolManagerBase`, implements all its abstract methods, and provides tool management, invocation, import, deletion, update, and state management functionality."
+
+#: ../../source/APIReference/core/tool.rst:169
+msgid "初始工具列表，可包含 Python 函数、BaseTool 实例或带内部状态的函数元组"
+msgstr "Initial tool list, can include Python functions, BaseTool instances, or function tuples with internal state"
+
+#: ../../source/APIReference/core/tool.rst:171
+msgid "工具执行的超时时间（秒）"
+msgstr "Tool execution timeout (seconds)"
+
+#: ../../source/APIReference/core/tool.rst:173
+msgid "工具控制器，用来控制工具的激活状态，未激活的工具无法交互。"
+msgstr "Tool Controller, used to control the activation state of the tools. Deactivated tools cannot be interacted with."
+
+#: ../../source/APIReference/core/tool.rst:192
+msgid "在 Pydantic 验证后初始化 :py:class:`ToolManager`，并将工具添加到系统中。"
+msgstr "After Pydantic validation, initialize :py:class:`ToolManager` and add the tools to the system."
+
+#: ../../source/APIReference/core/tool.rst:194
+msgid "Pydantic 验证上下文"
+msgstr "Pydantic Validation Context"
+
+#: ../../source/APIReference/core/tool.rst:199
+msgid "列出 :py:class:`ToolManager` 中所有工具的工具模式。"
+msgstr "List the tool modes of all tools in :py:class:`ToolManager`."
+
+#: ../../source/APIReference/core/tool.rst:201
+msgid "工具模式列表"
+msgstr "Tool Mode List"
+
+#: ../../source/APIReference/core/tool.rst:206
+msgid "执行工具调用以完成指定任务。"
+msgstr "Execute the tool call to complete the specified task."
+
+#: ../../source/APIReference/core/tool.rst:208
+msgid "工具调用任务列表，包括工具名称及参数"
+msgstr "Tool call task list, including tool names and parameters"
+
+#: ../../source/APIReference/core/tool.rst:210
+msgid "工具调用结果列表，每个元素包含调用 ID、结果及成功标志等信息"
+msgstr "List of tool call results, each element containing call ID, result, and success flag, etc."
+
+#: ../../source/APIReference/core/tool.rst:215
+msgid "向系统中添加 Python 函数工具或 :py:class:`BaseTool` 实例。"
+msgstr "Add a Python function tool or a :py:class:`BaseTool` instance to the system."
+
+#: ../../source/APIReference/core/tool.rst:217
+msgid "待添加的工具列表"
+msgstr "List of Tools to Be Added"
+
+#: ../../source/APIReference/core/tool.rst:222
+msgid "从 Python 文件批量导入符合条件的函数工具到系统中。"
+msgstr "Batch import qualifying function tools from Python files into the system."
+
+#: ../../source/APIReference/core/tool.rst:224
+msgid "包含 Python 函数工具的文件路径列表"
+msgstr "List of file paths containing Python function tools"
+
+#: ../../source/APIReference/core/tool.rst:226
+msgid "每个文件中函数名必须包含的字符串模式列表（长度应与 file_paths 一致）"
+msgstr "List of string patterns that must be included in function names within each file (length must match file_paths)"
+
+#: ../../source/APIReference/core/tool.rst:228
+msgid "每个文件中函数名不能包含的字符串模式列表（长度应与 file_paths 一致）"
+msgstr "List of string patterns that function names in each file cannot contain (length should match file_paths)"
+
+#: ../../source/APIReference/core/tool.rst:233
+msgid "从系统中删除指定工具。"
+msgstr "Delete the specified tool from the system."
+
+#: ../../source/APIReference/core/tool.rst:235
+msgid "待删除的工具名称列表"
+msgstr "List of tool names to be deleted"
+
+#: ../../source/APIReference/core/tool.rst:240
+msgid "更新系统中已有的工具实例。"
+msgstr "Update existing tool instances in the system."
+
+#: ../../source/APIReference/core/tool.rst:242
+msgid "待更新的 BaseTool 实例列表"
+msgstr "List of BaseTool instances to be updated"
+
+#: ../../source/APIReference/core/tool.rst:247
+msgid "查找系统中的工具。"
+msgstr "Search for tools in the system."
+
+#: ../../source/APIReference/core/tool.rst:249
+msgid "待查找的工具名称列表"
+msgstr "List of tool names to be looked up"
+
+#: ../../source/APIReference/core/tool.rst:251
+msgid "找到的工具的工具模式列表"
+msgstr "List of tool modes of the found tools"
+
+#: ../../source/APIReference/core/tool.rst:256
+msgid "保存系统中所有工具的内部状态到指定路径。"
+msgstr "Save the internal state of all tools in the system to the specified path."
+
+#: ../../source/APIReference/core/tool.rst:258
+msgid "保存路径"
+msgstr "Save Path"
+
+#: ../../source/APIReference/core/tool.rst:263
+msgid "从指定路径加载工具内部状态到系统中对应的工具。"
+msgstr "Load the tool's internal state from the specified path into the corresponding tool in the system."
+
+#: ../../source/APIReference/core/tool.rst:270
+msgid "获取系统中工具的内部状态。"
+msgstr "Retrieve the internal state of the tool in the system."
+
+#: ../../source/APIReference/core/tool.rst:272
+msgid "指定工具名称，默认为 None，表示获取所有工具状态"
+msgstr "Specify the tool name, default is None, which means to get all tool statuses"
+
+#: ../../source/APIReference/core/tool.rst:274
+msgid "如果指定了 tool_name，则返回该工具的状态；否则返回所有工具的状态"
+msgstr "If tool_name is specified, return the status of that tool; otherwise, return the status of all tools"
+
+#: ../../source/APIReference/core/tool.rst:280
+msgid "MCP (Model Context Protocol) 工具管理器，用于管理多个 MCP 服务器及其工具。"
+msgstr "MCP (Model Context Protocol) Tool Manager, used to manage multiple MCP servers and their tools."
+
+#: ../../source/APIReference/core/tool.rst:282
+msgid "注意："
+msgstr "Attention:"
+
+#: ../../source/APIReference/core/tool.rst:284
+msgid "实际传递给 LLM 的工具名称格式为 \"server_name\" + \"_\" + \"tool_name\""
+msgstr "The format of the tool name actually passed to the LLM is \"server_name\" + \"_\" + \"tool_name\"."
+
+#: ../../source/APIReference/core/tool.rst:285
+msgid "此命名约定支持在不同服务器中使用同名的工具"
+msgstr "This naming convention supports the use of tools with the same name across different servers."
+
+#: ../../source/APIReference/core/tool.rst:286
+msgid "例如，如果服务器 \"math_server\" 有工具 \"calculate\"，其完整工具名将为 \"math_server_calculate\""
+msgstr "For example, if the server \"math_server\" has a tool \"calculate\", its full tool name will be \"math_server_calculate\"."
+
+#: ../../source/APIReference/core/tool.rst:288
+msgid "MCP 服务器连接参数字典，键为服务器名称，值为连接参数"
+msgstr "MCP server connection parameters dictionary, where the key is the server name and the value is the connection parameters."
+
+#: ../../source/APIReference/core/tool.rst:291
+msgid "工具执行超时时间（秒），默认为300"
+msgstr "Tool execution timeout (seconds), default is 300"
+
+#: ../../source/APIReference/core/tool.rst:294
+msgid "用于管理工作具激活状态的工具控制器，可选"
+msgstr "A tool controller for managing the activation status of the tool, optional."
+
+#: ../../source/APIReference/core/tool.rst:297
+msgid "是否重用 MCP 连接标志。True 表示每次交互使用相同连接；False 表示每次创建新连接"
+msgstr "Whether to reuse the MCP connection flag. True means using the same connection for each interaction; False means creating a new connection each time."
+
+#: ../../source/APIReference/core/tool.rst:303
+msgid "向管理器添加新的 MCP 服务器。"
+msgstr "Add a new MCP server to the manager."
+
+#: ../../source/APIReference/core/tool.rst:305
+msgid "服务器名称到 McpServerLink 配置的字典"
+msgstr "Dictionary from server name to McpServerLink configuration"
+
+#: ../../source/APIReference/core/tool.rst:312
+msgid "从管理器中移除 MCP 服务器并清理连接。"
+msgstr "Remove the MCP server from the manager and clean up the connections."
+
+#: ../../source/APIReference/core/tool.rst:314
+msgid "要移除的服务器名称列表"
+msgstr "List of server names to be removed"
+
+#: ../../source/APIReference/core/tool.rst:321
+msgid "列出可用工具（可选按服务器名筛选），通过工具控制器过滤状态（如果已启用）。"
+msgstr "List available tools (optionally filtered by server name), filter status through the tool controller (if enabled)."
+
+#: ../../source/APIReference/core/tool.rst:323 ../../source/APIReference/core/tool.rst:345 ../../source/APIReference/core/tool.rst:356 ../../source/APIReference/core/tool.rst:367
+msgid "可选的服务器名称用于筛选结果"
+msgstr "Optional server name for filtering results"
+
+#: ../../source/APIReference/core/tool.rst:325
+msgid "工具模式列表（如果启用了工具控制器则会过滤状态）"
+msgstr "Tool Mode List (status is filtered if the Tool Controller is enabled)"
+
+#: ../../source/APIReference/core/tool.rst:332
+msgid "执行提供的工具调用任务列表。"
+msgstr "Execute the provided tool call task list."
+
+#: ../../source/APIReference/core/tool.rst:334
+msgid "要执行的 ToolCall 对象列表"
+msgstr "List of ToolCall objects to be executed"
+
+#: ../../source/APIReference/core/tool.rst:336
+msgid "包含执行结果的 ToolCallResult 对象列表"
+msgstr "A list of ToolCallResult objects containing execution results."
+
+#: ../../source/APIReference/core/tool.rst:343
+msgid "列出可用提示（可选按服务器名筛选）。"
+msgstr "List available prompts (optionally filter by server name)."
+
+#: ../../source/APIReference/core/tool.rst:347
+msgid "可用提示的列表"
+msgstr "List of available prompts"
+
+#: ../../source/APIReference/core/tool.rst:354
+msgid "列出可用资源（可选按服务器名筛选）。"
+msgstr "List available resources (optionally filter by server name)."
+
+#: ../../source/APIReference/core/tool.rst:358
+msgid "可用资源的列表"
+msgstr "List of available resources"
+
+#: ../../source/APIReference/core/tool.rst:365
+msgid "列出可用资源模板（可选按服务器名筛选）。"
+msgstr "List available resource templates (optionally filter by server name)."
+
+#: ../../source/APIReference/core/tool.rst:369
+msgid "可用资源模板的列表"
+msgstr "List of available resource templates"
+
+#: ../../source/APIReference/core/tool.rst:376
+msgid "从 MCP 服务器读取指定的资源。"
+msgstr "Read the specified resource from the MCP server."
+
+#: ../../source/APIReference/core/tool.rst:378
+msgid "ResourceRequest 对象列表"
+msgstr "ResourceRequest object list"
+
+#: ../../source/APIReference/core/tool.rst:380
+msgid "资源响应列表"
+msgstr "Resource Response List"
+
+#: ../../source/APIReference/core/tool.rst:387
+msgid "从 MCP 服务器获取指定的提示。"
+msgstr "Retrieve the specified prompt from the MCP server."
+
+#: ../../source/APIReference/core/tool.rst:389
+msgid "PromptRequest 对象列表"
+msgstr "PromptRequest object list"
+
+#: ../../source/APIReference/core/tool.rst:391
+msgid "提示响应列表"
+msgstr "Prompt Response List"
+
+#: ../../source/APIReference/core/tool.rst:398
+msgid "设置管理工作具激活规则的工具控制器。"
+msgstr "A tool controller for configuring the activation rules of management tools."
+
+#: ../../source/APIReference/core/tool.rst:400
+msgid "包含激活/停用规则的工具控制器实例"
+msgstr "Tool controller instance with activate/deactivate rules"
+
+#: ../../source/APIReference/core/tool.rst:407
+msgid "获取当前工具控制器实例。"
+msgstr "Get the current tool controller instance."
+
+#: ../../source/APIReference/core/tool.rst:409
+msgid "当前的 ToolController 实例，如果未配置则返回 None"
+msgstr "The current ToolController instance returns None if not configured."
+
+#: ../../source/APIReference/core/tool.rst:416
+msgid "建立 MCP 服务器的连接。"
+msgstr "Establish a connection to the MCP server."
+
+#: ../../source/APIReference/core/tool.rst:418
+msgid "可选的服务器名称。如果为 None，则连接所有服务器"
+msgstr "Optional server name. If it is None, then connect to all servers."
+
+#: ../../source/APIReference/core/tool.rst
+msgid "抛出"
+msgstr "Throw out"
+
+#: ../../source/APIReference/core/tool.rst:420 ../../source/APIReference/core/tool.rst:430
+msgid "如果指定的服务器名称不存在"
+msgstr "If the specified server name does not exist"
+
+#: ../../source/APIReference/core/tool.rst:426
+msgid "断开 MCP 服务器的连接。"
+msgstr "Disconnect from the MCP server."
+
+#: ../../source/APIReference/core/tool.rst:428
+msgid "可选的服务器名称。如果为 None，则断开所有服务器"
+msgstr "Optional server name. If None, disconnect all servers."
+
+#: ../../source/APIReference/core/tool.rst:436
+msgid "获取所有管理的 MCP 服务器的连接状态。"
+msgstr "Get the connection status of all managed MCP servers."
+
+#: ../../source/APIReference/core/tool.rst:438
+msgid "映射服务器名称到连接状态（True/False）的字典"
+msgstr "A dictionary that maps server names to connection status (True/False)"
+
+#: ../../source/APIReference/core/tool.rst:445
+msgid "进入 McpToolManager 的运行时上下文。 建立所有配置的 MCP 服务器的连接。"
+msgstr "Enter the runtime context of McpToolManager. Establish connections to all configured MCP servers."
+
+#: ../../source/APIReference/core/tool.rst:448
+msgid "供上下文内使用的 McpToolManager 实例"
+msgstr "McpToolManager instance for use in the context."
+
+#: ../../source/APIReference/core/tool.rst:455
+msgid "退出 McpToolManager 的运行时上下文。 自动断开所有 MCP 服务器的连接。"
+msgstr "Exit the runtime context of McpToolManager. Automatically disconnect all MCP servers."
+
+#: ../../source/APIReference/core/tool.rst:458
+msgid "发生异常时的异常类型（否则为 None）"
+msgstr "Exception type when an exception occurs (otherwise None)"
+
+#: ../../source/APIReference/core/tool.rst:459
+msgid "发生异常时的异常实例（否则为 None）"
+msgstr "The exception instance when an exception occurs (otherwise None)"
+
+#: ../../source/APIReference/core/tool.rst:460
+msgid "发生异常时的回溯（否则为 None）"
+msgstr "The backtrace when an exception occurs (otherwise None)"
+
+#: ../../source/APIReference/core/tool.rst:465
+msgid "管理MCP服务器连接生命周期和会话操作的控制器类。 负责建立连接、管理会话状态以及使用异步上下文管理器实现优雅断开连接。"
+msgstr "A controller class that manages the lifecycle of MCP server connections and session operations. It is responsible for establishing connections, managing session state, and implementing graceful disconnection using an asynchronous context manager."
+
+#: ../../source/APIReference/core/tool.rst:468
+msgid "MCP服务器通信链路对象"
+msgstr "MCP Server Communication Link Object"
+
+#: ../../source/APIReference/core/tool.rst:470
+msgid "连接的MCP服务器的名称标识符"
+msgstr "Name identifier of the connected MCP server"
+
+#: ../../source/APIReference/core/tool.rst:472
+msgid "设为True时，退出上下文（aexit）不会断开MCP服务器连接。默认为False"
+msgstr "When set to True, exiting the context (aexit) will not disconnect the MCP server connection. Defaults to False."
+
+#: ../../source/APIReference/core/tool.rst:477
+msgid "返回当前活动的客户端会话（只读属性）。"
+msgstr "Returns the current active client session (read-only property)."
+
+#: ../../source/APIReference/core/tool.rst:481
+msgid "返回连接状态（True/False），用于监控目的。"
+msgstr "Returns the connection status (True/False), for monitoring purposes."
+
+#: ../../source/APIReference/core/tool.rst:486
+msgid "启动并等待MCP服务器连接建立。 创建后台任务维护会话循环，阻塞直至连接完全建立。 安全地支持多次调用，重复调用会提前返回。"
+msgstr "Start and wait for the MCP server connection to be established. Create a background task to maintain the session loop, blocking until the connection is fully established. Safely supports multiple calls; repeated calls will return early."
+
+#: ../../source/APIReference/core/tool.rst:493
+msgid "终止MCP连接。 取消会话任务，等待清理完成，并重置所有连接状态。"
+msgstr "Terminate the MCP connection. Cancel the session task, wait for cleanup to complete, and reset all connection states."
+
+#: ../../source/APIReference/core/tool.rst:499
+msgid "内部方法：运行会话维护的主循环。 建立MCP会话后等待连接就绪事件，进入持久等待状态直至被取消。"
+msgstr "Internal method: Run the main loop for session maintenance. After establishing the MCP session, wait for the connection ready event, enter a persistent waiting state until it is cancelled."
+
+#: ../../source/APIReference/core/tool.rst:502
+msgid "用于通知连接已就绪的Event对象"
+msgstr "An Event object used to notify that the connection is ready."
+
+#: ../../source/APIReference/core/tool.rst:507
+msgid "异步上下文管理器入口。 自动调用connect()方法建立连接，返回自身实例。"
+msgstr "Asynchronous context manager entry point. Automatically calls the connect() method to establish a connection, and returns its own instance."
+
+#: ../../source/APIReference/core/tool.rst:513
+msgid "异步上下文管理器出口。 仅当persistent_link为False时调用disconnect()方法断开连接。"
+msgstr "Asynchronous context manager exit. The disconnect() method is called to disconnect only when persistent_link is False."
+
+#: ../../source/APIReference/core/tool.rst:517
+msgid "Code Sandbox"
+msgstr "Code Sandbox"
+
+#: ../../source/APIReference/core/tool.rst:522
+msgid "安全的 Python 代码沙箱，基于 Docker 实现，用于在隔离环境中执行 Python 代码。"
+msgstr "Secure Python code sandbox, Docker-based, for executing Python code in an isolated environment."
+
+#: ../../source/APIReference/core/tool.rst:524
+msgid "继承自 :py:class:`~evofabric.core.factory.BaseComponent`。"
+msgstr "Inherits from :py:class:`~evofabric.core.factory.BaseComponent`."
+
+#: ../../source/APIReference/core/tool.rst:526
+msgid "沙箱配置，包括镜像、容器名称、工作目录等信息"
+msgstr "Sandbox configuration, including image, container name, working directory, and other information"
+
+#: ../../source/APIReference/core/tool.rst:559
+msgid "根据配置创建并启动 Docker 容器。"
+msgstr "Create and start the Docker container based on the configuration."
+
+#: ../../source/APIReference/core/tool.rst:563
+msgid "在沙箱容器中执行 Python 代码。"
+msgstr "Execute Python code in a sandbox container."
+
+#: ../../source/APIReference/core/tool.rst:565
+msgid "待执行的 Python 代码"
+msgstr "Pending Python code"
+
+#: ../../source/APIReference/core/tool.rst:567 ../../source/APIReference/core/tool.rst:576
+msgid "执行结果"
+msgstr "Execution Result"
+
+#: ../../source/APIReference/core/tool.rst:568 ../../source/APIReference/core/tool.rst:577
+msgid ":py:class:`ExecResult`"
+msgstr ":py:class:`ExecResult`"
+
+#: ../../source/APIReference/core/tool.rst:572
+msgid "在沙箱容器中执行 shell 命令。"
+msgstr "Execute shell commands in the sandbox container."
+
+#: ../../source/APIReference/core/tool.rst:574
+msgid "待执行的 shell 命令"
+msgstr "Pending shell command"
+
+#: ../../source/APIReference/core/tool.rst:581
+msgid "停止 Docker 容器。 如果配置中的 ``auto_remove`` 为 ``True``，容器停止后将被自动移除。"
+msgstr "Stop the Docker container. If the configuration's ``auto_remove`` is ``True``, the container will be automatically removed after it stops."
+
+#: ../../source/APIReference/core/tool.rst:586
+msgid "Tool Controller"
+msgstr "Tool Controller"
+
+#: ../../source/APIReference/core/tool.rst:590
+msgid "工具控制器，用于管理工具的激活和禁用状态。 继承自 :py:class`~evofabric.core.factory.BaseComponent`"
+msgstr "Tool Controller, used to manage the activation and deactivation status of tools. Inherits from :py:class`~evofabric.core.factory.BaseComponent`"
+
+#: ../../source/APIReference/core/tool.rst:593
+msgid "默认工具行为，当没有规则匹配时使用"
+msgstr "Default tool behavior, used when no rules match."
+
+#: ../../source/APIReference/core/tool.rst:595
+msgid "用于控制工具激活/禁用的规则列表，按顺序应用规则，第一个匹配规则决定工具状态"
+msgstr "A list of rules for controlling tool activation/deactivation, where rules are applied in order and the first matching rule determines the tool status."
+
+#: ../../source/APIReference/core/tool.rst:598
+msgid "类属性默认值说明："
+msgstr "Description of class attribute default values:"
+
+#: ../../source/APIReference/core/tool.rst:600
+msgid "*default_mode* 的默认值为 \"activate\"。可选值："
+msgstr "The default value for *default_mode* is \"activate\". Optional values:"
+
+#: ../../source/APIReference/core/tool.rst:602
+msgid "\"activate\": 自动激活没有匹配规则的工具（默认值）"
+msgstr "\"activate\": Automatically activate tools that do not have matching rules (default value)"
+
+#: ../../source/APIReference/core/tool.rst:603
+msgid "\"deactivate\": 自动禁用没有匹配规则的工具"
+msgstr "\"deactivate\": Automatically disable tools that do not have matching rules."
+
+#: ../../source/APIReference/core/tool.rst:605
+msgid "*rules* 的默认值为空字典。每个规则可以是："
+msgstr "The default value of *rules* is an empty dictionary. Each rule can be:"
+
+#: ../../source/APIReference/core/tool.rst:607
+msgid "带有以下属性的 `ToolControlPattern` 实例："
+msgstr "`ToolControlPattern` instance with the following attributes:"
+
+#: ../../source/APIReference/core/tool.rst:608
+msgid "`mode`: 'activate' 或 'deactivate'"
+msgstr "`mode`: 'activate' or 'deactivate'"
+
+#: ../../source/APIReference/core/tool.rst:609
+msgid "`pattern`: glob 通配符字符串"
+msgstr "`pattern`: glob wildcard string"
+
+#: ../../source/APIReference/core/tool.rst:610
+msgid "带有以下键的字典："
+msgstr "A dictionary with the following keys:"
+
+#: ../../source/APIReference/core/tool.rst:611
+msgid "'mode': 'activate' 或 'deactivate'"
+msgstr "'mode': 'activate' or 'deactivate'"
+
+#: ../../source/APIReference/core/tool.rst:612
+msgid "'pattern': glob 通配符字符串"
+msgstr "'pattern': glob wildcard string"
+
+#: ../../source/APIReference/core/tool.rst:616
+msgid "使用 McpToolManager 时的注意事项："
+msgstr "Precautions when using McpToolManager:"
+
+#: ../../source/APIReference/core/tool.rst:618
+msgid "实际工具名称格式为 [server_name]_[tool_name]"
+msgstr "The actual tool name format is [server_name]_[tool_name]."
+
+#: ../../source/APIReference/core/tool.rst:619
+msgid "通配符模式必须以 server_name 作为前缀"
+msgstr "Wildcard pattern must be prefixed with server_name."
+
+#: ../../source/APIReference/core/tool.rst:620
+msgid "示例：为匹配来自 \"math\" 服务器的所有工具，使用模式 \"math_*\" （匹配 \"math_calculator\"、\"math_grapher\" 等）"
+msgstr "Example: To match all tools from the \"math\" server, use the pattern \"math_*\" (matches \"math_calculator\", \"math_grapher\", etc.)"
+
+#: ../../source/APIReference/core/tool.rst:622
+msgid "模式示例："
+msgstr "Mode Example:"
+
+#: ../../source/APIReference/core/tool.rst:624
+msgid "math_*  → 匹配来自 \"math\" 服务器的所有工具 （例如 \"math_calculator\"、\"math_grapher\"）"
+msgstr "math_*  → matches all tools from the \"math\" server (e.g., \"math_calculator\", \"math_grapher\")"
+
+#: ../../source/APIReference/core/tool.rst:625
+msgid "text_*  → 匹配来自 \"text\" 服务器的所有工具"
+msgstr "text_*  → matches all tools from the \"text\" server"
+
+#: ../../source/APIReference/core/tool.rst:626
+msgid "math_calculator → 仅匹配此特定工具"
+msgstr "math_calculator → only matches this specific tool"
+
+#: ../../source/APIReference/core/tool.rst:627
+msgid "*_calculator   → 匹配任何以 \"*_calculator\" 结尾的工具（来自任何服务器）"
+msgstr "*_calculator   → matches any tool ending with \"*_calculator\" (from any server)"
+
+#: ../../source/APIReference/core/tool.rst:631
+msgid "根据应用规则检查工具是否处于激活状态。"
+msgstr "Check whether the tool is activated according to the application rules."
+
+#: ../../source/APIReference/core/tool.rst:633
+msgid "要检查的工具名称"
+msgstr "Name of the tool to be checked"
+
+#: ../../source/APIReference/core/tool.rst:635
+msgid "如果工具激活返回 True，否则返回 False"
+msgstr "If the tool is activated, return True, otherwise return False."
+
+#: ../../source/APIReference/core/tool.rst:640
+msgid "过滤工具列表，仅包含激活的工具。"
+msgstr "Filter the tool list to only include activated tools."
+
+#: ../../source/APIReference/core/tool.rst:642
+msgid "工具字典列表"
+msgstr "Tool Dictionary List"
+
+#: ../../source/APIReference/core/tool.rst:644
+msgid "激活工具的列表"
+msgstr "List of activation tools"
+
+#: ../../source/APIReference/core/tool.rst:649
+msgid "激活特定工具，赋予最高优先级。 移除此工具名称的任何现有规则。"
+msgstr "Activate the specific tool and assign it the highest priority. Remove any existing rules for this tool name."
+
+#: ../../source/APIReference/core/tool.rst:652
+msgid "要激活的工具的确切名称"
+msgstr "The exact name of the tool to be activated."
+
+#: ../../source/APIReference/core/tool.rst:657
+msgid "禁用特定工具，赋予最高优先级。 移除此工具名称的任何现有规则。"
+msgstr "Disable specific tool, assign highest priority. Remove any existing rules for this tool name."
+
+#: ../../source/APIReference/core/tool.rst:660
+msgid "要禁用的工具的确切名称"
+msgstr "The exact name of the tool to be disabled."
+
+#: ../../source/APIReference/core/tool.rst:665
+msgid "Utils"
+msgstr "Utilities"
+
+#: ../../source/APIReference/core/tool.rst:669
+msgid "将Python可调用对象转换为LLM工具使用的JSON模式。此函数解析函数签名、文档字符串和参数默认值，创建与LLM工具调用格式兼容的完整接口描述。"
+msgstr "Convert a Python callable object to a JSON schema for use with LLM tools. This function parses the function signature, docstring, and parameter default values to create a complete interface description compatible with the LLM tool calling format."
+
+#: ../../source/APIReference/core/tool.rst:671
+msgid "支持的函数类型包括：普通函数、类方法、@classmethod、@staticmethod、函数/类方法的partial对象、lambda函数。"
+msgstr "Supported function types include: regular functions, class methods, @classmethod, @staticmethod, partial objects of functions/class methods, lambda functions."
+
+#: ../../source/APIReference/core/tool.rst:673
+msgid "要转换为模式的可调用函数"
+msgstr "Callable function to be converted to a pattern"
+
+#: ../../source/APIReference/core/tool.rst:675
+msgid "自定义函数名，未提供则使用函数的`__name__`属性"
+msgstr "Custom function name. If not provided, the function's `__name__` attribute will be used."
+
+#: ../../source/APIReference/core/tool.rst:677
+msgid "自定义描述，未提供则使用文档字符串摘要"
+msgstr "Custom description, if not provided, use the docstring summary."
+
+#: ../../source/APIReference/core/tool.rst:679
+msgid "是否包含文档字符串中的长描述"
+msgstr "Whether it contains the long description in the docstring."
+
+#: ../../source/APIReference/core/tool.rst:681
+msgid "是否包含位置可变参数(*args)"
+msgstr "Whether it includes variable positional arguments (*args)"
+
+#: ../../source/APIReference/core/tool.rst:683
+msgid "是否包含关键字可变参数(**kwargs)"
+msgstr "Does it contain keyword variable arguments (**kwargs)?"
+
+#: ../../source/APIReference/core/tool.rst:685
+msgid "需要排除的参数名称列表"
+msgstr "List of parameter names to be excluded"
+
+#: ../../source/APIReference/core/tool.rst:687
+msgid "包含OpenAI兼容函数模式的元组"
+msgstr "Tuple containing OpenAI-compatible function schema"
+
+#: ../../source/APIReference/core/tool.rst
+msgid "return1"
+msgstr "return1"
+
+#: ../../source/APIReference/core/tool.rst:689
+msgid "包含完整函数模式的字典"
+msgstr "A dictionary containing the complete function pattern."
+
+#: ../../source/APIReference/core/tool.rst
+msgid "rtype1"
+msgstr "Record Type 1"
+
+#: ../../source/APIReference/core/tool.rst:690
+msgid "dict"
+msgstr "dictionary"
+
+#: ../../source/APIReference/core/tool.rst
+msgid "return2"
+msgstr "return to"
+
+#: ../../source/APIReference/core/tool.rst:691
+msgid "实际被排除的参数名称列表"
+msgstr "List of actually excluded parameter names."
+
+#: ../../source/APIReference/core/tool.rst
+msgid "rtype2"
+msgstr "Record type 2"
+
+#: ../../source/APIReference/core/tool.rst:692
+msgid "List[str]"
+msgstr "List[str]"
+
+#~ msgid "使用示例： .. code-block:: python"
+#~ msgstr "Usage example: .. code-block:: python"
+
+#~ msgid "from typing import List from uuid import uuid4 from pydantic import create_model, ConfigDict from evofabric.utils.schema import parse_callable_docstring, parse_func_params"
+#~ msgstr "from typing import List from uuid import uuid4 from pydantic import create_model, ConfigDict from evofabric.utils.schema import parse_callable_docstring, parse_func_params"
+
+#~ msgid "def sample_function(a: int, b: str = \"default\", *args, **kwargs):"
+#~ msgstr "def sample_function(a: int, b: str = \"default\", *args, **kwargs):"
+
+#~ msgid "\"\"\"这是一个示例函数"
+#~ msgstr "\"\"\"This is a sample function\"\"\""
+
+#~ msgid "长描述部分提供详细说明 :param a: 整数参数 :param b: 字符串参数 :param args: 可变位置参数 :param kwargs: 可变关键字参数 \"\"\" return a + len(b)"
+#~ msgstr "The long description part provides a detailed explanation :param a: integer parameter :param b: string parameter :param args: variable positional arguments :param kwargs: variable keyword arguments \"\"\" return a + len(b)"
+
+#~ msgid "schema, excluded = parse_callable_schema("
+#~ msgstr "schema, excluded equals parse callable schema left parenthesis"
+
+#~ msgid "function=sample_function, name=\"custom_name\", exclude_params=[\"kwargs\"]"
+#~ msgstr "function=sample_function, name=\"custom_name\", exclude_params=[\"kwargs\"]"
+
+#~ msgid ") print(schema[\"function\"][\"name\"])  # 输出: custom_name print(excluded)  # 输出: ['kwargs']"
+#~ msgstr ") print(schema[\"function\"][\"name\"])  # Output: custom_name print(excluded)  # Output: ['kwargs']"
+
+#~ msgid "MCP 工具管理系统的实现类。"
+#~ msgstr "MCP Tool Management System Implementation Class"
+
+#~ msgid "继承自 :py:class:`ToolManagerBase`，用于管理多个 MCP 服务器上的工具，包括工具调用、状态管理及资源/提示查询。"
+#~ msgstr "Inherits from :py:class:`ToolManagerBase`, used to manage tools across multiple MCP servers, including tool calls, state management, and resource/prompt queries."
+
+#~ msgid "系统允许不同 MCP 服务器上存在同名工具。在 :py:class:`McpToolManager` 内部管理的工具名称格式为 ``{server_name}_{tool_name}`` 。"
+#~ msgstr "The system allows tools with the same name to exist on different MCP servers. The tool name format managed internally by :py:class:`McpToolManager` is ``{server_name}_{tool_name}``."
+
+#~ msgid "在 Pydantic 验证后初始化 :py:class:`McpToolManager`，并将工具添加到管理系统中。"
+#~ msgstr "After Pydantic validation, initialize :py:class:`McpToolManager` and add the tools to the management system."
+
+#~ msgid "列出 MCP 工具管理系统中工具的工具模式。"
+#~ msgstr "List the tool modes of the tools in the MCP tool management system."
+
+#~ msgid "指定要列出工具的 MCP 服务器名称，默认列出所有服务器工具"
+#~ msgstr "Specify the MCP server name for listing tools, defaulting to listing all server tools"
+
+#~ msgid "工具模式列表，如果指定 server_name，则仅包含该服务器工具；否则包含所有服务器工具"
+#~ msgstr "Tool mode list. If server_name is specified, only include the tools for that server; otherwise, include all server tools"
+
+#~ msgid "调用结果列表，每个元素包含调用 ID、结果及成功标志"
+#~ msgstr "Call result list, each element containing call ID, result, and success flag"
+
+#~ msgid "待添加或更新的 MCP 服务器连接参数字典"
+#~ msgstr "MCP server connection parameters dictionary to be added or updated"
+
+#~ msgid "从系统中删除指定 MCP 服务器及其工具。"
+#~ msgstr "Delete the specified MCP server and its tools from the system."
+
+#~ msgid "列出指定 MCP 服务器或所有 MCP 服务器的提示。"
+#~ msgstr "List the prompts for the specified MCP server or all MCP servers."
+
+#~ msgid "指定服务器名称，默认列出所有服务器提示"
+#~ msgstr "Specify server name, default list all servers prompt"
+
+#~ msgid "列出指定 MCP 服务器或所有 MCP 服务器的资源。"
+#~ msgstr "List the resources of the specified MCP servers or all MCP servers."
+
+#~ msgid "指定服务器名称，默认列出所有服务器资源"
+#~ msgstr "Specify server name, by default list all server resources"
+
+#~ msgid "列出指定 MCP 服务器或所有 MCP 服务器的资源模板。"
+#~ msgstr "List the resource templates for the specified MCP servers or all MCP servers."
+
+#~ msgid "指定服务器名称，默认列出所有服务器资源模板"
+#~ msgstr "Specify server name, default: list all server resource templates"
+
+#~ msgid "从指定服务器中检索特定提示。"
+#~ msgstr "Retrieve a specific prompt from the specified server."
+
+#~ msgid "检索到的提示列表"
+#~ msgstr "Retrieved Prompt List"
+
+#~ msgid "从指定服务器中检索特定资源。"
+#~ msgstr "Retrieve a specific resource from the specified server."
+
+#~ msgid "检索到的资源列表"
+#~ msgstr "Retrieved Resource List"
+
+#~ msgid "私有属性，将每个服务器映射到其可用工具及对应的模式"
+#~ msgstr "Private attribute, mapping each server to its available tools and corresponding schemas."
+
+#~ msgid "私有属性，存放各服务器的 MCP 会话控制器"
+#~ msgstr "Private attribute, storing the session controllers of each server."
+
+#~ msgid "*default_mode* 的默认值为 \"activate\"。可选值：、 - \"activate\": 自动激活没有匹配规则的工具（默认值） - \"deactivate\": 自动禁用没有匹配规则的工具"
+#~ msgstr ""
+#~ "The default value for *default_mode* is \"activate\". Optional values:\n"
+#~ "- \"activate\": Automatically activate tools that have no matching rules (default)\n"
+#~ "- \"deactivate\": Automatically deactivate tools that have no matching rules"
+
+#~ msgid "使用 McpToolManager 时的注意事项： - 实际工具名称格式为 [server_name]_[tool_name] - 通配符模式必须以 server_name 作为前缀 - 示例：为匹配来自 \"math\" 服务器的所有工具，使用模式 \"math_*\""
+#~ msgstr ""
+#~ "Notes when using McpToolManager:\n"
+#~ "- The actual tool name is in the format of [server_name]_[tool_name]\n"
+#~ "- The wildcard pattern must be prefixed with server_name\n"
+#~ "- Example: To match all tools from the \"math\" server, use the pattern \"math_*\""
+
+#~ msgid "返回当前活动的客户端会话（只读属性）。"
+#~ msgstr "Returns the current active client session (read-only property)."
+
+#~ msgid "返回连接状态（True/False），用于监控目的。"
+#~ msgstr "Returns the connection status (True/False) for monitoring purposes."
+
+#~ msgid "启动并等待MCP服务器连接建立。 创建后台任务维护会话循环，阻塞直至连接完全建立。 安全地支持多次调用，重复调用会提前返回。"
+#~ msgstr ""
+#~ "Start and wait for the MCP server connection to be established.\n"
+#~ "Create a background task to maintain the session loop, blocking until the connection is fully established.\n"
+#~ "Safely supports multiple calls; repeated calls will return early."
+
+#~ msgid "终止MCP连接。 取消会话任务，等待清理完成，并重置所有连接状态。"
+#~ msgstr "Terminate the MCP connection. Cancel the session task, wait for cleanup to complete, and reset all connection states."
+
+#~ msgid "内部方法：运行会话维护的主循环。 建立MCP会话后等待连接就绪事件，进入持久等待状态直至被取消。"
+#~ msgstr "Internal method: runs the main loop for session maintenance. After establishing the MCP session, it waits for the connection ready event and enters a persistent wait state until it is cancelled."
+
+#~ msgid "用于通知连接已就绪的Event对象"
+#~ msgstr "An Event object used to notify that the connection is ready."
+
+#~ msgid "异步上下文管理器入口。 自动调用connect()方法建立连接，返回自身实例。"
+#~ msgstr "Entry point for the asynchronous context manager. Automatically calls the connect() method to establish a connection, returning its own instance."
+
+#~ msgid "异步上下文管理器出口。 仅当persistent_link为False时调用disconnect()方法断开连接。"
+#~ msgstr "Asynchronous context manager exit. The disconnect() method is called to disconnect only when persistent_link is False."

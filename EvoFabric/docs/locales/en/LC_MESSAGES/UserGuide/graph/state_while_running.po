@@ -1,0 +1,175 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:2
+msgid "状态维护与重构机制"
+msgstr "State Maintenance and Refactoring Mechanism"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:4
+msgid "在图引擎的运行过程中，系统通过树形结构维护状态信息，以实现状态的可追溯与高效重构。"
+msgstr "During the operation of the graph engine, the system maintains state information through a tree structure to achieve state traceability and efficient reconstruction."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:7
+msgid "状态树结构"
+msgstr "State Tree Structure"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:9
+msgid "每个节点的输入是一个完整的 ``State`` 对象。"
+msgstr "Each node's input is a complete ``State`` object."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:10
+msgid "节点的输出不是完整状态，而是该节点的 **状态增量（delta）**。"
+msgstr "The node's output is not the full state, but rather the node's **state delta (delta)**."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:11
+msgid "在运行过程中，所有状态以树的形式存储："
+msgstr "During runtime, all states are stored as a tree:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:13
+msgid "根节点表示图引擎的输入状态。"
+msgstr "The root node represents the input state of the graph engine."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:15
+msgid "每个子节点包含其父节点引用和当前节点的 ``delta``。"
+msgstr "Each child node contains its parent node reference and the current node's ``delta``."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:17
+msgid "状态恢复时，会递归地从父节点向上合并，逐级重构完整状态。"
+msgstr "During state recovery, the system recursively merges upward from the parent node, reconstructing the complete state level by level."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:20
+msgid "状态重构逻辑"
+msgstr "State Reconstruction Logic"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:22
+msgid "当节点或边需要使用完整状态时，图引擎会执行如下步骤："
+msgstr "When nodes or edges require the full state, the graph engine will execute the following steps:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:24
+msgid "按声明的 **更新策略（update strategy）** 从根节点向下合并所有 ``delta``。"
+msgstr "Merge all ``delta`` from the root node downward according to the declared **update strategy**."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:26
+msgid "将完整状态进行深拷贝后传递给节点或边执行。"
+msgstr "After performing a deep copy of the complete state, pass it to nodes or edges for execution."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:30
+msgid "由于深拷贝策略，节点和边对输入状态的修改不会影响引擎内部维护的状态树。"
+msgstr "Due to the deep copy strategy, modifications to the input state by nodes and edges will not affect the state tree maintained internally by the engine."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:33
+msgid "改变状态策略的影响"
+msgstr "The impact of changing the state strategy"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:35
+msgid "图引擎中存在两类特殊策略，可能导致状态树的根被重置："
+msgstr "There are two special strategies in the graph engine that may cause the root of the state tree to be reset:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:37
+msgid "节点的 ``multi_input_merge_strategy``"
+msgstr "node's ``multi_input_merge_strategy``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:39
+msgid "边的 ``state_filter``"
+msgstr "edge's ``state_filter``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:41
+msgid "由于这两者都是用户可自定义的合并逻辑，引擎无法保证其结果与原状态完全兼容。因此："
+msgstr "Since both of these are user-customizable merge logic, the engine cannot guarantee that their results are fully compatible with the original state. Therefore:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:43
+msgid "一旦执行上述策略，根节点会被重置为策略输出的状态。"
+msgstr "Once the above strategy is executed, the root node will be reset to the state output by the strategy."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:45
+msgid "如果这些策略删除了部分状态信息，这些信息将无法在后续节点中恢复。"
+msgstr "If these strategies delete some state information, this information cannot be recovered in subsequent nodes."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:48
+msgid "**示例：** 有无 ``state_filter`` 的差异"
+msgstr "**Example:** Difference between having and not having ``state_filter``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:50
+msgid "假设有一条线性路径： ``A -> B -> C -> End``"
+msgstr "Assume there is a linear path: ``A -> B -> C -> End``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:52
+msgid "初始状态（输入）为："
+msgstr "Initial state (input):"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:58
+msgid "各节点执行逻辑如下："
+msgstr "The execution logic for each node is as follows:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:60
+#, python-brace-format
+msgid "**A** 输出增量： ``{\"user\": {\"age\": 21}}``"
+msgstr "**A** Output increment: ``{\"user\": {\"age\": 21}}``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:61
+#, python-brace-format
+msgid "**B** 输出增量： ``{\"score\": 95}``"
+msgstr "**B** Output increment: ``{\"score\": 95}``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:63
+msgid "**情况一：** 无 ``state_filter``"
+msgstr "**Case 1:** No ``state_filter``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:65
+msgid "边 ``B -> C`` 没有定义 ``state_filter``，因此状态完整传递："
+msgstr "Edge ``B -> C`` does not define ``state_filter``, therefore the state is fully passed:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:75
+msgid "**情况二：** 有 ``state_filter``"
+msgstr "**Case 2:** With ``state_filter``"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:77
+msgid "假设边 ``B -> C`` 定义了如下过滤器："
+msgstr "Assume edge ``B -> C`` defines the following filter:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:84
+msgid "此时，``state_filter`` 的输出被视为新的根状态，导致 ``user`` 字段被永久丢弃。"
+msgstr "At this point, the output of ``state_filter`` is treated as the new root state, causing the ``user`` field to be permanently discarded."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:94
+msgid "因为 ``state_filter`` 删除了 ``user`` 信息，后续节点无法再收到该字段。"
+msgstr "Because ``state_filter`` deleted the ``user`` information, subsequent nodes can no longer receive this field."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:97
+msgid "最终状态输出"
+msgstr "Final State Output"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:99
+msgid "图运行过程中， ``end`` 节点会构建 **状态队列** , 收集所有流入的状态："
+msgstr "During the execution of the graph, the ``end`` node will construct the **state queue**, collecting all incoming states:"
+
+#: ../../source/UserGuide/graph/state_while_running.rst:101
+msgid "队列中的状态按路由顺序排列。"
+msgstr "The states in the queue are arranged in routing order."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:103
+msgid "引擎将根据定义的更新策略，依次合并队列中的状态。"
+msgstr "The engine will sequentially merge the states in the queue according to the defined update strategy."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:105
+msgid "最终输出即为所有状态合并后的完整 ``State`` 对象。"
+msgstr "The final output is the complete ``State`` object after merging all states."
+
+#: ../../source/UserGuide/graph/state_while_running.rst:107
+msgid "通过这种机制，图引擎能够在保证状态一致性的同时，实现灵活的状态重构与可追溯性。"
+msgstr "Through this mechanism, the graph engine can achieve flexible state reconstruction and traceability while ensuring state consistency."

@@ -1,0 +1,251 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-30 14:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/APIReference/core/mem.rst:3
+msgid "evofabric.core.mem"
+msgstr "evofabric.core.mem"
+
+#: ../../source/APIReference/core/mem.rst:9
+msgid "Base Memory"
+msgstr "Base Memory"
+
+#: ../../source/APIReference/core/mem.rst:13
+msgid "基础记忆接口定义，可用于开源适配"
+msgstr "Basic memory interface definition, usable for open-source adaptation"
+
+#: ../../source/APIReference/core/mem.rst:17
+msgid "检索记忆并更新上下文消息"
+msgstr "Retrieve memory and update context messages"
+
+#: ../../source/APIReference/core/mem.rst
+msgid "参数"
+msgstr "Parameter"
+
+#: ../../source/APIReference/core/mem.rst:19 ../../source/APIReference/core/mem.rst:69
+msgid "当前的上下文消息序列"
+msgstr "Current context message sequence"
+
+#: ../../source/APIReference/core/mem.rst:22
+msgid "其他检索或更新时所需的配置参数"
+msgstr "Other configuration parameters required for retrieval or update"
+
+#: ../../source/APIReference/core/mem.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/core/mem.rst:24
+msgid "基于记忆内容更新后的上下文消息序列"
+msgstr "updated context message sequence based on memory content"
+
+#: ../../source/APIReference/core/mem.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/core/mem.rst:29
+msgid "将上下文消息写入记忆向量库"
+msgstr "Write context messages into the memory vector database"
+
+#: ../../source/APIReference/core/mem.rst:31 ../../source/APIReference/core/mem.rst:82
+msgid "待写入的上下文消息序列"
+msgstr "Sequence of context messages to be written"
+
+#: ../../source/APIReference/core/mem.rst:34
+msgid "其他写入时所需的配置参数"
+msgstr "Other configuration parameters required when writing"
+
+#: ../../source/APIReference/core/mem.rst:36 ../../source/APIReference/core/mem.rst:43 ../../source/APIReference/core/mem.rst:87 ../../source/APIReference/core/mem.rst:97 ../../source/APIReference/core/mem.rst:104 ../../source/APIReference/core/mem.rst:157 ../../source/APIReference/core/mem.rst:164 ../../source/APIReference/core/mem.rst:209 ../../source/APIReference/core/mem.rst:216
+msgid "None"
+msgstr "None"
+
+#: ../../source/APIReference/core/mem.rst:41 ../../source/APIReference/core/mem.rst:102
+msgid "清空全部记忆"
+msgstr "Clear all memory"
+
+#: ../../source/APIReference/core/mem.rst:46
+msgid "Retrieval Memory"
+msgstr "Retrieval Memory"
+
+#: ../../source/APIReference/core/mem.rst:50
+msgid "基础检索记忆，用于实现RAG功能"
+msgstr "Basic Retrieval Memory, used to implement RAG functionality."
+
+#: ../../source/APIReference/core/mem.rst:52
+msgid "向量数据库实例，用于存储与检索记忆文本"
+msgstr "Vector database instance, used for storing and retrieving memory text"
+
+#: ../../source/APIReference/core/mem.rst:55
+msgid "重排序模型客户端，用于对召回结果二次排序"
+msgstr "Re-ranking Model Client, used for re-ranking recall results"
+
+#: ../../source/APIReference/core/mem.rst:58
+msgid "是否启用重排序，默认 True"
+msgstr "Enable reordering, default True"
+
+#: ../../source/APIReference/core/mem.rst:61
+msgid "保留的对话轮数，默认 1"
+msgstr "Retained dialogue turns, default 1"
+
+#: ../../source/APIReference/core/mem.rst:67
+msgid "根据上下文检索记忆并更新上下文消息"
+msgstr "Retrieve memory based on context and update context messages"
+
+#: ../../source/APIReference/core/mem.rst:72
+msgid "检索或更新时所需的配置参数（可选）"
+msgstr "Configuration parameters required for retrieval or update (optional)"
+
+#: ../../source/APIReference/core/mem.rst:74
+msgid "在消息序列前插入检索结果后的新消息序列"
+msgstr "New message sequence after inserting retrieval results before the message sequence"
+
+#: ../../source/APIReference/core/mem.rst:80
+msgid "智能体中更新Memory的接口，在RetrievalMem中该方法不产生新增记忆"
+msgstr "The interface for updating Memory in the agent, in RetrievalMem this method does not generate new memories."
+
+#: ../../source/APIReference/core/mem.rst:85
+msgid "写入时所需的配置参数（可选）"
+msgstr "Configuration parameters required for writing (optional)"
+
+#: ../../source/APIReference/core/mem.rst:92
+msgid "用户自行添加记忆的接口，需要自行调用更新记忆库"
+msgstr "The interface for users to add memories requires a manual call to update the memory bank."
+
+#: ../../source/APIReference/core/mem.rst:94
+msgid "待写入的文本列表"
+msgstr "Text list to be written"
+
+#: ../../source/APIReference/core/mem.rst:107
+msgid "Chat Memory"
+msgstr "Chat Memory"
+
+#: ../../source/APIReference/core/mem.rst:111
+msgid "基于提示词驱动的大模型多轮对话认知记忆实现。"
+msgstr "Implementation of cognitive memory for multi-turn dialogue in prompt-driven large models."
+
+#: ../../source/APIReference/core/mem.rst:113
+msgid "长期记忆向量数据库实例，用于存储与召回记忆文本。"
+msgstr "Long-term memory vector database instance, used for storing and recalling memory text."
+
+#: ../../source/APIReference/core/mem.rst:116
+msgid "大模型客户端，负责记忆抽取、合并与总结的全部 LLM 调用。"
+msgstr "Large model client, responsible for all LLM calls for memory extraction, merging, and summarization."
+
+#: ../../source/APIReference/core/mem.rst:119
+msgid "是否启用中文提示模式；True 为中文，False 为英文，默认 True。"
+msgstr "Whether to enable Chinese prompt mode; True for Chinese, False for English, default True."
+
+#: ../../source/APIReference/core/mem.rst:122
+msgid "构建检索或认知 query 时最多参考的历史对话轮数，默认 100。"
+msgstr "Maximum number of historical dialogue turns to reference when constructing a retrieval or cognitive query, default 100."
+
+#: ../../source/APIReference/core/mem.rst:125
+msgid "自定义“记忆特征抽取”提示词；若留空则根据 zh_mode 自动使用内置中英文模板。"
+msgstr "Customize the \"Memory Feature Extraction\" prompt; if left blank, automatically use the built-in Chinese-English templates based on zh_mode."
+
+#: ../../source/APIReference/core/mem.rst:128
+msgid "自定义“记忆合并更新”提示词；若留空则根据 zh_mode 自动使用内置中英文模板。"
+msgstr "Customize the \"Memory Merge Update\" prompt; if left blank, automatically use the built-in Chinese-English templates based on zh_mode."
+
+#: ../../source/APIReference/core/mem.rst:131
+msgid "额外注入的“记忆信息”提取引导提示词"
+msgstr "Additionally injected 'memory information' extraction-guiding prompts"
+
+#: ../../source/APIReference/core/mem.rst:137 ../../source/APIReference/core/mem.rst:189
+msgid "智能体中检索接口：基于长期记忆内容生成总结，并插入到消息序列最前端返回，在智能体执行流程自动调用"
+msgstr "Agent's retrieval interface: Generates a summary based on the long-term memory content, inserts it at the front of the message sequence to return, and is automatically called during the agent's execution process."
+
+#: ../../source/APIReference/core/mem.rst:139 ../../source/APIReference/core/mem.rst:152
+msgid "当前对话历史"
+msgstr "Current conversation history"
+
+#: ../../source/APIReference/core/mem.rst:142 ../../source/APIReference/core/mem.rst:155
+msgid "预留扩展参数（可选）"
+msgstr "Reserved extension parameters (optional)"
+
+#: ../../source/APIReference/core/mem.rst:144
+msgid "新增记忆总结后的新消息序列"
+msgstr "New message sequence after the new memory summary"
+
+#: ../../source/APIReference/core/mem.rst:150 ../../source/APIReference/core/mem.rst:202
+msgid "智能体中储存接口：在智能体推理、工具执行结束后，自动储存记忆。"
+msgstr "Agent storage interface: Automatically store memory after agent reasoning and tool execution."
+
+#: ../../source/APIReference/core/mem.rst:162
+msgid "清空全部长期记忆"
+msgstr "Clear all long-term memory"
+
+#: ../../source/APIReference/core/mem.rst:168
+msgid "Task Memory"
+msgstr "Task Memory"
+
+#: ../../source/APIReference/core/mem.rst:172
+msgid "基于任务执行上下文的认知记忆系统，支持任务逐步的记忆的存储、检索与经验总结。"
+msgstr "A cognitive memory system based on task execution context supports the step-by-step storage, retrieval, and summarization of memory and experience."
+
+#: ../../source/APIReference/core/mem.rst:174
+msgid "长期记忆向量数据库实例，用于存储与召回任务记忆。"
+msgstr "Long-term memory vector database instance, used for storing and recalling task memory."
+
+#: ../../source/APIReference/core/mem.rst:177
+msgid "大模型客户端，负责经验记忆总结的 LLM 调用。"
+msgstr "LLM client responsible for LLM calls for experience memory summarization."
+
+#: ../../source/APIReference/core/mem.rst:180
+msgid "自定义\"经验总结生成\"提示词，用于基于召回用例生成执行经验。"
+msgstr "Customize the \"Experience Summary Generation\" prompt for generating execution experience based on recalled use cases."
+
+#: ../../source/APIReference/core/mem.rst:183
+msgid "异步评估函数，用于评估当前执行结果的正确性、得分和评价意见。"
+msgstr "Asynchronous evaluation function used to evaluate the correctness, score, and feedback of the current execution result."
+
+#: ../../source/APIReference/core/mem.rst:191
+msgid "当前任务执行上下文的历史消息"
+msgstr "Current task execution context historical messages"
+
+#: ../../source/APIReference/core/mem.rst:194 ../../source/APIReference/core/mem.rst:207
+msgid "预留扩展参数"
+msgstr "Reserved extension parameters"
+
+#: ../../source/APIReference/core/mem.rst:196
+msgid "新增经验总结后的新消息序列"
+msgstr "New message sequence after adding experience summary."
+
+#: ../../source/APIReference/core/mem.rst:204
+msgid "任务执行历史消息（包含任务指令和上下文）"
+msgstr "Task execution history message (including task instructions and context)"
+
+#: ../../source/APIReference/core/mem.rst:214
+msgid "清空全部任务长期记忆。"
+msgstr "Clear all task long-term memory."
+
+#~ msgid "将最新一条消息内容写入记忆向量库"
+#~ msgstr "Write the content of the latest message into the memory vector database"
+
+#~ msgid "待写入的上下文消息序列（仅最后一条生效）"
+#~ msgstr "Context message sequence to be written (only the last one takes effect)"
+
+#~ msgid "认知接口：从最新一条消息中提取特征并更新长期记忆库"
+#~ msgstr "Cognitive Interface: Extract features from the latest message and update the long-term memory bank"
+
+#~ msgid "认知接口：基于长期记忆中的任务经验生成总结，并插入到消息序列最前端。"
+#~ msgstr "Cognitive Interface: Generate a summary based on the task experience in long-term memory, and insert it at the very front of the message sequence."
+
+#~ msgid "认知接口：从任务执行上下文中提取记忆特征并更新长期记忆库。"
+#~ msgstr "Cognitive Interface: Extract memory features from the task execution context and update the long-term memory bank."
+
+#~ msgid "当前对话历史（仅最后一条生效）"
+#~ msgstr "Current conversation history (only the last one takes effect)"

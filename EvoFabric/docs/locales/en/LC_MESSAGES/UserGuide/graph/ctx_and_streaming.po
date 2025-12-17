@@ -1,0 +1,69 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:2
+msgid "上下文和流式消息管理"
+msgstr "Context and Streaming Message Management"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:5
+msgid "获取上下文环境"
+msgstr "Obtain context environment"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:7
+msgid "图引擎运行的过程中，每个节点以及 :py:class:`~evofabric.core.tool.ToolManager` 调用的工具，都会有独立的上下文环境 :py:class:`~evofabric.core.graph.StreamCtx`，可以通过调用 :py:meth:`~evofabric.core.graph.current_ctx` 来获取。"
+msgstr "During the operation of the graph engine, each node as well as the tools called by :py:class:`~evofabric.core.tool.ToolManager` will have an independent context environment :py:class:`~evofabric.core.graph.StreamCtx`, which can be obtained by calling :py:meth:`~evofabric.core.graph.current_ctx`."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:9
+msgid "上下文环境包括："
+msgstr "Contextual environment includes:"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:11
+msgid "node_name: 当前节点名字。"
+msgstr "node_name: Current node name."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:13
+msgid "call_id: 节点运行时生成的唯一 UUID。同一节点不同运行轮次时，ID不同。"
+msgstr "call_id: A unique UUID generated at node runtime. The ID is different for the same node in different run rounds."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:15
+msgid "tool_name: 当前执行的工具名。"
+msgstr "tool_name: the name of the currently executing tool."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:17
+msgid "tool_call_id: 工具执行ID。对应大语言模型输出的 :py:class:`~evofabric.core.typing.ToolCall` 中 ``id`` 。"
+msgstr "tool_call_id: Tool Execution ID. Corresponds to the ``id`` in the :py:class:`~evofabric.core.typing.ToolCall` class of the large language model's output."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:19
+msgid "在节点中获取上下文信息："
+msgstr "Obtain context information in the node:"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:33
+msgid "管理流式消息"
+msgstr "Manage Streaming Messages"
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:35
+msgid "我们支持通过 :py:meth:`~evofabric.core.graph.set_streaming_handler` 注册自定义的流式消息 Handler 来处理节点输出的流式消息。"
+msgstr "We support registering custom streaming message Handlers via :py:meth:`~evofabric.core.graph.set_streaming_handler` to process streaming messages from node outputs."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:37
+msgid "流式消息输出是 ``dict`` 格式，包含上下文环境和一个 ``payload`` 字段，``payload`` 的值即为节点通过 :py:meth:`~evofabric.core.graph.StreamWriter.put` 方法传出流式消息。"
+msgstr "Streaming message output is in ``dict`` format, containing the context environment and a ``payload`` field, where the value of ``payload`` is the streaming message output by the node through the :py:meth:`~evofabric.core.graph.StreamWriter.put` method."
+
+#: ../../source/UserGuide/graph/ctx_and_streaming.rst:39
+msgid "注册示例："
+msgstr "Registration Example:"

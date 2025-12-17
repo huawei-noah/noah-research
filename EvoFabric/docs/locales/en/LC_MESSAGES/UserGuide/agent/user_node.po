@@ -1,0 +1,149 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-03 17:19+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/UserGuide/agent/user_node.rst:2
+msgid "UserNode"
+msgstr "UserNode"
+
+#: ../../source/UserGuide/agent/user_node.rst:6
+msgid "UserNode 是一个从终端获取用户输入并为图提供交互功能的节点。"
+msgstr "UserNode is a node that receives user input from the terminal and provides interactive functionality for the graph."
+
+#: ../../source/UserGuide/agent/user_node.rst:10
+msgid "概述"
+msgstr "Overview"
+
+#: ../../source/UserGuide/agent/user_node.rst:12
+msgid "UserNode 继承自 :class:`~evofabric.core.graph.AsyncNode`，提供一个简单的用户交互接口。当图执行到 UserNode 时，会在终端显示提示信息并等待用户输入，然后将输入内容传递给图的后续流程。"
+msgstr "UserNode inherits from :class:`~evofabric.core.graph.AsyncNode`, providing a simple user interaction interface. When the graph execution reaches UserNode, it displays a prompt in the terminal and waits for user input, then passes the input to the subsequent flow."
+
+#: ../../source/UserGuide/agent/user_node.rst:16
+msgid "特性"
+msgstr "Characteristics"
+
+#: ../../source/UserGuide/agent/user_node.rst:18
+msgid "**异步处理**: 避免阻塞事件循环，支持高并发场景"
+msgstr "**Asynchronous Processing**: Avoid blocking the event loop, support high-concurrency scenarios"
+
+#: ../../source/UserGuide/agent/user_node.rst:19
+msgid "**可配置提示**: 支持自定义用户提示信息"
+msgstr "**Configurable Prompt**: Supports custom user prompts"
+
+#: ../../source/UserGuide/agent/user_node.rst:20
+msgid "**灵活存储**: 可指定输入在状态中的存储键名"
+msgstr "**Flexible Storage**: Can specify the storage key name for input in the state"
+
+#: ../../source/UserGuide/agent/user_node.rst:21
+msgid "**异常安全**: 优雅处理各种异常情况"
+msgstr "**Exception Safety**: Gracefully handle various exceptions"
+
+#: ../../source/UserGuide/agent/user_node.rst:22
+msgid "**简单易用**: 配置简单，开箱即用"
+msgstr "**Simple and Easy to Use**: Simple configuration, Ready to use out of the box"
+
+#: ../../source/UserGuide/agent/user_node.rst:25
+msgid "基本使用"
+msgstr "Basic Usage"
+
+#: ../../source/UserGuide/agent/user_node.rst:41
+msgid "在图中使用"
+msgstr "Use in the figure"
+
+#: ../../source/UserGuide/agent/user_node.rst:62
+msgid "最佳实践"
+msgstr "Best Practices"
+
+#: ../../source/UserGuide/agent/user_node.rst:64
+msgid "**1. 输入验证**"
+msgstr "**1. Input Validation**"
+
+#: ../../source/UserGuide/agent/user_node.rst:66
+msgid "如果需要对用户输入进行验证，可以在后续节点中添加处理逻辑："
+msgstr "If user input validation is required, processing logic can be added in subsequent nodes:"
+
+#: ../../source/UserGuide/agent/user_node.rst:76
+msgid "**2. 错误处理**"
+msgstr "**2. Error Handling**"
+
+#: ../../source/UserGuide/agent/user_node.rst:78
+msgid "UserNode 已经内置完善的异常处理，但建议在图的后续节点中添加业务逻辑错误处理："
+msgstr "UserNode already has built-in comprehensive exception handling, but it is recommended to add business logic error handling in the subsequent nodes of the graph:"
+
+#: ../../source/UserGuide/agent/user_node.rst:88
+msgid "**3. 多轮对话**"
+msgstr "**3. Multi-turn Dialogue**"
+
+#: ../../source/UserGuide/agent/user_node.rst:90
+msgid "可以实现简单的多轮对话模式："
+msgstr "Can implement a simple multi-turn dialogue mode:"
+
+#: ../../source/UserGuide/agent/user_node.rst:109
+msgid "参数说明"
+msgstr "Parameter Description"
+
+#: ../../source/UserGuide/agent/user_node.rst:113
+msgid "显示的用户输入提示信息。"
+msgstr "Displayed user input prompt"
+
+#: ../../source/UserGuide/agent/user_node.rst
+msgid "type"
+msgstr "type"
+
+#: ../../source/UserGuide/agent/user_node.rst:115 ../../source/UserGuide/agent/user_node.rst:122
+msgid "str"
+msgstr "str"
+
+#: ../../source/UserGuide/agent/user_node.rst
+msgid "default"
+msgstr "default"
+
+#: ../../source/UserGuide/agent/user_node.rst:116
+msgid "\"Please enter your input: \""
+msgstr "\"Please enter your input: \""
+
+#: ../../source/UserGuide/agent/user_node.rst:120
+msgid "用户输入在状态中存储的键名。"
+msgstr "The key name for user input stored in the state."
+
+#: ../../source/UserGuide/agent/user_node.rst:123
+msgid "\"user_input\""
+msgstr "\"user_input\""
+
+#: ../../source/UserGuide/agent/user_node.rst:126
+msgid "异常处理"
+msgstr "Exception Handling"
+
+#: ../../source/UserGuide/agent/user_node.rst:128
+msgid "UserNode 自动处理以下异常情况："
+msgstr "UserNode automatically handles the following exceptions:"
+
+#: ../../source/UserGuide/agent/user_node.rst:130
+msgid "**EOFError**: 用户输入流结束（如文件结束符）"
+msgstr "**EOFError**: User input stream ends (e.g., end-of-file marker)"
+
+#: ../../source/UserGuide/agent/user_node.rst:131
+msgid "**KeyboardInterrupt**: 用户中断输入（Ctrl+C）"
+msgstr "**KeyboardInterrupt**: User interrupted input (Ctrl+C)"
+
+#: ../../source/UserGuide/agent/user_node.rst:132
+msgid "**其他异常**: 捕获所有未预期的错误"
+msgstr "**Other Exceptions**: Catch all unexpected errors"
+
+#: ../../source/UserGuide/agent/user_node.rst:134
+msgid "所有异常情况下都会返回空的状态增量，确保图执行不会中断。"
+msgstr "An empty state delta is returned in all exceptional cases to ensure that graph execution is not interrupted."

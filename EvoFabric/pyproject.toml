@@ -1,0 +1,47 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests", "tests.*", "docs", "docs.*"]
+
+
+[project]
+name = "evofabric"
+version = "0.1.2"
+authors = []
+description = "An Agent System Framework"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "pip",
+    "build",
+    "pydantic",
+    "setuptools",
+    "loguru",
+    "httpx",
+    "openai",
+    "pydantic_core",
+    "contextvars",
+    "numpy",
+    "mcp>=1.16.0",
+    "docstring_parser",
+    "chromadb>=1.1.0",
+    "fastmcp>=2.12.2",
+    "docker>=7.1.0",
+    "openai>=1.0.0",
+    "pyyaml>=6.0",
+    "numpy>=1.22.0",
+    "tqdm>=4.64.0",
+    "flask",
+    "cloudpickle",
+]
