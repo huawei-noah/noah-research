@@ -11,9 +11,9 @@ exclude = ["tests", "tests.*", "docs", "docs.*"]
 
 [project]
 name = "evofabric"
-version = "0.1.2"
+version = "0.1.3"
 authors = []
-description = "An Agent System Framework"
+description = "An Open, Evolvable Agent Framework for Creative Intelligence System"
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
@@ -45,3 +45,6 @@ dependencies = [
     "flask",
     "cloudpickle",
 ]
+
+[project.urls]
+Homepage = "https://github.com/huawei-noah/noah-research/tree/master/EvoFabric"
