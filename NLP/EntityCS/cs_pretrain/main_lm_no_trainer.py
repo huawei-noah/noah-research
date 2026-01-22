@@ -25,7 +25,7 @@ import sys
 import numpy as np
 import datasets
 import torch
-from datasets import load_from_disk, concatenate_datasets
+from datasets import load_dataset, concatenate_datasets
 from torch.utils.data import DataLoader
 
 import transformers
@@ -378,10 +378,12 @@ def main():
     raw_datasets_by_lang = {}
     for lang in args.languages:
         logger.info(f"Loading {lang.upper()}")
+
+        raw_datasets_by_lang[lang] = load_dataset(
+            "huawei-noah/entity_cs", data_dir=f"data/{lang}/", split="train"
+        )
+
         if lang == "en":
-            raw_datasets_by_lang[lang] = load_from_disk(
-                os.path.join(args.hf_datasets_folder_en, "en")
-            )
             # EN dataset does not have "language" column, so we add it now
             new_col = [lang] * len(raw_datasets_by_lang[lang])
             raw_datasets_by_lang[lang] = raw_datasets_by_lang[lang].add_column(
@@ -392,16 +394,12 @@ def main():
                 "en_sentence", "cs_sentence"
             )
         else:
-            raw_datasets_by_lang[lang] = load_from_disk(
-                os.path.join(args.hf_datasets_folder_no_en, lang)
-            )
             # We are not feeding parallel data, so remove en_sentence from the dataset
             raw_datasets_by_lang[lang] = raw_datasets_by_lang[lang].remove_columns(
                 "en_sentence"
             )
 
-    # shuffle cs_sentences in all langs
-    for lang in args.languages:
+        # shuffle cs_sentences in all langs
         raw_datasets_by_lang[lang] = raw_datasets_by_lang[lang].shuffle(seed=args.seed)
 
     # merge langs to one train, validation dataset
