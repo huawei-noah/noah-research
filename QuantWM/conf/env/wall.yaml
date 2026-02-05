@@ -1,0 +1,17 @@
+name: wall
+args: []
+kwargs: {}
+
+dataset:
+  _target_: "datasets.wall_dset.load_wall_slice_train_val"
+  n_rollout: null
+  normalize_action: ${normalize_action}
+  data_path: ${oc.env:DATASET_DIR}/wall_single
+  split_ratio: 0.9
+  split_mode: "random"
+  transform:
+    _target_: "datasets.img_transforms.default_transform"
+    img_size: ${img_size}
+
+decoder_path: null
+num_workers: 16

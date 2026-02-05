@@ -1,0 +1,3 @@
+_target_: models.encoder.resnet.resnet18
+pretrained: True
+unit_norm: False

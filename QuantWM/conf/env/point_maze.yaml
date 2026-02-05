@@ -1,0 +1,16 @@
+name: point_maze
+args: []
+kwargs: {}
+
+dataset:
+  _target_: "datasets.point_maze_dset.load_point_maze_slice_train_val"
+  n_rollout: null
+  normalize_action: ${normalize_action}
+  data_path: ${oc.env:DATASET_DIR}/point_maze
+  split_ratio: 0.9
+  transform:
+    _target_: "datasets.img_transforms.default_transform"
+    img_size: ${img_size}
+
+decoder_path: null
+num_workers: 16

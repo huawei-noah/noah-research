@@ -1,0 +1,13 @@
+_target_: planning.mpc.MPCPlanner
+max_iter: null # unlimited if null
+n_taken_actions: 1
+sub_planner:
+  target: planning.gd.GDPlanner
+  horizon: 5
+  action_noise: 0.003
+  sample_type: 'randn' # 'zero' or 'randn'
+  lr: 1 
+  opt_steps: 1000
+  eval_every: 10
+
+name: mpc_gd
