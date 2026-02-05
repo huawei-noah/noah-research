@@ -1,0 +1,70 @@
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+
+hydra:
+  run:
+    dir: plan_outputs/${now:%Y%m%d%H%M%S}_${replace_slash:${model_name}}_gH${goal_H}_${tag}
+  sweep:
+    dir: plan_outputs/${now:%Y%m%d%H%M%S}_${replace_slash:${model_name}}_gH${goal_H}_${tag}
+    subdir: ${hydra.job.num}
+  launcher:
+    submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+    nodes: 1
+    tasks_per_node: 1
+    cpus_per_task: 16
+    mem_gb: 256
+    gres: "gpu:h100:1"
+    qos: "explore"
+    timeout_min: 720
+    setup: ["export DEBUGVAR=$(scontrol show hostnames $SLURM_JOB_NODELIST)",
+            export MASTER_ADDR="$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n 1)",
+            "export MASTER_PORT=$(for port in $(shuf -i 30000-65500 -n 20); do if [[ $(netstat -tupln 2>&1 | grep $port | wc -l) -eq 0 ]] ; then echo $port; break; fi; done;)",]
+
+# model to load for planning
+ckpt_base_path: /cache/ckpts  # put absolute path here. Checkpoints will be loaded from ${ckpt_base_path}/outputs
+model_name: null
+model_epoch: latest
+tag: fp # w8a8_Wminmax_Aminmax_iter1
+
+sta_scale: True
+scale_tag: "iter2_opt10_eval50"
+quant: False
+quant_encoder: False
+predictor_wbit: 8
+predictor_abit: 8
+encoder_wbit: 8
+encoder_abit: 8
+w_quant_method: "minmax"
+a_quant_method: "minmax"
+calib_mode_a: "layer_wise" # "token_wise"
+quant_iter: 1
+
+seed: 99
+n_evals: 50
+goal_source: 'random_state'
+goal_H: 5 
+n_plot_samples: 10
+
+debug_dset_init: False
+
+objective:
+  _target_: planning.objectives.create_objective_fn
+  alpha: 0
+  base: 2
+  mode: last
+
+planner:
+  _target_: planning.mpc.MPCPlanner
+  # max_iter: null 
+  max_iter: 50
+  n_taken_actions: 5
+  sub_planner:
+    target: planning.cem.CEMPlanner
+    horizon: 5
+    topk: 30
+    num_samples: 300
+    var_scale: 1
+    opt_steps: 10
+    eval_every: 1
+  name: mpc_cem

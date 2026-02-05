@@ -1,0 +1,2 @@
+_target_: models.encoder.r3m.load_r3m
+modelid: resnet18

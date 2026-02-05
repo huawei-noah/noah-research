@@ -1,0 +1,20 @@
+name: deformable_env
+args: []
+kwargs: 
+  object_name: "granular"
+
+load_dir: ""
+
+dataset:
+  _target_: "datasets.deformable_env_dset.load_deformable_dset_slice_train_val"
+  n_rollout: null
+  normalize_action: ${normalize_action}
+  data_path: ${oc.env:DATASET_DIR}/deformable
+  object_name: "granular"
+  split_ratio: 0.9
+  transform:
+    _target_: "datasets.img_transforms.default_transform"
+    img_size: ${img_size}
+
+decoder_path: null
+num_workers: 16

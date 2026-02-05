@@ -1,0 +1,41 @@
+defaults:
+  - _self_
+  - override hydra/launcher:  local
+  - override hydra/output:  local
+
+
+# snapshot
+save_snapshot: false
+load_snap: ""
+# replay buffer
+num_workers: 10
+batch_size: 32 #256
+train_steps: 2000000
+eval_freq: 20000
+# misc
+seed: 1
+device: cuda
+# experiment
+experiment: train_r3m
+# agent
+lr: 1e-4
+# data
+alpha: 0.2
+dataset: "ego4d"
+wandbproject: 
+wandbuser: 
+doaug: "none"
+datapath: 
+
+agent:
+  _target_: r3m.R3M
+  device: ${device}
+  lr: ${lr}
+  hidden_dim: 1024
+  size: 34
+  l2weight: 0.00001
+  l1weight: 0.00001
+  tcnweight: 1.0
+  langweight: 0.0
+  l2dist: true
+  bs: ${batch_size}
