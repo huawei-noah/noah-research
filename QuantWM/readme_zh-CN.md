@@ -179,6 +179,11 @@ CUDA_VISIBLE_DEVICES=<GPU_ID> python -u plan_quant_awq.py   --config-name plan_w
 
 ---
 
+
+## 致谢
+
+我们非常感谢以下代码库：[DINO-WM](https://github.com/gaoyuezhou/dino_wm), [SmoothQuant](https://github.com/mit-han-lab/smoothquant), [AWQ](https://github.com/mit-han-lab/llm-awq), [OmniQuant](https://github.com/OpenGVLab/OmniQuant), [FQ-ViT](https://github.com/megvii-research/FQ-ViT).
+
 ## 引用
 
 ```bibtex
