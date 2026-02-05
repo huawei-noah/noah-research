@@ -1,5 +1,6 @@
+# An Empirical Study of World Model Quantization
+By Zhongqian Fu, Tianyi Zhao, Kai Han, Hang Zhou, Xinghao Chen and Yunhe Wang.  [[arXiv]](https://www.arxiv.org/abs/2602.02110)
 
-# Dino-WM Planning & Quantization Experiments
 
 This project is designed to **evaluate the quantization inference behavior of World Model (Dino-WM)**. The code is based on the official Dino-WM implementation and integrates several **Post-Training Quantization (PTQ)** methods to replicate the core conclusions from the related research paper.
 
@@ -174,3 +175,17 @@ CUDA_VISIBLE_DEVICES=<GPU_ID> python -u plan_quant_awq.py   --config-name plan_w
 | `plan_quant_awq.py` | AWQ |
 
 ---
+
+## Citation
+
+```bibtex
+@misc{fu2026empiricalstudyworldmodel,
+      title={An Empirical Study of World Model Quantization}, 
+      author={Zhongqian Fu and Tianyi Zhao and Kai Han and Hang Zhou and Xinghao Chen and Yunhe Wang},
+      year={2026},
+      eprint={2602.02110},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2602.02110}, 
+}
+```
