@@ -44,6 +44,7 @@
 
 * **Versatile Across Scenarios**: Whether it’s the research scenario for rapid prototype validation or the engineering scenario for large-scale deployment, it can provide a solid foundation and flexible expansion points.
 
+* **Industry Compatibility**: Focus on the construction and research of industry-specific Agent capabilities, leverage industry knowledge and expert experience efficiently, and enhance industry operational efficiency.
 ## 🚀 QuickStart
 
 ### Installation
@@ -208,27 +209,22 @@ We sincerely appreciate everyone who helps improve the framework, whether throug
 
 ### Core Contributors
 
-Listed in alphabetical order by last name:
-
-* Da Chen
-
-* Guojin Chen
-
-* Zihao Chen
+Listed in alphabetical order by first name:
 
 * Yuqi Cui
-
-* Jiaquan Guo
-
-* Shixiong Kai
-
-* Ke Ye
-
+* Da Chen 
+* Guojin Chen 
+* Zihao Chen 
+* Wenyi Fang 
+* Jiaquan Guo 
+* Hailin Hu 
+* Shoubo Hu 
+* Shixiong Kai 
+* Kaichao Liang 
+* Xinduo Liu 
+* Ke Ye 
 * Lihao Yin
-
-* Kaichao Liang
-
-* Xinduo Liu
+* Mingxuan Yuan
 
 ## ⚖️ License
 
