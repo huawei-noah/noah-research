@@ -171,7 +171,7 @@ It enables:
 
 ##### SOP2Workflow: Getting Started
 
-A full runnable example is provided under [sop2workflow example](examples/sop2workflow/readme.md) for detailed setup and execution instructions.
+A full runnable example is provided under [sop2workflow example](examples/sop2workflow/README.md) for detailed setup and execution instructions.
 
 #### 2. Another application
 
