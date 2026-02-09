@@ -174,8 +174,6 @@ It enables:
 
 A full runnable example is provided under [sop2workflow example](examples/sop2workflow/README.md) for detailed setup and execution instructions.
 
-#### 2. Another application
-
 ### 🔬 Rethinker: A Scientific Reasoning Framework with OpenPangu
 
 EvoFabric also provides a scientific reasoning framework called Rethinker, which is built upon the Rethink paradigm. This framework incorporates the answer from the previous iteration into the next reasoning step, helping to eliminate accumulated reasoning errors.

@@ -173,8 +173,6 @@ EvoFabric 的设计目标不仅是构建通用的智能体系统，还旨在支�
 
 完整可运行示例位于 [sop2workflow example](examples/sop2workflow/README.md)，其中包含详细的配置与执行说明。
 
-#### 2. 另一个应用
-
 ### 🔬 Rethinker：基于 OpenPangu 的科学推理框架
 
 EvoFabric 还提供了一个名为 Rethinker 的科学推理框架，该框架基于 Rethink 范式构建。它将上一轮迭代的答案融入下一步推理过程，从而帮助消除推理误差的累积。
