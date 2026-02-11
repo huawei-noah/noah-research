@@ -162,6 +162,7 @@ EvoFabric 让“智能体编排”不再是黑盒，而是一个可视、可调�
    :caption: Applications:
    :maxdepth: 1
 
+   Applications/rethinker
    Applications/sop2workflow
    Applications/kernel_evolve
 
