@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 from functools import partial
-from typing import Any, AsyncIterator, Callable, List, Union
+from typing import Any, Callable, List, AsyncGenerator
 
 from openai import AsyncStream
 from openai.types.chat import ChatCompletionChunk
