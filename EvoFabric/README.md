@@ -31,6 +31,7 @@
 
 
 ## 📢 News
+- **[2026-02]** [Paper](https://arxiv.org/abs/2602.04496) and [code](examples/rethinker-agent-framework/README.md) for Rethinker agent framework is now released!
 - **[2025-11]** EvoFabric 0.1.3 is released now! Checkout our [guidance documentation](https://evofabric.readthedocs.io/en/latest/) for detailed instructions and best practices.
 
 ## ✨Why EvoFabric?
