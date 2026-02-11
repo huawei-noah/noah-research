@@ -8,13 +8,14 @@ sys.path.insert(0, os.path.abspath('../../'))
 project = 'EvoFabric'
 copyright = '2025, Huawei Technologies Co., Ltd.'
 author = 'Huawei Technologies Co., Ltd.'
-release = 'v0.1.2'
+release = '0.1.4'
 
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinxcontrib.mermaid'
+    'sphinxcontrib.mermaid',
+    'sphinx.ext.ifconfig',
 ]
 
 templates_path = ['_templates']

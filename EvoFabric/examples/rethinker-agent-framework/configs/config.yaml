@@ -1,0 +1,61 @@
+llm_resources:
+  pangu_solver:
+    model_name: your-model-name
+    api_key: your-api-key
+    base_url: your-api-base-url
+    top_p: 1.0
+    temperature: 1.0
+    fast_think: false
+    stop_condition: '<code[^>]*>((?:(?!<code).)*?)</code>'
+    http_client_kwargs:
+      verify: false
+
+  pangu_selector:
+    model_name: your-model-name
+    api_key: your-api-key
+    base_url: your-api-base-url
+    top_p: 0.8
+    temperature: 1.0
+    fast_think: false
+    stop_condition: '<code[^>]*>((?:(?!<code).)*?)</code>'
+    http_client_kwargs:
+      verify: false
+
+  pangu_web_parser:
+    model_name: your-model-name
+    api_key: your-api-key
+    base_url: your-api-base-url
+    top_p: 1.0
+    temperature: 1.0
+    fast_think: true
+    http_client_kwargs:
+      verify: false
+
+web_parser:
+  model: pangu_web_parser
+  use_jina: true
+  jina_api_key: your-jina-api-key
+
+web_search:
+  serper_api_key: your-serper-api-key
+
+solution:
+  solver_model: pangu_solver
+  critic_model: pangu_solver
+  summary_model: pangu_solver
+  selector_model: pangu_selector
+  selector_iteration: 4
+  max_agent_step: 30
+  tool_timeout: 300
+
+structure:
+  num_parallel: 5
+  num_solution_iteration: 2
+  num_critic_iteration: 4
+
+exp:
+  input_file_path: data/HLE_all.json
+  exp_name: HLE
+  output_root: output
+  max_question_thread_limit: 20
+  max_node_thread_limit: 20

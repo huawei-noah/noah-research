@@ -7,5 +7,6 @@ App
 .. toctree::
     :maxdepth: 1
 
-    sop2workflow
     kernel_evolve
+    rethinker
+    sop2workflow

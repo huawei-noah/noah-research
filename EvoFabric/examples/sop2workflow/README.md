@@ -121,7 +121,7 @@ Download the codes and format your directory structure as follows (except for th
 examples/sop2workflow/
 │
 ├── readme.md                     # this document
-├── example_on_sop_bench.py        # main runnable script
+├── example.py        # main runnable script
 │
 ├── customer_service_sop/
 │   ├── sop.txt                   # This file defines the procedure to be converted into an agent workflow
@@ -142,7 +142,10 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 Run the script:
 
 ```bash
-python examples/sop2workflow/example_on_sop_bench.py
+python examples/sop2workflow/example.py \
+  --graph_llm=your-model-name
+  --node_llm=your-model-name
+  --run_llm=your-model-name
 ```
 
 The workflow generator will:

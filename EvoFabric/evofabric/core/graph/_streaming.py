@@ -44,6 +44,9 @@ class StreamCtx(BaseModel):
     tool_name: Optional[str] = None
     tool_call_id: Optional[str] = None
 
+    # other context can be saved as meta info
+    meta: Optional[dict] = None
+
     def __bool__(self) -> bool:
         """If all attr is empty, return False, otherwise return true."""
         return any(
@@ -85,6 +88,10 @@ def stream_writer_env(ctx_updates: StreamCtx):
     parent_ctx = _STREAM_CTX.get()
 
     update_data = ctx_updates.model_dump(exclude_unset=True)
+    if ctx_updates.meta is not None:
+        merged_meta = (parent_ctx.meta or {}).copy()
+        merged_meta.update(ctx_updates.meta)
+        update_data["meta"] = merged_meta
     new_ctx = parent_ctx.model_copy(update=update_data)
 
     token = _STREAM_CTX.set(new_ctx)

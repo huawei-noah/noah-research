@@ -31,6 +31,7 @@
 
 
 ## 📢 News
+- **[2026-02]** [Paper](https://arxiv.org/abs/2602.04496) and [code](examples/rethinker-agent-framework/README.md) for Rethinker agent framework is now released!
 - **[2025-11]** EvoFabric 0.1.3 is released now! Checkout our [guidance documentation](https://evofabric.readthedocs.io/en/latest/) for detailed instructions and best practices.
 
 ## ✨Why EvoFabric?
@@ -184,21 +185,21 @@ Our paper can be found at [https://arxiv.org/abs/2602.04496](https://arxiv.org/a
 
 **Main Results of Rethinker on Expert-Level Reasoning Benchmarks.**
 
-| Category            | Model / Framework                                  | HLE  | GAIA | XBench |
-| ------------------- | -------------------------------------------------- | ---- | ---- | ------ |
-| Foundation Model    | Kimi K2 (Kimi et al., 2025)                        | 18.1 | 57.7 | 50.0   |
-| Foundation Model    | Claude-4.5-Sonnet (Anthropic, 2025)                | 24.5 | 71.2 | 66.0   |
-| Foundation Model    | DeepSeek-V3.2 (Liu et al., 2025a)                  | 27.2 | 63.5 | 71.0   |
-| Foundation Model    | GLM-4.6 (Zhipu, 2025)                              | 30.4 | 71.9 | 70.0   |
-| Foundation Model    | GPT-5-high (OpenAI, 2025b)                         | 35.2 | 76.4 | 77.8   |
-| Foundation Model    | Gemini-3-Pro (Google, 2025)                        | 38.3 | 79.0 | 87.0   |
-| Inference Framework | WebExplorer (Liu et al., 2025b)                    | 17.3 | 50.0 | 53.7   |
-| Inference Framework | OpenAI DeepResearch (OpenAI, 2025a)                | 26.6 | 67.4 | –      |
-| Inference Framework | Kimi Researcher (Kimi, 2025)                       | 26.9 | –    | 69.0   |
-| Inference Framework | Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025) | 32.9 | 70.9 | 75.0   |
-| Inference Framework | MiroThinker-v1.0 (30B) (MiroMind et al., 2025)     | 33.4 | 73.5 | 70.6   |
-| Inference Framework | ReThinker (OpenPangu-72B)                          | 33.1 | 72.8 | 78.0   |
-
+| Category                    | Model / Framework                                  | HLE  | GAIA | XBench |
+|-----------------------------|----------------------------------------------------|------|------|--------|
+| Foundation Model w. tools   | Kimi K2 (Kimi et al., 2025)                        | 18.1 | 57.7 | 50.0   |
+| Foundation Model w. tools   | Claude-4.5-Sonnet (Anthropic, 2025)                | 24.5 | 71.2 | 66.0   |
+| Foundation Model   w. tools | DeepSeek-V3.2 (Liu et al., 2025a)                  | 27.2 | 63.5 | 71.0   |
+| Foundation Model  w. tools  | GLM-4.6 (Zhipu, 2025)                              | 30.4 | 71.9 | 70.0   |
+| Foundation Model  w. tools  | GPT-5-high (OpenAI, 2025b)                         | 35.2 | 76.4 | 77.8   |
+| Foundation Model   w. tools | Gemini-3-Pro (Google, 2025)                        | 38.3 | 79.0 | 87.0   |
+| Inference Framework         | WebExplorer (Liu et al., 2025b)                    | 17.3 | 50.0 | 53.7   |
+| Inference Framework         | OpenAI DeepResearch (OpenAI, 2025a)                | 26.6 | 67.4 | –      |
+| Inference Framework         | Kimi Researcher (Kimi, 2025)                       | 26.9 | –    | 69.0   |
+| Inference Framework         | Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025) | 32.9 | 70.9 | 75.0   |
+| Inference Framework         | MiroThinker-v1.0 (30B) (MiroMind et al., 2025)     | 33.4 | 73.5 | 70.6   |
+| Inference Framework         | **ReThinker (OpenPangu-72B) (Ours)**               | 33.1 | 72.8 | 78.0   |
+| Inference Framework         | **ReThinker (Gemini-3-pro) (Ours)**                        | 52.2 | 81.6 | 90.0   |
 
 ## 🤝 Contributors
 
