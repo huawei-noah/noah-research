@@ -1,0 +1,214 @@
+run_name: 300M-40B-Pretrain
+seed: 6198
+dry_run: false
+
+wandb:
+  name: ${run_name}
+  project: 300m-40b-pretrain
+
+
+model:
+  d_model: 1024
+  n_heads: 16
+  n_layers: 15
+  weight_tying: false
+  alibi: false
+  rope: true
+  flash_attention: true
+  attention_dropout: 0.0
+  attention_layer_norm: false
+  clip_qkv: null
+  include_bias: false
+  block_type: versatilevffn
+  layer_norm_type: rms
+  layer_norm_with_affine: true
+  layer_norm_eps: 1e-6
+  bias_for_layer_norm: false
+  attention_layer_norm_with_affine: false
+  activation_type: swiglu
+  residual_dropout: 0.0
+  embedding_dropout: 0.0
+  max_sequence_length: 4096
+  vocab_size: 50280
+  embedding_size: 50304
+  eos_token_id: 0
+  pad_token_id: 1
+  init_device: meta
+  init_fn: normal
+  init_std: 0.02
+  init_cutoff_factor: 3
+
+
+softmax_auxiliary_loss: false
+softmax_loss_multiplier: 10
+balance_loss: true
+balance_loss_multiplier: 5e-5
+compile: null
+
+optimizer:
+  name: adamw
+  learning_rate: 5e-4
+  weight_decay: 0.1
+  eps: 1e-8
+  decay_norm_and_bias: false
+  decay_embeddings: true
+  betas:
+  - 0.9
+  - 0.95
+  metrics_log_interval: 10
+
+scheduler:
+  name: cosine_with_warmup
+  t_warmup: 1500  
+  alpha_f: 0.1
+  warmup_min_lr: 5e-6
+
+tokenizer:
+  identifier: tokenizers/allenai_gpt-neox-olmo-dolma-v1_5.json
+  truncate_direction: right
+
+
+save_folder: /outputs/save_folder_0/
+save_overwrite: true
+
+save_interval: 10000
+save_num_checkpoints_to_keep: 100
+save_interval_unsharded: 700  
+save_num_unsharded_checkpoints_to_keep: 100
+
+load_path: /ckpt/olmo/300m-baseline-unsharded
+reset_optimizer_state: True
+reset_trainer_state: True
+
+max_duration: 1ep
+global_train_batch_size: 384 
+device_train_microbatch_size: 3 
+precision: amp_bf16
+
+fsdp:
+  wrapping_strategy: null
+  precision: mixed
+
+max_grad_norm: 1.0
+max_grad_norm_ratio: null
+
+speed_monitor:
+  window_size: 20
+
+eval_interval: 700 
+eval_subset_num_batches: -1
+device_eval_batch_size: ${device_train_microbatch_size}
+evaluators:
+  ##########################
+  # Downstream evaluations #
+  ##########################
+  - label: piqa
+    type: downstream
+
+  - label: hellaswag
+    type: downstream
+
+  - label: openbook_qa
+    type: downstream
+ 
+  - label: sciq
+    type: downstream
+
+  - label: arc_easy
+    type: downstream
+
+  - label: arc_challenge
+    type: downstream
+
+  - label: commonsense_qa
+    type: downstream
+
+  - label: winogrande
+    type: downstream
+
+
+data:
+  pad_direction: right
+  num_workers: 32
+  drop_last: true
+  pin_memory: true
+  prefetch_factor: 8
+  persistent_workers: true
+  timeout: 0
+  instance_filter:
+    repetition_max_period: 13
+    repetition_min_period: 1
+    repetition_max_count: 32
+  paths:
+    - /data/fineweb-edu-100B-dolma-cache/part-00-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-00-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-01-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-01-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-02-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-02-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-03-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-03-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-04-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-04-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-05-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-05-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-06-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-06-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-07-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-07-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-08-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-08-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-09-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-09-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-10-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-10-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-11-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-11-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-12-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-12-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-13-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-13-00001.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-14-00000.npy
+    - /data/fineweb-edu-100B-dolma-cache/part-14-00001.npy
+
+    # - /data/fineweb-edu-100B-dolma-cache/part-15-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-15-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-16-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-16-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-17-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-17-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-18-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-18-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-19-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-19-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-20-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-20-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-21-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-21-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-22-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-22-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-23-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-23-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-24-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-24-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-25-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-25-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-26-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-26-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-27-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-27-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-28-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-29-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-29-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-30-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-30-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-31-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-31-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-32-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-32-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-33-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-33-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-34-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-34-00001.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-35-00000.npy
+    # - /data/fineweb-edu-100B-dolma-cache/part-35-00001.npy

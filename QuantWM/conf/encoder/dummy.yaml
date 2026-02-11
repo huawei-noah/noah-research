@@ -1,0 +1,2 @@
+_target_: models.dummy.DummyModel
+emb_dim: 7

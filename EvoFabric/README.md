@@ -44,6 +44,7 @@
 
 * **Versatile Across Scenarios**: Whether it’s the research scenario for rapid prototype validation or the engineering scenario for large-scale deployment, it can provide a solid foundation and flexible expansion points.
 
+* **Industry Compatibility**: Focus on the construction and research of industry-specific Agent capabilities, leverage industry knowledge and expert experience efficiently, and enhance industry operational efficiency.
 ## 🚀 QuickStart
 
 ### Installation
@@ -128,6 +129,100 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+
+## 🌍 Applications
+
+EvoFabric is designed not only for building general-purpose agent systems, but also for enabling **domain-specific intelligent workflows** and **scientific reasoning pipelines**.  
+Below are two representative application directions.
+
+---
+
+### 🏭 Industry Applications
+
+
+#### 1. SOP2Workflow: From SOP Documents to Executable Agent Workflows
+
+Industrial processes are often written as **Standard Operating Procedures (SOPs)** —  
+structured documents describing how tasks should be executed step by step.
+
+However, SOPs are usually **static text**, meaning:
+
+- they cannot be directly executed,
+- they require manual workflow engineering,
+- and they are difficult to scale into agent-based automation systems.
+
+**SOP2Workflow** automatically transforms a textual SOP into a runnable multi-agent workflow graph.
+
+It enables:
+
+- **SOP → Workflow automation**  
+  Convert business documents into executable agent pipelines.
+
+- **Node-level modularization**  
+  Break complex procedures into coherent agent nodes.
+
+- **Tool & Memory allocation per node**  
+  Each workflow node can be equipped with specific tools and memory modules.
+
+- **Editable and evolvable workflows**  
+  Generated workflow definitions are saved to disk and can be refined manually.
+
+- **End-to-end execution support**  
+  From document parsing → graph generation → agent execution → visualization.
+
+##### SOP2Workflow: Getting Started
+
+A full runnable example is provided under [sop2workflow example](examples/sop2workflow/README.md) for detailed setup and execution instructions.
+
+### 🔬 Rethinker: A Scientific Reasoning Framework with OpenPangu
+
+EvoFabric also provides a scientific reasoning framework called Rethinker, which is built upon the Rethink paradigm. This framework incorporates the answer from the previous iteration into the next reasoning step, helping to eliminate accumulated reasoning errors.
+
+In addition, we also proposed guided reflection and a confidence-driven selection mechanism to further improve reliability. As a result, EvoFabric achieves top-tier performance on the HLE benchmark leaderboard.
+
+Our paper can be found at [https://arxiv.org/abs/2602.04496](https://arxiv.org/abs/2602.04496)
+
+**Main Results of Rethinker on Expert-Level Reasoning Benchmarks.**
+
+| Category                    | Model / Framework                                  | HLE  | GAIA | XBench |
+|-----------------------------|----------------------------------------------------|------|------|--------|
+| Foundation Model w. tools   | Kimi K2 (Kimi et al., 2025)                        | 18.1 | 57.7 | 50.0   |
+| Foundation Model w. tools   | Claude-4.5-Sonnet (Anthropic, 2025)                | 24.5 | 71.2 | 66.0   |
+| Foundation Model   w. tools | DeepSeek-V3.2 (Liu et al., 2025a)                  | 27.2 | 63.5 | 71.0   |
+| Foundation Model  w. tools  | GLM-4.6 (Zhipu, 2025)                              | 30.4 | 71.9 | 70.0   |
+| Foundation Model  w. tools  | GPT-5-high (OpenAI, 2025b)                         | 35.2 | 76.4 | 77.8   |
+| Foundation Model   w. tools | Gemini-3-Pro (Google, 2025)                        | 38.3 | 79.0 | 87.0   |
+| Inference Framework         | WebExplorer (Liu et al., 2025b)                    | 17.3 | 50.0 | 53.7   |
+| Inference Framework         | OpenAI DeepResearch (OpenAI, 2025a)                | 26.6 | 67.4 | –      |
+| Inference Framework         | Kimi Researcher (Kimi, 2025)                       | 26.9 | –    | 69.0   |
+| Inference Framework         | Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025) | 32.9 | 70.9 | 75.0   |
+| Inference Framework         | MiroThinker-v1.0 (30B) (MiroMind et al., 2025)     | 33.4 | 73.5 | 70.6   |
+| Inference Framework         | **ReThinker (OpenPangu-72B) (Ours)**               | 33.1 | 72.8 | 78.0   |
+| Inference Framework         | **ReThinker (Gemini-3-pro) (Ours)**                        | 52.2 | 81.6 | 90.0   |
+
+## 🤝 Contributors
+
+EvoFabric is an open and evolving project made possible by the efforts of our contributors.  
+We sincerely appreciate everyone who helps improve the framework, whether through code, documentation, testing, or ideas.
+
+### Core Contributors
+
+Listed in alphabetical order by first name:
+
+* Yuqi Cui
+* Da Chen 
+* Guojin Chen 
+* Zihao Chen 
+* Wenyi Fang 
+* Jiaquan Guo 
+* Hailin Hu 
+* Shoubo Hu 
+* Shixiong Kai 
+* Kaichao Liang 
+* Xinduo Liu 
+* Ke Ye 
+* Lihao Yin
+* Mingxuan Yuan
 
 ## ⚖️ License
 

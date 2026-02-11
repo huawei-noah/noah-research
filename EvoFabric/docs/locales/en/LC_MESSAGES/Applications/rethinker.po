@@ -1,0 +1,416 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, Huawei Technologies Co., Ltd.
+# This file is distributed under the same license as the EvoFabric package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-11 10:30+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/Applications/rethinker.rst:4
+msgid "ReThinker-Agent-Framework"
+msgstr "ReThinker-Agent-Framework"
+
+#: ../../source/Applications/rethinker.rst:6
+msgid "`论文：arXiv <https://arxiv.org/abs/2602.04496>`_"
+msgstr "`Paper: arXiv <https://arxiv.org/abs/2602.04496>`_"
+
+#: ../../source/Applications/rethinker.rst:10
+msgid "简介"
+msgstr "Introduction"
+
+#: ../../source/Applications/rethinker.rst:12
+msgid "**ReThinker** 是一个推理框架，旨在通过 **引导式反思** 与 **置信度控制**， 使大型语言模型能够对其中间结论进行 *重新思考*， 从而显著提升其 **科学推理能力**。"
+msgstr "**ReThinker** is a reasoning framework designed to enable large language models to *rethink* their intermediate conclusions through **Guided reflection** and **confidence control**, significantly enhancing their **scientific reasoning capability**."
+
+#: ../../source/Applications/rethinker.rst:16
+msgid "不同于一次性完成的 chain-of-thought 推理方式， ReThinker 引入了一种迭代式机制，用于："
+msgstr "Unlike one-shot chain-of-thought reasoning, ReThinker introduces an iterative mechanism to:"
+
+#: ../../source/Applications/rethinker.rst:19
+msgid "检测低置信度的推理步骤"
+msgstr "detect low-confidence reasoning steps"
+
+#: ../../source/Applications/rethinker.rst:20
+msgid "主动回溯并修正这些步骤"
+msgstr "proactively backtrack and correct these steps"
+
+#: ../../source/Applications/rethinker.rst:21
+msgid "生成更加稳健、可靠的最终答案"
+msgstr "generate more robust and reliable final answers"
+
+#: ../../source/Applications/rethinker.rst:23
+msgid "该方法在复杂科学问题以及多步推理任务中， 能够显著提升推理准确率与结果稳定性。"
+msgstr "This approach significantly improves reasoning accuracy and result stability for complex scientific problems and multi-step reasoning tasks."
+
+#: ../../source/Applications/rethinker.rst:26
+msgid "论文地址： https://arxiv.org/abs/2602.04496"
+msgstr "Paper link: https://arxiv.org/abs/2602.04496"
+
+#: ../../source/Applications/rethinker.rst:31
+msgid "核心贡献"
+msgstr "Core Contributions"
+
+#: ../../source/Applications/rethinker.rst:33
+msgid "**具备重思能力的智能体框架**"
+msgstr "**Rethink-capable Agent Framework**"
+
+#: ../../source/Applications/rethinker.rst:35
+msgid "ReThinker 将“重新思考”机制整合进 **基于智能体的工作流** 中， 使系统能够进行迭代式决策与持续优化。 这种设计带来了 **稳定且一致的解质量提升**， 而非仅依赖随机反思所带来的偶发性收益。"
+msgstr "ReThinker integrates the \"rethink\" mechanism into a **workflow-based agent system**, enabling iterative decision-making and continuous optimization. This design delivers **stable and consistent solution quality improvements**, rather than relying on sporadic gains from random reflection."
+
+#: ../../source/Applications/rethinker.rst:40
+msgid "**引导式反思机制**"
+msgstr "**Guided Reflection Mechanism**"
+
+#: ../../source/Applications/rethinker.rst:42
+msgid "与让 critic 从简化后的轨迹中自行推断问题不同， ReThinker 在轨迹总结阶段 **显式提出具体的改进点**， 并将这些信息传递给受约束的 critic 角色进行反思与修正。 这种引导方式确保了重新思考过程的聚焦性、高效性与稳定性。"
+msgstr "Unlike critics inferring issues from simplified trajectories, ReThinker **explicitly proposes specific improvement points** during trajectory summarization and passes this information to the constrained critic role for reflection and correction. This guided approach ensures the rethink process is focused, efficient, and stable."
+
+#: ../../source/Applications/rethinker.rst:47
+msgid "**置信度控制策略**"
+msgstr "**Confidence Control Strategy**"
+
+#: ../../source/Applications/rethinker.rst:49
+msgid "在候选选择阶段，ReThinker 采用迭代式选择策略， 每一轮不仅基于 **之前已选候选项**， 还显式结合这些候选项的 **置信度评分**。 这种置信度反馈机制引导模型在多轮重思过程中 做出更加可靠、稳定的选择决策。"
+msgstr "During the candidate selection phase, ReThinker adopts an iterative selection strategy where each round not only considers the **previously selected candidates** but also explicitly incorporates their **confidence scores**. This confidence feedback mechanism guides the model to make more reliable and stable selection decisions throughout the multi-round reflection process."
+
+#: ../../source/Applications/rethinker.rst:57
+msgid "实验结果"
+msgstr "Experimental Results"
+
+#: ../../source/Applications/rethinker.rst:58
+msgid "Benchmark results"
+msgstr "Benchmark results"
+
+#: ../../source/Applications/rethinker.rst:62
+msgid "Category"
+msgstr "Category"
+
+#: ../../source/Applications/rethinker.rst:63
+msgid "Model / Framework"
+msgstr "Model / Framework"
+
+#: ../../source/Applications/rethinker.rst:64
+msgid "HLE"
+msgstr "HLE"
+
+#: ../../source/Applications/rethinker.rst:65
+msgid "GAIA"
+msgstr "GAIA"
+
+#: ../../source/Applications/rethinker.rst:66
+msgid "XBench"
+msgstr "XBench"
+
+#: ../../source/Applications/rethinker.rst:67 ../../source/Applications/rethinker.rst:72 ../../source/Applications/rethinker.rst:77 ../../source/Applications/rethinker.rst:82 ../../source/Applications/rethinker.rst:87 ../../source/Applications/rethinker.rst:92
+msgid "Foundation Model"
+msgstr "Foundation Model"
+
+#: ../../source/Applications/rethinker.rst:68
+msgid "Kimi K2 (Kimi et al., 2025)"
+msgstr "Kimi K2 (Kimi et al., 2025)"
+
+#: ../../source/Applications/rethinker.rst:69
+msgid "18.1"
+msgstr "18.1"
+
+#: ../../source/Applications/rethinker.rst:70
+msgid "57.7"
+msgstr "57.7"
+
+#: ../../source/Applications/rethinker.rst:71 ../../source/Applications/rethinker.rst:100
+msgid "50.0"
+msgstr "50.0"
+
+#: ../../source/Applications/rethinker.rst:73
+msgid "Claude-4.5-Sonnet (Anthropic, 2025)"
+msgstr "Claude-4.5-Sonnet (Anthropic, 2025)"
+
+#: ../../source/Applications/rethinker.rst:74
+msgid "24.5"
+msgstr "24.5"
+
+#: ../../source/Applications/rethinker.rst:75
+msgid "71.2"
+msgstr "71.2"
+
+#: ../../source/Applications/rethinker.rst:76
+msgid "66.0"
+msgstr "66.0"
+
+#: ../../source/Applications/rethinker.rst:78
+msgid "DeepSeek-V3.2 (Liu et al., 2025a)"
+msgstr "DeepSeek-V3.2 (Liu et al., 2025a)"
+
+#: ../../source/Applications/rethinker.rst:79
+msgid "27.2"
+msgstr "27.2"
+
+#: ../../source/Applications/rethinker.rst:80
+msgid "63.5"
+msgstr "63.5"
+
+#: ../../source/Applications/rethinker.rst:81
+msgid "71.0"
+msgstr "71.0"
+
+#: ../../source/Applications/rethinker.rst:83
+msgid "GLM-4.6 (Zhipu, 2025)"
+msgstr "GLM-4.6 (Zhipu, 2025)"
+
+#: ../../source/Applications/rethinker.rst:84
+msgid "30.4"
+msgstr "30.4"
+
+#: ../../source/Applications/rethinker.rst:85
+msgid "71.9"
+msgstr "71.9"
+
+#: ../../source/Applications/rethinker.rst:86
+msgid "70.0"
+msgstr "70.0"
+
+#: ../../source/Applications/rethinker.rst:88
+msgid "GPT-5-high (OpenAI, 2025b)"
+msgstr "GPT-5-high (OpenAI, 2025b)"
+
+#: ../../source/Applications/rethinker.rst:89
+msgid "35.2"
+msgstr "35.2"
+
+#: ../../source/Applications/rethinker.rst:90
+msgid "76.4"
+msgstr "76.4"
+
+#: ../../source/Applications/rethinker.rst:91
+msgid "77.8"
+msgstr "77.8"
+
+#: ../../source/Applications/rethinker.rst:93
+msgid "Gemini-3-Pro (Google, 2025)"
+msgstr "Gemini-3-Pro (Google, 2025)"
+
+#: ../../source/Applications/rethinker.rst:94
+msgid "38.3"
+msgstr "38.3"
+
+#: ../../source/Applications/rethinker.rst:95
+msgid "79.0"
+msgstr "79.0"
+
+#: ../../source/Applications/rethinker.rst:96
+msgid "87.0"
+msgstr "87.0"
+
+#: ../../source/Applications/rethinker.rst:97 ../../source/Applications/rethinker.rst:102 ../../source/Applications/rethinker.rst:107 ../../source/Applications/rethinker.rst:112 ../../source/Applications/rethinker.rst:117 ../../source/Applications/rethinker.rst:122 ../../source/Applications/rethinker.rst:127
+msgid "Inference Framework"
+msgstr "Inference Framework"
+
+#: ../../source/Applications/rethinker.rst:98
+msgid "WebExplorer (Liu et al., 2025b)"
+msgstr "WebExplorer (Liu et al., 2025b)"
+
+#: ../../source/Applications/rethinker.rst:99
+msgid "17.3"
+msgstr "17.3"
+
+#: ../../source/Applications/rethinker.rst:101
+msgid "53.7"
+msgstr "53.7"
+
+#: ../../source/Applications/rethinker.rst:103
+msgid "OpenAI DeepResearch (OpenAI, 2025a)"
+msgstr "OpenAI DeepResearch (OpenAI, 2025a)"
+
+#: ../../source/Applications/rethinker.rst:104
+msgid "26.6"
+msgstr "26.6"
+
+#: ../../source/Applications/rethinker.rst:105
+msgid "67.4"
+msgstr "67.4"
+
+#: ../../source/Applications/rethinker.rst:108
+msgid "Kimi Researcher (Kimi, 2025)"
+msgstr "Kimi Researcher (Kimi, 2025)"
+
+#: ../../source/Applications/rethinker.rst:109
+msgid "26.9"
+msgstr "26.9"
+
+#: ../../source/Applications/rethinker.rst:111
+msgid "69.0"
+msgstr "69.0"
+
+#: ../../source/Applications/rethinker.rst:113
+msgid "Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025)"
+msgstr "Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025)"
+
+#: ../../source/Applications/rethinker.rst:114
+msgid "32.9"
+msgstr "32.9"
+
+#: ../../source/Applications/rethinker.rst:115
+msgid "70.9"
+msgstr "70.9"
+
+#: ../../source/Applications/rethinker.rst:116
+msgid "75.0"
+msgstr "75.0"
+
+#: ../../source/Applications/rethinker.rst:118
+msgid "MiroThinker-v1.0 (30B) (MiroMind et al., 2025)"
+msgstr "MiroThinker-v1.0 (30B) (MiroMind et al., 2025)"
+
+#: ../../source/Applications/rethinker.rst:119
+msgid "33.4"
+msgstr "33.4"
+
+#: ../../source/Applications/rethinker.rst:120
+msgid "73.5"
+msgstr "73.5"
+
+#: ../../source/Applications/rethinker.rst:121
+msgid "70.6"
+msgstr "70.6"
+
+#: ../../source/Applications/rethinker.rst:123
+msgid "Ours ReThinker (OpenPangu-72B)"
+msgstr "Ours ReThinker (OpenPangu-72B)"
+
+#: ../../source/Applications/rethinker.rst:124
+msgid "33.1"
+msgstr "33.1"
+
+#: ../../source/Applications/rethinker.rst:125
+msgid "72.8"
+msgstr "72.8"
+
+#: ../../source/Applications/rethinker.rst:126
+msgid "78.0"
+msgstr "78.0"
+
+#: ../../source/Applications/rethinker.rst:128
+msgid "Ours ReThinker (Gemini-3-pro)"
+msgstr "Ours ReThinker (Gemini-3-pro)"
+
+#: ../../source/Applications/rethinker.rst:129
+msgid "52.2"
+msgstr "52.2"
+
+#: ../../source/Applications/rethinker.rst:130
+msgid "81.6"
+msgstr "81.6"
+
+#: ../../source/Applications/rethinker.rst:131
+msgid "90.0"
+msgstr "90.0"
+
+#: ../../source/Applications/rethinker.rst:134
+msgid "使用方式"
+msgstr "Usage"
+
+#: ../../source/Applications/rethinker.rst:137
+msgid "1. 依赖安装"
+msgstr "1. Dependency Installation"
+
+#: ../../source/Applications/rethinker.rst:139
+msgid "首先安装所需依赖。除基础包外，还需要 *rethinker* 模块的额外依赖::"
+msgstr "First install the required dependencies. In addition to base packages, the *rethinker* module requires additional dependencies::"
+
+#: ../../source/Applications/rethinker.rst:145
+msgid "2. 配置"
+msgstr "2. Configuration"
+
+#: ../../source/Applications/rethinker.rst:147
+msgid "配置项目文件::"
+msgstr "Configure the project file::"
+
+#: ../../source/Applications/rethinker.rst:151
+msgid "请确保正确填写以下字段："
+msgstr "Ensure the following fields are correctly filled:"
+
+#: ../../source/Applications/rethinker.rst:178
+msgid "3. 运行Rethinker"
+msgstr "3. Run Rethinker"
+
+#: ../../source/Applications/rethinker.rst:180
+msgid "运行主程序::"
+msgstr "Run main program::"
+
+#: ../../source/Applications/rethinker.rst:186
+msgid "4. 输出结构"
+msgstr "4. Output structure"
+
+#: ../../source/Applications/rethinker.rst:190
+msgid "如果你计划运行评测脚本，此步骤是必须的。"
+msgstr "This step is mandatory if you plan to run the evaluation script."
+
+#: ../../source/Applications/rethinker.rst:192
+msgid "当 ``config.exp.output_root`` 被设置时，输出文件结构如下::"
+msgstr "When ``config.exp.output_root`` is set, the output file structure is as follows::"
+
+#: ../../source/Applications/rethinker.rst:203
+msgid "每个 ``qidXXXXX`` 目录对应一次独立查询或实验， 其中包含中间节点结果以及最终汇总结果。"
+msgstr "Each ``qidXXXXX`` directory corresponds to an independent query or experiment, containing intermediate node results and final summary results."
+
+#: ../../source/Applications/rethinker.rst:208
+msgid "5. 测试"
+msgstr "5. Testing"
+
+#: ../../source/Applications/rethinker.rst:210
+msgid "运行评测脚本::"
+msgstr "Run evaluation script::"
+
+#: ../../source/Applications/rethinker.rst:219
+msgid "该命令将运行指定基准测试， 并将评测结果保存至 ``eval.json``。"
+msgstr "This command will run the specified benchmark and save evaluation results to ``eval.json``."
+
+#: ../../source/Applications/rethinker.rst:224
+msgid "致谢"
+msgstr "Acknowledgements"
+
+#: ../../source/Applications/rethinker.rst:226
+msgid "本项目部分工作受益于 `Eigen-1 <https://github.com/tangxiangru/Eigen-1/tree/main>`_。"
+msgstr "This project has benefited from work on `Eigen-1 <https://github.com/tangxiangru/Eigen-1/tree/main>`_."
+
+#: ../../source/Applications/rethinker.rst:231
+msgid "引用"
+msgstr "Citation"
+
+#~ msgid "**Rethinker 在专家级推理基准上的主要实验结果。**"
+#~ msgstr "**Main experimental results of ReThinker on expert-level reasoning benchmarks.**"
+
+#~ msgid "Model configuration"
+#~ msgstr "Model configuration"
+
+#~ msgid "``api_key``：模型 API 密钥"
+#~ msgstr "``api_key``: Model API key"
+
+#~ msgid "``base_url``：模型 API 的基础地址"
+#~ msgstr "``base_url``: Base URL for the model API"
+
+#~ msgid "Web search configuration"
+#~ msgstr "Web search configuration"
+
+#~ msgid "``serper_api_key``：用于 ``web_search`` 的搜索 API 密钥"
+#~ msgstr "``serper_api_key``: Search API key for ``web_search``"
+
+#~ msgid "Web parsing configuration"
+#~ msgstr "Web parsing configuration"
+
+#~ msgid "``jina_api_key``：用于 ``web_parse`` 的网页解析 API 密钥"
+#~ msgstr "``jina_api_key``: API key for web_parse web parsing"

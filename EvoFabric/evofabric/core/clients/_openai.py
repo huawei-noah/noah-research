@@ -2,7 +2,7 @@
 # Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 
 import time
-from typing import Any, AsyncGenerator, Callable, cast, Dict, List, Optional, Sequence
+from typing import Any, AsyncIterator, Callable, cast, Dict, List, Optional, Sequence, Union
 
 import httpx
 import openai
@@ -72,7 +72,7 @@ def _format_tool_call(tool_calls: Optional[List]) -> Optional[List[ToolCall]]:
 
 async def _parse_openai_stream_response(
         response: AsyncStream[ChatCompletionChunk]
-) -> AsyncGenerator[ChatStreamChunk, LLMChatResponse]:
+) -> AsyncIterator[Union[ChatStreamChunk, LLMChatResponse]]:
     """Parse openai stream response"""
     content = ""
     reasoning_content = ""
@@ -164,6 +164,10 @@ class OpenAIChatClient(ChatClientBase):
             return v
         return get_func_serializer().deserialize(v)
 
+    @property
+    def client(self):
+        return self._get_client()
+
     @staticmethod
     def _state_msgs_to_input_msgs(messages: List[StateMessage]) -> List:
         """Convert state msg list into openai format"""
@@ -213,7 +217,7 @@ class OpenAIChatClient(ChatClientBase):
             tools: Optional[Sequence] = None,
             response_format: Optional = None,
             **kwargs
-    ) -> AsyncGenerator[ChatStreamChunk, LLMChatResponse]:
+    ) -> AsyncIterator[Union[ChatStreamChunk, LLMChatResponse]]:
         """Generate LLM response using streaming mode"""
         tools = tools or []
         client = self._get_client()

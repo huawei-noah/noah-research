@@ -1,0 +1,1532 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, Huawei Technologies Co., Ltd.
+# This file is distributed under the same license as the EvoFabric package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EvoFabric\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-11 10:30+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/APIReference/app/rethinker.rst:4
+msgid "evofabric.app.rethinker"
+msgstr "evofabric.app.rethinker"
+
+#: ../../source/APIReference/app/rethinker.rst:11
+msgid "对固定长度列表执行逐元素覆盖合并，并遵循最大并行规模限制。"
+msgstr "Perform element-wise overwrite merge on a fixed-length list, adhering to the maximum parallel scale limit."
+
+#: ../../source/APIReference/app/rethinker.rst:13
+msgid "该函数将 ``old`` 与 ``new`` 合并为一个结果列表，其长度由 ``config.structure.num_parallel`` 决定。合并规则为逐元素覆盖："
+msgstr "This function merges ``old`` and ``new`` into a result list, whose length is determined by ``config.structure.num_parallel``. The merge rule is element-wise overwrite:"
+
+#: ../../source/APIReference/app/rethinker.rst:15
+msgid "若提供 ``old``，先将其元素拷贝到结果中。"
+msgstr "If ``old`` is provided, first copy its elements to the result."
+
+#: ../../source/APIReference/app/rethinker.rst:16
+msgid "若提供 ``new``，当 ``new`` 中对应位置的元素不为 ``None`` 时，覆盖结果中相同位置的元素。"
+msgstr "If ``new`` is provided, when the corresponding element in ``new`` is not ``None``, overwrite the element at the same position in the result."
+
+#: ../../source/APIReference/app/rethinker.rst
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/APIReference/app/rethinker.rst:18
+msgid "旧的列表状态；若为 ``MISSING`` 则忽略。"
+msgstr "Old State list; if ``MISSING``, ignore."
+
+#: ../../source/APIReference/app/rethinker.rst:21
+msgid "新的列表状态；若为 ``MISSING`` 则忽略。"
+msgstr "New State list; if ``MISSING``, ignore."
+
+#: ../../source/APIReference/app/rethinker.rst
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/APIReference/app/rethinker.rst:24
+msgid "逐元素覆盖后的列表，长度为 ``config.structure.num_parallel``。"
+msgstr "Element-wise overwritten list, length of ``config.structure.num_parallel``."
+
+#: ../../source/APIReference/app/rethinker.rst
+msgid "返回类型"
+msgstr "Return type"
+
+#: ../../source/APIReference/app/rethinker.rst:30
+msgid "根据配置构建用于编码/推理的智能体（Agent）。"
+msgstr "Build an Agent for encoding/inference based on configuration."
+
+#: ../../source/APIReference/app/rethinker.rst:32
+msgid "聊天客户端基类实例，用于与模型进行交互。"
+msgstr "Chat client base class instance, used to interact with the model."
+
+#: ../../source/APIReference/app/rethinker.rst:35
+msgid "结束类型，用于指定智能体的完成方式（例如 ``'answer'`` 或 ``'select'``）。"
+msgstr "End type, used to specify the Agent's completion method (e.g., ``'answer'`` or ``'select'``)."
+
+#: ../../source/APIReference/app/rethinker.rst:38
+msgid "构建好的智能体对象。"
+msgstr "Built Agent object."
+
+#: ../../source/APIReference/app/rethinker.rst:44
+msgid "构建并配置一个支持动态并行结构的计算图（Graph）。"
+msgstr "Build and configure a computation graph (Graph) supporting dynamic parallel structures."
+
+#: ../../source/APIReference/app/rethinker.rst:46
+msgid "该图用于将单个查询拆分为多个并行分支进行生成、总结、批判与筛选，以得到最佳结果。整体结构包含："
+msgstr "This graph splits a single query into multiple parallel branches for generation, summarization, criticism, and filtering to obtain the best result. The overall structure includes:"
+
+#: ../../source/APIReference/app/rethinker.rst:48
+msgid "入口节点 ``dispatch``：将初始状态分发到所有并行分支。"
+msgstr "Entry node ``dispatch``: Distributes the initial State to all parallel branches."
+
+#: ../../source/APIReference/app/rethinker.rst:49
+msgid "并行分支（数量为 ``config.structure.num_parallel``）：每个分支内部为串行流水线："
+msgstr "Parallel branches (number equals ``config.structure.num_parallel``): Each branch internally forms a serial pipeline:"
+
+#: ../../source/APIReference/app/rethinker.rst:50
+msgid "Solution 阶段：若干个 ``SolutionWithReThinkNode`` 级联，用于生成/改进候选方案。"
+msgstr "Solution phase: Cascaded ``SolutionWithReThinkNode`` for generating/improving candidate solutions."
+
+#: ../../source/APIReference/app/rethinker.rst:51
+msgid "Summary 阶段：一个 ``GuidedSummaryNode``，对 Solution 输出进行引导式总结。"
+msgstr "Summary phase: A ``GuidedSummaryNode`` for guided summarization of Solution outputs."
+
+#: ../../source/APIReference/app/rethinker.rst:52
+msgid "Critic 阶段：若干个 ``CriticWithRethinkNode`` 级联，对总结结果进行评估与批判并提供反馈。"
+msgstr "Critic phase: Cascaded ``CriticWithRethinkNode`` for evaluating and critiquing the summary results with feedback."
+
+#: ../../source/APIReference/app/rethinker.rst:53
+msgid "汇聚节点 ``selector``（``ConfidenceGuideSelectNode``）：接收每个分支最后一个 critic 节点输出，并选择最佳最终结果。"
+msgstr "Aggregation node ``selector`` (``ConfidenceGuideSelectNode``): Receives outputs from the last critic node in each branch and selects the best final result."
+
+#: ../../source/APIReference/app/rethinker.rst:55
+msgid "构建完成的计算图对象。"
+msgstr "The constructed computation graph object."
+
+#: ../../source/APIReference/app/rethinker.rst:62
+msgid "异步运行 rethinker 执行图以处理单条查询。"
+msgstr "Asynchronously run the rethinker execution graph to process a single query."
+
+#: ../../source/APIReference/app/rethinker.rst:64
+msgid "该函数会构建 rethinker 计算图，为每个查询初始化日志/输出目录，将查询元数据注入到流式上下文（stream context）中，并以异步方式执行整个图。"
+msgstr "This function builds the rethinker computation graph, initializes log/output directories for each query, injects query metadata into the stream context, and executes the entire graph asynchronously."
+
+#: ../../source/APIReference/app/rethinker.rst:66
+msgid "当配置 ``config.exp.output_root`` 被设置时，输出文件将按如下结构组织："
+msgstr "When ``config.exp.output_root`` is set, output files are organized as follows:"
+
+#: ../../source/APIReference/app/rethinker.rst:68
+msgid "``output_root/``"
+msgstr "``output_root/``"
+
+#: ../../source/APIReference/app/rethinker.rst:69
+msgid "``qid00001/``"
+msgstr "``qid00001/``"
+
+#: ../../source/APIReference/app/rethinker.rst:70
+msgid "``node1.json``"
+msgstr "``node1.json``"
+
+#: ../../source/APIReference/app/rethinker.rst:71
+msgid "``node2.json``"
+msgstr "``node2.json``"
+
+#: ../../source/APIReference/app/rethinker.rst:72 ../../source/APIReference/app/rethinker.rst:75
+msgid "..."
+msgstr "..."
+
+#: ../../source/APIReference/app/rethinker.rst:73
+msgid "``result.json``"
+msgstr "``result.json``"
+
+#: ../../source/APIReference/app/rethinker.rst:74
+msgid "``qid00002/``"
+msgstr "``qid00002/``"
+
+#: ../../source/APIReference/app/rethinker.rst:77
+msgid "需要由 rethinker 图处理的输入查询。"
+msgstr "Input query to be processed by rethinker graph."
+
+#: ../../source/APIReference/app/rethinker.rst:80
+msgid "查询的唯一标识；若未提供则自动生成 UUID。"
+msgstr "Unique identifier for the query; automatically generated as UUID if not provided."
+
+#: ../../source/APIReference/app/rethinker.rst:83
+msgid "用于同步/限制并发执行的信号量。"
+msgstr "Semaphore for synchronization/limiting concurrent execution."
+
+#: ../../source/APIReference/app/rethinker.rst:86
+msgid "rethinker 执行图返回的最终结果。"
+msgstr "Final result returned by rethinker execution graph."
+
+#: ../../source/APIReference/app/rethinker.rst:95
+msgid "大语言模型（LLM）调用相关的配置模型，用于描述模型名称、鉴权信息、请求参数与推理参数等。"
+msgstr "Configuration model related to LLM calls, used to describe model name, authentication information, request parameters, and inference parameters."
+
+#: ../../source/APIReference/app/rethinker.rst:99
+msgid "使用的 LLM 模型名称。"
+msgstr "LLM model name used."
+
+#: ../../source/APIReference/app/rethinker.rst
+msgid "type"
+msgstr "type"
+
+#: ../../source/APIReference/app/rethinker.rst:101 ../../source/APIReference/app/rethinker.rst:107 ../../source/APIReference/app/rethinker.rst:113 ../../source/APIReference/app/rethinker.rst:224 ../../source/APIReference/app/rethinker.rst:296 ../../source/APIReference/app/rethinker.rst:302 ../../source/APIReference/app/rethinker.rst:308 ../../source/APIReference/app/rethinker.rst:314 ../../source/APIReference/app/rethinker.rst:326 ../../source/APIReference/app/rethinker.rst:332 ../../source/APIReference/app/rethinker.rst:338 ../../source/APIReference/app/rethinker.rst:374 ../../source/APIReference/app/rethinker.rst:380 ../../source/APIReference/app/rethinker.rst:434 ../../source/APIReference/app/rethinker.rst:440 ../../source/APIReference/app/rethinker.rst:446 ../../source/APIReference/app/rethinker.rst:452 ../../source/APIReference/app/rethinker.rst:458 ../../source/APIReference/app/rethinker.rst:464 ../../source/APIReference/app/rethinker.rst:470 ../../source/APIReference/app/rethinker.rst:476 ../../source/APIReference/app/rethinker.rst:482 ../../source/APIReference/app/rethinker.rst:798 ../../source/APIReference/app/rethinker.rst:804 ../../source/APIReference/app/rethinker.rst:812 ../../source/APIReference/app/rethinker.rst:926 ../../source/APIReference/app/rethinker.rst:1030 ../../source/APIReference/app/rethinker.rst:1083 ../../source/APIReference/app/rethinker.rst:1089
+msgid "str"
+msgstr "str"
+
+#: ../../source/APIReference/app/rethinker.rst:105
+msgid "OpenAI 兼容后端通常需要的 API Key，用于鉴权。"
+msgstr "API Key typically required by OpenAI-compatible backends for authentication."
+
+#: ../../source/APIReference/app/rethinker.rst:111
+msgid "LLM API 的基础地址（Base URL）。"
+msgstr "Base URL for LLM API."
+
+#: ../../source/APIReference/app/rethinker.rst:117
+msgid "CSB 鉴权令牌，用于基于 CSB Token 的授权方式。"
+msgstr "CSB authentication token, used for authorization via CSB Token."
+
+#: ../../source/APIReference/app/rethinker.rst:119 ../../source/APIReference/app/rethinker.rst:173 ../../source/APIReference/app/rethinker.rst:236 ../../source/APIReference/app/rethinker.rst:266 ../../source/APIReference/app/rethinker.rst:362 ../../source/APIReference/app/rethinker.rst:386 ../../source/APIReference/app/rethinker.rst:738 ../../source/APIReference/app/rethinker.rst:860 ../../source/APIReference/app/rethinker.rst:920 ../../source/APIReference/app/rethinker.rst:967 ../../source/APIReference/app/rethinker.rst:976 ../../source/APIReference/app/rethinker.rst:982 ../../source/APIReference/app/rethinker.rst:1024
+msgid "Optional[str]"
+msgstr "Optional[str]"
+
+#: ../../source/APIReference/app/rethinker.rst:123
+msgid "针对瞬时失败请求的最大重试次数。"
+msgstr "Maximum retry attempts for transient failure requests."
+
+#: ../../source/APIReference/app/rethinker.rst:125 ../../source/APIReference/app/rethinker.rst:218 ../../source/APIReference/app/rethinker.rst:248 ../../source/APIReference/app/rethinker.rst:254 ../../source/APIReference/app/rethinker.rst:272 ../../source/APIReference/app/rethinker.rst:284 ../../source/APIReference/app/rethinker.rst:320 ../../source/APIReference/app/rethinker.rst:344 ../../source/APIReference/app/rethinker.rst:350 ../../source/APIReference/app/rethinker.rst:356 ../../source/APIReference/app/rethinker.rst:392 ../../source/APIReference/app/rethinker.rst:398 ../../source/APIReference/app/rethinker.rst:410 ../../source/APIReference/app/rethinker.rst:416 ../../source/APIReference/app/rethinker.rst:422 ../../source/APIReference/app/rethinker.rst:712 ../../source/APIReference/app/rethinker.rst:772 ../../source/APIReference/app/rethinker.rst:780 ../../source/APIReference/app/rethinker.rst:786 ../../source/APIReference/app/rethinker.rst:1036 ../../source/APIReference/app/rethinker.rst:1176 ../../source/APIReference/app/rethinker.rst:1182 ../../source/APIReference/app/rethinker.rst:1188
+msgid "int"
+msgstr "int"
+
+#: ../../source/APIReference/app/rethinker.rst:129
+msgid "请求超时时间（秒）。若为 ``None`` 则使用后端默认值。"
+msgstr "Request timeout in seconds. If ``None``, use backend default."
+
+#: ../../source/APIReference/app/rethinker.rst:131 ../../source/APIReference/app/rethinker.rst:149
+msgid "Optional[int]"
+msgstr "Optional[int]"
+
+#: ../../source/APIReference/app/rethinker.rst:135
+msgid "核采样（Nucleus Sampling）参数，用于控制累计概率质量。"
+msgstr "Nucleus Sampling parameter to control cumulative probability mass."
+
+#: ../../source/APIReference/app/rethinker.rst:137 ../../source/APIReference/app/rethinker.rst:143
+msgid "Optional[float]"
+msgstr "Optional[float]"
+
+#: ../../source/APIReference/app/rethinker.rst:141
+msgid "采样温度，用于控制生成结果的随机性。"
+msgstr "Sampling temperature to control randomness of generation results."
+
+#: ../../source/APIReference/app/rethinker.rst:147
+msgid "最大生成 token 数；若为 ``None`` 则使用后端默认值。"
+msgstr "Maximum generated tokens; if ``None``, use backend default."
+
+#: ../../source/APIReference/app/rethinker.rst:153
+msgid "额外的、后端特定的请求体参数。"
+msgstr "Additional backend-specific request body parameters."
+
+#: ../../source/APIReference/app/rethinker.rst:155
+msgid "dict"
+msgstr "dict"
+
+#: ../../source/APIReference/app/rethinker.rst:159
+msgid "是否启用快速思考模式：通过在最后一条消息追加 ``/no_think`` 来触发。"
+msgstr "Whether to enable fast thinking mode: triggered by appending ``/no_think`` to the last message."
+
+#: ../../source/APIReference/app/rethinker.rst:161 ../../source/APIReference/app/rethinker.rst:167 ../../source/APIReference/app/rethinker.rst:185 ../../source/APIReference/app/rethinker.rst:230 ../../source/APIReference/app/rethinker.rst:242 ../../source/APIReference/app/rethinker.rst:278 ../../source/APIReference/app/rethinker.rst:675
+msgid "bool"
+msgstr "bool"
+
+#: ../../source/APIReference/app/rethinker.rst:165
+msgid "是否在响应中返回 token 级别的对数概率（log probabilities）。"
+msgstr "Whether to return token-level log probabilities in the response."
+
+#: ../../source/APIReference/app/rethinker.rst:171
+msgid "流式输出的停止条件字符串；当匹配到该字符串时终止生成。"
+msgstr "Stop condition string for streaming output; generation terminates when this string is matched."
+
+#: ../../source/APIReference/app/rethinker.rst:177
+msgid "传递给底层 OpenAI HTTP Client 的关键字参数。"
+msgstr "Keyword arguments passed to the underlying OpenAI HTTP Client."
+
+#: ../../source/APIReference/app/rethinker.rst:179
+msgid "Optional[dict]"
+msgstr "Optional[dict]"
+
+#: ../../source/APIReference/app/rethinker.rst:183
+msgid "是否启用流式输出；当设置了 ``stop_condition`` 时必须为 ``True``。"
+msgstr "Whether to enable streaming output; must be True when ``stop_condition`` is set."
+
+#: ../../source/APIReference/app/rethinker.rst:189
+msgid "生成用于初始化底层客户端（Client）的参数字典。"
+msgstr "Generate the parameter dictionary for initializing the underlying Client."
+
+#: ../../source/APIReference/app/rethinker.rst:191
+msgid "该方法会包含 ``api_key``、``base_url``、``max_retries``、``timeout`` 等基础参数； 当设置了 ``csb_token`` 时，会在 ``default_headers`` 中追加 ``csb-token`` 头。"
+msgstr "This method includes basic parameters such as ``api_key``, ``base_url``, ``max_retries``, and ``timeout``; when ``csb_token`` is set, it appends the ``csb-token`` header to ``default_headers``."
+
+#: ../../source/APIReference/app/rethinker.rst:194
+msgid "客户端初始化参数字典。"
+msgstr "Client initialization parameter dictionary."
+
+#: ../../source/APIReference/app/rethinker.rst:199
+msgid "生成用于推理调用（Inference）的参数字典。"
+msgstr "Generate the parameter dictionary for inference calls (Inference)."
+
+#: ../../source/APIReference/app/rethinker.rst:201
+msgid "该方法会包含 ``temperature``、``top_p`` 等采样参数；当 ``extra_body`` 非空时会注入 ``extra_body``； 当 ``output_logp`` 为 ``True`` 时，会开启 ``logprobs`` 并设置 ``top_logprobs``； 当 ``max_tokens`` 非 ``None`` 时，会设置 ``max_tokens``。"
+msgstr "This method includes sampling parameters such as ``temperature`` and ``top_p``; when ``extra_body`` is non-empty, it injects ``extra_body``; when ``output_logp`` is True, it enables ``logprobs`` and sets ``top_logprobs``; when ``max_tokens`` is not None, it sets ``max_tokens``."
+
+#: ../../source/APIReference/app/rethinker.rst:205
+msgid "推理调用参数字典。"
+msgstr "Inference call parameter dictionary."
+
+#: ../../source/APIReference/app/rethinker.rst:212
+msgid "网页解析相关配置，用于控制抓取、解析与内容截断策略。"
+msgstr "Webpage parsing configuration, used to control scraping, parsing, and content truncation strategies."
+
+#: ../../source/APIReference/app/rethinker.rst:216
+msgid "网页解析后，单个文档允许输入到模型的最大字符预算。"
+msgstr "After webpage parsing, the maximum character budget allowed for inputting a single document into the model."
+
+#: ../../source/APIReference/app/rethinker.rst:222
+msgid "用于网页内容解析或下游推理的后端模型名称。"
+msgstr "Name of the backend model used for webpage content parsing or downstream inference."
+
+#: ../../source/APIReference/app/rethinker.rst:228
+msgid "是否启用基于 Jina 的网页内容解析。"
+msgstr "Whether to enable Jina-based webpage content parsing."
+
+#: ../../source/APIReference/app/rethinker.rst:234
+msgid "Jina 服务的 API Key；当 ``use_jina`` 启用时通常需要。"
+msgstr "Jina service API Key; typically required when ``use_jina`` is enabled."
+
+#: ../../source/APIReference/app/rethinker.rst:240
+msgid "发起 HTTP 请求时是否校验 SSL 证书。"
+msgstr "Whether to verify SSL certificates when making HTTP requests."
+
+#: ../../source/APIReference/app/rethinker.rst:246
+msgid "拉取网页内容的网络请求超时（秒）。"
+msgstr "Network request timeout (seconds) for fetching web page content."
+
+#: ../../source/APIReference/app/rethinker.rst:252
+msgid "每个 URL 允许保留的最大字符数；小于 0 表示不包含 URL 内容。"
+msgstr "Maximum number of characters allowed per URL; negative values exclude URL content."
+
+#: ../../source/APIReference/app/rethinker.rst:260
+msgid "Web 搜索相关配置，用于控制检索服务鉴权与请求行为。"
+msgstr "Web search configuration for controlling authentication and request behavior of the retrieval service."
+
+#: ../../source/APIReference/app/rethinker.rst:264
+msgid "Serper 服务的 API Key；用于启用 web search 请求。"
+msgstr "Serper service API Key; used to enable web search requests."
+
+#: ../../source/APIReference/app/rethinker.rst:270
+msgid "Web 搜索请求失败时的最大重试次数。"
+msgstr "Maximum number of retries when a web search request fails."
+
+#: ../../source/APIReference/app/rethinker.rst:276
+msgid "Web 搜索 HTTP 请求时是否校验 SSL 证书。"
+msgstr "Whether to verify SSL certificates during web search HTTP requests."
+
+#: ../../source/APIReference/app/rethinker.rst:282
+msgid "单次 Web 搜索调用的请求超时（秒）。"
+msgstr "Request timeout (seconds) for a single web search call."
+
+#: ../../source/APIReference/app/rethinker.rst:290
+msgid "解题/推理阶段相关配置，包含求解、反思、总结、选择等阶段的模型与规则设置。"
+msgstr "Problem-solving/reasoning phase configuration, including model and rule settings for stages such as solution generation, reflection, summarization, and selection."
+
+#: ../../source/APIReference/app/rethinker.rst:294
+msgid "解题（solution generation）阶段使用的 LLM 后端模型。"
+msgstr "LLM backend model used in the solution generation phase."
+
+#: ../../source/APIReference/app/rethinker.rst:300
+msgid "反思/反思（critic evaluation）阶段使用的 LLM 后端模型。"
+msgstr "LLM backend model used in the critic evaluation phase."
+
+#: ../../source/APIReference/app/rethinker.rst:306
+msgid "引导式总结（guided summaries）阶段使用的 LLM 后端模型。"
+msgstr "LLM backend model used in the guided summaries phase."
+
+#: ../../source/APIReference/app/rethinker.rst:312
+msgid "选择（selection）阶段使用的 LLM 后端模型。"
+msgstr "LLM backend model used in the selection phase."
+
+#: ../../source/APIReference/app/rethinker.rst:318
+msgid "选择阶段的迭代次数，用于逐步收敛与优化选择结果。"
+msgstr "Number of iterations in the selection phase, used for gradual convergence and optimization of selection results."
+
+#: ../../source/APIReference/app/rethinker.rst:324
+msgid "用于从 LLM 输出中抽取代码块的正则表达式模式。"
+msgstr "Regular expression pattern used to extract code blocks from LLM outputs."
+
+#: ../../source/APIReference/app/rethinker.rst:330
+msgid "用于从 LLM 输出中抽取被选择响应序号的正则表达式模式。"
+msgstr "Regular expression pattern used to extract the selected response index from LLM outputs."
+
+#: ../../source/APIReference/app/rethinker.rst:336
+msgid "用于从 LLM 输出中抽取最终答案内容的正则表达式模式。"
+msgstr "Regular expression pattern for extracting final answer content from LLM output."
+
+#: ../../source/APIReference/app/rethinker.rst:342
+msgid "单次 agent 执行允许的最大推理/动作步数。"
+msgstr "Maximum number of reasoning/action steps allowed per agent execution."
+
+#: ../../source/APIReference/app/rethinker.rst:348
+msgid "调用单个工具或外部服务的超时时间（秒）。"
+msgstr "Timeout duration (in seconds) for calling a single tool or external service."
+
+#: ../../source/APIReference/app/rethinker.rst:354
+msgid "允许的连续空响应最大次数，超过后将中止 agent 执行。"
+msgstr "Maximum allowed consecutive empty responses; agent execution will terminate upon exceeding this limit."
+
+#: ../../source/APIReference/app/rethinker.rst:360
+msgid "多轮对话序列化模板字符串；仅用于序列化，不作为 LLM 提示词。"
+msgstr "Multi-turn dialogue serialization template string; used solely for serialization, not as an LLM prompt."
+
+#: ../../source/APIReference/app/rethinker.rst:368
+msgid "实验级配置，包含数据集输入、输出目录与并发限制等。"
+msgstr "Experimental configuration, including dataset input, output directory, and concurrency limits."
+
+#: ../../source/APIReference/app/rethinker.rst:372
+msgid "实验使用的输入数据集文件路径。"
+msgstr "File path of the input dataset used for the experiment."
+
+#: ../../source/APIReference/app/rethinker.rst:378
+msgid "实验名称，通常作为输出根目录下的子目录名。"
+msgstr "Experiment name, typically used as a subdirectory name under the output root directory."
+
+#: ../../source/APIReference/app/rethinker.rst:384
+msgid "输出根目录；若为 ``None`` 则不写入缓存或输出。"
+msgstr "Output root directory; if ``None``, no cache or output will be written."
+
+#: ../../source/APIReference/app/rethinker.rst:390
+msgid "允许并发执行的问题最大数量。"
+msgstr "Maximum number of concurrent problems allowed for execution."
+
+#: ../../source/APIReference/app/rethinker.rst:396
+msgid "执行过程中允许并发运行的节点最大数量。"
+msgstr "Maximum number of concurrent nodes allowed during execution."
+
+#: ../../source/APIReference/app/rethinker.rst:404
+msgid "推理结构相关配置，用于控制并行候选数量与各阶段迭代次数。"
+msgstr "Reasoning structure configuration, used to control parallel candidate count and iteration counts per phase."
+
+#: ../../source/APIReference/app/rethinker.rst:408
+msgid "每个任务并行生成的 solution 候选数量。"
+msgstr "Number of solution candidates generated in parallel per task."
+
+#: ../../source/APIReference/app/rethinker.rst:414
+msgid "每个候选 solution 的生成迭代次数。"
+msgstr "Iteration count for generating each candidate solution."
+
+#: ../../source/APIReference/app/rethinker.rst:420
+msgid "反思阶段的迭代次数。"
+msgstr "Iteration count for the Guided reflection phase."
+
+#: ../../source/APIReference/app/rethinker.rst:428
+msgid "提示词模板配置，集中管理解析、求解、反思、总结与选择等阶段的 prompt。"
+msgstr "Prompt template configuration, centrally managing prompts for parsing, solving, reflection, summarization, and selection stages."
+
+#: ../../source/APIReference/app/rethinker.rst:432
+msgid "用于解析 PDF 网页内容的提示词模板。"
+msgstr "Prompt template for parsing PDF webpage content."
+
+#: ../../source/APIReference/app/rethinker.rst:438
+msgid "用于解析 HTML 网页内容的提示词模板。"
+msgstr "Prompt template for parsing HTML webpage content."
+
+#: ../../source/APIReference/app/rethinker.rst:444
+msgid "初次解题阶段的用户提示词模板。"
+msgstr "User prompt template for the initial problem-solving stage."
+
+#: ../../source/APIReference/app/rethinker.rst:450
+msgid "二次解题（second-pass solution generation）的用户提示词模板。"
+msgstr "User prompt template for secondary problem-solving (second-pass solution generation)."
+
+#: ../../source/APIReference/app/rethinker.rst:456
+msgid "初次反思阶段的用户提示词模板。"
+msgstr "User prompt template for the initial reflection stage."
+
+#: ../../source/APIReference/app/rethinker.rst:462
+msgid "二次反思（second-pass critique/evaluation）的用户提示词模板。"
+msgstr "User prompt template for secondary reflection (second-pass critique/evaluation)."
+
+#: ../../source/APIReference/app/rethinker.rst:468
+msgid "引导式总结（guided summaries）的提示词模板。"
+msgstr "Prompt template for guided summaries."
+
+#: ../../source/APIReference/app/rethinker.rst:474
+msgid "选择阶段的用户提示词模板。"
+msgstr "User prompt template for the selection stage."
+
+#: ../../source/APIReference/app/rethinker.rst:480
+msgid "迭代选择（iterative selection refinement）的用户提示词模板。"
+msgstr "Iterative selection refinement user prompt template."
+
+#: ../../source/APIReference/app/rethinker.rst:488
+msgid "运行图（Graph）整体配置，聚合 LLM 资源、网页解析/搜索、解题阶段、结构参数、实验参数与提示词模板。"
+msgstr "Execution Graph (Graph) overall configuration, aggregating LLM resources, web parsing/search, problem-solving stages, structural parameters, experimental parameters, and prompt templates."
+
+#: ../../source/APIReference/app/rethinker.rst:492
+msgid "可用的 LLM 后端资源字典；键为模型名，值为对应的 ``LLMConfig`` 配置对象。"
+msgstr "Dictionary of available LLM backend resources; keys are model names, values are corresponding ``LLMConfig`` configuration objects."
+
+#: ../../source/APIReference/app/rethinker.rst:494
+msgid "dict[str, LLMConfig]"
+msgstr "dict[str, LLMConfig]"
+
+#: ../../source/APIReference/app/rethinker.rst:498
+msgid "网页内容解析配置。"
+msgstr "Web content parsing configuration."
+
+#: ../../source/APIReference/app/rethinker.rst:500
+msgid "WebParserConfig"
+msgstr "WebParserConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:504
+msgid "Web 搜索配置。"
+msgstr "Web search configuration."
+
+#: ../../source/APIReference/app/rethinker.rst:506
+msgid "WebSearchConfig"
+msgstr "WebSearchConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:510
+msgid "解题、反思、总结与选择阶段的配置集合。"
+msgstr "Configuration set for the solution, reflection, summary, and selection phases."
+
+#: ../../source/APIReference/app/rethinker.rst:512
+msgid "SolutionConfig"
+msgstr "SolutionConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:516
+msgid "迭代推理图结构配置，包括并行度与选择器行为等。"
+msgstr "Iterative reasoning graph structure configuration, including parallelism and selector behavior."
+
+#: ../../source/APIReference/app/rethinker.rst:518
+msgid "StructureConfig"
+msgstr "StructureConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:522
+msgid "实验级配置，包括 I/O 路径、输出目录与线程限制等。"
+msgstr "Experimental-level configuration, including I/O paths, output directory, and thread limits."
+
+#: ../../source/APIReference/app/rethinker.rst:524
+msgid "ExpConfig"
+msgstr "ExpConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:528
+msgid "实验全流程使用的提示词模板集合（解析、求解、反思、选择等）。"
+msgstr "Collection of prompt templates used throughout the experiment (parsing, solving, reflection, selection, etc.)."
+
+#: ../../source/APIReference/app/rethinker.rst:530
+msgid "PromptConfig"
+msgstr "PromptConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:536
+msgid "实验配置管理器。"
+msgstr "Experiment configuration manager."
+
+#: ../../source/APIReference/app/rethinker.rst:538
+msgid "该类负责加载并访问完整实验配置：既支持从 YAML 文件加载，也支持直接加载一个 ``GraphConfig`` 实例。 它提供了对各子配置（LLM 资源、网页解析/搜索、解题设置、结构、实验 I/O、提示词等）的便捷访问， 并维护一个全局 semaphore 用于控制执行过程中的节点级并发。"
+msgstr "This class is responsible for loading and accessing the complete experiment configuration: it supports loading from YAML files as well as directly loading a ``GraphConfig`` instance. It provides convenient access to sub-configurations (LLM resources, web parsing/search, solution settings, structure, experiment I/O, prompts, etc.) and maintains a global semaphore to control node-level concurrency during execution."
+
+#: ../../source/APIReference/app/rethinker.rst:544
+msgid "获取完整的 ``GraphConfig`` 配置对象（需先加载配置）。"
+msgstr "Obtain the complete ``GraphConfig`` configuration object (configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:546
+msgid "当前已加载的图配置。"
+msgstr "Currently loaded graph configuration."
+
+#: ../../source/APIReference/app/rethinker.rst:551
+msgid "获取 LLM 后端资源配置（需先加载配置）。"
+msgstr "Obtain LLM backend resource configuration (configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:553
+msgid "LLM 资源字典。"
+msgstr "LLM Resource Dictionary."
+
+#: ../../source/APIReference/app/rethinker.rst:558
+msgid "获取网页解析配置（需先加载配置）。"
+msgstr "Get Web Parsing Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:560
+msgid "网页解析配置对象。"
+msgstr "Web Parsing Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:565
+msgid "获取 web 搜索配置（需先加载配置）。"
+msgstr "Get Web Search Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:567
+msgid "web 搜索配置对象。"
+msgstr "Web Search Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:572
+msgid "获取解题阶段配置（需先加载配置）。"
+msgstr "Get Problem-Solving Phase Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:574
+msgid "解题阶段配置对象。"
+msgstr "Problem-Solving Phase Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:579
+msgid "获取结构配置（需先加载配置）。"
+msgstr "Get Structure Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:581
+msgid "结构配置对象。"
+msgstr "Structure Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:586
+msgid "获取实验级配置（需先加载配置）。"
+msgstr "Get Experimental-Level Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:588
+msgid "实验级配置对象。"
+msgstr "Experimental-Level Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:593
+msgid "获取提示词模板配置（需先加载配置）。"
+msgstr "Get Prompt Template Configuration (Configuration must be loaded first)."
+
+#: ../../source/APIReference/app/rethinker.rst:595
+msgid "提示词模板配置对象。"
+msgstr "Prompt Template Configuration Object."
+
+#: ../../source/APIReference/app/rethinker.rst:600
+msgid "从 YAML 文件加载实验配置。"
+msgstr "Load Experimental Configuration from YAML File."
+
+#: ../../source/APIReference/app/rethinker.rst:602
+msgid "YAML 配置文件路径。"
+msgstr "YAML Configuration File Path."
+
+#: ../../source/APIReference/app/rethinker.rst
+msgid "抛出"
+msgstr "Raise"
+
+#: ../../source/APIReference/app/rethinker.rst:605
+msgid "当配置文件不存在时抛出。"
+msgstr "Raised when the configuration file does not exist."
+
+#: ../../source/APIReference/app/rethinker.rst:609
+msgid "从已有的 ``GraphConfig`` 实例加载实验配置。"
+msgstr "Load experiment configuration from an existing ``GraphConfig`` instance."
+
+#: ../../source/APIReference/app/rethinker.rst:611
+msgid "预先构造好的 ``GraphConfig`` 实例。"
+msgstr "Pre-constructed ``GraphConfig`` instance."
+
+#: ../../source/APIReference/app/rethinker.rst:616
+msgid "获取用于节点级并发控制的全局 semaphore。"
+msgstr "Obtain the global semaphore for node-level concurrency control."
+
+#: ../../source/APIReference/app/rethinker.rst:618
+msgid "若尚未初始化，会根据 ``exp.max_node_thread_limit`` 创建并缓存一个 ``asyncio.Semaphore``。"
+msgstr "If not initialized, creates and caches an ``asyncio.Semaphore`` based on ``exp.max_node_thread_limit``."
+
+#: ../../source/APIReference/app/rethinker.rst:620
+msgid "限制并发节点执行数量的 ``asyncio.Semaphore`` 对象。"
+msgstr "``asyncio.Semaphore`` object limiting concurrent node execution."
+
+#: ../../source/APIReference/app/rethinker.rst:627
+msgid "全局单例配置管理器实例，用于管理实验配置的加载与访问。"
+msgstr "Global singleton configuration manager instance for loading and accessing experiment configurations."
+
+#: ../../source/APIReference/app/rethinker.rst:629
+msgid "Config"
+msgstr "Config"
+
+#: ../../source/APIReference/app/rethinker.rst:634
+msgid "将同一段提示词按指定次数重复拼接，并在重复段之间插入固定的英文提示语作为过渡。"
+msgstr "Repeat the given prompt text a specified number of times, inserting a fixed English transition prompt between repetitions."
+
+#: ../../source/APIReference/app/rethinker.rst:636
+msgid "需要被重复的提示词文本。"
+msgstr "Prompt text to be repeated."
+
+#: ../../source/APIReference/app/rethinker.rst:639
+msgid "重复次数，必须大于等于 1，默认为 ``3``。"
+msgstr "Repeat count, must be greater than or equal to 1, default is ``3``."
+
+#: ../../source/APIReference/app/rethinker.rst:642
+msgid "当 ``repeat_time < 1`` 时抛出异常。"
+msgstr "Raise an exception when ``repeat_time < 1``."
+
+#: ../../source/APIReference/app/rethinker.rst:644
+msgid "按重复次数拼接后的完整提示词字符串，段落之间使用两个换行分隔。"
+msgstr "Complete prompt string after concatenation, with paragraphs separated by two line breaks."
+
+#: ../../source/APIReference/app/rethinker.rst:651
+msgid "根据给定的正则表达式模式生成一个“流式停止条件”函数。"
+msgstr "Generate a \"streaming stop condition\" function based on the given regular expression pattern."
+
+#: ../../source/APIReference/app/rethinker.rst:653
+msgid "生成的停止条件函数会在流式内容中使用 ``re.finditer``（带 ``re.DOTALL``）进行匹配； 一旦检测到至少一个匹配项，即返回 ``True``，用于指示应当停止继续生成/解析。"
+msgstr "The generated stop condition function uses ``re.finditer`` (with ``re.DOTALL``) to match streaming content; once at least one match is detected, it returns ``True`` to indicate that generation/parsing should stop."
+
+#: ../../source/APIReference/app/rethinker.rst:656
+msgid "用于匹配流式内容的正则表达式模式。"
+msgstr "The regular expression pattern used to match streaming content."
+
+#: ../../source/APIReference/app/rethinker.rst:659
+msgid "一个停止条件函数。该函数签名为 ``(content: str) -> bool``，当检测到匹配时返回 ``True``。"
+msgstr "A stop condition function. The function signature is ``(content: str) -> bool``, returning ``True`` when a match is detected."
+
+#: ../../source/APIReference/app/rethinker.rst:666
+msgid "支持“快速思考”模式的 OpenAI Chat Client 扩展实现。"
+msgstr "An OpenAI Chat Client extension implementation supporting \"fast thinking\" mode."
+
+#: ../../source/APIReference/app/rethinker.rst:668
+msgid "当启用 ``fast_think`` 时，会在最后一条输入消息的 ``content`` 末尾追加 ``/no_think``， 用于触发后端的快速模式（跳过或减少推理输出等）。"
+msgstr "When ``fast_think`` is enabled, ``/no_think`` is appended to the ``content`` of the last input message to trigger the backend's fast mode (skipping or reducing reasoning output)."
+
+#: ../../source/APIReference/app/rethinker.rst:673
+msgid "是否启用快速思考模式。"
+msgstr "Whether to enable fast thinking mode."
+
+#: ../../source/APIReference/app/rethinker.rst:680
+msgid "获取指定模型名称对应的 OpenAI Chat Client 实例。"
+msgstr "Retrieves an OpenAI Chat Client instance corresponding to a specified model name."
+
+#: ../../source/APIReference/app/rethinker.rst:682
+msgid "该函数会从全局配置中的 ``llm_resources`` 查找对应的 ``LLMConfig``， 并据此构造 ``FastSlowThinkOpenAIChatClient`` 的初始化参数（模型名、流式开关、客户端参数、推理参数等）。 若配置中存在 ``stop_condition``，会额外注入 ``stream_parser``，使其在流式解析时能够基于停止条件提前终止。"
+msgstr "This function looks up the corresponding ``LLMConfig`` from the global configuration's ``llm_resources``, then constructs initialization parameters for ``FastSlowThinkOpenAIChatClient`` (model name, streaming flag, client parameters, reasoning parameters, etc.). If the configuration contains ``stop_condition``, it additionally injects ``stream_parser`` to allow early termination during streaming parsing based on the stop condition."
+
+#: ../../source/APIReference/app/rethinker.rst:686
+msgid "模型标识名称（用于在配置的 LLM 资源字典中检索）。"
+msgstr "Model identifier name (used to retrieve from the LLM resources dictionary in the configuration)."
+
+#: ../../source/APIReference/app/rethinker.rst:689
+msgid "当 ``model`` 不存在于配置的 LLM 资源中时抛出异常。"
+msgstr "Raises an exception when ``model`` is not found in the configured LLM resources."
+
+#: ../../source/APIReference/app/rethinker.rst:691
+msgid "对应模型的 Chat Client 实例。"
+msgstr "The Chat Client instance corresponding to the model."
+
+#: ../../source/APIReference/app/rethinker.rst:697
+msgid "编码/推理代理的执行结果数据模型。"
+msgstr "The execution result data model for encoding/reasoning agents."
+
+#: ../../source/APIReference/app/rethinker.rst:699
+msgid "该结果对象用于汇总一次 agent 执行过程中的上下文信息、步数统计、耗时、 完整对话日志、每轮客户端原始响应，以及（可选的）最终渲染输出文本。"
+msgstr "This result object summarizes context information, step count, duration, full conversation logs, raw client responses per round, and (optionally) the final rendered output text from a single agent execution."
+
+#: ../../source/APIReference/app/rethinker.rst:704
+msgid "当前图节点执行过程中捕获的执行上下文。"
+msgstr "The execution context captured during the current graph node execution."
+
+#: ../../source/APIReference/app/rethinker.rst:706
+msgid "StreamCtx"
+msgstr "StreamCtx"
+
+#: ../../source/APIReference/app/rethinker.rst:710
+msgid "agent 在终止前完成的推理/动作总步数。"
+msgstr "Total steps of reasoning/actions completed by the agent before termination."
+
+#: ../../source/APIReference/app/rethinker.rst:716
+msgid "agent 端到端执行耗时（秒），包含 LLM 调用与工具调用。"
+msgstr "End-to-end execution time of the agent (seconds), including LLM and tool calls."
+
+#: ../../source/APIReference/app/rethinker.rst:718
+msgid "float"
+msgstr "float"
+
+#: ../../source/APIReference/app/rethinker.rst:722
+msgid "agent 维护的完整对话轨迹日志。"
+msgstr "Full conversation trajectory log maintained by the agent."
+
+#: ../../source/APIReference/app/rethinker.rst:724 ../../source/APIReference/app/rethinker.rst:730 ../../source/APIReference/app/rethinker.rst:792
+msgid "list"
+msgstr "list"
+
+#: ../../source/APIReference/app/rethinker.rst:728
+msgid "每次迭代由 LLM 客户端返回的原始响应列表。"
+msgstr "List of raw responses returned by the LLM client for each iteration."
+
+#: ../../source/APIReference/app/rethinker.rst:734
+msgid "基于 agent 日志并使用配置的聊天模板渲染得到的最终输出文本。"
+msgstr "Final output text rendered from the agent log using the configured chat template."
+
+#: ../../source/APIReference/app/rethinker.rst:736
+msgid "如果未提供聊天模板，则该字段为 ``None``。"
+msgstr "If no chat template is provided, this field is ``None``."
+
+#: ../../source/APIReference/app/rethinker.rst:743
+msgid "一个由大语言模型驱动的自治编码代理，支持多步迭代推理并可原生执行 Python 代码。"
+msgstr "A LLM-driven autonomous coding agent supporting multi-step iterative reasoning and native Python code execution."
+
+#: ../../source/APIReference/app/rethinker.rst:745
+msgid "该代理会维护完整的对话轨迹，并重复执行以下流程，直至满足终止条件："
+msgstr "This agent maintains the full conversation trajectory and repeatedly executes the following process until termination conditions are met:"
+
+#: ../../source/APIReference/app/rethinker.rst:747
+msgid "调用 LLM 后端生成响应；"
+msgstr "Invoke LLM backend to generate response;"
+
+#: ../../source/APIReference/app/rethinker.rst:748
+msgid "从模型输出中解析结构化信号（例如代码块或最终答案）；"
+msgstr "Parse structured signals (e.g., code blocks or final answers) from model output;"
+
+#: ../../source/APIReference/app/rethinker.rst:749
+msgid "通过用户提供的执行器运行生成的 Python 代码；"
+msgstr "Execute generated Python code via the user-provided executor;"
+
+#: ../../source/APIReference/app/rethinker.rst:750
+msgid "将执行结果回注入对话上下文。"
+msgstr "Inject execution results back into the conversation context."
+
+#: ../../source/APIReference/app/rethinker.rst:752
+msgid "主要能力包括："
+msgstr "Main capabilities include:"
+
+#: ../../source/APIReference/app/rethinker.rst:754
+msgid "可配置的多步迭代推理（上限步数可控）"
+msgstr "Configurable multi-step iterative reasoning (maximum steps configurable)"
+
+#: ../../source/APIReference/app/rethinker.rst:755
+msgid "结构化“工具内容（Python 代码）”提取与执行"
+msgstr "Structured extraction and execution of \"tool content (Python code)\""
+
+#: ../../source/APIReference/app/rethinker.rst:756
+msgid "当模型输出为空或无效时自动使用兜底提示词推动结束"
+msgstr "Automatic fallback prompt usage to conclude when model output is empty or invalid"
+
+#: ../../source/APIReference/app/rethinker.rst:757
+msgid "基于正则模式检测最终答案"
+msgstr "Final answer detection based on regular expression patterns"
+
+#: ../../source/APIReference/app/rethinker.rst:758
+msgid "详细的逐步日志记录与执行追踪"
+msgstr "Detailed step-by-step logging and execution tracking"
+
+#: ../../source/APIReference/app/rethinker.rst:760
+msgid "该代理被设计为可在更大的执行图/工作流系统中，以异步可调用节点的形式使用。"
+msgstr "This agent is designed to be used as an asynchronous callable node within a larger execution graph/workflow system."
+
+#: ../../source/APIReference/app/rethinker.rst:764
+msgid "用于在每个 agent 步骤中发起生成请求的 LLM 对话客户端。"
+msgstr "LLM conversation client used to initiate generation requests at each agent step."
+
+#: ../../source/APIReference/app/rethinker.rst:766 ../../source/APIReference/app/rethinker.rst:1077
+msgid "ChatClientBase"
+msgstr "ChatClientBase"
+
+#: ../../source/APIReference/app/rethinker.rst:770
+msgid "agent 允许的最大推理/动作步数。"
+msgstr "Maximum number of reasoning/action steps allowed for the agent."
+
+#: ../../source/APIReference/app/rethinker.rst:776
+msgid "允许的连续空响应最大次数。"
+msgstr "Maximum allowed consecutive empty responses."
+
+#: ../../source/APIReference/app/rethinker.rst:778
+msgid "“空响应”指输出既不匹配代码模式，也不匹配答案模式的情况。"
+msgstr "\"Empty response\" refers to output that matches neither the code pattern nor the answer pattern."
+
+#: ../../source/APIReference/app/rethinker.rst:784
+msgid "工具（Python 代码）执行超时时间（秒）。"
+msgstr "Timeout for tool (Python code) execution (seconds)."
+
+#: ../../source/APIReference/app/rethinker.rst:790
+msgid "当 agent 产生空响应时使用的兜底提示词候选列表，用于促使模型给出最终答案并结束对话。"
+msgstr "List of fallback prompt candidates used when the agent produces an empty response to prompt the model to provide a final answer and conclude the conversation."
+
+#: ../../source/APIReference/app/rethinker.rst:796
+msgid "用于从 agent 响应中提取工具内容（代码）的正则表达式模式。"
+msgstr "Regular expression pattern used to extract tool content (code) from agent responses."
+
+#: ../../source/APIReference/app/rethinker.rst:802
+msgid "用于从 agent 响应中提取最终答案内容的正则表达式模式。"
+msgstr "Regular expression pattern used to extract final answer content from agent responses."
+
+#: ../../source/APIReference/app/rethinker.rst:808
+msgid "用于将 agent 交互历史格式化为单一字符串的聊天模板。"
+msgstr "Chat template for formatting agent interaction history into a single string."
+
+#: ../../source/APIReference/app/rethinker.rst:810
+msgid "若为 ``None``，则不会输出最终渲染的 ``response`` 字段。"
+msgstr "If ``None``, the final rendered ``response`` field will not be output."
+
+#: ../../source/APIReference/app/rethinker.rst:816
+msgid "用于执行生成的 Python 代码的处理函数，通常以 ``(code: str, timeout: int)`` 作为输入并异步返回执行结果对象。"
+msgstr "Processing function for executing generated Python code, typically taking ``(code: str, timeout: int)`` as input and asynchronously returning an execution result object."
+
+#: ../../source/APIReference/app/rethinker.rst:818
+msgid "Callable[[str, int], Awaitable[BaseModel]]"
+msgstr "Callable[[str, int], Awaitable[BaseModel]]"
+
+#: ../../source/APIReference/app/rethinker.rst:823
+msgid "使用单个输入提示词运行编码代理。"
+msgstr "Run the coding agent with a single input prompt."
+
+#: ../../source/APIReference/app/rethinker.rst:825
+msgid "该方法会将 ``prompt`` 作为对话中的第一条用户消息写入内部历史记录， 并开始进行后续的推理、工具提取与执行、结果回注入，直到满足终止条件为止。"
+msgstr "This method writes the ``prompt`` as the first user message in the internal conversation history, then begins subsequent reasoning, tool extraction and execution, result injection, until the termination condition is met."
+
+#: ../../source/APIReference/app/rethinker.rst:828
+msgid "提供给 agent 的初始用户提示词，作为整个对话与推理流程的起点。"
+msgstr "Initial user prompt provided to the agent, serving as the starting point for the entire conversation and reasoning process."
+
+#: ../../source/APIReference/app/rethinker.rst:831
+msgid "结构化的 agent 执行结果对象，包含执行上下文、步数统计、耗时、完整日志、每轮原始响应以及可选的最终渲染输出。"
+msgstr "Structured agent execution result object containing execution context, step count, duration, full logs, raw responses per round, and optionally the final rendered output."
+
+#: ../../source/APIReference/app/rethinker.rst:838
+msgid "带有内置缓存与并发控制能力的异步节点基类。"
+msgstr "Asynchronous node base class with built-in caching and concurrency control capabilities."
+
+#: ../../source/APIReference/app/rethinker.rst:840
+msgid "该类在节点执行外层包装了两类通用能力："
+msgstr "This class wraps two general capabilities around node execution:"
+
+#: ../../source/APIReference/app/rethinker.rst:842
+msgid "**缓存机制**：通过复用此前已持久化的结果，避免重复计算。"
+msgstr "**Caching mechanism**: Avoids redundant computation by reusing previously persisted results."
+
+#: ../../source/APIReference/app/rethinker.rst:843
+msgid "**并发限制**：使用全局 semaphore 控制同时执行的最大节点数量。"
+msgstr "**Concurrency limit**: Controls the maximum number of concurrently executing nodes using a global semaphore."
+
+#: ../../source/APIReference/app/rethinker.rst:845
+msgid "子类应实现 ``_run`` 方法来定义实际的节点逻辑；该逻辑本身无需关心缓存与并发控制。"
+msgstr "Subclasses should implement the ``_run`` method to define actual node logic; this logic itself does not need to concern itself with caching and concurrency control."
+
+#: ../../source/APIReference/app/rethinker.rst:849
+msgid "编码代理实例，可用于通过多轮迭代执行 Python 代码来完成任务（可选）。"
+msgstr "Coding agent instance, optionally used to complete tasks through multi-round iterative execution of Python code."
+
+#: ../../source/APIReference/app/rethinker.rst:851
+msgid "Optional[CodingAgent]"
+msgstr "Optional[CodingAgent]"
+
+#: ../../source/APIReference/app/rethinker.rst:855
+msgid "在 ``state`` 中用于获取缓存目录路径的字段名（key）。"
+msgstr "The field name (key) used in ``state`` to retrieve the cache directory path."
+
+#: ../../source/APIReference/app/rethinker.rst:857
+msgid "若能从 ``state`` 中取到该字段对应的缓存目录，则会启用磁盘缓存； 默认值为 ``\"cache_dir\"``。"
+msgstr "If the cache directory corresponding to this field can be obtained from ``state``, disk cache will be enabled; default value is ``\"cache_dir\"``."
+
+#: ../../source/APIReference/app/rethinker.rst:865
+msgid "在缓存与并发控制的保护下执行节点。"
+msgstr "Execute the node under cache and concurrency control protection."
+
+#: ../../source/APIReference/app/rethinker.rst:867
+msgid "执行流程如下："
+msgstr "Execution flow as follows:"
+
+#: ../../source/APIReference/app/rethinker.rst:869
+msgid "获取全局 semaphore 并进入异步上下文，以施加并发上限。"
+msgstr "Acquire the global semaphore and enter the asynchronous context to enforce concurrency limits."
+
+#: ../../source/APIReference/app/rethinker.rst:870
+msgid "若 ``cache_dir_key`` 存在且能够从 ``state`` 中取到缓存目录，则： - 根据当前节点名构造缓存文件路径（``<node_name>.json``）； - 若缓存文件已存在，则直接加载并返回缓存结果； - 否则执行 ``_run``，并将结果写入缓存文件后返回。"
+msgstr "If ``cache_dir_key`` exists and the cache directory can be retrieved from ``state``: - Construct the cache file path based on the current node name (``<node_name>.json``); - If the cache file exists, load and return the cached result directly; - Otherwise, execute ``_run``, write the result to the cache file, and return."
+
+#: ../../source/APIReference/app/rethinker.rst:874
+msgid "若无法启用缓存（未配置或无法从 ``state`` 获取缓存目录），则直接执行 ``_run`` 并返回结果。"
+msgstr "If cache cannot be enabled (not configured or cache directory cannot be retrieved from ``state``), directly execute ``_run`` and return the result."
+
+#: ../../source/APIReference/app/rethinker.rst:876 ../../source/APIReference/app/rethinker.rst:891 ../../source/APIReference/app/rethinker.rst:943 ../../source/APIReference/app/rethinker.rst:999 ../../source/APIReference/app/rethinker.rst:1054 ../../source/APIReference/app/rethinker.rst:1107 ../../source/APIReference/app/rethinker.rst:1124
+msgid "当前执行状态对象。"
+msgstr "The current execution state object."
+
+#: ../../source/APIReference/app/rethinker.rst:879 ../../source/APIReference/app/rethinker.rst:896
+msgid "该节点产生的状态增量（或等价的变更结果）。"
+msgstr "The state delta (or equivalent change result) produced by this node."
+
+#: ../../source/APIReference/app/rethinker.rst:886
+msgid "执行节点的核心逻辑（由子类实现）。"
+msgstr "Core logic for executing the node (implemented by subclasses)."
+
+#: ../../source/APIReference/app/rethinker.rst:888
+msgid "该方法仅包含实际的计算或模型调用逻辑，不需要处理缓存与并发控制。 基类实现中会直接抛出 ``NotImplementedError``，用于提示必须由子类覆盖实现。"
+msgstr "This method contains only the actual computation or model invocation logic, without handling cache or concurrency control. The base class implementation will directly raise ``NotImplementedError`` to indicate that it must be overridden by subclasses."
+
+#: ../../source/APIReference/app/rethinker.rst:894
+msgid "当子类未实现该方法时抛出异常。"
+msgstr "Exception raised when the subclass does not implement this method."
+
+#: ../../source/APIReference/app/rethinker.rst:903
+msgid "支持“复盘/再思考（ReThink）”的解题节点实现，继承自 ``AsyncNodeWithCacheAndConcurrencyLimit``。"
+msgstr "A problem-solving node implementation supporting \"revisit/rethink (ReThink)\", inheriting from ``AsyncNodeWithCacheAndConcurrencyLimit``."
+
+#: ../../source/APIReference/app/rethinker.rst:905
+msgid "该节点会根据是否提供 ``last_round`` 来决定生成提示词的方式："
+msgstr "This node determines the prompt generation method based on whether ``last_round`` is provided:"
+
+#: ../../source/APIReference/app/rethinker.rst:907
+msgid "当 ``last_round`` 为空时，表示第一轮解题，使用 ``config.prompts.solver_user_prompt`` 构造提示词；"
+msgstr "When ``last_round`` is empty, indicating the first round of problem-solving, the prompt is constructed using ``config.prompts.solver_user_prompt``."
+
+#: ../../source/APIReference/app/rethinker.rst:908
+msgid "当 ``last_round`` 非空时，从上一轮结果中取出指定 ``index`` 的响应内容，解析后注入到 ``config.prompts.solver_twice_user_prompt`` 中，用于二次解题/再思考。"
+msgstr "When ``last_round`` is non-empty, extract the response content at the specified ``index`` from the previous round's results, parse it, and inject it into ``config.prompts.solver_twice_user_prompt`` for secondary solving/rethinking."
+
+#: ../../source/APIReference/app/rethinker.rst:911
+msgid "最终会调用 ``agent`` 执行提示词，并将结果以并行槽位列表的形式写入 ``output_key`` 对应字段。"
+msgstr "The final result will be written to the field corresponding to ``output_key`` in the form of a parallel slot list after invoking the ``agent`` to execute the prompt."
+
+#: ../../source/APIReference/app/rethinker.rst:915
+msgid "指示从哪一轮的结果中获取上一轮答案的 key。"
+msgstr "Indicates the key for retrieving the previous round's answer from which round's results."
+
+#: ../../source/APIReference/app/rethinker.rst:917
+msgid "若为 ``None``：表示第一轮，不进行再思考；"
+msgstr "If ``None``: indicates the first round, no rethinking is performed;"
+
+#: ../../source/APIReference/app/rethinker.rst:918
+msgid "若非 ``None``：表示从 ``state[last_round]`` 中读取上一轮答案并进行再思考。"
+msgstr "If not ``None``: indicates retrieving the previous round's answer from ``state[last_round]`` and performing rethinking."
+
+#: ../../source/APIReference/app/rethinker.rst:924
+msgid "输出结果在状态增量中的存储 key，默认值为 ``\"solution\"``。"
+msgstr "The storage key for the output result in the state increment, default value: ``\"solution\"``."
+
+#: ../../source/APIReference/app/rethinker.rst:931
+msgid "执行解题（或再思考）逻辑并返回状态增量。"
+msgstr "Executes the problem-solving (or rethinking) logic and returns the state increment."
+
+#: ../../source/APIReference/app/rethinker.rst:933 ../../source/APIReference/app/rethinker.rst:989 ../../source/APIReference/app/rethinker.rst:1043 ../../source/APIReference/app/rethinker.rst:1097
+msgid "执行要点："
+msgstr "Execution points:"
+
+#: ../../source/APIReference/app/rethinker.rst:935 ../../source/APIReference/app/rethinker.rst:991 ../../source/APIReference/app/rethinker.rst:1099
+msgid "从 ``state`` 读取 ``query`` 与 ``index``；"
+msgstr "Read ``query`` and ``index`` from ``state``;"
+
+#: ../../source/APIReference/app/rethinker.rst:936
+msgid "若为第一轮（``last_round`` 为空），构造初次求解提示词；"
+msgstr "If it is the first round (``last_round`` is empty), construct the initial problem-solving prompt;"
+
+#: ../../source/APIReference/app/rethinker.rst:937
+msgid "若为再思考轮次（``last_round`` 非空），从上一轮结果中取出当前 ``index`` 的 ``response``， 经解析后注入到二次求解提示词模板；"
+msgstr "If it is a rethinking round (``last_round`` is non-empty), extract the ``response`` at the current ``index`` from the previous round's results, parse it, and inject it into the secondary problem-solving prompt template;"
+
+#: ../../source/APIReference/app/rethinker.rst:939
+msgid "调用 ``agent`` 异步生成结果；"
+msgstr "Invoke the ``agent`` to asynchronously generate the result;"
+
+#: ../../source/APIReference/app/rethinker.rst:940
+#, python-brace-format
+msgid "构造长度为 ``config.structure.num_parallel`` 的列表，仅在当前位置 ``index`` 放入本次结果， 并以 ``{output_key: solution}`` 的形式返回。"
+msgstr "Construct a list of length ``config.structure.num_parallel``, placing the current result only at position ``index``, and return it in the form of ``{output_key: solution}``."
+
+#: ../../source/APIReference/app/rethinker.rst:946
+msgid "包含本节点输出的状态增量，键为 ``output_key``，值为并行槽位列表。"
+msgstr "Contains the state increment output by this node, with key ``output_key`` and value as a parallel slot list."
+
+#: ../../source/APIReference/app/rethinker.rst:953
+msgid "支持“复盘/再思考（ReThink）”的反思（Critic）节点实现，继承自 ``AsyncNodeWithCacheAndConcurrencyLimit``。"
+msgstr "Implements a reflection (Critic) node supporting \"review/rethinking (ReThink)\", inheriting from ``AsyncNodeWithCacheAndConcurrencyLimit``."
+
+#: ../../source/APIReference/app/rethinker.rst:955
+msgid "该节点用于对某一轮的解题结果进行批判性反思/反思，并可选地基于上一轮反思结果进行二次反思（再思考）："
+msgstr "This node is used for critical reflection/reflection on the solution results of a round, and optionally for secondary reflection/rethinking based on the results of the previous round:"
+
+#: ../../source/APIReference/app/rethinker.rst:957
+msgid "从 ``input_key`` 指定的状态字段中取出待反思的解题内容；"
+msgstr "Extract the content to be reflected from the State field specified by ``input_key``;"
+
+#: ../../source/APIReference/app/rethinker.rst:958
+msgid "对内容进行清洗（移除思考/执行片段等）后注入反思提示词模板；"
+msgstr "After cleaning the content (removing thinking/execution fragments, etc.), inject the reflection prompt template;"
+
+#: ../../source/APIReference/app/rethinker.rst:959
+msgid "若 ``last_round`` 为空则使用初次反思提示词 ``config.prompts.critic_user_prompt``； 否则读取上一轮反思结果，裁剪后注入二次反思提示词 ``config.prompts.critic_twice_user_prompt``；"
+msgstr "If ``last_round`` is empty, use the initial reflection prompt ``config.prompts.critic_user_prompt``; otherwise, read the previous round's reflection result, trim it, and inject the secondary reflection prompt ``config.prompts.critic_twice_user_prompt``;"
+
+#: ../../source/APIReference/app/rethinker.rst:961
+msgid "调用 ``agent`` 获取反思输出，并以并行槽位列表写入 ``output_key``。"
+msgstr "Call ``agent`` to obtain the reflection output and write it as a parallel slot list to ``output_key``."
+
+#: ../../source/APIReference/app/rethinker.rst:965
+msgid "从状态中读取“需要被反思/批判”的内容的 key。"
+msgstr "The key for reading the content that needs to be reflected/criticized from the State."
+
+#: ../../source/APIReference/app/rethinker.rst:971
+msgid "上一轮反思结果所在的 key。"
+msgstr "The key where the previous round's reflection result is stored."
+
+#: ../../source/APIReference/app/rethinker.rst:973
+msgid "若为 ``None``：表示第一轮反思，不进行再思考；"
+msgstr "If ``None``: indicates the first round of reflection, no rethinking is performed;"
+
+#: ../../source/APIReference/app/rethinker.rst:974
+msgid "若非 ``None``：表示读取指定轮次的反思结果并进行二次反思/再思考。"
+msgstr "If not ``None``: indicates reading the reflection result of the specified round and performing secondary reflection/rethinking."
+
+#: ../../source/APIReference/app/rethinker.rst:980
+msgid "反思（再思考）结果在状态增量中的存储 key。"
+msgstr "The key for storing the reflection (or secondary reflection/rethinking) result in the State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:987
+msgid "执行反思（或二次反思/再思考）逻辑并返回状态增量。"
+msgstr "Execute the reflection (or secondary reflection/rethinking) logic and return the State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:992
+msgid "从 ``state[input_key][index][\"response\"]`` 读取待反思解题输出，并进行清洗；"
+msgstr "Read the solution output to be reflected from ``state[input_key][index][\"response\"]`` and clean it;"
+
+#: ../../source/APIReference/app/rethinker.rst:993
+msgid "若 ``last_round`` 为 ``None``，构造初次反思提示词；"
+msgstr "If ``last_round`` is ``None``, construct the initial reflection prompt;"
+
+#: ../../source/APIReference/app/rethinker.rst:994
+msgid "否则读取 ``state[last_round][index][\"response\"]`` 作为上一轮反思结果，解析并裁剪后注入二次反思提示词；"
+msgstr "Otherwise, read ``state[last_round][index][\"response\"]`` as the previous round's reflection result, parse and trim it, then inject the secondary reflection prompt;"
+
+#: ../../source/APIReference/app/rethinker.rst:995
+msgid "调用 ``agent`` 异步生成反思结果；"
+msgstr "Call ``agent`` to asynchronously generate the reflection result."
+
+#: ../../source/APIReference/app/rethinker.rst:996
+#, python-brace-format
+msgid "构造长度为 ``config.structure.num_parallel`` 的列表，仅在 ``index`` 槽位放入本次反思结果， 并以 ``{output_key: critic}`` 形式返回。"
+msgstr "Construct a list of length ``config.structure.num_parallel``, placing only the current reflection result in the ``index`` slot, and return in the form of ``{output_key: critic}``."
+
+#: ../../source/APIReference/app/rethinker.rst:1002
+msgid "包含本节点反思输出的状态增量，键为 ``output_key``，值为并行槽位列表。"
+msgstr "Contains the State increment of the current node's reflection output, with key ``output_key`` and value as a list of parallel slots."
+
+#: ../../source/APIReference/app/rethinker.rst:1009
+msgid "基于“置信度引导”的选择节点实现，继承自 ``AsyncNodeWithCacheAndConcurrencyLimit``。"
+msgstr "Implements a confidence-guided selection node, inheriting from ``AsyncNodeWithCacheAndConcurrencyLimit``."
+
+#: ../../source/APIReference/app/rethinker.rst:1011
+msgid "该节点用于在多个候选响应中进行选择，并维护完整的选择历史。整体流程通常包括："
+msgstr "This node is used for selecting among multiple candidate responses and maintaining the full selection history. The overall process typically includes:"
+
+#: ../../source/APIReference/app/rethinker.rst:1013
+msgid "从 ``input_key`` 读取候选结果列表，并对每个候选进行答案解析；"
+msgstr "Read the candidate result list from ``input_key`` and parse the answer for each candidate;"
+
+#: ../../source/APIReference/app/rethinker.rst:1014
+msgid "基于候选数量构造拉丁方（latin square）用于组织比较/选择顺序；"
+msgstr "Construct a Latin square based on the number of candidates to organize the comparison/selection order;"
+
+#: ../../source/APIReference/app/rethinker.rst:1015
+msgid "进行初始化选择流程（``_init_select``）与迭代选择流程（``_iterative_select``）；"
+msgstr "Execute the initialization selection process (``_init_select``) and iterative selection process (``_iterative_select``);"
+
+#: ../../source/APIReference/app/rethinker.rst:1016
+msgid "汇总历史选择结果，提取得票/排名靠前的候选集合；"
+msgstr "Aggregate historical selection results to extract the candidate set with the highest votes/rank;"
+
+#: ../../source/APIReference/app/rethinker.rst:1017
+msgid "若存在多个并列候选，则进入最终选择流程（``_final_select``）以决出唯一结果；"
+msgstr "If multiple candidates are tied, enter the final selection process (``_final_select``) to determine a single result;"
+
+#: ../../source/APIReference/app/rethinker.rst:1018
+msgid "将选择历史、最终选中结果与候选列表写入 ``output_key``。"
+msgstr "Write the selection history, final selected result, and candidate list to ``output_key``."
+
+#: ../../source/APIReference/app/rethinker.rst:1022
+msgid "从状态中读取候选解（或中间结果）列表的 key，用于后续选择。"
+msgstr "Key for reading the candidate solutions (or intermediate results) list from State, used for subsequent selection."
+
+#: ../../source/APIReference/app/rethinker.rst:1028
+msgid "选择结果在状态增量中的存储 key，默认值为 ``\"selector\"``。"
+msgstr "Storage key for selection results in State increment, default value ``\"selector\"``."
+
+#: ../../source/APIReference/app/rethinker.rst:1034
+msgid "提示词重复次数配置（用于控制选择阶段提示词的重复/强调程度）。"
+msgstr "Prompt repetition count configuration (used to control the repetition/emphasis level of prompts during the selection phase)."
+
+#: ../../source/APIReference/app/rethinker.rst:1041
+msgid "执行候选结果的选择流程并返回状态增量。"
+msgstr "Execute the candidate result selection process and return the State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:1045
+msgid "从 ``state`` 读取 ``query``；"
+msgstr "Read ``query`` from ``state``;"
+
+#: ../../source/APIReference/app/rethinker.rst:1046
+msgid "从 ``state[input_key]`` 读取候选列表，并将每个候选的 ``response`` 解析为纯答案文本；"
+msgstr "Read the candidate list from ``state[input_key]``, and parse each candidate's ``response`` into pure answer text;"
+
+#: ../../source/APIReference/app/rethinker.rst:1047
+msgid "依据候选数量构造拉丁方，用于组织比较/选择顺序；"
+msgstr "Construct a Latin square based on the number of candidates to organize the comparison/selection order;"
+
+#: ../../source/APIReference/app/rethinker.rst:1048
+msgid "依次执行初始化选择与迭代选择，累积 ``_response_history``；"
+msgstr "Execute initial selection and iterative selection sequentially, accumulating ``_response_history``;"
+
+#: ../../source/APIReference/app/rethinker.rst:1049
+msgid "计算当前选择历史中排名靠前的候选集合： 若候选集合大小大于 1，则执行最终选择以获得唯一结果；"
+msgstr "Calculate the top-ranked candidate set from the current selection history: if the candidate set size is greater than 1, perform final selection to obtain a single result;"
+
+#: ../../source/APIReference/app/rethinker.rst:1051
+msgid "返回一个字典，键为 ``output_key``，其值包含： ``selection_history``（选择历史）、``selected_response``（最终选中响应）与 ``response_list``（候选答案列表）。"
+msgstr "Return a dictionary with key ``output_key``, whose value contains: ``selection_history`` (selection history), ``selected_response`` (final selected response), and ``response_list`` (candidate answer list)."
+
+#: ../../source/APIReference/app/rethinker.rst:1057
+msgid "包含选择结果的状态增量，键为 ``output_key``。"
+msgstr "Include the selection result as a State increment with key ``output_key``."
+
+#: ../../source/APIReference/app/rethinker.rst:1063
+msgid "引导式总结节点实现，继承自 ``AsyncNodeWithCacheAndConcurrencyLimit``。"
+msgstr "Implementation of the Guided summary node, inheriting from ``AsyncNodeWithCacheAndConcurrencyLimit``."
+
+#: ../../source/APIReference/app/rethinker.rst:1065
+msgid "该节点用于对候选解答进行“引导式总结”生成："
+msgstr "This node is used to generate \"Guided summary\" for candidate solutions:"
+
+#: ../../source/APIReference/app/rethinker.rst:1067
+msgid "从 ``input_key`` 指定的状态字段中读取待总结的解题输出；"
+msgstr "Read the solution output to be summarized from the State field specified by ``input_key``;"
+
+#: ../../source/APIReference/app/rethinker.rst:1068
+msgid "对输出内容进行清洗（去除不需要的响应结构/标记等）；"
+msgstr "Clean the output content (remove unnecessary response structures/markers, etc.);"
+
+#: ../../source/APIReference/app/rethinker.rst:1069
+msgid "使用 ``config.prompts.guided_summary_prompt`` 构造总结提示词；"
+msgstr "Construct the summary prompt using ``config.prompts.guided_summary_prompt``;"
+
+#: ../../source/APIReference/app/rethinker.rst:1070
+msgid "通过 ``client`` 发起一次对话生成请求得到总结内容；"
+msgstr "Initiate a conversation generation request via ``client`` to obtain the summary content;"
+
+#: ../../source/APIReference/app/rethinker.rst:1071
+msgid "将总结结果以并行槽位列表形式写入 ``output_key``。"
+msgstr "Write the summary result as a parallel slot list to ``output_key``."
+
+#: ../../source/APIReference/app/rethinker.rst:1075
+msgid "用于生成总结内容的 LLM 对话客户端。"
+msgstr "LLM dialogue client used for generating summary content."
+
+#: ../../source/APIReference/app/rethinker.rst:1081
+msgid "从状态中读取待总结内容的 key。"
+msgstr "Key for reading content to be summarized from State."
+
+#: ../../source/APIReference/app/rethinker.rst:1087
+msgid "生成的总结结果在状态增量中的存储 key。"
+msgstr "The storage key for the generated summary result in the State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:1095
+msgid "生成引导式总结并返回状态增量。"
+msgstr "Generate Guided reflection summary and return State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:1100
+msgid "从 ``state[input_key][index][\"response\"]`` 读取待总结内容并进行清洗；"
+msgstr "Read the content to be summarized from ``state[input_key][index][\"response\"]`` and clean it;"
+
+#: ../../source/APIReference/app/rethinker.rst:1101
+msgid "将问题与解答注入 ``guided_summary_prompt`` 模板构造提示词；"
+msgstr "Inject the question and answer into the ``guided_summary_prompt`` template to construct the prompt;"
+
+#: ../../source/APIReference/app/rethinker.rst:1102
+msgid "调用 ``client.create`` 生成总结，并将返回内容整理为字典结构： 其中 ``response[\"response\"]`` 会被设置为 ``response[\"content\"]`` 以统一字段命名；"
+msgstr "Call ``client.create`` to generate the summary, and organize the returned content into a dictionary structure: where ``response[\"response\"]`` will be set to ``response[\"content\"]`` to unify field naming;"
+
+#: ../../source/APIReference/app/rethinker.rst:1104
+msgid "构造长度为 ``config.structure.num_parallel`` 的列表，仅在 ``index`` 槽位写入该总结结果；"
+msgstr "Construct a list of length ``config.structure.num_parallel``, writing only the summary result to the ``index`` slot;"
+
+#: ../../source/APIReference/app/rethinker.rst:1105
+#, python-brace-format
+msgid "以 ``{output_key: solution_summary}`` 的形式返回。"
+msgstr "Return in the form of ``{output_key: solution_summary}``."
+
+#: ../../source/APIReference/app/rethinker.rst:1110
+msgid "包含总结结果的状态增量，键为 ``output_key``，值为并行槽位列表。"
+msgstr "The State increment containing the summary result, with key ``output_key`` and value as a list of parallel slots."
+
+#: ../../source/APIReference/app/rethinker.rst:1116
+msgid "同步分发节点，用于在执行图中充当占位或分发入口节点。"
+msgstr "Synchronous distribution node, used as a placeholder or distribution entry node in the execution graph."
+
+#: ../../source/APIReference/app/rethinker.rst:1118
+msgid "当前实现的 ``__call__`` 不对状态做任何修改，直接返回空的状态增量。"
+msgstr "The current implementation of ``__call__`` does not modify the State, directly returning an empty State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:1122
+msgid "执行分发节点逻辑并返回状态增量。"
+msgstr "Execute distribution node logic and return State increment."
+
+#: ../../source/APIReference/app/rethinker.rst:1127
+msgid "空的状态增量字典。"
+msgstr "Empty State increment dictionary."
+
+#: ../../source/APIReference/app/rethinker.rst:1133
+msgid "生成一个用于设置 ``state.index`` 的分发过滤函数。"
+msgstr "Generate a distribution filter function for setting ``state.index``."
+
+#: ../../source/APIReference/app/rethinker.rst:1135
+msgid "返回的过滤函数会将传入的 ``state`` 的 ``index`` 字段设置为指定值， 并返回更新后的 ``state``，常用于将并行任务分发到不同的槽位索引。"
+msgstr "The returned filter function sets the ``index`` field of the incoming ``state`` to the specified value and returns the updated ``state``, commonly used to distribute parallel tasks to different slot indices."
+
+#: ../../source/APIReference/app/rethinker.rst:1138
+msgid "要写入到 ``state.index`` 的索引值。"
+msgstr "The index value to be written to ``state.index``."
+
+#: ../../source/APIReference/app/rethinker.rst:1141
+msgid "一个过滤函数，签名为 ``(state: State) -> State``。"
+msgstr "A filter function with signature ``(state: State) -> State``."
+
+#: ../../source/APIReference/app/rethinker.rst:1148
+msgid "基准评测的抽象基类。"
+msgstr "Abstract base class for benchmark evaluation."
+
+#: ../../source/APIReference/app/rethinker.rst:1150
+msgid "该类提供一套通用的评测流水线，覆盖数据与结果的匹配、并行评测、异常兜底、 以及统计汇总与落盘保存等能力。子类必须实现 ``evaluate_item`` 方法来定义 具体基准（benchmark）的评测逻辑。"
+msgstr "This class provides a general evaluation pipeline covering data and result matching, parallel evaluation, exception handling, and statistical aggregation and storage. Subclasses must implement the ``evaluate_item`` method to define the specific benchmark evaluation logic."
+
+#: ../../source/APIReference/app/rethinker.rst:1156
+msgid "源数据集文件路径（JSON）。"
+msgstr "Source dataset file path (JSON)."
+
+#: ../../source/APIReference/app/rethinker.rst:1158 ../../source/APIReference/app/rethinker.rst:1164 ../../source/APIReference/app/rethinker.rst:1194
+msgid "Path"
+msgstr "Path"
+
+#: ../../source/APIReference/app/rethinker.rst:1162
+msgid "模型生成结果所在的根目录。"
+msgstr "Root directory where model generation results are stored."
+
+#: ../../source/APIReference/app/rethinker.rst:1168
+msgid "作为裁判（judge）的 LLM 配置。"
+msgstr "LLM configuration for the judge (judge model)."
+
+#: ../../source/APIReference/app/rethinker.rst:1170
+msgid "LLMConfig"
+msgstr "LLMConfig"
+
+#: ../../source/APIReference/app/rethinker.rst:1174
+msgid "并行评测的最大线程数。"
+msgstr "Maximum number of threads for parallel evaluation."
+
+#: ../../source/APIReference/app/rethinker.rst:1180
+msgid "注入到裁判提示词中的响应文本最大保留字符数（用于截断）。"
+msgstr "Maximum number of characters to retain in the response text injected into the judge prompt (for truncation)."
+
+#: ../../source/APIReference/app/rethinker.rst:1186
+msgid "裁判模型输出允许的最大 token 数。"
+msgstr "Maximum number of tokens allowed in the judge model's output."
+
+#: ../../source/APIReference/app/rethinker.rst:1192
+msgid "评测结果保存路径。"
+msgstr "Path to save evaluation results."
+
+#: ../../source/APIReference/app/rethinker.rst:1198
+msgid "可选的结果抽取函数，用于从单个问题目录中提取模型预测。"
+msgstr "Optional result extraction function, used to extract model predictions from a single question directory."
+
+#: ../../source/APIReference/app/rethinker.rst:1200
+msgid "若为 ``None``，则使用默认抽取逻辑；该字段被排除在序列化之外（函数不可序列化）。"
+msgstr "If ``None``, default extraction logic is used; this field is excluded from serialization (functions are not serializable)."
+
+#: ../../source/APIReference/app/rethinker.rst:1202
+msgid "Optional[Callable[[str], Optional[str]]]"
+msgstr "Optional[Callable[[str], Optional[str]]]"
+
+#: ../../source/APIReference/app/rethinker.rst:1207
+msgid "模型初始化后的钩子方法，用于完成运行期初始化与校验。"
+msgstr "Hook method after model initialization, used to complete runtime initialization and validation."
+
+#: ../../source/APIReference/app/rethinker.rst:1209
+msgid "该方法会："
+msgstr "This method will:"
+
+#: ../../source/APIReference/app/rethinker.rst:1211
+msgid "创建并缓存裁判用的 OpenAI 客户端；"
+msgstr "Create and cache the OpenAI client for judging;"
+
+#: ../../source/APIReference/app/rethinker.rst:1212
+msgid "校验数据文件是否存在（不存在则抛出异常）；"
+msgstr "Validate whether the data file exists (throw an exception if it does not exist);"
+
+#: ../../source/APIReference/app/rethinker.rst:1213
+msgid "检查结果根目录是否存在（不存在则记录告警）；"
+msgstr "Check if the result root directory exists (log a warning if it does not exist);"
+
+#: ../../source/APIReference/app/rethinker.rst:1214
+msgid "若未提供 ``result_extractor``，则设置为默认抽取逻辑。"
+msgstr "If ``result_extractor`` is not provided, set it to the default extraction logic."
+
+#: ../../source/APIReference/app/rethinker.rst:1216
+msgid "Pydantic 传入的上下文对象。"
+msgstr "Context object passed via Pydantic."
+
+#: ../../source/APIReference/app/rethinker.rst:1219
+msgid "当 ``data_file`` 不存在时抛出。"
+msgstr "Throw an exception when ``data_file`` does not exist."
+
+#: ../../source/APIReference/app/rethinker.rst:1224
+msgid "评测单条样本（由子类实现）。"
+msgstr "Evaluate a single sample (to be implemented by subclasses)."
+
+#: ../../source/APIReference/app/rethinker.rst:1226
+msgid "子类必须覆盖该方法以实现特定基准的数据判分规则与元信息组织方式。"
+msgstr "Subclasses must override this method to implement specific benchmark data scoring rules and metadata organization methods."
+
+#: ../../source/APIReference/app/rethinker.rst:1228
+msgid "单条数据样本，通常包含问题、标准答案与模型预测等字段。"
+msgstr "A single data sample, typically containing fields such as question, standard answer, and model prediction."
+
+#: ../../source/APIReference/app/rethinker.rst:1231
+msgid "单条样本的评测结果字典，通常包含 ``score`` 与 ``details`` 等字段。"
+msgstr "Evaluation result dictionary for a single sample, typically containing fields such as ``score`` and ``details``."
+
+#: ../../source/APIReference/app/rethinker.rst:1237
+msgid "运行完整的基准评测流程。"
+msgstr "Run the complete benchmark evaluation process."
+
+#: ../../source/APIReference/app/rethinker.rst:1239
+msgid "该方法会先将源数据与生成结果进行匹配，随后使用线程池并行评测全部样本， 最后对结果进行统计汇总并写入 ``save_path``。"
+msgstr "This method first matches source data with generated results, then uses a thread pool to evaluate all samples in parallel, and finally aggregates the results statistically and writes them to ``save_path``."
+
+#: ../../source/APIReference/app/rethinker.rst:1242
+msgid "无返回值。"
+msgstr "No return value."
+
+#: ../../source/APIReference/app/rethinker.rst:1249
+msgid "HLE 基准评测器，实现了 HLE 场景下的单条样本评测逻辑。"
+msgstr "HLE Benchmark Evaluator, implements single-sample evaluation logic for HLE scenarios."
+
+#: ../../source/APIReference/app/rethinker.rst:1253
+msgid "对单条 HLE 样本进行评测。"
+msgstr "Evaluates a single HLE sample."
+
+#: ../../source/APIReference/app/rethinker.rst:1255
+msgid "该实现会构造裁判提示词并使用裁判模型进行结构化解析， 根据解析结果中的 ``correct`` 字段计算得分。"
+msgstr "This implementation constructs a judge prompt and uses a judge model for structured parsing, calculating the score based on the ``correct`` field in the parsing result."
+
+#: ../../source/APIReference/app/rethinker.rst:1258 ../../source/APIReference/app/rethinker.rst:1279 ../../source/APIReference/app/rethinker.rst:1300
+msgid "单条数据样本，包含 ``question``、``answer`` 与 ``prediction`` 等字段。"
+msgstr "A single data sample containing fields such as ``question``, ``answer``, and ``prediction``."
+
+#: ../../source/APIReference/app/rethinker.rst:1261 ../../source/APIReference/app/rethinker.rst:1282 ../../source/APIReference/app/rethinker.rst:1303
+msgid "评测结果字典，包含 ``score``、``error`` 与 ``details``。"
+msgstr "Evaluation result dictionary containing ``score``, ``error``, and ``details``."
+
+#: ../../source/APIReference/app/rethinker.rst:1264
+msgid "当裁判模型返回的结构化解析结果为空时抛出异常。"
+msgstr "Throws an exception when the structured parsing result from the judge model is empty."
+
+#: ../../source/APIReference/app/rethinker.rst:1270
+msgid "XBench 基准评测器，实现了 XBench 场景下的单条样本评测逻辑。"
+msgstr "XBench Benchmark Evaluator, implements single-sample evaluation logic for XBench scenarios."
+
+#: ../../source/APIReference/app/rethinker.rst:1274
+msgid "对单条 XBench 样本进行评测。"
+msgstr "Evaluates a single XBench sample."
+
+#: ../../source/APIReference/app/rethinker.rst:1276
+msgid "该实现会调用裁判模型生成判断文本，并通过正则提取“结论（正确/错误）”字段， 进而计算得分。"
+msgstr "This implementation calls the judge model to generate judgment text, extracts the \"Conclusion (Correct/Incorrect)\" field via regular expression, and then calculates the score."
+
+#: ../../source/APIReference/app/rethinker.rst:1285
+msgid "当无法从裁判输出中解析出结论时抛出异常。"
+msgstr "Throws an exception when the conclusion cannot be parsed from the judge output."
+
+#: ../../source/APIReference/app/rethinker.rst:1291
+msgid "GAIA 基准评测器，实现了 GAIA 场景下的单条样本评测逻辑。"
+msgstr "GAIA Benchmark Evaluator, implements single-sample evaluation logic for GAIA scenarios."
+
+#: ../../source/APIReference/app/rethinker.rst:1295
+msgid "对单条 GAIA 样本进行评测。"
+msgstr "Evaluates a single GAIA sample."
+
+#: ../../source/APIReference/app/rethinker.rst:1297
+msgid "该实现会构造裁判提示词并调用裁判模型生成判断结果， 将输出内容规整后以 ``correct`` / 非 ``correct`` 作为判分依据。"
+msgstr "This implementation constructs a judge prompt, calls the judge model to generate judgment results, normalizes the output content, and uses ``correct`` / non-``correct`` as the scoring criterion."
+
+#: ../../source/APIReference/app/rethinker.rst:1310
+msgid "异步执行一段 Python 代码，并返回结构化的执行结果。"
+msgstr "Asynchronously executes a Python code snippet and returns structured execution results."
+
+#: ../../source/APIReference/app/rethinker.rst:1312
+msgid "该函数会将实际的代码执行委托到线程池执行器中运行（通过事件循环的 ``run_in_executor``）， 并统计执行耗时；若执行过程中发生异常，会记录错误日志并在结果中返回错误信息。"
+msgstr "This function delegates the actual code execution to a thread pool executor (via the event loop's ``run_in_executor``), tracks execution time; if an exception occurs during execution, it logs the error and returns the error information in the result."
+
+#: ../../source/APIReference/app/rethinker.rst:1315
+msgid "需要执行的 Python 代码字符串。"
+msgstr "Python code string to be executed."
+
+#: ../../source/APIReference/app/rethinker.rst:1318
+msgid "执行超时时间（秒），默认 ``300``。"
+msgstr "Execution timeout in seconds, default ``300``."
+
+#: ../../source/APIReference/app/rethinker.rst:1321
+msgid "代码执行结果对象，包含标准输出、错误信息与执行耗时。"
+msgstr "Result object of code execution, containing standard output, error messages, and execution duration."
+
+#: ../../source/APIReference/app/rethinker.rst:1328
+msgid "统一的网页内容解析入口。"
+msgstr "Unified entry point for web content parsing."
+
+#: ../../source/APIReference/app/rethinker.rst:1330
+msgid "该函数会根据传入的链接动态选择合适的解析器，并执行对应的解析逻辑，返回解析后的结构化结果。 若解析过程中出现未处理异常，会记录错误日志并返回标准化的错误结果字典。"
+msgstr "This function dynamically selects an appropriate parser based on the input URL, executes the corresponding parsing logic, and returns the structured parsing result. If an unhandled exception occurs during parsing, it logs the error and returns a standardized error result dictionary."
+
+#: ../../source/APIReference/app/rethinker.rst:1333
+msgid "需要解析的网页 URL。"
+msgstr "URL of the web page to be parsed."
+
+#: ../../source/APIReference/app/rethinker.rst:1336
+msgid "解析上下文中的检索/问题文本，用于从页面中抽取与该上下文相关的信息。"
+msgstr "Retrieval/question text in the parsing context, used to extract information related to this context from the page."
+
+#: ../../source/APIReference/app/rethinker.rst:1339
+#, python-brace-format
+msgid "解析结果字典，通常包含解析内容（content）、相关 URL 列表（urls）以及评分（score）等字段； 若发生未处理异常则返回形如 ``{\"content\": \"System error during parsing\"}`` 的错误字典。"
+msgstr "Parsing result dictionary, typically containing fields such as parsed content (content), related URL list (urls), and score; if an unhandled exception occurs, returns an error dictionary in the form ``{\"content\": \"System error during parsing\"}``."
+
+#: ../../source/APIReference/app/rethinker.rst:1348
+msgid "使用搜索引擎在互联网上检索信息并返回结果。"
+msgstr "Search the internet using a search engine and return results."
+
+#: ../../source/APIReference/app/rethinker.rst:1350
+msgid "该函数会构造请求所需的 payload 与 headers，调用 Serper 接口进行检索，并使用重试机制提升稳定性。 成功时通常返回包含 ``organic`` 字段的结果字典；若重试处理最终返回 ``None``，则返回空列表。"
+msgstr "This function constructs the required payload and headers, calls the Serper API for searching, and uses a retry mechanism to improve stability. On success, it typically returns a result dictionary containing the ``organic`` field; if retries ultimately return ``None``, it returns an empty list."
+
+#: ../../source/APIReference/app/rethinker.rst:1353
+msgid "需要提交的搜索查询语句。"
+msgstr "Search query string to be submitted."
+
+#: ../../source/APIReference/app/rethinker.rst:1356
+msgid "返回的最大结果数量，默认 ``10``。"
+msgstr "Maximum number of returned results, default ``10``."
+
+#: ../../source/APIReference/app/rethinker.rst:1359
+msgid "成功时返回包含搜索结果的字典（通常结果位于 ``organic`` 键下）； 若请求失败且重试处理未得到结果，则返回空列表。"
+msgstr "Returns a dictionary containing search results on success (typically results under the ``organic`` key); if the request fails and retries yield no results, returns an empty list."
+
+#: ../../source/APIReference/app/rethinker.rst:1367
+msgid "同步下载指定 URL 的 PDF 并提取其文本内容。"
+msgstr "Synchronously download a PDF from a specified URL and extract its text content."
+
+#: ../../source/APIReference/app/rethinker.rst:1369
+msgid "该函数既支持普通 PDF 直链，也支持 arXiv 的摘要页链接（会转换为可直接下载的 PDF 链接）。 下载完成后使用 PyMuPDF（fitz）解析 PDF 并提取全部文本。"
+msgstr "This function supports both direct PDF links and arXiv abstract page links (which are converted to direct PDF download links). After downloading, it uses PyMuPDF (fitz) to parse the PDF and extract all text."
+
+#: ../../source/APIReference/app/rethinker.rst:1372
+msgid "PDF 文件的 URL，或 arXiv 的摘要页 URL（例如 ``https://arxiv.org/abs/2106.07682``）。"
+msgstr "The URL of a PDF file, or the arXiv abstract page URL (e.g., ``https://arxiv.org/abs/2106.07682``)."
+
+#: ../../source/APIReference/app/rethinker.rst:1375
+msgid "成功时返回提取出的 PDF 文本内容；失败时返回描述性错误字符串（例如“Failed to read the PDF”等）。"
+msgstr "On success, return the extracted PDF text content; on failure, return a descriptive error string (e.g., 'Failed to read the PDF')."

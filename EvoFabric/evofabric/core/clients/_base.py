@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import AsyncGenerator, List, Literal, Sequence
+from typing import AsyncIterator, List, Sequence, Union
 
 from ..factory import BaseComponent
 from ..trace import trace_chat
@@ -18,7 +18,7 @@ class ChatClientBase(BaseComponent):
     @trace_chat
     async def create_on_stream(
             self, messages: Sequence[StateMessage], **kwargs
-    ) -> AsyncGenerator[ChatStreamChunk, LLMChatResponse]:
+    ) -> AsyncIterator[Union[ChatStreamChunk, LLMChatResponse]]:
         """Streaming mode to generate LLM response"""
         raise NotImplementedError
 

@@ -247,7 +247,7 @@ class GraphEngine(BaseComponent):
             logger.error(f"Task was cancelled!")
             raise
         except Exception as e:
-            raise RuntimeError(f"GraphEngine encountered an error during execution: {e}") from e
+            raise e
         finally:
             self._is_running = False
 

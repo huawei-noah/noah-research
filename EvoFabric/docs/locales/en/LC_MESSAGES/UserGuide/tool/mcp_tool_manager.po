@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EvoFabric\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 15:22+0800\n"
+"POT-Creation-Date: 2026-02-10 14:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Generated-By: Babel 2.17.0\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../source/UserGuide/tool/mcp_tool_manager.rst:4
 msgid "McpToolManager"
@@ -24,8 +24,8 @@ msgid "概述"
 msgstr "Overview"
 
 #: ../../source/UserGuide/tool/mcp_tool_manager.rst:9
-msgid ":py:class:`~evofabric.core.tool.McpToolManager` 继承自 :py:class:`~evofabric.core.tool.ToolManagerBase` ， 用于统一管理**多个外部 MCP 服务器**及其暴露的工具、资源、提示词。"
-msgstr ":py:class:`~evofabric.core.tool.McpToolManager` inherits from :py:class:`~evofabric.core.tool.ToolManagerBase`, and is used to uniformly manage **multiple external MCP servers** and their exposed tools, resources, and prompts."
+msgid ":py:class:`~evofabric.core.tool.McpToolManager` 继承自 :py:class:`~evofabric.core.tool.ToolManagerBase` ， 用于统一管理 **多个外部 MCP 服务器** 及其暴露的工具、资源、提示词。"
+msgstr ":py:class:`~evofabric.core.tool.McpToolManager` inherits from :py:class:`~evofabric.core.tool.ToolManagerBase`, used for unified management of **multiple external MCP servers** and their exposed tools, resources, and prompts."
 
 #: ../../source/UserGuide/tool/mcp_tool_manager.rst:12
 msgid "与原生 Python 工具管理器不同，MCP 工具管理器通过 `Model Context Protocol` 与任意语言实现的 MCP 服务器通信， 天然支持跨语言、跨进程、甚至跨主机的工具调用。"

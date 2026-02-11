@@ -45,6 +45,8 @@
 
 * **兼顾多场景需求：** 无论是快速验证原型的研究场景，还是大规模部署的工程化场景，都能提供稳固基础与灵活扩展点。
 
+* **行业亲和：** 专注于行业Agent能力构建及研究，高效利用行业知识及专家经验，提升行业效率。
+
 ## 🚀 快速入门
 
 ### 安装
@@ -129,6 +131,97 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+## 🌍 应用场景
+
+EvoFabric 的设计目标不仅是构建通用的智能体系统，还旨在支持**领域特定的智能工作流**与**科学推理流水线**。
+
+---
+
+### 🏭 工业应用
+
+#### 1. SOP2Workflow：从 SOP 文档到可执行的智能体工作流
+
+工业流程通常以 **标准操作规程（Standard Operating Procedures, SOPs）** 的形式编写——
+这类结构化文档描述了任务应如何一步步执行。
+
+然而，SOP 通常是 **静态文本** ，这意味着：
+
+* 它们无法直接执行，
+* 需要人工进行工作流工程设计，
+* 并且难以扩展为基于智能体的自动化系统。
+
+**SOP2Workflow** 能够自动将文本形式的 SOP 转换为可运行的多智能体工作流图。
+
+它支持：
+
+* **SOP转换为工作流**  
+     将业务文档转换为可执行的智能体流水线。
+
+* **节点采风**  
+  将复杂流程拆分为连贯的智能体节点。
+
+* **按节点分配工具与记忆模块**  
+  每个工作流节点都可以配置特定工具与记忆模块。
+
+* **可人工参与编辑**  
+  生成的工作流定义会保存到磁盘，并可手动进一步优化。
+
+* **端到端执行**  
+  从文档解析 → 图生成 → 智能体执行 → 可视化展示。
+
+##### SOP2Workflow：快速开始
+
+完整可运行示例位于 [sop2workflow example](examples/sop2workflow/README.md)，其中包含详细的配置与执行说明。
+
+### 🔬 Rethinker：基于 OpenPangu 的科学推理框架
+
+EvoFabric 还提供了一个名为 Rethinker 的科学推理框架，该框架基于 Rethink 范式构建。它将上一轮迭代的答案融入下一步推理过程，从而帮助消除推理误差的累积。
+
+此外，我们还提出了引导式反思机制与置信度驱动的选择策略，以进一步提升可靠性。因此，EvoFabric 在 HLE 基准排行榜上取得了顶尖表现。
+
+我们的论文地址为：[https://arxiv.org/abs/2602.04496](https://arxiv.org/abs/2602.04496)
+
+**Rethinker 在专家级推理基准上的主要结果。**
+
+| Category                    | Model / Framework                                  | HLE  | GAIA | XBench |
+|-----------------------------|----------------------------------------------------|------|------|--------|
+| Foundation Model w. tools   | Kimi K2 (Kimi et al., 2025)                        | 18.1 | 57.7 | 50.0   |
+| Foundation Model w. tools   | Claude-4.5-Sonnet (Anthropic, 2025)                | 24.5 | 71.2 | 66.0   |
+| Foundation Model   w. tools | DeepSeek-V3.2 (Liu et al., 2025a)                  | 27.2 | 63.5 | 71.0   |
+| Foundation Model  w. tools  | GLM-4.6 (Zhipu, 2025)                              | 30.4 | 71.9 | 70.0   |
+| Foundation Model  w. tools  | GPT-5-high (OpenAI, 2025b)                         | 35.2 | 76.4 | 77.8   |
+| Foundation Model   w. tools | Gemini-3-Pro (Google, 2025)                        | 38.3 | 79.0 | 87.0   |
+| Inference Framework         | WebExplorer (Liu et al., 2025b)                    | 17.3 | 50.0 | 53.7   |
+| Inference Framework         | OpenAI DeepResearch (OpenAI, 2025a)                | 26.6 | 67.4 | –      |
+| Inference Framework         | Kimi Researcher (Kimi, 2025)                       | 26.9 | –    | 69.0   |
+| Inference Framework         | Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025) | 32.9 | 70.9 | 75.0   |
+| Inference Framework         | MiroThinker-v1.0 (30B) (MiroMind et al., 2025)     | 33.4 | 73.5 | 70.6   |
+| Inference Framework         | **ReThinker (OpenPangu-72B) (Ours)**               | 33.1 | 72.8 | 78.0   |
+| Inference Framework         | **ReThinker (Gemini-3-pro) (Ours)**                        | 52.2 | 81.6 | 90.0   |
+
+## 🤝 贡献者
+
+EvoFabric 是一个开放且持续演进的项目，离不开贡献者们的努力。
+我们由衷感谢每一位帮助改进框架的人，无论是通过代码、文档、测试还是想法。
+
+### 核心贡献者
+
+按姓氏字母顺序排列：
+
+* Yuqi Cui
+* Da Chen 
+* Guojin Chen 
+* Zihao Chen 
+* Wenyi Fang 
+* Jiaquan Guo 
+* Hailin Hu 
+* Shoubo Hu 
+* Shixiong Kai 
+* Kaichao Liang 
+* Xinduo Liu 
+* Ke Ye 
+* Lihao Yin
+* Mingxuan Yuan
 
 ## ⚖️ 许可证
 

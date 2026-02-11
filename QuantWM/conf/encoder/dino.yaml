@@ -1,0 +1,3 @@
+_target_: models.dino.DinoV2Encoder
+name: "dinov2_vits14"
+feature_key: "x_norm_patchtokens"

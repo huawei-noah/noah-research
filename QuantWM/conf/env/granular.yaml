@@ -1,0 +1,43 @@
+dataset:
+  obj: "granular"
+  obj_params:
+    granular_scale: 0.2
+    area: 5.0 # change particle numbers
+    # area: 1.5
+    xz_ratio: 1.0
+    granular_dis: 0.03
+
+  # data collection
+  base: 0
+  n_episode: 1000
+  n_timestep: 20
+  n_worker: 40
+  
+  # sim env
+  headless: True # False: OpenGL visualization
+  camera_view: 1 # 0 (top view), 1, 2, 3, 4
+  screenWidth: 224
+  screenHeight: 224
+
+  robot_type: 'xarm6' 
+  robot_end_idx: 6
+  robot_num_dofs: 6
+  robot_speed_inv: 300
+  
+  action_dim: 4 # [x_start, z_start, x_end, z_end]
+  action_space: 4 # random action space scope
+
+  # Tool
+  gripper: False
+  pusher_len: 1.3
+  
+  # Save particles
+  fps: False
+  fps_number: 2000
+
+  rob_obj_dist_thresh: 0.2
+  contact_interval: 40
+  non_contact_interval: 80
+
+  # others
+  color_threshold: 0.01
