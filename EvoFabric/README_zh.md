@@ -198,7 +198,6 @@ EvoFabric 还提供了一个名为 Rethinker 的科学推理框架，该框架�
 | Inference Framework         | Tongyi DeepResearch (30BA3B) (Tongyi et al., 2025) | 32.9 | 70.9 | 75.0   |
 | Inference Framework         | MiroThinker-v1.0 (30B) (MiroMind et al., 2025)     | 33.4 | 73.5 | 70.6   |
 | Inference Framework         | **ReThinker (OpenPangu-72B) (Ours)**               | 33.1 | 72.8 | 78.0   |
-| Inference Framework         | **ReThinker (Gemini-3-pro) (Ours)**                        | 52.2 | 81.6 | 90.0   |
 
 ## 🤝 贡献者
 
