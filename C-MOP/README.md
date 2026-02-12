@@ -2,6 +2,7 @@
 <h1 align="center">C-MOP: Integrating Momentum and Boundary-Aware Clustering for Enhanced Prompt Evolution</h1>
 
 <p align="center">
+  <a href="https://arxiv.org/abs/2602.10874"><img src="https://img.shields.io/badge/arXiv-2602.10874-b31b1b.svg" alt="arXiv"></a>
   <img src="https://img.shields.io/badge/license-Apache-green.svg" alt="License: Apache-2.0">
 </p>
 
@@ -12,7 +13,7 @@
 * [Installation](#installation)
 * [Quick Start](#quick-start)
 * [Main Results](#main-results)
-
+* [Citation](#citation)
 
 ## Overview
 
@@ -29,6 +30,10 @@
 
 * 🎯 **Boundary-Aware Sampling** — Extracts *Hard Negatives*, *Anchors*, and *Boundary Pairs* to acquire more informative instance.
 * 📈 **Temporal Momentum** — Maintains a historical gradient pool with time-decay weights to stabilize optimization.
+
+Further details are available in our paper:
+
+📄 **Paper:** [C-MOP: Integrating Momentum and Boundary-Aware Clustering for Enhanced Prompt Evolution](https://arxiv.org/abs/2602.10874)
 
 ---
 
@@ -83,12 +88,20 @@ The primary way to start with the project is through the `start_main.sh` script.
 ```bash
 sh start_main.sh
 ```
+To implement a custom task, follow these steps:
+* **Data Preparation**: Split your train and test dataset and place the resulting files into the `data/` directory. Refer to this [link](https://github.com/microsoft/LMOps/tree/main/prompt_optimization/data/liar) for details on the JSONL data format.
+* **Define Predictor**: Add your custom `Predictor` class in `predictors.py`.
+* **Register Mappings**: In `utils/helpers.py`, update both `TASK_MAPPING` and `PREDICTOR_MAPPING` to include your new task and its corresponding predictor.
+* **Define Evaluation Metric**: In `core/inference.py`, add the logic for your task's evaluation in `calculate_score ` function.
+* **Configure Execution**: Modify the `task` argument in `start_main.sh` to point to your task name.
 
-To run different tasks, simply modify the `task` argument. More key arguments are defined in `utils/helpers.py`, while the default prompts and meta-prompts are stored in `utils/prompt.py`.
-```python
-## utils/prompt.py
-DEFAULT_SYSTEM_PROMPT = "Your initial prompt"
-```
+More configuration and prompts:
+* **Arguments**: More key arguments and system configurations are defined in `utils/helpers.py` and `utils/constants.py`.
+* **Prompts**: Default prompts and meta-prompts are centrally managed in `utils/prompt.py`.
+
+    ```python
+    DEFAULT_SYSTEM_PROMPT = "Your initial prompt"
+    ```
 
 ---
 
@@ -125,6 +138,21 @@ To demonstrate the generalization capabilities of C-MOP, we evaluated the method
 | openPangu-Embedded-7B-V1.1 | 50.97 | 60.95 | +9.98 |
 ---
 
+## Citation
+
+If you find C-MOP useful in your research, please cite:
+
+```bibtex
+@misc{yan2026cmopintegratingmomentumboundaryaware,
+      title={C-MOP: Integrating Momentum and Boundary-Aware Clustering for Enhanced Prompt Evolution}, 
+      author={Binwei Yan and Yifei Fu and Mingjian Zhu and Hanting Chen and Mingxuan Yuan and Yunhe Wang and Hailin Hu},
+      year={2026},
+      eprint={2602.10874},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2602.10874}, 
+}
+```
 
 
 ## Acknowledgement
