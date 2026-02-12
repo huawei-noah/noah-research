@@ -32,6 +32,7 @@
 
 
 ## 📢 新闻
+- **[2026-02]** Rethinker科学推理框架的[文章](https://arxiv.org/abs/2602.04496)和[代码](examples/rethinker-agent-framework/README.md)已经发布！
 - **[2025-11]** EvoFabric 0.1.3 现已发布！请查看我们的[指导文档](https://evofabric.readthedocs.io/zh_CN/latest/)以获取详细说明和最佳实践。
 
 ## ✨ 为什么选择 EvoFabric？
