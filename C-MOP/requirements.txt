@@ -1,0 +1,6 @@
+python-liquid
+scikit-learn
+sentence-transformers
+pandas
+tqdm
+numpy
