@@ -1,0 +1,49 @@
+{
+  "episode_db_path": "./swiftmem_eval_data/episodes.db",
+  "semantic_db_path": "./swiftmem_eval_data/semantic.db",
+  "embedding_cache_path": "./swiftmem_eval_data/embedding_cache.json",
+  
+  "final_top_k": 50,
+  "enable_llm_answer": true,
+  
+  "max_workers_add": 10,
+  "max_workers_search": 10,
+  "max_retries": 3,
+  
+  "verbose": false,
+
+  "enable_episode_splitting": true,          
+  "conversation_split_threshold": 15,        
+  "splitting_temperature": 0.2,
+  
+  "_comment_retrieval_config": "以下是检索配置，会被 RetrievalConfig 使用",
+  
+  "retrieval": {
+    "use_temporal_filter": true,
+    "max_temporal_candidates": 1000,
+    
+    "use_semantic_routing": true,
+    "max_tags_per_query": 10,
+    "tag_expansion_depth": 2,         
+    "max_expanded_tags": 10,          
+    "stage2_max_candidates": 100,
+    
+    "vector_top_k": 50,
+    "vector_similarity_threshold": 0.4,
+    "vector_dynamic_topk": true,
+    "vector_top_k_multiplier": 1.5,
+    
+    "use_reranking": true,
+    "rerank_top_k": 50,
+    
+    "bm25_weight": 0.35,
+    "vector_weight": 0.50,
+    "tag_weight": 0.15,
+    
+    "stage3_min_candidates": 20,
+    "stage3_tag_coverage_threshold": 0.3,
+    
+    "vector_supplement_candidates": true,
+    "vector_min_candidates": 30
+  }
+}
