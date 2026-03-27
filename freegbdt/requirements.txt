@@ -10,7 +10,7 @@ idna==2.10
 jmespath==0.10.0
 joblib==0.16.0
 lightgbm==2.3.1
-numpy==1.19.1
+numpy==1.22.0
 packaging==20.4
 pandas==1.0.1
 pyparsing==2.4.7
