@@ -1,0 +1,19 @@
+{
+    "task_name": "hellaswag",
+    "path": "datasets/hellaswag/data/hellaswag.jsonl",
+    "description": "",
+    "transform": "datasets/hellaswag/transform_gen_v1.py",
+    "fewshot": 0,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "qa_match"
+            }
+        }
+    }
+}

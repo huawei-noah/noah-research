@@ -1,0 +1,22 @@
+{
+    "task_name": "mbpp",
+    "path": "datasets/mbpp/data/mbpp.jsonl",
+    "description": "",
+    "transform": "datasets/mbpp/transform_gen_v0.py",
+    "fewshot": 3,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_mbpp.json"
+    },
+    "postprocess": "new_mbpp_post",
+    "metric": {
+        "pass_k": {
+            "evaluation": {
+                "type": "function_execution"
+            },
+            "aggregation": {
+                "type": "pass_k"
+            }
+        }
+    }
+}

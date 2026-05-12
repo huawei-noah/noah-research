@@ -1,0 +1,19 @@
+{
+    "task_name": "wikipedia",
+    "path": "datasets/triviaqa/data/wikipedia.jsonl",
+    "description": "",
+    "transform": "datasets/triviaqa/transform_gen_v0.py",
+    "fewshot": 0,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_default.json"
+    },
+    "postprocess": "exact_match_post",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "exact_match"
+            }
+        }
+    }
+}
