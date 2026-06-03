@@ -1,10 +1,26 @@
 # Project specific
 *.pth
+*.pt
 *.tar.gz
 outputs/
 weights/
 checkpoint-*
 *.mmap
+calibration_prompts.json
+perf_*/
+server-port*.log
+
+# Compiled CUDA/C++ kernel objects (built via kernels/setup.py)
+*.o
+*.obj
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
