@@ -289,7 +289,7 @@ export MODEL_NAME=sparse_qwen2
 
 ### Implementations
 
-We have 2 torch.npu implementations in `npu/kernel.py`:
+We have 2 torch.npu implementations in `npu/modeling.py`:
 
 1. `FeedForward` — the default implementation with dense computations. The implementation does not utilize sparsity in FFN blocks.
 2. `SparseFeedForward` — the **optimized** version. It uses SVD predictors to identify the sparse pattern.

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import torch
 import torch_npu
-from kernel import FeedForward, SparseFeedForward
+from modeling import FeedForward, SparseFeedForward
 from torch_npu import profiler
 from torch_npu.profiler import AiCMetrics
 
