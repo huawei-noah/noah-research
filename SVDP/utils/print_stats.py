@@ -1,25 +1,37 @@
+# Copyright (C) 2026. Huawei Technologies Co., Ltd. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 import json
 import sys
+
 import numpy as np
 
-FILENAME=sys.argv[1]
+FILENAME = sys.argv[1]
 
-with open(FILENAME, 'r', encoding='utf-8') as f:
+with open(FILENAME, encoding="utf-8") as f:
     stats = json.load(f)
 
 aggregated_stats = {}
 for sample in stats:
-    for k,v in sample.items():
+    for k, v in sample.items():
         if k not in aggregated_stats.keys():
-            aggregated_stats[k]= []
-        aggregated_stats[k].append(v) 
+            aggregated_stats[k] = []
+        aggregated_stats[k].append(v)
 
 
-
-
-for k,v in aggregated_stats.items():
+for k, v in aggregated_stats.items():
     if k in ("TPOT", "TTFT", "TPOT_MLP", "E2E"):
-        print(f"{k} : {np.mean(v)/1000:.2f} +- {np.std(v)/1000:.2f} (ms)")
+        print(f"{k} : {np.mean(v) / 1000:.2f} +- {np.std(v) / 1000:.2f} (ms)")
     if k == "TPOT":
-        v= 1_000_000/np.array(v)
+        v = 1_000_000 / np.array(v)
         print(f"Decoding Speed: {np.mean(v):.2f} +- {np.std(v):.2f} (token/s)")

@@ -56,7 +56,11 @@ from vllm.model_executor.models.utils import (AutoWeightsLoader, PPMissingLayer,
                     make_empty_intermediate_tensors_factory, make_layers,
                     maybe_prefix)
 
-import sparse_mlp_llama2
+try:
+    import sparse_mlp_llama2
+except ImportError:
+     raise ImportError("sparse_mlp_llama2 module is required for sparse llama mlp predictors. Please make sure it is installed and can be imported.")
+
 import os
 
 class LlamaMLP(nn.Module):

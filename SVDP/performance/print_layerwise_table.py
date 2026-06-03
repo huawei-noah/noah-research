@@ -1,5 +1,15 @@
-# SPDX-License-Identifier: Apache-2.0
-# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
+# Copyright (C) 2026. Huawei Technologies Co., Ltd. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import argparse
 import json
@@ -29,56 +39,47 @@ def flatten_entries(entry_cls, profile_dict: dict):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--json-trace",
-                        type=str,
-                        required=True,
-                        help="json trace file output by "
-                        "examples/offline_inference/profiling.py")
-    parser.add_argument("--phase",
-                        type=str,
-                        required=True,
-                        help="The phase to print the table for. This is either"
-                        "prefill or decode_n, where n is the decode step "
-                        "number")
-    parser.add_argument("--table",
-                        type=str,
-                        choices=["summary", "model"],
-                        default="summary",
-                        help="Which table to print, the summary table or the "
-                        "layerwise model table")
+    parser.add_argument(
+        "--json-trace",
+        type=str,
+        required=True,
+        help="json trace file output by examples/offline_inference/profiling.py",
+    )
+    parser.add_argument(
+        "--phase",
+        type=str,
+        required=True,
+        help="The phase to print the table for. This is eitherprefill or decode_n, where n is the decode step number",
+    )
+    parser.add_argument(
+        "--table",
+        type=str,
+        choices=["summary", "model"],
+        default="summary",
+        help="Which table to print, the summary table or the layerwise model table",
+    )
 
     args = parser.parse_args()
 
     with open(args.json_trace) as f:
         profile_data = json.load(f)
 
-    assert args.phase in profile_data, \
-       (f"Cannot find phase {args.phase} in profile data. Choose one among"
-        f'{[x for x in profile_data.keys() if "prefill" in x or "decode" in x]}') #noqa
+    assert args.phase in profile_data, (
+        f"Cannot find phase {args.phase} in profile data. Choose one among"
+        f"{[x for x in profile_data.keys() if 'prefill' in x or 'decode' in x]}"
+    )  # noqa
 
     if args.table == "summary":
-        entries_and_depths = flatten_entries(
-            SummaryStatsEntry, profile_data[args.phase]["summary_stats"])
-        column_widths = dict(name=80,
-                             cuda_time_us=12,
-                             pct_cuda_time=12,
-                             invocations=15)
+        entries_and_depths = flatten_entries(SummaryStatsEntry, profile_data[args.phase]["summary_stats"])
+        column_widths = dict(name=80, cuda_time_us=12, pct_cuda_time=12, invocations=15)
     elif args.table == "model":
-        entries_and_depths = flatten_entries(
-            ModelStatsEntry, profile_data[args.phase]["model_stats"])
-        column_widths = dict(name=60,
-                             cpu_time_us=12,
-                             cuda_time_us=12,
-                             pct_cuda_time=12,
-                             trace=60)
+        entries_and_depths = flatten_entries(ModelStatsEntry, profile_data[args.phase]["model_stats"])
+        column_widths = dict(name=60, cpu_time_us=12, cuda_time_us=12, pct_cuda_time=12, trace=60)
 
     # indent entry names based on the depth
     entries = []
     for entry, depth in entries_and_depths:
-        entry.name = indent_string(
-            entry.name,
-            indent=depth,
-            indent_style=lambda indent: "|" + "-" * indent + " ")
+        entry.name = indent_string(entry.name, indent=depth, indent_style=lambda indent: "|" + "-" * indent + " ")
         entries.append(entry)
 
     TablePrinter(type(entries[0]), column_widths).print_table(entries)

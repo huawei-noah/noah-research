@@ -8,28 +8,25 @@ import json
 import os
 import sys
 from argparse import RawTextHelpFormatter
-
 from dataclasses import asdict, dataclass
-from typing import Any, Optional, TypeAlias
 
+import numpy as np
 import torch
 import tqdm
-
+from torch._C._profiler import _ExperimentalConfig
+from torch.profiler import ProfilerActivity, profile
 from vllm import LLM, SamplingParams
 from vllm.engine.arg_utils import EngineArgs
-from vllm.profiler.layerwise_profile import LayerwiseProfileResults #layerwise_profile
+from vllm.profiler.layerwise_profile import LayerwiseProfileResults  # layerwise_profile
 from vllm.utils import FlexibleArgumentParser
-
-PROMPT_LEN_DEFAULT = 256
-
-from torch.profiler import ProfilerActivity, profile
-from torch._C._profiler import _EventType, _ExperimentalConfig, _ProfilerEvent
 
 from utils import apply_chat_template
 
-class layerwise_profile(profile):
+PROMPT_LEN_DEFAULT = 256
 
-    def __init__(self, num_running_seqs: Optional[int] = None):
+
+class layerwise_profile(profile):
+    def __init__(self, num_running_seqs: int | None = None):
         """
         layerwise profile constructor.
 
@@ -43,7 +40,8 @@ class layerwise_profile(profile):
             record_shapes=False,
             with_stack=True,
             with_modules=True,
-            experimental_config=_ExperimentalConfig(verbose=True))
+            experimental_config=_ExperimentalConfig(verbose=True),
+        )
 
         self.num_running_seqs = num_running_seqs
 
@@ -52,32 +50,24 @@ class layerwise_profile(profile):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         super().__exit__(exc_type, exc_val, exc_tb)
-        self.results = LayerwiseProfileResults(
-            self.profiler.kineto_results,
-            num_running_seqs=self.num_running_seqs)
+        self.results = LayerwiseProfileResults(self.profiler.kineto_results, num_running_seqs=self.num_running_seqs)
 
 
 @dataclass
 class ProfileContext:
     engine_args: EngineArgs
     generation_length: int
-    vllm_model_modulename: str = None # name of module with model code to profile
-    num_prompts: Optional[int] = None
+    vllm_model_modulename: str | None = None  # name of module with model code to profile
+    num_prompts: int | None = None
 
     # The profiler can run in 2 modes:
     # 1. Profiling on random prompts of fixed length
-    prompt_len: Optional[int] = None
+    prompt_len: int | None = None
     # 2. Profiling on specified dataset (.json)
-    dataset_path: Optional[str] = None
+    dataset_path: str | None = None
 
 
-import numpy as np
-
-
-def report_metrics(
-    prefill_results, decode_results_list: list, output_file: str, metadata: dict
-):
-    output_file = output_file
+def report_metrics(prefill_results, decode_results_list: list, output_file: str, metadata: dict):
     prefill_stats = prefill_results.convert_stats_to_dict()["summary_stats"]
     TTFT = sum(stage["entry"]["cuda_time_us"] for stage in prefill_stats)
     TPOT = []
@@ -89,17 +79,15 @@ def report_metrics(
             mlp_entry = decode_stats[0]["children"][1]["children"][2]["entry"]
             if "MLP" not in mlp_entry["name"]:
                 mlp_entry = decode_stats[0]["children"][1]["children"][4]["entry"]
-        except Exception:
-            print(decode_stats)
-            import pdb
-            pdb.set_trace()
-            a = 1
-        # print(mlp_entry["name"])
+        except Exception as e:
+            raise RuntimeError(
+                "Could not locate the MLP entry in the profiler tree. The expected tree structure may have changed."
+            ) from e
         assert "MLP" in mlp_entry["name"]
         TPOT_MLP.append(mlp_entry["cuda_time_us"])
 
     try:
-        with open(output_file, "r", encoding="utf-8") as f:
+        with open(output_file, encoding="utf-8") as f:
             data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         data = []
@@ -118,25 +106,25 @@ def report_metrics(
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+
 def get_promt_token_ids(llm, context):
     from_dataset: bool = context.dataset_path is not None
     if from_dataset:
-        with open(context.dataset_path, "r", encoding="utf-8") as f:
+        with open(context.dataset_path, encoding="utf-8") as f:
             data = json.load(f)
         prompts = [item["prompt"] for item in data if "prompt" in item]
 
         tokenizer = llm.llm_engine.tokenizer
         if llm.get_tokenizer().chat_template is not None:
             prompts = apply_chat_template(prompts, llm.get_tokenizer())
-        prompt_token_ids = [tokenizer.encode(prompt) for prompt in prompts[:context.num_prompts]]
+        prompt_token_ids = [tokenizer.encode(prompt) for prompt in prompts[: context.num_prompts]]
     else:
         prompt_token_ids = [
-            torch.randint(
-                llm.get_tokenizer().vocab_size, size=(context.prompt_len,)
-            ).tolist()
+            torch.randint(llm.get_tokenizer().vocab_size, size=(context.prompt_len,)).tolist()
             for _ in range(context.num_prompts)
         ]
     return prompt_token_ids
+
 
 def validate_params(llm, context):
     prompt_len = context.prompt_len
@@ -157,21 +145,21 @@ def validate_params(llm, context):
             f"--max-model-len"
         )
         sys.exit(-1)
-    
+
+
 def add_request(llm, sampling_params, prompt_token_ids, request_id):
     llm.llm_engine.add_request(
         request_id=request_id,
         prompt={"prompt_token_ids": prompt_token_ids},
         params=sampling_params,
     )
-    
+
+
 def abort_request(llm, request_id):
     llm.llm_engine.abort_request(request_id)
-    
-    
-def run_profile(
-    context: ProfileContext, metrics_output: Optional[str], json_output: Optional[str]
-):
+
+
+def run_profile(context: ProfileContext, metrics_output: str | None, json_output: str | None):
     print("Run profile with:")
     for key, value in asdict(context).items():
         print(f"  {key} = {value}")
@@ -180,15 +168,16 @@ def run_profile(
     sampling_params = SamplingParams(
         temperature=0.0,
         top_p=0.95,
-        max_tokens=context.generation_length+1, # including prefill step token
-        min_tokens=context.generation_length+1, # including prefill step token
-        ignore_eos=True
-    )   
+        max_tokens=context.generation_length + 1,  # including prefill step token
+        min_tokens=context.generation_length + 1,  # including prefill step token
+        ignore_eos=True,
+    )
 
     def register(vllm_module_path: str, model_path: str) -> None:
-        from vllm import ModelRegistry
         import importlib
         import sys
+
+        from vllm import ModelRegistry
 
         module_path = vllm_module_path
         module_name = os.path.splitext(os.path.basename(module_path))[0]
@@ -198,23 +187,23 @@ def run_profile(
         sys.modules[module_name] = module
         spec.loader.exec_module(module)
         import json
-        with open(model_path+"/config.json", 'r', encoding='utf-8') as file:
+
+        with open(model_path + "/config.json", encoding="utf-8") as file:
             data = json.load(file)
             class_name = data["architectures"][0]
         ModelRegistry.register_model(class_name, getattr(module, class_name))
-        # ModelRegistry.register_model("SparseLlamaForCausalLM", module.SparseLlamaForCausalLM)
 
     if context.vllm_model_modulename is not None:
         register(context.vllm_model_modulename, context.engine_args.model)
-    
+
     # Create LLM
     llm = LLM(**asdict(context.engine_args))
     prompt_len = context.prompt_len
-    
+
     validate_params(llm, context)
 
     prompts_token_ids = get_promt_token_ids(llm, context)
-    
+
     # Warm up run
     request_name = "42"
     print("Warm up run ...")
@@ -223,14 +212,12 @@ def run_profile(
     llm.llm_engine.step()  # Decode
     abort_request(llm, request_name)
 
-
     if metrics_output and os.path.isfile(metrics_output):
         directory = os.path.dirname(metrics_output)
         os.makedirs(directory, exist_ok=True)
-        # Очистка содержимого файла
-        with open(metrics_output, "w") as file:
+        # Clear file contents
+        with open(metrics_output, "w"):
             pass
-        
 
     for i in range(len(prompts_token_ids)):
         print("Profile run ...")
@@ -240,9 +227,7 @@ def run_profile(
 
         decode_profs = []
         for _ in tqdm.tqdm(range(context.generation_length)):
-            num_running_seqs = llm.llm_engine.scheduler[
-                0
-            ].get_num_unfinished_seq_groups()
+            num_running_seqs = llm.llm_engine.scheduler[0].get_num_unfinished_seq_groups()
             with layerwise_profile(num_running_seqs=num_running_seqs) as decode_prof:
                 llm.llm_engine.step()
             decode_profs.append(decode_prof)
@@ -253,19 +238,14 @@ def run_profile(
         LINE_WIDTH = 80
         print()
         print("=" * LINE_WIDTH)
-        print(
-            f"= Prefill Summary Table (prompt_len={prompt_len})"
-        )
+        print(f"= Prefill Summary Table (prompt_len={prompt_len})")
         print("=" * LINE_WIDTH)
         print()
         prefill_results.print_summary_table()
 
         print()
         print("=" * LINE_WIDTH)
-        print(
-            f"= First Decode Step Summary Table "
-            f"(prompt_len={prompt_len})"
-        )
+        print(f"= First Decode Step Summary Table (prompt_len={prompt_len})")
         print("=" * LINE_WIDTH)
         print()
         decode_results_list[0].print_summary_table()
@@ -279,10 +259,7 @@ def run_profile(
             )
 
         if json_output:
-            cuda_devices = [
-                torch.cuda.get_device_properties(dev_idx)
-                for dev_idx in range(torch.cuda.device_count())
-            ]
+            cuda_devices = [torch.cuda.get_device_properties(dev_idx) for dev_idx in range(torch.cuda.device_count())]
 
             json_dict = {
                 "context": {
@@ -299,12 +276,10 @@ def run_profile(
                 json_dict[f"decode_{idx + 1}"] = dr.convert_stats_to_dict()
 
             # Add .json to json_output filename if it doesn't exist already.
-            json_output_file = (
-                json_output if json_output.endswith(".json") else json_output + ".json"
-            )
+            json_output_file = json_output if json_output.endswith(".json") else json_output + ".json"
             with open(json_output_file, "w+") as f:
                 json.dump(json_dict, f, indent=2)
-                
+
         abort_request(llm, request_name)
 
 
@@ -344,19 +319,19 @@ Profile a model
         "--num-prompts",
         type=int,
         default=1,
-        help=f"Number of prompts, default=1",
+        help="Number of prompts, default=1",
     )
     parser.add_argument(
         "--vllm-model-modulename",
         type=str,
         default=None,
-        help=f"module with vllm model code to profile",
+        help="module with vllm model code to profile",
     )
     parser.add_argument(
         "--generation-length",
         type=int,
         default=1,
-        help=f"Number of prompts, default=1",
+        help="Number of prompts, default=1",
     )
 
     EngineArgs.add_cli_args(parser)
@@ -367,11 +342,7 @@ Profile a model
 def main(args):
     context = ProfileContext(
         engine_args=EngineArgs.from_cli_args(args),
-        **{
-            k: v
-            for k, v in vars(args).items()
-            if k in inspect.signature(ProfileContext).parameters
-        },
+        **{k: v for k, v in vars(args).items() if k in inspect.signature(ProfileContext).parameters},
     )
     run_profile(context, metrics_output=args.metrics, json_output=args.json)
 

@@ -126,10 +126,8 @@ class LlamaMLP(nn.Module):
             gate_up, _ = self.gate_up_proj(x)
             x = self.act_fn(gate_up)
             x, _ = self.down_proj(x)
-            # print(SPARSITY.get_mean())
         else:
             sparse_prediction = self.fc2(self.pred_activation(self.fc1(x)[0]))[0]
-            # SPARSITY.update((sparse_prediction<=0).to(torch.float16).mean().item())
 
             # compute sparse w_gate projection and write it into sprase_prediction vector
             sparse_mlp_llama2.sparse_gate_proj(self.gate_up_proj.weight.data[:self.intermediate_size], x, sparse_prediction)

@@ -61,7 +61,12 @@ from vllm.model_executor.models.utils import (AutoWeightsLoader, PPMissingLayer,
 
 logger = init_logger(__name__)
 
-import sparse_mlp_qwen2
+try:
+    import sparse_mlp_qwen2
+except ImportError:
+     raise ImportError("sparse_mlp_qwen2 module is required for sparse qwen2 mlp predictors. Please make sure it is installed and can be imported.")
+
+
 import os
 
 def drelu_forward_native(x: torch.Tensor) -> torch.Tensor:
@@ -123,7 +128,7 @@ class Qwen2MLP(nn.Module):
             x = drelu_forward_native(gate_up)
             x, _ = self.down_proj(x)
         else:
-            # TODO: there are 2 types of sparsities: provided by gate relu and provided by up relu.
+            # NOTE: there are 2 types of sparsities: provided by gate relu and provided by up relu.
             # currently utilizing only gate, however predictor for up can work as well.
             sparse_prediction = self.fc2(self.fc1(x)[0])[0]
         
@@ -134,15 +139,10 @@ class Qwen2MLP(nn.Module):
             # perform sparsified operation relu(gate_proj) * up_proj and write it into sparse_prediction vector
             sparse_mlp_qwen2.sparse_up_proj_drelu(self.gate_up_proj.weight.data[self.intermediate_size:], x, sparse_prediction, 0.0)
             torch.cuda.synchronize()
-
-            # gate_up, _ = self.gate_up_proj(x)
-            # sparse_prediction = drelu_forward_native(gate_up)
             
             # perform sparsified down_proj operation and write it into x vector
             sparse_mlp_qwen2.sparse_down_proj(self.down_proj_transposed.weight.data, sparse_prediction, x)
             torch.cuda.synchronize()
-            # x2, _ = self.down_proj(sparse_prediction)
-            # print(self.layer_id, (torch.linalg.norm(x-x2)/torch.linalg.norm(x2)).item())
 
         return x
 class Qwen2Attention(nn.Module):

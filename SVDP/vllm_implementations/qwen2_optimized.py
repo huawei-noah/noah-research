@@ -125,21 +125,12 @@ class Qwen2MLP(nn.Module):
         else:
             sparse_prediction = self.svd_predictor_up_proj(self.svd_predictor_down_proj(x)[0])[0]
 
-            # fake implementation
+            # This file for non sparsified model so we just implement here a fake sparse compution only for quality evaluation purpose.
             mask = sparse_prediction >= 0
-            # print(self.layer_id,100*(1-mask.to(torch.float16).mean().item())) # may be some layers have too small sparsity and other too high
             gate_up, _ = self.gate_up_proj(x)
             gate_up = gate_up
             x = self.act_fn(gate_up) * mask
             x, _ = self.down_proj(x)
-            # sparse_mlp_extension.silu_gate_proj(self.gate_up_proj.weight.data[:self.intermediate_size], x, sparse_prediction, -0.2)
-            # torch.cuda.synchronize()
-                    
-            # sparse_mlp_extension.silu_up_proj(self.gate_up_proj.weight.data[self.intermediate_size:], x, sparse_prediction, -0.2)
-            # torch.cuda.synchronize()
-            
-            # sparse_mlp_extension.silu_down_proj(self.down_proj_transposed.weight.data, sparse_prediction, x)
-            # torch.cuda.synchronize()
 
         return x
 class Qwen2Attention(nn.Module):

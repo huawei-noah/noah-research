@@ -56,7 +56,11 @@ from vllm.model_executor.models.utils import (AutoWeightsLoader, PPMissingLayer,
                     make_empty_intermediate_tensors_factory, make_layers,
                     maybe_prefix)
 
-import sparse_mlp_mistral
+try:
+    import sparse_mlp_mistral
+except ImportError:
+     raise ImportError("sparse_mlp_mistral module is required for sparse mistral mlp predictors. Please make sure it is installed and can be imported.")
+
 import os
 
 def drelu_forward_native(x: torch.Tensor) -> torch.Tensor:
@@ -109,7 +113,7 @@ class LlamaMLP(nn.Module):
             x = drelu_forward_native(gate_up)
             x, _ = self.down_proj(x)
         else:
-            # TODO: there are 2 types of sparsities: provided by gate relu and provided by up relu.
+            # NOTE: there are 2 types of sparsities: provided by gate relu and provided by up relu.
             # currently utilizing only gate, however predictor for up can work as well.
             sparse_prediction = self.fc2(self.fc1(x)[0])[0]
         
@@ -121,14 +125,10 @@ class LlamaMLP(nn.Module):
             sparse_mlp_mistral.sparse_up_proj_drelu(self.gate_up_proj.weight.data[self.intermediate_size:], x, sparse_prediction, 0.0)
             torch.cuda.synchronize()
 
-            # gate_up, _ = self.gate_up_proj(x)
-            # sparse_prediction = drelu_forward_native(gate_up)
-            
             # perform sparsified down_proj operation and write it into x vector
             sparse_mlp_mistral.sparse_down_proj(self.down_proj_transposed.weight.data, sparse_prediction, x)
             torch.cuda.synchronize()
-            # x2, _ = self.down_proj(sparse_prediction)
-            # print(self.layer_id, (torch.linalg.norm(x-x2)/torch.linalg.norm(x2)).item())
+
         return x
     
 class LlamaAttention(nn.Module):
