@@ -198,7 +198,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--seed",
         type=int,
-        default=None,
+        default=42,
         help="Optional random seed for reproducible prompt sampling. "
         "If omitted, sampling is non-deterministic (legacy behavior).",
     )

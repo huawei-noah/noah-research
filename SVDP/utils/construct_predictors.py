@@ -230,6 +230,7 @@ def compute_predictor_weights(
     n_tokens = mlp_input.shape[0] // 2  # half of the dataset for S construction and other for bias calibration
 
     ### AB construction
+    logger.info("Constructing predictor's matrices")
     X = mlp_input[:n_tokens].to(compute_device).to(compute_dtype)
     w = w_gate.to(compute_device).to(compute_dtype)
 

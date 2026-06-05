@@ -12,22 +12,6 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Run from the repository root so the relative paths below resolve regardless
-# of the directory this script is launched from.
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 1
-
-export CUDA_VISIBLE_DEVICES=0
-export IMPLEMENTATION_NAME=sparse_mistral_baseline
-# Base directory holding the downloaded model weights. Override to point at
-# your local model store, e.g. MODELS_DIR=/data/models ./scripts/sanity.sh
-MODELS_DIR=${MODELS_DIR:-../models}
-export MODEL_PATH=${MODELS_DIR}/Tiiny/Bamboo-DPO-v0_1
-export VLLM_ATTENTION_BACKEND=XFORMERS
-export VLLM_USE_V1=0
-
-export PREDICTORS_PATH=weights/sparse_mistral/r352_s05
-python3 utils/sanity.py \
-    --model_path ${MODEL_PATH} \
-    --vllm_module_path vllm_implementations/${IMPLEMENTATION_NAME}.py \
-    --start_prompt "hello, what year is it today?" \
-    --temperature 0.0
+echo "Evaluating quality for ${MODEL_PATH} with ${IMPL_NAME} implementation on ${BENCHMARKS} at port ${DEPLOY_PORT}!"
+./UltraEval/evaluate.sh vllm_implementations/${IMPL_NAME}.py ${MODEL_PATH} ${BENCHMARKS} ${DEPLOY_PORT} ${TAG_NAME}
+echo "Evaluation for ${MODEL_PATH} with ${IMPL_NAME} implementation on ${BENCHMARKS} at port ${DEPLOY_PORT} DONE!"

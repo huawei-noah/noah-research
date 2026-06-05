@@ -33,7 +33,7 @@ export MODEL_NAME=sparse_llama
 export RANK=352
 export MODEL_PATH=${MODELS_DIR}/Tiiny/TurboSparse-Mistral-Instruct
 export MODEL_NAME=sparse_mistral
-# WARNING: make sure that is undone
+# NOTE: Mistral model requires specific post-processing function for proper evaluation, so we update it via scipt
 python3 utils/update_postprocess.py humaneval_chatgpt
 ./scripts/main_quality.sh
 python3 utils/update_postprocess.py humaneval_post

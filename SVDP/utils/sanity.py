@@ -32,6 +32,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model_path", help="Path to model", required=True)
     parser.add_argument("--start_prompt", help="Prompt", required=True)
     parser.add_argument("--temperature", type=float, required=False, default=0.0)
+    parser.add_argument("--min_tokens", type=int, required=False, default=6)
+    parser.add_argument("--max_tokens", type=int, required=False, default=16)
 
     args = parser.parse_args()
     return args
@@ -43,6 +45,8 @@ def main() -> None:
 
     sampling_params = vllm.SamplingParams(
         temperature=args.temperature,
+        min_tokens=args.min_tokens,
+        max_tokens=args.max_tokens,
     )
     model = vllm.LLM(
         model=args.model_path,

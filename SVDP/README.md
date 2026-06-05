@@ -61,6 +61,7 @@ cd UltraEval
 curl -L -o RawData.zip "https://cloud.tsinghua.edu.cn/f/11d562a53e40411fb385/?dl=1"
 unzip RawData.zip
 python data_process.py
+cd ..
 ```
 
 > A Google Drive mirror of `RawData.zip` is also available; see `UltraEval/README.md`.
@@ -94,7 +95,9 @@ You need to specify [compute capability](https://developer.nvidia.com/cuda/gpus)
 ```shell
 cd kernels
 export LLM_ARCH=llama2 # one of "llama2", "qwen2", "mistral"
-CUDA_ARCH_LIST=86 python3 setup.py install
+export CUDA_ARCH_LIST=86 
+python3 setup.py install
+cd ..
 ```
 
 The performance may be suboptimal on some devices. You might want to play with `NUM_THREADS`, `BLOCK_SIZE_X`,`BLOCK_SIZE_Y` hyperparameters in this case.
@@ -128,9 +131,11 @@ Run the model on a single prompt for manual sanity check, e.g.
 ```shell
 python3 utils/sanity.py \
     --model_path path/to/model/weights \
-    --vllm_module_path vllm_implementations/sparse_mistral_baseline.py \
-    --start_prompt "hello, what year is it today?" \
-    --temperature 0.0
+    --vllm_module_path vllm_implementations/sparse_llama_baseline.py \
+    --start_prompt "The temperature today" \
+    --temperature 0.0 \
+    --min_tokens 100 \
+    --max_tokens 100
 ```
 
 When running models with predictors, you additionally have to set the `PREDICTORS_PATH` environment variable to specify the path to the predictors' weights, e.g.
@@ -210,12 +215,9 @@ For ROC AUC comparison use `notebooks/roc_auc_figures.ipynb` notebook. Use the `
 Step-by-step adaptation:
 
 ```shell
-export CUDA_VISIBLE_DEVICES=0
-export MODEL_PATH=path/to/model/weights
-export MODEL_NAME=sparse_llama
-export DEPLOY_PORT=5096
-export BENCHMARKS=triviaqa,arc-e,arc-c,humaneval,mbpp,gsm8k,bbh,cmmlu
-python3 ./utils/run_ablation.py
+# Base directory holding the downloaded model weights.
+export MODELS_DIR=path/to/models
+./scripts/run_ablation.sh
 ```
 
 #### Sparsity-Accuracy Trade-off
@@ -239,7 +241,10 @@ export MODEL_NAME=sparse_llama
 export RANK=352
 export MODEL_PATH=${MODELS_DIR}/Tiiny/TurboSparse-Mistral-Instruct
 export MODEL_NAME=sparse_mistral
+# NOTE: Mistral model requires specific post-processing function for proper evaluation, so we update it via scipt
+python3 utils/update_postprocess.py humaneval_chatgpt
 ./scripts/main_quality.sh
+python3 utils/update_postprocess.py humaneval_post
 
 export RANK=512
 export MODEL_PATH=${MODELS_DIR}/Tiiny/SparseQwen2-7B
@@ -284,6 +289,8 @@ export MODEL_NAME=sparse_qwen2
     ```shell
     python3 kernels/tests/test_gpu.py
     ```
+- Extension to non-ReLU activations
+    - Use `vllm_implementations/nonrelu_qwen2.py` and `vllm_implementations/nonrelu_qwen2_svd_predictors.py` implementations for quality check (here we use fake sparse implementation for simplicity)
 
 ## Running on NPU
 
