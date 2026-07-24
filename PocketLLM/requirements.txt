@@ -1,0 +1,12 @@
+datasets>=2.0.0
+jsonlines
+torch>=1.13
+transformers>=4.30.2
+fire
+tensorboard
+thop
+torchvision
+shutil
+timm
+einops
+datetime

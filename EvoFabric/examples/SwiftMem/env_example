@@ -1,0 +1,10 @@
+# LLM API Configuration
+LLM_API_KEY=your-llm-api-key-here
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4o-mini
+
+# Embedding API Configuration
+EMBEDDING_API_KEY=your-embedding-api-key-here
+EMBEDDING_BASE_URL=https://api.openai.com/v1
+EMBEDDING_MODEL=text-embedding-3-large
+EMBEDDING_DIM=2560
