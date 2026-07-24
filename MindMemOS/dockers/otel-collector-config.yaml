@@ -1,0 +1,69 @@
+# OpenTelemetry Collector pipeline: receive OTLP from the app, write to ClickHouse.
+# The ClickHouse exporter auto-creates the database, tables (otel_traces, otel_logs)
+# and the MergeTree schema on first run (create_schema: true).
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: ${env:OTEL_GRPC_ENDPOINT}
+      http:
+        endpoint: ${env:OTEL_HTTP_ENDPOINT}
+  # Scrape the kafka-exporter for real broker-side metrics (consumer-group lag,
+  # partition offsets). These are exact Kafka numbers, unlike the trace-derived
+  # publish-minus-process estimate used by the queue dashboard.
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: kafka-exporter
+          scrape_interval: 15s
+          static_configs:
+            - targets: ["${env:KAFKA_EXPORTER_TARGET}"]
+
+processors:
+  # Batch before writing; keeps ClickHouse inserts efficient.
+  batch:
+    timeout: 5s
+    send_batch_size: 1000
+  # Guard against the collector OOMing under bursty load.
+  memory_limiter:
+    check_interval: 2s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+exporters:
+  clickhouse:
+    endpoint: ${env:CLICKHOUSE_ENDPOINT}
+    database: ${env:CLICKHOUSE_DATABASE}
+    username: ${env:CLICKHOUSE_USERNAME}
+    password: ${env:CLICKHOUSE_PASSWORD}
+    create_schema: true
+    logs_table_name: otel_logs
+    traces_table_name: otel_traces
+    ttl: ${env:CLICKHOUSE_TTL}
+    timeout: 10s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+  # Mirror to collector stdout for quick local debugging.
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse, debug]
+    metrics:
+      receivers: [prometheus]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse, debug]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse, debug]
+  telemetry:
+    logs:
+      level: info

@@ -1,0 +1,312 @@
+[
+  {
+    "entity_type": "user",
+    "entity_description": "The primary user/speaker in the conversation. ALL information about the user's own experiences, preferences, opinions, activities, plans, personal details, and information about people mentioned by the user MUST be stored in this single entity. The user may be referred to as 'User' or by a third-person name (e.g., 'Kanoa Manu') — both refer to the same user entity. There should be exactly ONE user entity per conversation.",
+    "entity_instruction": "Properties marked [Factual Record] MUST preserve full original details (names, dates, places, quantities) as semantically complete sentences. Properties marked [Analytical Summary] should distill the key conclusion into a retrieval-friendly assertion — state what the user prefers/believes/changed, not what was discussed. Only produce analytical summaries when the conclusion is clearly supported; do not infer uncertain attitudes. If an event does not fit any defined property, use 'default_property'. Never write terse fragments like 'lost job' - instead write 'On January 2023, User lost his job at DoorDash due to company layoffs'.",
+    "search_weight": 1.0,
+    "static_property": {
+      "name": "User name or identifier"
+    },
+    "dynamic_property": {
+      "location_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Location change event, including time, old location, new location. Preserve exact place names. Format: 'On {time}, User moved from {old_location} to {new_location}'",
+        "example": "On 2023, User moved from Beijing to Shanghai"
+      },
+      "position_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Profession change event, including time, position, company. Preserve exact job titles and organization names. Format: 'On {time}, User was appointed as {position}' or 'On {time}, User started working as {position}'",
+        "example": "On 2023, User was appointed as Senior Engineer"
+      },
+      "health_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Health change event, including time, health condition, injuries, recovery. Preserve exact medical details.",
+        "example": "On 2022, User was diagnosed with diabetes"
+      },
+      "skills_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Skill acquisition event, including time, skill name. Format: 'On {time}, User learned/mastered {skill}'",
+        "example": "On 2024, User learned Python programming"
+      },
+      "mood_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Emotional state or mood. Distill the clear emotion and its cause into a concise assertion. Only record when the emotion is explicitly stated or unmistakable.",
+        "example": "On 2024, User felt anxious due to work pressure"
+      },
+      "habit_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Behavioral pattern change. Clearly state what changed and the direction of change.",
+        "example": "On 2024, User started going to gym for exercise"
+      },
+      "experience": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Personal experience, direct text description. Record important factual information that may be relevant later. Preserve specific details, names, and context.",
+        "example": "As of 2024-03, User has 5 years Python development experience and previously worked at Huawei"
+      },
+      "plan_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Future plan or intention, including time, goal, target. Format: 'On {plan_made_time}, User plans to {goal} at {plan_execution_time}'.",
+        "example": "On 2024-03, User plans to visit Japan next month"
+      },
+      "relationship_status": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Relationship/marital status, including time and status.",
+        "example": "As of 2023-05-25, User relationship status is single"
+      },
+      "education_field": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Education field or major of study. Preserve exact institution and field names.",
+        "example": "As of 2023-05, User studied Psychology and counseling at Beijing Normal University"
+      },
+      "education_degree": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Educational degree or certification. Preserve exact degree and institution.",
+        "example": "On 2023, User obtained a master's degree in counseling"
+      },
+      "career_interest": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Career interests or aspirations. Distill the user's clear career direction into a definitive assertion. Only record when explicitly stated or strongly implied.",
+        "example": "As of 2023-05, User is interested in counseling and mental health work"
+      },
+      "identity": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Personal identity, including gender identity, cultural identity, community membership.",
+        "example": "As of 2023-05, User is a transgender woman"
+      },
+      "family_plan": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Family-related plans such as adoption, having children, marriage.",
+        "example": "As of 2023-05-25, User plans to adopt children in the future"
+      },
+      "business_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Business-related events such as starting a business, launching a product, opening a store.",
+        "example": "On 2023-01-20, User started planning to open a dance studio"
+      },
+      "hobby_activity": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Hobby and recreational activities, including hobbies, interests, and regular activities. Preserve specific activity names and frequency.",
+        "example": "As of 2023, User is passionate about dancing and choreography"
+      },
+      "achievement_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Achievements and awards, including competition wins, certifications, recognitions.",
+        "example": "On 2023-07-23, User's dance team won first place at the summer dance festival"
+      },
+      "reading_activity": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Books read or reading activities. Include EXACT book titles, authors, and genres.",
+        "example": "On 2023-05, User is reading 'The Lean Startup' by Eric Ries"
+      },
+      "travel_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Travel events and trips, including specific destinations, companions, and activities.",
+        "example": "On 2023-01-29, User went to Paris with her family for vacation"
+      },
+      "social_activity": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Factual Record] Social activities and networking events. Preserve exact event names and locations.",
+        "example": "On 2023-06-20, User attended a tech industry networking event at the downtown convention center"
+      },
+      "preference": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Personal preferences, likes, dislikes, favorites. Distill into a clear preference assertion with specific subject and attitude direction. Must name the concrete object of preference. Do NOT narrate the conversation — state the conclusion directly.",
+        "example": "As of 2023-05, User's favorite book series is Harry Potter"
+      },
+      "preference_evolution": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Preference change over time. MUST explicitly state the direction of change: what was preferred before and what is preferred now. Only record when the shift is clearly stated or demonstrated.",
+        "example": "On 2024, User's preference changed from watching action movies to preferring documentaries"
+      },
+      "opinion": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] User's definitive opinion or view on a specific topic. State as a firm assertion, not a narrative. Only record opinions the user clearly expressed.",
+        "example": "As of 2024, User believes that financial literacy is important for young adults"
+      },
+      "attitude_change": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Attitude or stance change over time. MUST explicitly state: the topic, the old attitude, the new attitude, and ideally the reason.",
+        "example": "On 2024, User's attitude toward online dating changed from skeptical to optimistic after positive experiences"
+      },
+      "financial_status": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Financial situation, strategy, or status change.",
+        "example": "On 2024, User shifted investment strategy from individual stocks to index funds"
+      },
+      "advice_given": {
+        "type": "string",
+        "order": 1,
+        "desc": "[Analytical Summary] Key advice or recommendations received. Distill the core actionable recommendation.",
+        "example": "On 2024, User was advised by a financial consultant to diversify investment portfolio"
+      },
+      "default_property": {
+        "type": "string",
+        "order": 1,
+        "desc": "Catch-all property for events, facts, or information that do not fit into any other defined property category. Each value must be a complete, self-contained statement.",
+        "example": "On 2023-05-20, User's friend recommended a tattoo parlor called InkMaster on 5th Avenue"
+      },
+      "personality_trait": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Personality characteristic inferred from multiple memories. Must state the trait, supporting evidence (with dates), and confidence level. Only generate when evidence from 2+ memories converges. Format: 'As of {date}, {trait}. Evidence: {evidence_summary}. Confidence: high/medium.'",
+        "example": "As of 2024-06, User tends to be risk-averse in financial decisions. Evidence: chose index funds over stocks (2024-01), hesitated on business investment (2024-03), preferred stable job over startup offer (2024-06). Confidence: high."
+      },
+      "behavioral_pattern": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Recurring behavioral pattern observed across multiple events. Must include specific instances as evidence. Only generate when the pattern appears 2+ times. Format: 'As of {date}, {pattern}. Instances: {instance_list}. Confidence: high/medium.'",
+        "example": "As of 2024-05, User consistently seeks family input before major life changes. Instances: consulted parents before job change (2024-01), discussed with spouse before relocation (2024-05). Confidence: high."
+      },
+      "value_orientation": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Core value or life priority inferred from choices and opinions. Must cite specific decisions or statements as evidence. Format: 'As of {date}, {value}. Based on: {evidence}. Confidence: high/medium.'",
+        "example": "As of 2024-06, User prioritizes work-life balance over career advancement. Based on: turned down promotion requiring relocation (2024-02), chose part-time role to spend time with family (2024-06). Confidence: high."
+      },
+      "decision_style": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] How the user typically approaches decisions, inferred from multiple decision events. Format: 'As of {date}, {style}. Evidence: {examples}. Confidence: high/medium.'",
+        "example": "As of 2024-04, User is a methodical planner who researches extensively before commitments. Evidence: spent 3 months comparing apartments (2024-01), read 5 books before starting investment (2024-04). Confidence: medium."
+      },
+      "interpersonal_style": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] How the user interacts with others, communication patterns, social tendencies. Format: 'As of {date}, {style}. Evidence: {examples}. Confidence: high/medium.'",
+        "example": "As of 2024-05, User is supportive and encouraging in friendships, often initiating check-ins. Evidence: regularly called friend during illness (2024-02), organized surprise party for colleague (2024-05). Confidence: high."
+      },
+      "preference_summary": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Current panoramic summary of the user's active preferences across domains. Synthesize across ALL available evidence to build a comprehensive picture, not just the latest episode. Must list concrete subjects with attitude direction (likes/dislikes/neutral). Update whenever preferences shift. Format: 'As of {date}, {domain}: {preference_list}. Based on: {evidence}. Confidence: high/medium.'",
+        "example": "As of 2024-05, Music: User currently likes producing electronic music with Pacific cultural elements, dislikes mainstream pop, is neutral about jazz. Based on: started sound engineering course (2024-02), expressed dislike for pop in conversation (2024-04), no strong opinion on jazz (2024-05). Confidence: high."
+      },
+      "interest_domain": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Core interest area or passion domain synthesized from ALL available activities, hobbies, and preferences — not just the latest episode. Captures the overarching theme that connects scattered first-order records. Format: 'As of {date}, {domain_description}. Supporting activities: {activity_list}. Confidence: high/medium.'",
+        "example": "As of 2024-06, User's primary creative interest centers around music production and sound design with cultural fusion. Supporting activities: produces electronic music (2024-01), attended Pacific music festival (2024-03), enrolled in sound engineering course (2024-05), experiments with blending traditional and modern beats (2024-06). Confidence: high."
+      },
+      "change_pattern": {
+        "type": "string",
+        "order": 2,
+        "desc": "[Higher Order] Meta-pattern of how the user's preferences or attitudes typically evolve over time. Captures the recurring PROCESS of change itself (e.g., 'initially rejects then embraces'), NOT individual preference shifts. Each instance must describe a complete before→after trajectory. Only generate when 2+ preference shifts show a similar trajectory. Format: 'As of {date}, {pattern}. Instances: {shift_examples}. Confidence: high/medium.'",
+        "example": "As of 2024-07, User tends to initially reject unfamiliar experiences but gradually embrace them after positive personal encounters. Instances: disliked foreign films then enjoyed them after a friend's recommendation (2024-01→2024-04), resisted group sports then joined a team after trying once (2024-03→2024-07). Confidence: medium."
+      }
+    }
+  },
+  {
+    "entity_type": "fact",
+    "entity_description": "Any factual information mentioned in the dialogue, including meetings, activities, events, important information, agreements, etc. Use this type for information that cannot be categorized into other entity types.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. Create entities only for facts that have been extensively discussed or mentioned multiple times.",
+    "search_weight": 0.8,
+    "static_property": {
+      "subject": "Fact topic or core content",
+      "category": "Category such as agreement, password, address, plan, knowledge, event, meeting"
+    },
+    "dynamic_property": {
+      "fact_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "Fact event, including time, participants, content. Format: 'On {time}, {participants} discussed/had {content}'",
+        "example": "On 2024-03-15, team meeting discussed project progress"
+      },
+      "fact_update": {
+        "type": "string",
+        "order": 1,
+        "desc": "Fact update or evolution over time. Format: 'On {time}, {fact} was updated to {new_content}'",
+        "example": "On 2024-03-20, the meeting time changed from 3pm to 4pm"
+      }
+    }
+  },
+  {
+    "entity_type": "organization",
+    "entity_description": "Organizations or institutions, such as companies, teams, clubs, etc.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. If an event does not fit any defined property, use 'default_property'.",
+    "search_weight": 1.0,
+    "static_property": {
+      "name": "Organization name",
+      "legal_form": "Legal form, such as Limited, Association, etc."
+    },
+    "dynamic_property": {
+      "membership_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "Membership change event, including time, member name, role. Format: 'On {time}, {member_name} joined/left {organization}, serving as {role}'",
+        "example": "On 2024, Zhang Wei joined ABC company, serving as Engineer"
+      },
+      "operational_status_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "Operational status change event, including time, status. Format: 'On {time}, {organization} became/went public/closed {status}'",
+        "example": "On 2024, ABC company went public on NASDAQ"
+      },
+      "location_info": {
+        "type": "string",
+        "order": 1,
+        "desc": "Geographic location or address of the organization. Format: '{organization} is located at/in {location}'. Extract from addresses, location descriptions, neighborhood references.",
+        "example": "As of 2024, ABC company is located in the tech park on Innovation Avenue"
+      },
+      "service_info": {
+        "type": "string",
+        "order": 1,
+        "desc": "Services, programs, or activities offered by the organization. Format: 'On {time}, {organization} offers/launched {service}'. Extract from mentions of organization services.",
+        "example": "As of 2023, local animal shelter offers pet adoption and fostering programs"
+      },
+      "partnership_event": {
+        "type": "string",
+        "order": 1,
+        "desc": "Partnerships, collaborations, or deals with people or other organizations. Include specific partner names and deal terms. Format: 'On {time}, {organization} partnered with {partner} for {purpose}'. Extract from endorsement deals, sponsorships, collaborations.",
+        "example": "On 2023-08, Under Armour signed an endorsement deal with John for outdoor gear promotion"
+      },
+      "default_property": {
+        "type": "string",
+        "order": 1,
+        "desc": "Catch-all property for organization-related events or facts that do not fit into any other defined property category. Each value must be a complete, self-contained statement.",
+        "example": "On 2024-03, ABC company relocated its headquarters from downtown to the tech park on Innovation Avenue"
+      }
+    }
+  },
+  {
+    "entity_type": "episodes",
+    "entity_description": "**MANDATORY**: ALWAYS create exactly ONE episode entity for EVERY dialogue segment. This entity records the raw dialogue content objectively with timestamps. The episode entity serves as the original dialogue backup and MUST be included in every extraction. Use a simple descriptive name summarizing the dialogue topic (e.g., 'Discussion about dance performance', 'Planning dance studio').",
+    "entity_instruction": "Episode entity names should be concise topic summaries. The description and input_messages will be automatically filled by the system.",
+    "search_weight": 0.5,
+    "static_property": {
+      "detail": "Detailed description of the dialogue snippet content and main topics discussed",
+      "input_messages": "Raw context record, leave it blank and it will be filled by system."
+    },
+    "dynamic_property": {
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all property for episode-related details that do not fit into static properties. Each value must be a complete, self-contained statement.",
+        "example": "On 2023-05-20, the dialogue covered additional context about Zhang Wei's upcoming travel plans"
+      }
+    }
+  }
+]

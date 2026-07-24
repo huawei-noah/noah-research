@@ -1,0 +1,183 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["mindmemos", "qdrant", "otel"],
+  "templating": {
+    "list": [
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+        "query": "SELECT DISTINCT ServiceName FROM otel_traces WHERE SpanName LIKE 'qdrant.%' ORDER BY ServiceName",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "operation",
+        "label": "Operation",
+        "type": "query",
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+        "query": "SELECT DISTINCT SpanName FROM otel_traces WHERE SpanName LIKE 'qdrant.%' ORDER BY SpanName",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "collection",
+        "label": "Collection",
+        "type": "query",
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+        "query": "SELECT DISTINCT SpanAttributes['db.collection'] AS c FROM otel_traces WHERE SpanName LIKE 'qdrant.%' AND c != '' ORDER BY c",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Qdrant Operation Latency (all ops)",
+  "uid": "mindmemos-qdrant-latency",
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "p99 latency by operation (ms)",
+      "description": "Per-call Duration of qdrant.<method> spans, as experienced by the app (includes retry-proxy retries + backoff).",
+      "gridPos": { "h": 9, "w": 16, "x": 0, "y": 0 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "fillOpacity": 10 } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, SpanName AS operation, quantile(0.99)(Duration) / 1e6 AS p99 FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote}) GROUP BY time, operation ORDER BY time"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Failed ops (range)",
+      "description": "qdrant.<method> spans with StatusCode = Error: non-retryable errors or calls that exhausted all retries.",
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 0 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT count() AS failed FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND StatusCode = 'Error' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote})"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Retried ops (range)",
+      "description": "Calls that needed >1 attempt (db.retry.attempts > 1).",
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 4 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 1 } ] } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT countIf(toUInt32OrZero(SpanAttributes['db.retry.attempts']) > 1) AS retried FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote})"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Throughput by operation (ops/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "unit": "ops", "custom": { "drawStyle": "line", "fillOpacity": 10 } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, SpanName AS operation, count() / 30 AS ops_per_sec FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote}) GROUP BY time, operation ORDER BY time"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Error rate by operation (errors/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "unit": "ops", "custom": { "drawStyle": "bars", "fillOpacity": 50 } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, SpanName AS operation, countIf(StatusCode = 'Error') / 30 AS errors_per_sec FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote}) GROUP BY time, operation ORDER BY time"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Latency summary by operation (range)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 17 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "format": 1,
+          "rawSql": "SELECT SpanName AS operation, count() AS calls, countIf(StatusCode = 'Error') AS errors, round(quantile(0.50)(Duration) / 1e6, 2) AS p50_ms, round(quantile(0.90)(Duration) / 1e6, 2) AS p90_ms, round(quantile(0.99)(Duration) / 1e6, 2) AS p99_ms, round(max(Duration) / 1e6, 2) AS max_ms FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote}) GROUP BY operation ORDER BY p99_ms DESC"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Slowest calls (range)",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 25 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "format": 1,
+          "rawSql": "SELECT Timestamp, ServiceName, SpanName AS operation, SpanAttributes['db.collection'] AS collection, toUInt32OrZero(SpanAttributes['db.retry.attempts']) AS attempts, round(Duration / 1e6, 3) AS duration_ms, StatusCode, TraceId FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName LIKE 'qdrant.%' AND SpanName IN (${operation:singlequote}) AND ServiceName IN (${service:singlequote}) AND SpanAttributes['db.collection'] IN (${collection:singlequote}) ORDER BY Duration DESC LIMIT 100"
+        }
+      ]
+    }
+  ]
+}

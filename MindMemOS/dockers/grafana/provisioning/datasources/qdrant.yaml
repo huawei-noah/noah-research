@@ -1,0 +1,20 @@
+apiVersion: 1
+
+# Auto-provisioned Qdrant datasource via the Infinity plugin
+# (yesoreyeram-infinity-datasource). Grafana queries Qdrant's REST API directly
+# (proxy/backend mode), so requests originate from the grafana container and
+# resolve "qdrant" over the docker network by default. Used only by the
+# "Qdrant Collections" dashboard to read each collection's metadata
+# `points_count` (O(1) metadata read — it does NOT scan points / exact count).
+datasources:
+  - name: Qdrant
+    uid: mindmemos-qdrant
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    isDefault: false
+    url: $MINDMEMOS_GRAFANA_QDRANT_URL
+    jsonData:
+      # Restrict the backend proxy to the configured Qdrant host only.
+      allowedHosts:
+        - $MINDMEMOS_GRAFANA_QDRANT_URL
+    editable: true

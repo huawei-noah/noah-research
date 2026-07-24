@@ -1,0 +1,173 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["mindmemos", "otel"],
+  "templating": {
+    "list": [
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+        "query": "SELECT DISTINCT ServiceName FROM otel_traces ORDER BY ServiceName",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "span_name",
+        "label": "Span name",
+        "type": "query",
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+        "query": "SELECT DISTINCT SpanName FROM otel_traces WHERE ServiceName IN (${service:singlequote}) ORDER BY SpanName",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "MindMemOS Observability (OTel → ClickHouse)",
+  "uid": "mindmemos-otel",
+  "version": 4,
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Span rate by service",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "fillOpacity": 10 } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, ServiceName, count() AS spans FROM otel_traces WHERE $__timeFilter(Timestamp) AND ServiceName IN (${service:singlequote}) AND SpanName IN (${span_name:singlequote}) GROUP BY time, ServiceName ORDER BY time"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Log rate by severity",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "bars", "fillOpacity": 50, "stacking": { "mode": "normal" } } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, SeverityText, count() AS logs FROM otel_logs WHERE $__timeFilter(Timestamp) AND ServiceName IN (${service:singlequote}) GROUP BY time, SeverityText ORDER BY time"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Error spans (selected range)",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT count() AS error_spans FROM otel_traces WHERE $__timeFilter(Timestamp) AND StatusCode = 'Error' AND ServiceName IN (${service:singlequote}) AND SpanName IN (${span_name:singlequote})"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Total spans (selected range)",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT count() AS spans FROM otel_traces WHERE $__timeFilter(Timestamp) AND ServiceName IN (${service:singlequote}) AND SpanName IN (${span_name:singlequote})"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "LLM avg latency / throughput",
+      "description": "llm.embed shows average end-to-end request time. llm.chat shows average generated token throughput from completion_tokens / span duration.",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "fieldConfig": {
+        "defaults": { "custom": { "drawStyle": "line", "fillOpacity": 10 } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "llm.embed avg end-to-end ms" }, "properties": [{ "id": "unit", "value": "ms" }] },
+          { "matcher": { "id": "byName", "options": "llm.chat avg tokens/s" }, "properties": [{ "id": "unit", "value": "tps" }, { "id": "custom.axisPlacement", "value": "right" }] }
+        ]
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "rawSql": "SELECT time, metric, value FROM (SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, 'llm.embed avg end-to-end ms' AS metric, avg(Duration) / 1e6 AS value FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName = 'llm.embed' AND ServiceName IN (${service:singlequote}) GROUP BY time, metric UNION ALL SELECT time, 'llm.chat avg tokens/s' AS metric, avg(tokens_per_sec) AS value FROM (SELECT toStartOfInterval(Timestamp, INTERVAL 30 SECOND) AS time, JSONExtractInt(SpanAttributes['result'], 'usage', 'completion_tokens') / nullIf(Duration / 1e9, 0) AS tokens_per_sec FROM otel_traces WHERE $__timeFilter(Timestamp) AND SpanName = 'llm.chat' AND StatusCode != 'Error' AND ServiceName IN (${service:singlequote}) AND JSONExtractInt(SpanAttributes['result'], 'usage', 'completion_tokens') > 0) GROUP BY time, metric) ORDER BY time, metric"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "Recent spans",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 20 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "format": 1,
+          "rawSql": "SELECT Timestamp, ServiceName, SpanName, SpanKind, round(Duration / 1e9, 3) AS duration_s, StatusCode, TraceId, SpanId, ParentSpanId FROM otel_traces WHERE $__timeFilter(Timestamp) AND ServiceName IN (${service:singlequote}) AND SpanName IN (${span_name:singlequote}) ORDER BY Timestamp DESC LIMIT 200"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Recent logs (with trace correlation)",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 30 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-clickhouse-datasource", "uid": "mindmemos-clickhouse" },
+          "editorType": "sql",
+          "queryType": "sql",
+          "format": 1,
+          "rawSql": "SELECT Timestamp, SeverityText, ServiceName, Body, TraceId, SpanId FROM otel_logs WHERE $__timeFilter(Timestamp) AND ServiceName IN (${service:singlequote}) ORDER BY Timestamp DESC LIMIT 200"
+        }
+      ]
+    }
+  ]
+}

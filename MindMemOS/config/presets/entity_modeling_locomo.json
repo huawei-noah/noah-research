@@ -1,0 +1,385 @@
+[
+  {
+    "entity_type": "person",
+    "entity_description": "All persons appearing in the dialogue, including the speaker and mentioned people.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence containing all known context (subject, action, time, place, reason). A reader should fully understand the fact without needing other properties. If an event does not fit any defined property, use 'default_property'. Never write terse fragments like 'lost job' - instead write 'On January 2023, Alex lost his job at DoorDash due to company layoffs'.",
+    "search_weight": 1.0,
+    "static_property": {
+      "name": "Person name, must be a specific name",
+      "birth_info": "Birth information, such as birth date or age range"
+    },
+    "dynamic_property": {
+      "location_event": {
+        "type": "string",
+        "desc": "Location change event, including time, old location, new location. Format: 'On {time}, {name} moved from {old_location} to {new_location}'",
+        "example": "On 2023, Zhang Wei moved from Beijing to Shanghai"
+      },
+      "position_event": {
+        "type": "string",
+        "desc": "Profession change event, including time, position. Format: 'On {time}, {name} was appointed as {position}' or 'On {time}, {name} started working as {position}'",
+        "example": "On 2023, Zhang Wei was appointed as Senior Engineer"
+      },
+      "health_event": {
+        "type": "string",
+        "desc": "Health change event, including time, health condition, injuries, recovery. Format: 'On {time}, {name} was diagnosed with/recovered from/injured {condition}'",
+        "example": "On 2022, Zhang Wei was diagnosed with diabetes"
+      },
+      "skills_event": {
+        "type": "string",
+        "desc": "Skill acquisition event, including time, skill name. Format: 'On {time}, {name} learned/mastered {skill}'",
+        "example": "On 2024, Zhang Wei learned Python programming"
+      },
+      "mood_event": {
+        "type": "string",
+        "desc": "Mood change event, including time, emotion, reason. Format: 'On {time}, {name} felt {emotion} due to {reason}'",
+        "example": "On 2024, Zhang Wei felt anxious due to work pressure"
+      },
+      "habit_event": {
+        "type": "string",
+        "desc": "Habit change event, including time, old habit, new habit. Format: 'On {time}, {name} changed from {old_habit} to {new_habit}'",
+        "example": "On 2024, Zhang Wei started going to gym for exercise"
+      },
+      "experience": {
+        "type": "string",
+        "desc": "Personal experience, direct text description not list. Record important information that may be relevant later.",
+        "example": "As of 2024-03, Zhang Wei has 5 years Python development experience and previously worked in the high-tech zone at Huawei(a tech company)"
+      },
+      "plan_event": {
+        "type": "string",
+        "desc": "Future plan or intention, including time, goal, target. Format: 'On {plan_made_time}, {name} plans to {goal} at {plan_execution_time}', property record time should be {plan_made_time}.",
+        "example": "On 2024-03, Zhang Wei plans to visit Japan next month"
+      },
+      "relationship_status": {
+        "type": "string",
+        "desc": "Relationship/marital status, including time and status. Format: On {time}, {name} relationship status is {status}. Extract from mentions like single parent, married, divorced, in a relationship, breakup.",
+        "example": "As of 2023-05-25, Zhang Wei relationship status is single"
+      },
+      "education_field": {
+        "type": "string",
+        "desc": "Education field or major of study. Format: '{name} studied {field}/{major}'. Extract from career interests, mentions of studying, education plans.",
+        "example": "As of 2023-05, Zhang Wei studied Psychology and counseling at Beijing Normal University"
+      },
+      "education_degree": {
+        "type": "string",
+        "desc": "Educational degree or certification. Format: 'On {time}, {name} obtained {degree}/{certification}'. Extract from mentions of degrees, certifications, qualifications.",
+        "example": "On 2023, Zhang Wei obtained a master's degree in counseling"
+      },
+      "career_interest": {
+        "type": "string",
+        "desc": "Career interests or aspirations. Format: '{name} is interested in {field}/{position}'. Extract from mentions like 'keen on', 'want to pursue', 'interested in working as'.",
+        "example": "As of 2023-05, Zhang Wei is interested in counseling and mental health work"
+      },
+      "identity": {
+        "type": "string",
+        "desc": "Personal identity, including gender identity, cultural identity, community membership. Format: '{name} is {identity}'. Extract from mentions like 'transgender', 'LGBTQ+', nationality, ethnicity.",
+        "example": "As of 2023-05, Zhang Wei is a transgender woman"
+      },
+      "family_plan": {
+        "type": "string",
+        "desc": "Family-related plans such as adoption, having children, marriage. Format: 'On {time}, {name} plans to {action}'. Extract from mentions of family goals.",
+        "example": "As of 2023-05-25, Zhang Wei plans to adopt children in the future"
+      },
+      "business_event": {
+        "type": "string",
+        "desc": "Business-related events such as starting a business, launching a product, opening a store. Format: 'On {time}, {name} started/planned {action} for {business}'. Extract from entrepreneurship activities.",
+        "example": "On 2023-01-20, Zhang Wei started planning to open a dance studio"
+      },
+      "hobby_activity": {
+        "type": "string",
+        "desc": "Hobby and recreational activities, including hobbies, interests, and regular activities. Format: 'On {time}, {name} is passionate about/enjoys {activity}'. Extract from mentions of hobbies like dancing, painting, sports.",
+        "example": "As of 2023, Zhang Wei is passionate about dancing and choreography"
+      },
+      "achievement_event": {
+        "type": "string",
+        "desc": "Achievements and awards, including competition wins, certifications, recognitions. Format: 'On {time}, {name} achieved/won {achievement}'. Extract from success stories.",
+        "example": "On 2023-07-23, Zhang Wei's dance team won first place at the summer dance festival"
+      },
+      "reading_activity": {
+        "type": "string",
+        "desc": "Books read or reading activities. Include EXACT book titles, authors, and genres. Format: 'On {time}, {name} is reading/read {book_title} by {author}'. Extract from mentions of books.",
+        "example": "On 2023-05, Zhang Wei is reading 'The Lean Startup' by Eric Ries"
+      },
+      "travel_event": {
+        "type": "string",
+        "desc": "Travel events and trips, including specific destinations, companions, and activities. Format: 'On {time}, {name} traveled to {location} with {companions} for {purpose}'. Extract from mentions of travel and visits.",
+        "example": "On 2023-01-29, Zhang Wei went to Paris with her family for vacation"
+      },
+      "social_activity": {
+        "type": "string",
+        "desc": "Social activities and networking events. Format: 'On {time}, {name} attended/organized {activity}'. Extract from mentions of meetings, gatherings, networking.",
+        "example": "On 2023-06-20, Zhang Wei attended a tech industry networking event(TechConnect Meetup) at the downtown convention center"
+      },
+      "preference": {
+        "type": "string",
+        "desc": "Personal preferences, likes, dislikes, favorites, opinions, and impressions of other people or characters. Format: '{name} prefers/likes/favorite {preference}' or '{name} thinks {person} is {impression}'. Extract from statements about what person likes, prefers, thinks, admires, or considers favorite. Include specific item names, brands, and evaluations of others.",
+        "example": "As of 2023-05, Zhang Wei's favorite book series is Harry Potter(by J.K. Rowling) | As of 2023-08, Melanie thinks Matt Patterson is talented with an amazing voice and songs | As of 2024-01, Tim considers Emma Watson's women's rights advocacy a huge inspiration"
+      },
+      "religious_belief": {
+        "type": "string",
+        "desc": "Religious or spiritual beliefs and practices. Format: '{name} practices/believes in {belief}'. Extract from mentions of faith, religious objects, rituals, worship, spiritual practices.",
+        "example": "As of 2023-05, Zhang Wei practices Buddhism and meditates daily"
+      },
+      "allergy_condition": {
+        "type": "string",
+        "desc": "Allergies, dietary restrictions, or health conditions that constrain daily life. Format: 'As of {time}, {name} is allergic to {allergen} / has {condition}'. Extract from dietary limitations, allergic reactions, medical restrictions.",
+        "example": "As of 2023-05, Zhang Wei is allergic to peanuts and avoids all tree nuts"
+      },
+      "recommendation_given": {
+        "type": "string",
+        "desc": "Recommendations or suggestions given to or received from others. Include EXACT item names, titles, and specifics. Format: 'On {time}, {name} recommended {item/place/activity} to {person}'. Extract from advice, suggestions, endorsements.",
+        "example": "On 2023-05-20, Zhang Wei recommended the book 'Atomic Habits' to Li Ming for building better routines"
+      },
+      "creative_work": {
+        "type": "string",
+        "desc": "Creative works or artistic projects, including writing, painting, music, video production, screenplays, scripts. Include EXACT titles, genres, and themes. Format: 'On {time}, {name} created/wrote/finished {work} about {theme}'. Extract from any creative or artistic output.",
+        "example": "On 2023-07, Zhang Wei finished writing a drama screenplay about identity and connection"
+      },
+      "training_event": {
+        "type": "string",
+        "desc": "Training, courses, or structured learning activities attended. Format: 'On {time}, {name} enrolled in/attended {training/course} at {location}'. Extract from class enrollment, workshop attendance, certification programs.",
+        "example": "On 2024-01, Zhang Wei enrolled in a positive reinforcement dog training class at Oak Street Community Center"
+      },
+      "volunteer_event": {
+        "type": "string",
+        "desc": "Volunteering activities, community service, or charitable participation. Format: 'On {time}, {name} volunteered at/for {activity/organization}'. Extract from mentions of volunteering, community service, charity work.",
+        "example": "On 2023-06, Zhang Wei volunteered at the local food bank every Saturday"
+      },
+      "pet_info": {
+        "type": "string",
+        "desc": "Brief record of pet ownership relationship. Format: 'On {time}, {name} adopted/owns {pet_name}({species/breed})'. For detailed pet information (health, training, activities, characteristics), create a separate 'animal' entity instead.",
+        "example": "On 2023-03, Zhang Wei adopted a golden retriever named Max from a local shelter"
+      },
+      "collection_hobby": {
+        "type": "string",
+        "desc": "Items collected, collectibles, or collecting hobbies. Include SPECIFIC item types and notable pieces. Format: '{name} collects {items}'. Extract from mentions of collections, collectibles, memorabilia.",
+        "example": "As of 2023-05, Zhang Wei collects vintage vinyl records, sneakers, and fantasy movie DVDs"
+      },
+      "language_skill": {
+        "type": "string",
+        "desc": "Languages spoken, studied, or being learned. Format: '{name} speaks/is learning {language}'. Extract from mentions of language abilities, language study, multilingual activities.",
+        "example": "As of 2023-05, Zhang Wei speaks Mandarin and English fluently, and is learning Spanish"
+      },
+      "cooking_activity": {
+        "type": "string",
+        "desc": "Cooking activities, recipes, food preparation, and culinary interests. Include specific dish names, ingredients, recipes. Format: 'On {time}, {name} cooked/baked {dish}'. Extract from cooking events, recipe sharing, food preparation.",
+        "example": "On 2023-10-05, Zhang Wei baked a chocolate tart with raspberries for the family dinner"
+      },
+      "gaming_event": {
+        "type": "string",
+        "desc": "Gaming activities, tournaments, competitions, and gaming achievements. Include game names, tournament names, and results. Format: 'On {time}, {name} played/won {game/tournament}'. Extract from gaming, esports, board games, video games.",
+        "example": "On 2022-11-01, Nate won a major Valorant(FPS game) tournament final"
+      },
+      "writing_project": {
+        "type": "string",
+        "desc": "Writing projects including screenplays, books, blogs, stories. Include titles, genres, themes, and progress. Format: 'On {time}, {name} is working on/completed {project} about {theme}'. Extract from writing activities, blog posts, manuscripts.",
+        "example": "On 2022-11-09, Joanna is working on a suspenseful thriller set in a small Midwestern town in her notebook"
+      },
+      "financial_event": {
+        "type": "string",
+        "desc": "Financial events including donations, purchases, investments, financial status changes. Format: 'On {time}, {name} donated/purchased/invested {item/amount} to/at {target}'. Extract from money-related activities.",
+        "example": "On 2023-12-21, Maria donated her old car to a homeless shelter"
+      },
+      "sports_event": {
+        "type": "string",
+        "desc": "Sports activities, competitions, and athletic achievements. Include scores, opponents, and milestones. Format: 'On {time}, {name} played/achieved {event/record}'. Extract from sports activities, games, athletic records.",
+        "example": "On 2023-06, John achieved a career-high 35 points in a basketball game"
+      },
+      "room_decoration": {
+        "type": "string",
+        "desc": "Room decorations, home setup, furniture, and living space descriptions. Include SPECIFIC items, colors, lighting. Format: '{name} has {decoration} in {room}'. Extract from descriptions of rooms, decorations, home environment.",
+        "example": "As of 2022-11, Nate's gaming room has red and purple lighting and a wall-mounted monitor setup"
+      },
+      "personal_item": {
+        "type": "string",
+        "desc": "Important personal items, keepsakes, tools, and meaningful objects. Include names of items and their significance. Format: '{name} has/uses {item} which {significance}'. Extract from mentions of treasured objects, tools, keepsakes, stuffed animals, talismans.",
+        "example": "As of 2022-01, Joanna has a stuffed animal dog named Tilly that she keeps with her while writing to stay focused"
+      },
+      "motivation_method": {
+        "type": "string",
+        "desc": "Methods used for staying motivated, focused, or productive. Include specific techniques and tools. Format: '{name} stays motivated by {method}'. Extract from study habits, productivity techniques, motivational practices.",
+        "example": "As of 2022-11, Tim stays motivated by visualizing his goals and success during difficult study sessions"
+      },
+      "nickname": {
+        "type": "string",
+        "desc": "Nicknames, pet names, or alternate names used by or for a person. Format: '{person1} calls {person2} {nickname}'. Extract from any informal name usage.",
+        "example": "As of 2022-11, Nate calls Joanna 'Jo'"
+      },
+      "media_consumption": {
+        "type": "string",
+        "desc": "Movies, TV shows, music, podcasts watched or listened to. Include EXACT titles. Format: 'On {time}, {name} watched/listened to {title}'. Extract from entertainment activities.",
+        "example": "On 2022-01-21, Joanna recommended the movie 'Eternal Sunshine of the Spotless Mind' to Nate"
+      },
+      "endorsement_deal": {
+        "type": "string",
+        "desc": "Endorsement deals, sponsorships, brand partnerships. Include company/brand names. Format: 'On {time}, {name} signed an endorsement deal with {company}'. Extract from professional partnerships.",
+        "example": "On 2023-08, John signed an endorsement deal with Under Armour outdoor gear"
+      },
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all property for events, facts, or information that do not fit into any other defined property category. Use this for any noteworthy information not covered above. Each value must be a complete, self-contained statement.",
+        "example": "On 2023-05-20, Zhang Wei's friend recommended a tattoo parlor called InkMaster on 5th Avenue for his planned sunflower tattoo design"
+      }
+    }
+  },
+  {
+    "entity_type": "organization",
+    "entity_description": "Organizations or institutions, such as companies, teams, clubs, etc.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. If an event does not fit any defined property, use 'default_property'.",
+    "search_weight": 1.0,
+    "static_property": {
+      "name": "Organization name",
+      "legal_form": "Legal form, such as Limited, Association, etc."
+    },
+    "dynamic_property": {
+      "membership_event": {
+        "type": "string",
+        "desc": "Membership change event, including time, member name, role. Format: 'On {time}, {member_name} joined/left {organization}, serving as {role}'",
+        "example": "On 2024, Zhang Wei joined ABC company, serving as Engineer"
+      },
+      "operational_status_event": {
+        "type": "string",
+        "desc": "Operational status change event, including time, status. Format: 'On {time}, {organization} became/went public/closed {status}'",
+        "example": "On 2024, ABC company went public on NASDAQ"
+      },
+      "location_info": {
+        "type": "string",
+        "desc": "Geographic location or address of the organization. Format: '{organization} is located at/in {location}'. Extract from addresses, location descriptions, neighborhood references.",
+        "example": "As of 2024, ABC company is located in the tech park on Innovation Avenue"
+      },
+      "service_info": {
+        "type": "string",
+        "desc": "Services, programs, or activities offered by the organization. Format: 'On {time}, {organization} offers/launched {service}'. Extract from mentions of organization services.",
+        "example": "As of 2023, local animal shelter offers pet adoption and fostering programs"
+      },
+      "partnership_event": {
+        "type": "string",
+        "desc": "Partnerships, collaborations, or deals with people or other organizations. Include specific partner names and deal terms. Format: 'On {time}, {organization} partnered with {partner} for {purpose}'. Extract from endorsement deals, sponsorships, collaborations.",
+        "example": "On 2023-08, Under Armour signed an endorsement deal with John for outdoor gear promotion"
+      },
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all property for organization-related events or facts that do not fit into any other defined property category. Each value must be a complete, self-contained statement.",
+        "example": "On 2024-03, ABC company relocated its headquarters from downtown to the tech park on Innovation Avenue"
+      }
+    }
+  },
+  {
+    "entity_type": "item",
+    "entity_description": "Significant physical items, gifts, keepsakes, artworks, or objects that carry personal meaning or are referenced multiple times. Only create item entities for items that are meaningfully discussed (e.g., named objects, gifts, decorations), NOT for generic purchases or throwaway mentions.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. Only create item entities for distinctive, named, or personally meaningful objects. Do not create item entities for generic items like 'groceries' or 'a shirt'.",
+    "search_weight": 0.8,
+    "static_property": {
+      "name": "Item name or descriptive identifier",
+      "item_type": "Category of the item (e.g., stuffed animal, painting, book, decoration, equipment)"
+    },
+    "dynamic_property": {
+      "ownership_event": {
+        "type": "string",
+        "desc": "Ownership or acquisition event. Format: 'On {time}, {owner} received/bought/found {item} from {source}'. Include provenance.",
+        "example": "On 2022-01, Joanna received Tilly, a stuffed animal dog, as a gift from her grandmother"
+      },
+      "usage_context": {
+        "type": "string",
+        "desc": "How the item is used or its significance. Format: '{owner} uses {item} for {purpose}'. Include emotional or functional significance.",
+        "example": "As of 2022-01, Joanna keeps Tilly with her while writing because it helps her stay focused and brings her joy"
+      },
+      "location_info": {
+        "type": "string",
+        "desc": "Where the item is located or displayed. Format: '{item} is located in/at {location}'.",
+        "example": "As of 2023-05, the painting of Aragorn(from Lord of the Rings) is displayed in John's bedroom as a reminder"
+      },
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all property for item-related details.",
+        "example": "As of 2023-05, the bird feeder was set up outside Andrew's window for birdwatching from indoors"
+      }
+    }
+  },
+  {
+    "entity_type": "animal",
+    "entity_description": "Named pets or animals that are meaningfully discussed in the dialogue, including pets owned by speakers, stray animals they interact with, or animals central to a story. Only create animal entities for animals with names or significant discussion.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. Only create animal entities for named or significantly discussed animals, not every casual mention.",
+    "search_weight": 0.8,
+    "static_property": {
+      "name": "Animal name or descriptive identifier",
+      "species": "Species and breed (e.g., golden retriever, tabby cat, parrot)",
+      "owner": "Owner's name"
+    },
+    "dynamic_property": {
+      "adoption_event": {
+        "type": "string",
+        "desc": "Adoption or acquisition event. Format: 'On {time}, {owner} adopted/bought {animal_name} from {source}'. Include provenance and circumstances.",
+        "example": "On 2023-03, Zhang Wei adopted a golden retriever named Max from a local shelter"
+      },
+      "health_event": {
+        "type": "string",
+        "desc": "Health-related events including vet visits, illnesses, injuries, vaccinations. Format: 'On {time}, {animal_name} was diagnosed with/treated for {condition}'.",
+        "example": "On 2024-01, Max had his annual vaccination at the downtown vet clinic"
+      },
+      "training_event": {
+        "type": "string",
+        "desc": "Training activities, classes, or behavioral milestones. Format: 'On {time}, {animal_name} started/completed {training}'. Include training type and location.",
+        "example": "On 2024-01, Max enrolled in a positive reinforcement training class at Oak Street Community Center"
+      },
+      "activity_event": {
+        "type": "string",
+        "desc": "Activities, outings, or notable behaviors. Format: 'On {time}, {animal_name} did {activity}'. Include companions and location.",
+        "example": "On 2024-03, Zhang Wei took Max hiking at the national park trail"
+      },
+      "characteristic": {
+        "type": "string",
+        "desc": "Personality traits, habits, preferences, or physical characteristics. Format: 'As of {time}, {animal_name} is {characteristic}'.",
+        "example": "As of 2024-01, Max is very friendly with strangers and loves playing fetch in the park"
+      },
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all for animal-related details not fitting above categories.",
+        "example": "On 2024-02, Max's favorite toy is a squeaky rubber duck that Zhang Wei bought from the pet store"
+      }
+    }
+  },
+  {
+    "entity_type": "place",
+    "entity_description": "Specific named locations, venues, or geographic places that are meaningfully discussed in the dialogue. Only create place entities for named locations with associated activities or significance, NOT for every location briefly mentioned.",
+    "entity_instruction": "Each property value MUST be a semantically complete sentence. Only create place entities for locations with substantial discussion or multiple mentions.",
+    "search_weight": 0.8,
+    "static_property": {
+      "name": "Place name or geographic identifier",
+      "place_type": "Category (e.g., park, restaurant, city, hiking trail, national park, shelter, school)"
+    },
+    "dynamic_property": {
+      "visit_event": {
+        "type": "string",
+        "desc": "Visit or activity at the place. Format: 'On {time}, {person} visited {place} for {activity}'. Include who went and what happened.",
+        "example": "On 2023-05-26, Audrey hiked to a mountain peak at sunset in the national park"
+      },
+      "notable_feature": {
+        "type": "string",
+        "desc": "Notable features, characteristics, or facts about the place. Format: '{place} is known for {feature}'.",
+        "example": "As of 2023-05, Whispering Falls waterfall is a scenic outdoor spot that Joanna visited for hiking"
+      },
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all for place-related details not fitting above categories.",
+        "example": "On 2023-06, the local school held a career fair where John volunteered"
+      }
+    }
+  },
+  {
+    "entity_type": "episodes",
+    "entity_description": "**MANDATORY**: ALWAYS create exactly ONE episode entity for EVERY dialogue segment. This entity records the raw dialogue content objectively with timestamps. The episode entity serves as the original dialogue backup and MUST be included in every extraction. Use a simple descriptive name summarizing the dialogue topic (e.g., 'Discussion about dance performance', 'Planning dance studio').",
+    "entity_instruction": "Episode entity names should be concise topic summaries. The description and input_messages will be automatically filled by the system.",
+    "search_weight": 0.5,
+    "static_property": {
+      "detail": "Detailed description of the dialogue snippet content and main topics discussed",
+      "input_messages": "Raw context record, leave it blank and it will be filled by system."
+    },
+    "dynamic_property": {
+      "default_property": {
+        "type": "string",
+        "desc": "Catch-all property for episode-related details that do not fit into static properties. Each value must be a complete, self-contained statement.",
+        "example": "On 2023-05-20, the dialogue covered additional context about Zhang Wei's upcoming travel plans"
+      }
+    }
+  }
+]

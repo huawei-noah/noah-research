@@ -1,0 +1,1 @@
+"""Chinese add-memory prompts."""

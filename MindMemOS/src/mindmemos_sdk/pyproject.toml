@@ -1,0 +1,22 @@
+[project]
+name = "mindmemos-sdk"
+version = "0.1.3"
+description = "Python SDK and CLI for MindMemOS"
+readme = "README.md"
+authors = []
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic",
+    "pyyaml",
+]
+
+[project.scripts]
+mindmemos = "mindmemos_sdk.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "."

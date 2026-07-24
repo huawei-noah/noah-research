@@ -1,0 +1,35 @@
+apiVersion: 1
+
+# Auto-provisioned ClickHouse datasource. Values are substituted from the
+# environment variables passed to the grafana container (see compose file).
+datasources:
+  - name: ClickHouse
+    uid: mindmemos-clickhouse
+    type: grafana-clickhouse-datasource
+    access: proxy
+    isDefault: true
+    jsonData:
+      host: clickhouse
+      port: 9000
+      protocol: native
+      secure: false
+      username: $MINDMEMOS_CLICKHOUSE_USER
+      defaultDatabase: $MINDMEMOS_CLICKHOUSE_DB
+      # Point the built-in trace/log views at the tables the OTel ClickHouse
+      # exporter creates (otel_traces / otel_logs). Without this, "view trace"
+      # and "view logs" fall back to the database name as the table and fail
+      # with "Unknown table expression identifier 'otel'".
+      traces:
+        defaultDatabase: $MINDMEMOS_CLICKHOUSE_DB
+        defaultTable: otel_traces
+        otelEnabled: true
+        otelVersion: latest
+        durationUnit: nanoseconds
+      logs:
+        defaultDatabase: $MINDMEMOS_CLICKHOUSE_DB
+        defaultTable: otel_logs
+        otelEnabled: true
+        otelVersion: latest
+    secureJsonData:
+      password: $MINDMEMOS_CLICKHOUSE_PASSWORD
+    editable: true

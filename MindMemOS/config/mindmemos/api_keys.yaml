@@ -1,0 +1,17 @@
+api_keys:
+- key_id: key_dev_0001
+  api_key: dev-api-key-001
+  project_id: proj-dev-vanilla-memory
+  memory_algorithm: vanilla
+  enabled: true
+  scopes:
+  - memory:read
+  - memory:write
+- key_id: key_dev_0002
+  api_key: dev-api-key-002
+  project_id: proj-dev-schema-memory
+  memory_algorithm: schema
+  enabled: true
+  scopes:
+  - memory:read
+  - memory:write

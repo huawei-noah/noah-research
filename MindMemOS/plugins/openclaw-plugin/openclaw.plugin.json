@@ -1,0 +1,44 @@
+{
+  "id": "mindmemos-memory",
+  "name": "MindMemOS Memory",
+  "description": "Searches MindMemOS memories before each prompt and stores completed OpenClaw conversations through the mindmemos CLI.",
+  "version": "0.1.2",
+  "kind": "memory",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "cli": {
+        "type": "string"
+      },
+      "topK": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "addMode": {
+        "type": "string",
+        "enum": ["sync", "async"]
+      },
+      "userId": {
+        "type": "string"
+      },
+      "appId": {
+        "type": "string"
+      },
+      "sessionId": {
+        "type": "string"
+      },
+      "minQueryLength": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "maxConversationMessages": {
+        "type": "integer",
+        "minimum": 1
+      }
+    }
+  }
+}
