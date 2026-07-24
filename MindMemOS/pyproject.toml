@@ -1,0 +1,58 @@
+[project]
+name = "mindmemos-dev"
+version = "0.1.0"
+description = "MindMemOS monorepo development environment"
+authors = [
+]
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "mindmemos",
+    "mindmemos-eval",
+    "mindmemos-sdk",
+]
+
+[dependency-groups]
+dev = [
+    "httpx[socks]>=0.28.1",
+    "openai>=2.37.0",
+    "pre-commit>=4.6.0",
+    "py-spy>=0.4.2",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.13",
+]
+
+[tool.uv]
+package = false
+python-preference = "system"
+
+[tool.uv.sources]
+mindmemos = { workspace = true }
+mindmemos-eval = { workspace = true }
+mindmemos-sdk = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "src/mindmemos",
+    "src/mindmemos_eval",
+    "src/mindmemos_sdk",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort (import ordering)
+    "F401", # unused imports
+]
+ignore = [
+    "E501", # line too long (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -1,0 +1,55 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.idea/
+.DS_Store
+tmp/
+
+config/*.yaml
+!config/*.example.yaml
+config/mindmemos/*.yaml
+!config/mindmemos/*.example.yaml
+!config/mindmemos/api_keys.yaml
+config/mindmemos_eval/*.yaml
+!config/mindmemos_eval/*.example.yaml
+
+# Virtual environments
+.venv
+.claude
+.codex
+.env
+
+# MindMemOS local runtime files
+.mindmemos-viewer.pid
+.mindmemos-viewer.log
+.mindmem-viewer.pid
+.mindmem-viewer.log
+.memos-viewer.pid
+.memos-viewer.log
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.omx/
+openspec/
+.coverage
+
+# Local LoCoMo run configuration
+scripts/locomo/locomo_eval.env
+.locomo-runs/
+
+# Eval / run outputs
+data/
+results/
+
+# Node / openclaw plugin build artifacts
+node_modules/
+plugins/openclaw-plugin/dist/
+*.tsbuildinfo
+/results/
+/tmp/
+/data/

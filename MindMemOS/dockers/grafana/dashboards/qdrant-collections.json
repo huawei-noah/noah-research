@@ -1,0 +1,101 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["mindmemos", "qdrant"],
+  "templating": {
+    "list": [
+      {
+        "name": "collection",
+        "label": "Collection",
+        "type": "query",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "mindmemos-qdrant" },
+        "definition": "Qdrant collections",
+        "query": {
+          "queryType": "infinity",
+          "query": "",
+          "infinityQuery": {
+            "refId": "variable",
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "parser": "backend",
+            "url": "/collections",
+            "url_options": { "method": "GET" },
+            "root_selector": "result.collections",
+            "columns": [ { "selector": "name", "text": "name", "type": "string" } ]
+          }
+        },
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": null,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] }
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "MindMemOS Qdrant Collections 条目数",
+  "uid": "mindmemos-qdrant-collections",
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Collection 数量",
+      "description": "当前 Qdrant 实例中的 collection 总数（GET /collections）。",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "mindmemos-qdrant" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [ { "color": "blue", "value": null } ] } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["count"], "fields": "/^name$/", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "mindmemos-qdrant" },
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "parser": "backend",
+          "url": "/collections",
+          "url_options": { "method": "GET" },
+          "root_selector": "result.collections",
+          "columns": [ { "selector": "name", "text": "name", "type": "string" } ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "$collection",
+      "description": "该 collection 的条目数，取自 GET /collections/{name} 的 points_count（元数据近似值，不做精确扫描）。",
+      "repeat": "collection",
+      "repeatDirection": "h",
+      "maxPerRow": 6,
+      "gridPos": { "h": 4, "w": 4, "x": 6, "y": 0 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "mindmemos-qdrant" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [ { "color": "green", "value": null } ] }, "unit": "short" }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^points$/", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "mindmemos-qdrant" },
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "parser": "backend",
+          "url": "/collections/$collection",
+          "url_options": { "method": "GET" },
+          "root_selector": "result",
+          "columns": [ { "selector": "points_count", "text": "points", "type": "number" } ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,396 @@
+telemetry:
+  enabled: true
+  telemetry_timeout: 30
+  service_name: mindmemos
+  span_type: batch
+  logs_enabled: true
+  trace_sampling_ratio: 1.0
+  max_queue_size: 10240
+  max_export_batch_size: 256
+  log_level: INFO
+  metric_export_interval_millis: 5000
+
+auth:
+  mode: api_key
+  api_key_file: api_keys.yaml
+  gateway_jwt_secret: demo-jwt-secret-key
+  gateway_jwt_issuer: demo-jwt-gateway
+  gateway_jwt_audience: demo-jwt-audience
+
+chat_model_router:
+  routing_strategy: simple-shuffle
+  endpoints:
+    - model: openai/gpt-4.1-mini
+      api_key: your-api-key
+      api_base: https://your-base-url/v1
+      timeout: 1200
+      temperature: 0.0
+      num_retries: 3
+      extra_body: {}
+
+embed_model_router:
+  routing_strategy: simple-shuffle
+  endpoints:
+    - model: openai/qwen3-embedding-4b
+      api_key: your-api-key
+      api_base: https://your-base-url/v1
+      rpm:
+      tpm:
+      timeout: 600
+      num_retries: 3
+      encoding_format:
+      dimensions: 2560
+      extra_body: {}
+
+rerank_model_router:
+  routing_strategy: simple-shuffle
+  endpoints:
+    - model: cohere/qwen3-reranker-4b
+      api_key: your-api-key
+      api_base: https://your-base-url/v1/rerank
+      timeout: 600
+      num_retries: 3
+
+database:
+  qdrant:
+    memory_collection: memory_item_v1
+    entity_collection: entity_item_v1
+    source_collection: source_item_v1
+    semantic_vector_name: semantic
+    bm25_vector_name: bm25
+    vector_size: 2560
+    distance: Cosine
+    auto_create: true
+    memory_on_disk_payload: false
+    timeout: 10.0
+
+    pool_size: 64
+    max_client_concurrency: 64
+    max_client_concurrency_cap: 64
+    retry_base_delay: 0.3
+    max_retries: 3
+    batch_upsert_enabled: true
+    batch_upsert_size: 128
+    batch_upsert_flush_interval_ms: 25
+    batch_upsert_max_queue_size: 20000
+    batch_upsert_max_inflight_batches: 64
+
+
+  neo4j:
+    database: neo4j
+    auto_create_schema: true
+    max_connection_lifetime: 3600
+    write_max_retries: 3
+    write_retry_base_delay: 0.2
+
+    max_connection_pool_size: 16
+    max_client_concurrency: 16
+    max_client_concurrency_cap: 16
+
+  default_consistency: fast
+
+pipelines:
+  get: default_get
+  delete: default_delete
+  update: default_update
+  feedback: default_feedback
+
+algo_config:
+  common:
+    prompt_language: EN
+  text_processing:
+    unicode_normal_form: NFKC
+    strip_zero_width_chars: true
+    normalize_whitespace: true
+    normalize_lowercase: false
+    whitespace_regex: "\\s+"
+    strip_text: true
+    spacy_en_model: en_core_web_sm
+    spacy_zh_model: zh_core_web_sm
+    content_hash_algorithm: md5
+    explicit_language_confidence: 1.0
+    lang_zh_ratio: 0.35
+    lang_en_latin_ratio: 0.5
+    lang_mixed_zh_ratio: 0.35
+    lang_mixed_latin_ratio: 0.15
+    jieba_cut_all: false
+    bm25_min_term_len: 1
+    bm25_drop_punctuation: true
+    bm25_lowercase_en: true
+    bm25_use_spacy_lemma: true
+    bm25_en_regex_pattern: "[A-Za-z][A-Za-z0-9_+-]*"
+    bm25_use_stem_fallback: true
+    bm25_stemmer_name: porter
+    sparse_hash_dim: 2000000
+    sparse_hash_algorithm: sha1
+    sparse_k1: 1.5
+    sparse_b: 0.75
+    sparse_fallback_mode: log_tf
+    sparse_bm25_model_name: hash_bm25_v1
+    sparse_fallback_model_name: hash_sparse_tf_v1
+    bm25_idf_smoothing: 0.5
+    bm25_min_idf_denominator: 1e-9
+    bm25_min_avg_doc_len: 1.0
+    entity_fallback_on_empty: true
+    spacy_entity_default_confidence: 1.0
+    rule_entity_default_confidence: 0.6
+    max_entity_count: 64
+    rule_zh_min_term_len: 2
+    entity_rule_find_quoted_text: true
+    entity_rule_find_title_case: true
+    entity_rule_find_acronyms: true
+    entity_rule_find_file_paths: true
+    entity_rule_find_code_identifiers: true
+    entity_rule_find_book_titles: true
+    entity_rule_find_english_terms: true
+    entity_rule_find_long_jieba_terms: true
+    stopwords_zh_path:
+    stopwords_en_path:
+  add:
+    schema:
+      entity_modeling_path: config/presets/entity_modeling_locomo.json
+      extraction:
+        enable_schema_selection: true
+        use_search_fields: true
+        search_fields_max: 10
+        episode_search_fields_augment: true
+        episode_augment_count: 4
+      merge:
+        enable_entity_merge_decision: true
+        entity_recall_top_k: 15
+        max_merge_retries: 8
+        use_property_merge: false
+        secondary_search_limit: 30
+        secondary_search_retries: 3
+      higher_order:
+        enabled: true
+        top_k: 10
+        min_evidence_count: 2
+      episode_edge:
+        top_k: 10
+      chunker:
+        split_mode: llm
+        min_episode_length: 1
+        max_episode_length: 15
+        max_buffer_size: 1000
+        split_on_user_speaker: true
+        max_minutes_from_first: 30
+      drain:
+        episode_generation_max_retries: 3
+    vanilla:
+      chunk_soft_token_budget: 26000
+      chunk_hard_token_budget: 32000
+      turn_hard_token_budget: 16000
+      history_soft_token_budget: 2000
+      history_hard_token_budget: 4000
+      history_min_turn_count: 1
+      compaction_soft_token_budget: 16000
+      compaction_head_tokens: 4000
+      compaction_tail_tokens: 4000
+      compaction_summary_context_token_budget: 200000
+      compaction_summary_output_token_budget: 8000
+      time_gap_threshold_seconds: 1800
+      template_tokens: 1000
+      recall_budget: 2000
+      output_headroom: 4000
+      enable_entities: true
+      recall:
+        top_k: 5
+        scan_limit: 100
+        fusion_k: 60
+        fusion_weight_semantic: 1.5
+        fusion_weight_bm25: 1.0
+        fusion_weight_entity: 1.2
+        fusion_weight_recent: 0.5
+        fusion_weight_schema_property: 2.0
+      safety_gate:
+        min_content_chars: 1
+        min_update_confidence: 0.7
+        min_merge_confidence: 0.8
+  dreaming:
+    lookback_days: 7
+    max_scopes_per_run:
+    max_seed_memories:
+    max_memories_per_scope: 40
+    min_scope_updates: 1
+    min_cluster_size: 2
+    consolidation_model:
+  search:
+    request_top_k_max: 100
+    default:
+      top_k: 10
+    vanilla:
+      recall_size: 20
+      hybrid_prefetch_factor: 3
+      hybrid_prefetch_min: 30
+      use_reranker: true
+      graph_enabled: true
+      shared_entity_graph_enabled: true
+      graph_seed_memory_limit: 5
+      graph_related_per_seed: 3
+      shared_entity_graph_limit_per_entity: 3
+      graph_max_candidates: 10
+      graph_decay: 0.5
+      graph_score: 0.01
+    schema_search:
+      entity:
+        recall_size: 800
+        rrf_k: 80
+        top_k: 40
+        top_n: 16
+        use_reranker: true
+        max_rerank_candidates: 100
+        use_maxsim_rescore: false
+        maxsim_weight: 0.3
+        search_field_overfetch_factor: 3
+      property:
+        recall_size: 45
+        rrf_k: 60
+        top_k: 20
+        top_n: 16
+        alloc_min_factor: 0.5
+        alloc_max_factor: 1.5
+        use_property_extension: true
+        extension_step: 3
+        higher_order_ratio: 0.4
+      dual_path:
+        enabled: true
+        property_recall_size: 300
+        property_rrf_k: 80
+        property_top_k: 80
+        property_top_n: 25
+      entity_weights:
+        force_balanced_split: true
+        episode_weight: 0.7
+        non_episode_weight: 0.3
+      edge:
+        top_k: 2
+        min_relevance_score: 0.1
+      multi_hop: 2
+      use_entity_agent_search: true
+    agentic:
+      max_rounds: 3
+      top_k_per_round: 10
+      top_n_per_round: 5
+      num_hops: 2
+      use_rerank: true
+      use_relevance_filter: false
+      use_property_filter: false
+      current_time_mode: unknown
+      min_time_window_days: 30
+      include_edges: false
+      output_max_edge_num: 10
+    rerank:
+      max_query_length: 100
+      max_doc_length: 5000
+      max_batch_size: 20
+      max_concurrent_batches: 1
+  skill_evolution: {}
+
+kafka:
+  enabled: true
+  client_id: mindmemos
+  acks: all
+  enable_idempotence: true
+  producer_linger_ms: 20
+  producer_max_batch_size: 262144
+  request_timeout_ms: 60000
+  producer_max_inflight: 64
+  topics:
+    - name: memory.add
+      partitions: 16
+      replication_factor: 1
+    - name: memory.add.drain
+      partitions: 16
+      replication_factor: 1
+    - name: memory.add.episode
+      partitions: 16
+      replication_factor: 1
+    - name: memory.feedback
+      partitions: 16
+      replication_factor: 1
+    - name: memory.dreaming
+      partitions: 16
+      replication_factor: 1
+    - name: skill.evolve
+      partitions: 16
+      replication_factor: 1
+
+  consumers:
+    - topics: [memory.add]
+      group_id: memory-add-worker
+      max_poll_records: 50
+      global_max_concurrency: 64
+      per_key_max_concurrency: 64
+      max_buffered: 1000
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq
+
+    - topics: [memory.add.drain]
+      group_id: schema-add-drain-worker
+      max_poll_records: 50
+      global_max_concurrency: 32
+      per_key_max_concurrency: 1
+      max_buffered: 1000
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq
+
+    - topics: [memory.add.episode]
+      group_id: schema-add-episode-worker
+      max_poll_records: 50
+      global_max_concurrency: 32
+      per_key_max_concurrency: 1
+      max_buffered: 1000
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq
+
+    - topics: [memory.feedback]
+      group_id: memory-feedback-worker
+      max_poll_records: 20
+      global_max_concurrency: 16
+      per_key_max_concurrency: 1
+      max_buffered: 500
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq
+
+    - topics: [memory.dreaming]
+      group_id: memory-dreaming-worker
+      max_poll_records: 10
+      global_max_concurrency: 4
+      per_key_max_concurrency: 1
+      max_buffered: 200
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq
+
+    - topics: [skill.evolve]
+      group_id: skill-evolve-worker
+      max_poll_records: 8
+      global_max_concurrency: 8
+      per_key_max_concurrency: 1
+      max_buffered: 200
+      session_timeout_ms: 180000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 600000
+      auto_offset_reset: earliest
+      max_retries: 3
+      dlq_suffix: .dlq

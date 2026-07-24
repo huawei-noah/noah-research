@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="420" viewBox="0 0 1800 420" role="img" aria-labelledby="title desc">
+  <title id="title">MindMemOS</title>
+  <desc id="desc">A simple red and black MindMemOS banner with the product name and the tagline Memory For AI Agents.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a0508" />
+      <stop offset="0.45" stop-color="#ed2939" />
+      <stop offset="1" stop-color="#0b0b0d" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0" stop-color="#ff6b73" stop-opacity="0.55" />
+      <stop offset="0.5" stop-color="#ed2939" stop-opacity="0.18" />
+      <stop offset="1" stop-color="#0b0b0d" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#000000" flood-opacity="0.32" />
+    </filter>
+  </defs>
+
+  <rect width="1800" height="420" rx="12" fill="#0b0b0d" />
+  <rect x="44" y="14" width="1712" height="392" rx="8" fill="url(#bg)" />
+  <rect x="44" y="14" width="1712" height="392" rx="8" fill="url(#glow)" />
+
+  <g filter="url(#shadow)">
+    <g transform="translate(545 113) scale(2.15)">
+      <rect x="4" y="4" width="56" height="56" rx="8" fill="#0b0b0d" />
+      <rect x="4" y="4" width="56" height="56" rx="8" fill="none" stroke="#ff6670" stroke-width="2" />
+      <g transform="translate(17 17) scale(1.25)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+        <path d="M9 13a4.5 4.5 0 0 0 3-4" />
+        <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+        <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
+        <path d="M6 18a4 4 0 0 1-1.967-.516" />
+        <path d="M12 13h4" />
+        <path d="M12 18h6a2 2 0 0 1 2 2v1" />
+        <path d="M12 8h8" />
+        <path d="M16 8V5a2 2 0 0 1 2-2" />
+        <circle cx="16" cy="13" r=".5" />
+        <circle cx="18" cy="3" r=".5" />
+        <circle cx="20" cy="21" r=".5" />
+        <circle cx="20" cy="8" r=".5" />
+      </g>
+    </g>
+
+    <text x="715" y="220" fill="#0b0b0d" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="104" font-weight="800" letter-spacing="0">
+      MindMemOS
+    </text>
+    <text x="900" y="318" text-anchor="middle" fill="#0b0b0d" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="74" font-weight="650" letter-spacing="0">
+      Memory For AI Agents
+    </text>
+  </g>
+</svg>

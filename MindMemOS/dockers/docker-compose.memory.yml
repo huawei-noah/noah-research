@@ -1,0 +1,164 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.18.0
+    container_name: mindmemos-qdrant
+    cpus: "${MINDMEMOS_QDRANT_CPUS:-4}"
+    mem_limit: "${MINDMEMOS_QDRANT_MEMORY_LIMIT:-4g}"
+    mem_reservation: "${MINDMEMOS_QDRANT_MEMORY_RESERVATION:-2g}"
+    ports:
+      - "${MINDMEMOS_QDRANT_HTTP_PORT:-6333}:6333"
+      - "${MINDMEMOS_QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/6333' 2>/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  neo4j:
+    image: neo4j:2026.05.0
+    container_name: mindmemos-neo4j
+    ports:
+      - "${MINDMEMOS_NEO4J_HTTP_PORT:-7474}:7474"
+      - "${MINDMEMOS_NEO4J_BOLT_PORT:-7687}:7687"
+    environment:
+      NEO4J_AUTH: "${MINDMEMOS_NEO4J_USERNAME:-neo4j}/${MINDMEMOS_NEO4J_PASSWORD:-mindmemos_dev_password}"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      start_period: 180s
+      retries: 30
+
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: mindmemos-kafka
+    ports:
+      - "${MINDMEMOS_KAFKA_PORT:-9092}:9092"
+    environment:
+      KAFKA_NODE_ID: "0"
+      KAFKA_PROCESS_ROLES: "controller,broker"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "0@kafka:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LISTENERS: "INTERNAL://:29092,CONTROLLER://:9093,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://${MINDMEMOS_KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_NUM_PARTITIONS: "${MINDMEMOS_KAFKA_NUM_PARTITIONS:-32}"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: mindmemos-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "${MINDMEMOS_KAFKA_UI_PORT:-8080}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "mindmemos-local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:29092"
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:v1.8.0
+    container_name: mindmemos-kafka-exporter
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command:
+      - "--kafka.server=kafka:29092"
+      - "--web.listen-address=:9308"
+    ports:
+      - "${MINDMEMOS_KAFKA_EXPORTER_PORT:-9308}:9308"
+
+  # ---- Observability stack: OTel → ClickHouse → Grafana ----
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: mindmemos-clickhouse
+    ports:
+      - "${MINDMEMOS_CLICKHOUSE_HTTP_PORT:-8123}:8123"
+      - "${MINDMEMOS_CLICKHOUSE_NATIVE_PORT:-9000}:9000"
+    environment:
+      CLICKHOUSE_USER: "${MINDMEMOS_CLICKHOUSE_USER:-mindmemos}"
+      CLICKHOUSE_PASSWORD: "${MINDMEMOS_CLICKHOUSE_PASSWORD:-mindmemos_dev_password}"
+      CLICKHOUSE_DB: "${MINDMEMOS_CLICKHOUSE_DB:-otel}"
+      # Allow the default-created user to manage the schema the exporter creates.
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8123/ping || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.127.0
+    container_name: mindmemos-otel-collector
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    command: ["--config=/etc/otel/config.yaml"]
+    ports:
+      - "${MINDMEMOS_OTEL_GRPC_PORT:-4317}:4317"   # OTLP gRPC
+      - "${MINDMEMOS_OTEL_HTTP_PORT:-4318}:4318"   # OTLP HTTP
+    environment:
+      # Consumed via ${env:...} inside otel-collector-config.yaml.
+      OTEL_GRPC_ENDPOINT: "${MINDMEMOS_OTEL_GRPC_ENDPOINT:-0.0.0.0:4317}"
+      OTEL_HTTP_ENDPOINT: "${MINDMEMOS_OTEL_HTTP_ENDPOINT:-0.0.0.0:4318}"
+      KAFKA_EXPORTER_TARGET: "${MINDMEMOS_OTEL_KAFKA_EXPORTER_TARGET:-kafka-exporter:9308}"
+      CLICKHOUSE_ENDPOINT: "${MINDMEMOS_OTEL_CLICKHOUSE_ENDPOINT:-tcp://clickhouse:9000?dial_timeout=10s}"
+      CLICKHOUSE_DATABASE: "${MINDMEMOS_CLICKHOUSE_DB:-otel}"
+      CLICKHOUSE_USERNAME: "${MINDMEMOS_CLICKHOUSE_USER:-mindmemos}"
+      CLICKHOUSE_PASSWORD: "${MINDMEMOS_CLICKHOUSE_PASSWORD:-mindmemos_dev_password}"
+      CLICKHOUSE_TTL: "${MINDMEMOS_OTEL_TTL:-72h}"
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    # No healthcheck: the contrib image is distroless (no shell/curl/wget to probe with).
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: mindmemos-grafana
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    ports:
+      - "${MINDMEMOS_GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: "${MINDMEMOS_GRAFANA_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${MINDMEMOS_GRAFANA_PASSWORD:-admin}"
+      GF_INSTALL_PLUGINS: "grafana-clickhouse-datasource,yesoreyeram-infinity-datasource"
+      # Surfaced to the provisioned datasource via $VAR substitution.
+      MINDMEMOS_CLICKHOUSE_DB: "${MINDMEMOS_CLICKHOUSE_DB:-otel}"
+      MINDMEMOS_CLICKHOUSE_USER: "${MINDMEMOS_CLICKHOUSE_USER:-mindmemos}"
+      MINDMEMOS_CLICKHOUSE_PASSWORD: "${MINDMEMOS_CLICKHOUSE_PASSWORD:-mindmemos_dev_password}"
+      MINDMEMOS_GRAFANA_QDRANT_URL: "${MINDMEMOS_GRAFANA_QDRANT_URL:-http://qdrant:6333}"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+volumes:
+  qdrant_storage:
+  neo4j_data:
+  neo4j_logs:
+  kafka_data:
+  clickhouse_data:
+  grafana_data:
