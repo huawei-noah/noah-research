@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="ScienceFlow: A Long-Horizon Agent for ML Research, Scientific Discovery, and Beyond."
+    >
+    <meta name="github-repository" content="huawei-noah/noah-research">
+    <meta name="theme-color" content="#f6f8fa">
+    <title>ScienceFlow — A Long-Horizon Agent for Scientific Discovery</title>
+    <link rel="stylesheet" href="./styles.css?v=20260725-24">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top">ScienceFlow</a>
+        <div class="repo-actions" aria-label="GitHub repository links">
+          <a
+            href="https://github.com/huawei-noah/noah-research"
+            data-github-action="star"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Star noah-research on GitHub"
+            title="Open the repository on GitHub to star it"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 .75a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.193a.75.75 0 0 1-1.088.79L8 12.847l-3.766 1.98a.75.75 0 0 1-1.088-.79l.719-4.193-3.046-2.97a.75.75 0 0 1 .416-1.28l4.21-.611 1.882-3.815A.75.75 0 0 1 8 .75Zm0 2.445L6.615 6.002a.75.75 0 0 1-.564.41l-3.098.45 2.241 2.184a.75.75 0 0 1 .216.664l-.529 3.085 2.77-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.529-3.085a.75.75 0 0 1 .216-.664l2.241-2.184-3.098-.45a.75.75 0 0 1-.564-.41L8 3.195Z"/>
+            </svg>
+            <span>Star</span>
+            <span
+              class="repo-count"
+              data-github-star-count
+              aria-live="polite"
+            >—</span>
+          </a>
+          <a
+            href="https://github.com/huawei-noah/noah-research/issues/new/choose"
+            data-github-action="issues"
+            target="_blank"
+            rel="noreferrer"
+            title="Open a new GitHub issue"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm0 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z"/>
+            </svg>
+            <span>Issues</span>
+          </a>
+          <a
+            href="https://github.com/huawei-noah/noah-research/compare"
+            data-github-action="pulls"
+            target="_blank"
+            rel="noreferrer"
+            title="Open a new pull request"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.251 2.251 0 0 1 1.5 3.25Zm2.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM9.5 2.75a.75.75 0 0 1 .75-.75h1A2.75 2.75 0 0 1 14 4.75v5.878a2.251 2.251 0 1 1-1.5 0V4.75a1.25 1.25 0 0 0-1.25-1.25h-1a.75.75 0 0 1-.75-.75Zm3.75 9.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"/>
+            </svg>
+            <span>Pull requests</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="hero-background" aria-hidden="true">
+          <img
+            class="hero-layer hero-layer-far"
+            src="./assets/scienceflow-hero-background-v1-far.png"
+            alt=""
+            decoding="async"
+          >
+          <img
+            class="hero-layer hero-layer-middle"
+            src="./assets/scienceflow-hero-background-v1-middle.png"
+            alt=""
+            decoding="async"
+          >
+          <img
+            class="hero-layer hero-layer-near"
+            src="./assets/scienceflow-hero-background-v1-near.png"
+            alt=""
+            decoding="async"
+          >
+          <div class="hero-title-wash"></div>
+        </div>
+        <p class="eyebrow">Research preview · July 2026</p>
+        <h1>
+          <span class="title-lead">
+            <strong>ScienceFlow:</strong> A Long-Horizon Agent
+          </span>
+          <span class="title-scope">
+            for ML Research, Scientific Discovery, and Beyond
+          </span>
+        </h1>
+        <p class="affiliation">ScienceFlow Team · Noah's Ark Lab, Huawei</p>
+      </section>
+
+      <hr>
+
+      <section class="section shell benchmark-section" id="results">
+        <div class="section-title">
+          <h2>Research Highlights</h2>
+        </div>
+
+        <div
+          class="benchmark-timeline"
+          role="tablist"
+          aria-label="Benchmark result selector"
+        >
+          <button
+            class="timeline-item is-complete is-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="benchmark-panel-mle"
+            data-benchmark-tab="mle"
+            data-benchmark-date="2026-07-25"
+          >
+            <span class="timeline-date">2026-07-25</span>
+            <strong>MLE-Bench</strong>
+          </button>
+          <button
+            class="timeline-item is-complete"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="benchmark-panel-sci"
+            data-benchmark-tab="sci"
+            data-benchmark-date="2026-07-22"
+          >
+            <span class="timeline-date">2026-07-22</span>
+            <strong>Sci Modeling Bench</strong>
+          </button>
+          <button
+            class="timeline-item"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="benchmark-panel-math"
+            data-benchmark-tab="math"
+            data-benchmark-date="2026-07-07"
+          >
+            <span class="timeline-date">2026-07-07</span>
+            <strong>Math / Optimization</strong>
+          </button>
+          <button
+            class="timeline-item"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="benchmark-panel-geeco"
+            data-benchmark-tab="geeco"
+            data-benchmark-date="2026-07-01"
+          >
+            <span class="timeline-date">2026-07-01</span>
+            <strong>GECCO · SpOC 4</strong>
+          </button>
+        </div>
+
+        <div class="benchmark-detail-area">
+          <section
+            class="benchmark-panel benchmark-detail-panel is-active"
+            id="benchmark-panel-mle"
+            data-benchmark-panel="mle"
+          >
+            <div class="benchmark-detail-summary">
+              <div>
+              <p class="detail-kicker">MLE-Bench · Machine learning engineering</p>
+              <h3>Developing complete solutions for diverse machine learning competitions.</h3>
+              </div>
+              <div class="detail-metric">
+                <strong>70.22%</strong>
+                <span>Overall · 24 h</span>
+              </div>
+            </div>
+
+            <div class="benchmark-card-details">
+              <div class="benchmark-panel-title">
+                <h3>MLE-Bench</h3>
+                <p>Any-Medal rate (%) · completed 2026-07-25 · higher is better.</p>
+              </div>
+              <div class="table-wrap">
+                <table class="mle-leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Agent</th>
+                      <th scope="col">LLM(s) used</th>
+                      <th scope="col">Low == Lite (%)</th>
+                      <th scope="col">Medium (%)</th>
+                      <th scope="col">High (%)</th>
+                      <th scope="col">All (%)</th>
+                      <th scope="col">Running Time (hours)</th>
+                      <th scope="col">Code &amp; Reports Available</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="scienceflow-result">
+                      <th scope="row">ScienceFlow</th>
+                      <td><span class="model-name-emphasis">DeepSeek-V4-Flash</span></td>
+                      <td class="score-best"><span class="score-mean">80.30</span><span class="score-spread">± 1.52</span></td>
+                      <td class="score-best"><span class="score-mean">74.56</span><span class="score-spread">± 0.88</span></td>
+                      <td><span class="score-mean">44.44</span><span class="score-spread">± 2.22</span></td>
+                      <td class="scienceflow-all"><span class="score-mean">70.22</span><span class="score-spread">± 1.18</span></td>
+                      <td>24</td>
+                      <td class="availability-cell">Planned release · this paper</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">MLEvolve</th>
+                      <td>Gemini-3.1-Pro-preview</td>
+                      <td class="score-best"><span class="score-mean">80.30</span><span class="score-spread">± 1.50</span></td>
+                      <td><span class="score-mean">64.00</span><span class="score-spread">± 0.90</span></td>
+                      <td class="score-best"><span class="score-mean">46.70</span><span class="score-spread">± 0.00</span></td>
+                      <td class="score-second"><span class="score-mean">65.30</span><span class="score-spread">± 0.80</span></td>
+                      <td>12</td>
+                      <td class="availability-cell">
+                        <a href="https://github.com/InternScience/MLEvolve" target="_blank" rel="noreferrer">Code</a>
+                        ·
+                        <a href="https://arxiv.org/abs/2606.06473" target="_blank" rel="noreferrer">Paper</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Famou-Agent 2.0</th>
+                      <td>Gemini-3-Pro-Preview</td>
+                      <td class="score-best"><span class="score-mean">80.30</span><span class="score-spread">± 1.52</span></td>
+                      <td class="score-second"><span class="score-mean">64.04</span><span class="score-spread">± 2.32</span></td>
+                      <td><span class="score-mean">42.22</span><span class="score-spread">± 2.22</span></td>
+                      <td><span class="score-mean">64.44</span><span class="score-spread">± 1.18</span></td>
+                      <td>24</td>
+                      <td class="availability-cell">
+                        <a href="https://github.com/baidubce/FM-Agent" target="_blank" rel="noreferrer">Project code</a>
+                        ·
+                        <a href="https://arxiv.org/abs/2510.26144" target="_blank" rel="noreferrer">Paper</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">AIBuildAI</th>
+                      <td>Claude-Opus-4.6</td>
+                      <td><span class="score-mean">77.27</span><span class="score-spread">± 0.00</span></td>
+                      <td><span class="score-mean">61.40</span><span class="score-spread">± 0.88</span></td>
+                      <td class="score-second"><span class="score-mean">46.67</span><span class="score-spread">± 0.00</span></td>
+                      <td><span class="score-mean">63.11</span><span class="score-spread">± 0.44</span></td>
+                      <td>24</td>
+                      <td class="availability-cell">
+                        <a href="https://github.com/aibuildai/AI-Build-AI" target="_blank" rel="noreferrer">Project software</a>
+                        ·
+                        <a href="https://arxiv.org/abs/2604.14455" target="_blank" rel="noreferrer">Paper</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">CAIR MARS+</th>
+                      <td>Gemini-3-Pro-Preview</td>
+                      <td class="score-second"><span class="score-mean">78.79</span><span class="score-spread">± 1.52</span></td>
+                      <td><span class="score-mean">60.53</span><span class="score-spread">± 1.52</span></td>
+                      <td><span class="score-mean">44.44</span><span class="score-spread">± 2.22</span></td>
+                      <td><span class="score-mean">62.67</span><span class="score-spread">± 0.77</span></td>
+                      <td>24</td>
+                      <td class="availability-cell">
+                        <a href="https://github.com/jfc43/MARS" target="_blank" rel="noreferrer">Project code</a>
+                        ·
+                        <a href="https://arxiv.org/abs/2602.02660" target="_blank" rel="noreferrer">Paper</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="benchmark-panel benchmark-detail-panel math-panel"
+            id="benchmark-panel-math"
+            data-benchmark-panel="math"
+            hidden
+          >
+            <div class="benchmark-detail-summary">
+              <div>
+                <p class="detail-kicker">Math / Optimization · Fourier uncertainty</p>
+                <h3>Constructing a function and its Fourier transform with smaller sign-change radii.</h3>
+              </div>
+              <div class="detail-metric">
+                <strong>0.343293122432</strong>
+                <span>C4 upper bound</span>
+              </div>
+            </div>
+
+            <div class="benchmark-card-details">
+              <div class="benchmark-panel-title">
+                <h3>Uncertainty task</h3>
+                <p>AlphaEvolve B.4 Hermite · completed 2026-07-07 · lower is better.</p>
+              </div>
+              <div class="table-wrap">
+                <table class="math-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Work</th>
+                      <th scope="col">Model</th>
+                      <th scope="col">Best C4 upper bound</th>
+                      <th scope="col">Evidence / verification</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="scienceflow-result">
+                      <th scope="row">ScienceFlow</th>
+                      <td><span class="model-name-emphasis">OpenPangu</span></td>
+                      <td class="bound-cell"><strong>0.343293122432</strong></td>
+                      <td class="evidence-cell">Verified · public verifier</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">FM Agent</th>
+                      <td>Gemini-2.5-Pro</td>
+                      <td class="bound-cell score-second">0.352099104416</td>
+                      <td class="evidence-cell">Reported · paper</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">LoongFlow</th>
+                      <td>DeepSeek-R1</td>
+                      <td class="bound-cell">0.352099104422</td>
+                      <td class="evidence-cell">Reported · project</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">AlphaEvolve</th>
+                      <td>Gemini 2.0 Pro + Flash</td>
+                      <td class="bound-cell">0.352099104423</td>
+                      <td class="evidence-cell">Verified · public verifier</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">MLEvolve</th>
+                      <td>Gemini-3.1-Pro-preview</td>
+                      <td class="bound-cell score-second">0.352099104416</td>
+                      <td class="evidence-cell">Reported · project</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="benchmark-panel benchmark-detail-panel"
+            id="benchmark-panel-sci"
+            data-benchmark-panel="sci"
+            hidden
+          >
+            <div class="benchmark-detail-summary">
+              <div>
+                <p class="detail-kicker">Sci Modeling Bench · Scientific design optimization</p>
+                <h3>Optimizing candidate designs across 13 scientific discovery tasks.</h3>
+              </div>
+              <div class="detail-metric">
+                <strong>58.6636</strong>
+                <span>All Score</span>
+              </div>
+            </div>
+            <div class="benchmark-card-details">
+              <div class="benchmark-panel-title">
+                <h3>Sci Modeling Bench</h3>
+                <p>8 groups · 13 tasks · completed 2026-07-22 · higher is better.</p>
+              </div>
+              <div class="table-wrap">
+                <table class="designbench-task-table">
+                  <colgroup>
+                    <col class="task-column">
+                    <col class="score-column">
+                    <col class="score-column">
+                    <col class="score-column">
+                    <col class="score-column">
+                    <col class="score-column">
+                    <col class="random-column">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col">Task</th>
+                      <th class="scienceflow-column" scope="col">ScienceFlow</th>
+                      <th scope="col">Claude Code</th>
+                      <th scope="col">Codex</th>
+                      <th scope="col">OpenCode</th>
+                      <th scope="col">Pi</th>
+                      <th scope="col">Random</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="task-group-row">
+                      <th colspan="7" scope="colgroup">Non-DrugMatrix · 7 task groups</th>
+                    </tr>
+                    <tr>
+                      <th scope="row">TFBind8</th>
+                      <td class="task-best">0.9770</td>
+                      <td>0.9648</td>
+                      <td>0.9718</td>
+                      <td class="task-second">0.9764</td>
+                      <td>0.9730</td>
+                      <td class="random-cell">0.7533</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Superconductor</th>
+                      <td class="task-best">0.9297</td>
+                      <td>0.8132</td>
+                      <td>0.8188</td>
+                      <td>0.4929</td>
+                      <td class="task-second">0.8671</td>
+                      <td class="random-cell">0.2800</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">UTR MRL</th>
+                      <td class="task-best">0.7602</td>
+                      <td>0.7367</td>
+                      <td>0.7424</td>
+                      <td>0.6523</td>
+                      <td class="task-second">0.7533</td>
+                      <td class="random-cell">-0.0006</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">TFBind10 Pho4</th>
+                      <td class="task-second">0.3019</td>
+                      <td class="task-best">0.3197</td>
+                      <td>0.2024</td>
+                      <td>0.2467</td>
+                      <td>0.2473</td>
+                      <td class="random-cell">0.0000</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">GFP</th>
+                      <td class="task-best">0.3072</td>
+                      <td>0.1977</td>
+                      <td>0.2586</td>
+                      <td>0.2600</td>
+                      <td class="task-second">0.2692</td>
+                      <td class="random-cell">0.0001</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">CellDAG-NAS</th>
+                      <td class="task-second">0.9361</td>
+                      <td>0.9317</td>
+                      <td class="task-best">0.9394</td>
+                      <td>0.9361</td>
+                      <td>0.9347</td>
+                      <td class="random-cell">0.9287</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Hopper Controller</th>
+                      <td class="task-best">0.5314</td>
+                      <td>0.3718</td>
+                      <td>0.3755</td>
+                      <td class="task-second">0.3917</td>
+                      <td>0.3248</td>
+                      <td class="random-cell">0.1698</td>
+                    </tr>
+                    <tr class="task-group-row">
+                      <th colspan="7" scope="colgroup">DrugMatrix · 6 endpoints, one task group</th>
+                    </tr>
+                    <tr>
+                      <th scope="row">MCHC</th>
+                      <td class="task-second">0.6670</td>
+                      <td>0.6503</td>
+                      <td>0.6178</td>
+                      <td class="task-best">0.7344</td>
+                      <td>0.3720</td>
+                      <td class="random-cell">0.1733</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">MCH</th>
+                      <td class="task-best">0.5266</td>
+                      <td>0.3623</td>
+                      <td class="task-second">0.4242</td>
+                      <td>0.4147</td>
+                      <td>0.3673</td>
+                      <td class="random-cell">0.2669</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Creatinine</th>
+                      <td>0.7610</td>
+                      <td class="task-best">0.8038</td>
+                      <td>0.5681</td>
+                      <td>0.6081</td>
+                      <td class="task-second">0.7638</td>
+                      <td class="random-cell">0.1955</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Sodium</th>
+                      <td>0.7534</td>
+                      <td class="task-best">0.8498</td>
+                      <td>0.7696</td>
+                      <td>0.7619</td>
+                      <td class="task-second">0.8283</td>
+                      <td class="random-cell">0.1519</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Chloride</th>
+                      <td class="task-best">0.5624</td>
+                      <td>0.5397</td>
+                      <td class="task-second">0.5589</td>
+                      <td>0.5106</td>
+                      <td>0.4551</td>
+                      <td class="random-cell">0.1689</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Phosphorus</th>
+                      <td class="task-best">0.4936</td>
+                      <td>0.3999</td>
+                      <td>0.3749</td>
+                      <td>0.4130</td>
+                      <td class="task-second">0.4917</td>
+                      <td class="random-cell">0.2040</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="summary-start">
+                      <th scope="row">All Score ↑</th>
+                      <td class="summary-best">58.6636</td>
+                      <td>47.6537</td>
+                      <td class="summary-second">53.8545</td>
+                      <td>45.4130</td>
+                      <td>50.4705</td>
+                      <td class="random-cell">0.0000</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <p class="note">
+                DeepSeek-V4-Flash for all agents · All Score: mean fraction of
+                the random-to-oracle gap closed across 8 equally weighted task groups.
+              </p>
+            </div>
+          </section>
+
+          <section
+            class="benchmark-panel benchmark-detail-panel"
+            id="benchmark-panel-geeco"
+            data-benchmark-panel="geeco"
+            hidden
+          >
+            <div class="benchmark-detail-summary">
+              <div>
+                <p class="detail-kicker">GECCO 2026 · SpOC 4 optimization challenge</p>
+                <h3>Finding the fastest ΔV-constrained route to collect every target orbiting the Moon.</h3>
+              </div>
+              <div class="detail-metric">
+                <strong aria-label="Third place">🥉</strong>
+                <span>Large · 393.229 ↓</span>
+              </div>
+            </div>
+            <div class="benchmark-card-details">
+              <div class="benchmark-panel-title">
+                <h3>Keplerian Tomato Traveling Salesperson · Large</h3>
+                <p>3,151 dimensions · 1 objective · submitted 2026-07-01.</p>
+              </div>
+              <div class="table-wrap">
+                <table class="gecco-leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Rank</th>
+                      <th scope="col">Team</th>
+                      <th scope="col">Model</th>
+                      <th scope="col">Score ↓</th>
+                      <th scope="col">Submitted (UTC+8)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row"><span class="rank-medal" aria-label="Rank 1">🥇</span></th>
+                      <td>
+                        <a
+                          class="team-link"
+                          href="https://optimise.esa.int/user/5af55cab6f2345b689bce6f1a816dcf6"
+                          target="_blank"
+                          rel="noreferrer"
+                        >TGMA ↗</a>
+                      </td>
+                      <td>—</td>
+                      <td class="leaderboard-best">337.646</td>
+                      <td>2026-07-01 13:50</td>
+                    </tr>
+                    <tr>
+                      <th scope="row"><span class="rank-medal" aria-label="Rank 2">🥈</span></th>
+                      <td>
+                        <a
+                          class="team-link"
+                          href="https://optimise.esa.int/user/f5a760fd68d140bda580b85198f58b02"
+                          target="_blank"
+                          rel="noreferrer"
+                        >AC_TUWien ↗</a>
+                      </td>
+                      <td>—</td>
+                      <td class="leaderboard-second">337.700</td>
+                      <td>2026-07-01 01:05</td>
+                    </tr>
+                    <tr class="scienceflow-result">
+                      <th scope="row"><span class="rank-medal" aria-label="Rank 3">🥉</span></th>
+                      <td>ScienceFlow</td>
+                      <td class="scienceflow-model">DeepSeek-V4 Pro / Flash + GLM-5.1</td>
+                      <td>393.229</td>
+                      <td>2026-07-01 09:33</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">4</th>
+                      <td>
+                        <a
+                          class="team-link"
+                          href="https://optimise.esa.int/user/867404f708354718b547739c784da79c"
+                          target="_blank"
+                          rel="noreferrer"
+                        >fcmaes ↗</a>
+                      </td>
+                      <td>—</td>
+                      <td>436.015</td>
+                      <td>2026-06-30 14:01</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">5</th>
+                      <td>
+                        <a
+                          class="team-link"
+                          href="https://optimise.esa.int/user/db54c27458cb496ea71ee0cc29d9ef0a"
+                          target="_blank"
+                          rel="noreferrer"
+                        >Team HRI ↗</a>
+                      </td>
+                      <td>—</td>
+                      <td>526.078</td>
+                      <td>2026-06-30 21:17</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="note">
+                Score: total mission time in days; lower is better. Models are shown
+                only when publicly disclosed.
+                <a
+                  href="https://optimise.esa.int/challenge/spoc-4-keplerian-tomato-traveling-salesperson/p/large"
+                  target="_blank"
+                  rel="noreferrer"
+                >Official challenge and leaderboard ↗</a>
+              </p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <hr>
+
+      <section class="section shell" id="search">
+        <div class="section-title">
+          <h2>Long-horizon Tasks</h2>
+          <p>Click any panel to enlarge.</p>
+        </div>
+
+        <div
+          class="figure-grid"
+          role="region"
+          aria-label="Long-horizon task gallery"
+          tabindex="0"
+        >
+          <article class="figure-card">
+            <div class="figure-heading">
+              <p>GECCO 2026 · SpOC 4 optimization challenge</p>
+            </div>
+            <button
+              class="figure-button"
+              type="button"
+              data-image="./assets/geeco-long-horizon-search.svg"
+              data-title="GECCO 2026 · Keplerian Tomato Traveling Salesperson · Large"
+              aria-label="Enlarge the GECCO Keplerian Tomato Traveling Salesperson Large search trajectory"
+            >
+              <img
+                src="./assets/geeco-long-horizon-search.svg"
+                alt="Keplerian Tomato Traveling Salesperson Large search trajectory and CPU worker timeline"
+                loading="lazy"
+                decoding="async"
+              >
+              <span>Click to enlarge</span>
+            </button>
+            <p class="caption">9.8-day validation-guided search · third place, 393.229.</p>
+          </article>
+
+          <article class="figure-card">
+            <div class="figure-heading">
+              <p>MLE-Bench · Machine learning engineering</p>
+            </div>
+            <button
+              class="figure-button"
+              type="button"
+              data-image="./assets/mlebench-search-overview.svg"
+              data-title="MLE-Bench · Validation-guided task solving"
+              aria-label="Enlarge MLE-Bench validation-guided task solving figure"
+            >
+              <img
+                src="./assets/mlebench-search-overview.svg"
+                alt="MLE-Bench validation-guided workspace, asset, and resource search overview"
+                loading="lazy"
+                decoding="async"
+              >
+              <span>Click to enlarge</span>
+            </button>
+            <p class="caption">Workspace, validation, assets, and resource use.</p>
+          </article>
+
+          <article class="figure-card">
+            <div class="figure-heading">
+              <p>OpenPyRo-A1 · Long-horizon embodied manipulation</p>
+            </div>
+            <button
+              class="media-grid-button"
+              type="button"
+              data-template="embodied-gallery-template"
+              data-title="Embodied Intelligence · Long-horizon manipulation tasks"
+              aria-label="Enlarge the OpenPyRo-A1 embodied task gallery"
+            >
+              <span class="task-grid task-preview">
+                <span class="task-tile">
+                  <img
+                    class="task-poster"
+                    src="./assets/openpyro/posters/arrange-tableware.jpg"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                  <span class="task-label">Arrange Tableware</span>
+                </span>
+                <span class="task-tile">
+                  <img
+                    class="task-poster"
+                    src="./assets/openpyro/posters/clean-board-and-write.jpg"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                  <span class="task-label">Clean Board and Write</span>
+                </span>
+                <span class="task-tile">
+                  <img
+                    class="task-poster"
+                    src="./assets/openpyro/posters/unpack-and-fetch.jpg"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                  <span class="task-label">Unpack and Fetch</span>
+                </span>
+                <span class="task-tile">
+                  <img
+                    class="task-poster"
+                    src="./assets/openpyro/posters/stack-cups.jpg"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                  <span class="task-label">Stack Cups</span>
+                </span>
+              </span>
+              <span class="expand-label">Click to enlarge</span>
+            </button>
+            <p class="caption">Four long-horizon manipulation tasks.</p>
+          </article>
+
+          <article class="figure-card">
+            <div class="figure-heading">
+              <p>Sci Modeling Bench · Scientific design optimization</p>
+            </div>
+            <button
+              class="figure-button"
+              type="button"
+              data-image="./assets/sci-modeling-bench-drugmatrix-mchc-search.svg?v=20260724-7"
+              data-title="Sci Modeling Bench · DrugMatrix candidate discovery task"
+              aria-label="Enlarge the DrugMatrix MCHC stage-wise candidate discovery figure"
+            >
+              <img
+                src="./assets/sci-modeling-bench-drugmatrix-mchc-search.svg?v=20260724-7"
+                alt="DrugMatrix MCHC global NDCG trajectory with stage-wise Top-20 molecule discoveries"
+                loading="lazy"
+                decoding="async"
+              >
+              <span>Click to enlarge</span>
+            </button>
+            <p class="caption">DrugMatrix MCHC candidate discovery.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="release">
+        <div class="shell release-inner">
+          <div>
+            <h2>Code and technical report</h2>
+            <p>
+              Expected to be open-sourced
+              <strong>in early August 2026.</strong>
+            </p>
+          </div>
+          <a
+            href="https://github.com/huawei-noah/noah-research"
+            data-github-action="repository"
+            target="_blank"
+            rel="noreferrer"
+          >Follow on GitHub ↗</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shell">
+      <span>ScienceFlow</span>
+      <span>2026</span>
+    </footer>
+
+    <template id="embodied-gallery-template">
+      <div class="task-grid task-grid-dialog">
+        <figure class="task-tile">
+          <video muted loop playsinline controls preload="none" poster="./assets/openpyro/posters/arrange-tableware.jpg">
+            <source data-src="./assets/openpyro/arrange-tableware.webm" type="video/webm">
+          </video>
+          <figcaption class="task-label">Arrange Tableware</figcaption>
+        </figure>
+        <figure class="task-tile">
+          <video muted loop playsinline controls preload="none" poster="./assets/openpyro/posters/clean-board-and-write.jpg">
+            <source data-src="./assets/openpyro/clean-board-and-write.webm" type="video/webm">
+          </video>
+          <figcaption class="task-label">Clean Board and Write</figcaption>
+        </figure>
+        <figure class="task-tile">
+          <video muted loop playsinline controls preload="none" poster="./assets/openpyro/posters/unpack-and-fetch.jpg">
+            <source data-src="./assets/openpyro/unpack-and-fetch.webm" type="video/webm">
+          </video>
+          <figcaption class="task-label">Unpack and Fetch</figcaption>
+        </figure>
+        <figure class="task-tile">
+          <video muted loop playsinline controls preload="none" poster="./assets/openpyro/posters/stack-cups.jpg">
+            <source data-src="./assets/openpyro/stack-cups.webm" type="video/webm">
+          </video>
+          <figcaption class="task-label">Stack Cups</figcaption>
+        </figure>
+      </div>
+    </template>
+
+    <dialog class="lightbox" aria-labelledby="lightbox-title">
+      <div class="lightbox-bar">
+        <strong id="lightbox-title"></strong>
+        <button class="lightbox-close" type="button" aria-label="Close enlarged figure">×</button>
+      </div>
+      <div class="lightbox-stage">
+        <img class="lightbox-image" src="" alt="">
+        <div class="lightbox-gallery" hidden></div>
+      </div>
+    </dialog>
+
+    <script>
+      const lightbox = document.querySelector(".lightbox");
+      const lightboxImage = lightbox.querySelector(".lightbox-image");
+      const lightboxGallery = lightbox.querySelector(".lightbox-gallery");
+      const lightboxTitle = document.querySelector("#lightbox-title");
+      const benchmarkTabs = document.querySelectorAll("[data-benchmark-tab]");
+      const benchmarkPanels = document.querySelectorAll("[data-benchmark-panel]");
+      const githubStarCount = document.querySelector("[data-github-star-count]");
+      const githubRepositoryFallback = document
+        .querySelector('meta[name="github-repository"]')
+        ?.content.trim();
+
+      function detectGitHubRepository() {
+        const pagesHost = window.location.hostname.match(
+          /^([^.]+)\.github\.io$/i
+        );
+
+        if (pagesHost) {
+          const owner = pagesHost[1];
+          const repository =
+            window.location.pathname.split("/").filter(Boolean)[0] ||
+            `${owner}.github.io`;
+          return `${owner}/${repository}`;
+        }
+
+        return githubRepositoryFallback;
+      }
+
+      const githubRepository = detectGitHubRepository();
+      const githubRepositoryParts = githubRepository?.split("/");
+
+      if (githubRepositoryParts?.length === 2) {
+        const [githubOwner, githubRepo] = githubRepositoryParts;
+        const githubBaseUrl =
+          `https://github.com/${encodeURIComponent(githubOwner)}/` +
+          encodeURIComponent(githubRepo);
+        const githubActionUrls = {
+          star: githubBaseUrl,
+          issues: `${githubBaseUrl}/issues/new/choose`,
+          pulls: `${githubBaseUrl}/compare`,
+          repository: githubBaseUrl
+        };
+
+        document.querySelectorAll("[data-github-action]").forEach((link) => {
+          const target = githubActionUrls[link.dataset.githubAction];
+          if (target) link.href = target;
+        });
+
+        const starLink = document.querySelector('[data-github-action="star"]');
+        if (starLink) {
+          starLink.setAttribute(
+            "aria-label",
+            `Star ${githubRepository} on GitHub`
+          );
+        }
+
+        if (githubStarCount) {
+          const encodedRepository =
+            `${encodeURIComponent(githubOwner)}/` +
+            encodeURIComponent(githubRepo);
+
+          fetch(`https://api.github.com/repos/${encodedRepository}`, {
+            headers: { Accept: "application/vnd.github+json" }
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("GitHub repository request failed");
+              }
+              return response.json();
+            })
+            .then((repository) => {
+              return repository.stargazers_count;
+            })
+            .catch(() => {
+              return fetch(
+                `https://img.shields.io/github/stars/${encodedRepository}.json`
+              )
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("Star count fallback request failed");
+                  }
+                  return response.json();
+                })
+                .then((badge) => badge.value);
+            })
+            .then((value) => {
+              const count = Number(value);
+              if (!Number.isFinite(count)) return;
+              githubStarCount.textContent = new Intl.NumberFormat("en", {
+                notation: count >= 1000 ? "compact" : "standard",
+                maximumFractionDigits: 1
+              }).format(count);
+              githubStarCount.title =
+                `${count.toLocaleString("en")} GitHub stars`;
+            })
+            .catch(() => {
+              githubStarCount.textContent = "";
+              githubStarCount.hidden = true;
+            });
+        }
+      }
+
+      function selectBenchmarkPanel(target) {
+        benchmarkTabs.forEach((tab) => {
+          const selected = tab.dataset.benchmarkTab === target;
+          tab.classList.toggle("is-active", selected);
+          tab.setAttribute("aria-selected", selected ? "true" : "false");
+        });
+
+        benchmarkPanels.forEach((panel) => {
+          const selected = panel.dataset.benchmarkPanel === target;
+          panel.hidden = !selected;
+          panel.classList.toggle("is-active", selected);
+        });
+      }
+
+      benchmarkTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          selectBenchmarkPanel(tab.dataset.benchmarkTab);
+        });
+      });
+
+      const datedBenchmarkTabs = Array.from(benchmarkTabs)
+        .filter((tab) => /^\d{4}-\d{2}-\d{2}$/.test(tab.dataset.benchmarkDate || ""))
+        .sort((a, b) => a.dataset.benchmarkDate.localeCompare(b.dataset.benchmarkDate));
+      const latestBenchmarkTab = datedBenchmarkTabs[datedBenchmarkTabs.length - 1];
+
+      if (latestBenchmarkTab) {
+        selectBenchmarkPanel(latestBenchmarkTab.dataset.benchmarkTab);
+      }
+
+      function stopGalleryMedia() {
+        lightboxGallery.querySelectorAll("video").forEach((video) => {
+          video.pause();
+        });
+        lightboxGallery.replaceChildren();
+      }
+
+      function closeLightbox() {
+        lightbox.close();
+        stopGalleryMedia();
+      }
+
+      document.querySelectorAll(".figure-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          stopGalleryMedia();
+          lightboxGallery.hidden = true;
+          lightboxImage.hidden = false;
+          lightboxImage.src = button.dataset.image;
+          lightboxImage.alt = button.querySelector("img").alt;
+          lightboxTitle.textContent = button.dataset.title;
+          lightbox.showModal();
+        });
+      });
+
+      document.querySelectorAll(".media-grid-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const template = document.querySelector(`#${button.dataset.template}`);
+          stopGalleryMedia();
+          lightboxImage.hidden = true;
+          lightboxGallery.hidden = false;
+          lightboxGallery.append(template.content.cloneNode(true));
+          lightboxTitle.textContent = button.dataset.title;
+          lightbox.showModal();
+          lightboxGallery.querySelectorAll("source[data-src]").forEach((source) => {
+            source.src = source.dataset.src;
+          });
+        });
+      });
+
+      document.querySelector(".lightbox-close").addEventListener("click", () => {
+        closeLightbox();
+      });
+
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+
+      const hero = document.querySelector(".hero");
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+      let parallaxFrame = 0;
+      let pointerX = 0;
+      let pointerY = 0;
+
+      function updateHeroDepth() {
+        parallaxFrame = 0;
+        const progress = Math.min(1, Math.max(0, window.scrollY / 90));
+        hero.style.setProperty(
+          "--far-x",
+          `${progress * 3 - pointerX * 2.5}px`
+        );
+        hero.style.setProperty(
+          "--far-y",
+          `${progress * 7 - pointerY * 2}px`
+        );
+        hero.style.setProperty(
+          "--middle-x",
+          `${progress * -5 - pointerX * 6}px`
+        );
+        hero.style.setProperty(
+          "--middle-y",
+          `${progress * -12 - pointerY * 4.5}px`
+        );
+        hero.style.setProperty(
+          "--near-x",
+          `${progress * -11 - pointerX * 13}px`
+        );
+        hero.style.setProperty(
+          "--near-y",
+          `${progress * -30 - pointerY * 9}px`
+        );
+      }
+
+      function requestHeroDepth() {
+        if (reduceMotion.matches || parallaxFrame) return;
+        parallaxFrame = window.requestAnimationFrame(updateHeroDepth);
+      }
+
+      function handleMotionPreference() {
+        if (reduceMotion.matches) {
+          hero.removeAttribute("style");
+        } else {
+          updateHeroDepth();
+        }
+      }
+
+      hero.addEventListener("pointermove", (event) => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        const bounds = hero.getBoundingClientRect();
+        pointerX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+        pointerY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+        requestHeroDepth();
+      });
+
+      hero.addEventListener("pointerleave", () => {
+        pointerX = 0;
+        pointerY = 0;
+        requestHeroDepth();
+      });
+
+      window.addEventListener("scroll", requestHeroDepth, { passive: true });
+      reduceMotion.addEventListener("change", handleMotionPreference);
+      handleMotionPreference();
+    </script>
+  </body>
+</html>
