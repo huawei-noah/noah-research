@@ -6,7 +6,7 @@ nltk==3.2.5
 numpy==1.19.5
 opencv-python==3.4.0.12
 pandas==0.22.0
-Pillow==6.2.2
+Pillow==9.3.0
 prefetch-generator==1.0.1
 pytorch-lightning==1.5.10
 rouge==1.0.0
