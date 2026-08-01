@@ -1,0 +1,5 @@
+{
+    "temperature": 0.0,
+    "max_tokens": 300,
+    "sampling_num": 1
+}

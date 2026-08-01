@@ -1,0 +1,19 @@
+{
+    "task_name": "arc-e",
+    "path": "datasets/arc-e/data/arc-e.jsonl",
+    "description": "",
+    "transform": "datasets/arc-e/transform_ppl_v0.py",
+    "fewshot": 0,
+    "generate": {
+        "method": "loglikelihood",
+        "params": ""
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "log_prob"
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+vllm
+flask
+openai
+sacrebleu
+rouge_chinese
+pytablewriter
+gevent
+gunicorn
+tqdm
+pynvml
+accelerate>=0.20.3

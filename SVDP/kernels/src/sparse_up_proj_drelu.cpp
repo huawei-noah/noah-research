@@ -1,0 +1,28 @@
+/*
+ * Copyright (C) 2026. Huawei Technologies Co., Ltd. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+#include <torch/extension.h>
+#include <cuda_fp16.h>
+
+
+void launch_sparse_up_proj_drelu(__half *weight, __half *x, __half *gate_out, float threshold = 0.);
+
+void torch_launch_sparse_up_proj_drelu(torch::Tensor &weight, torch::Tensor &x, torch::Tensor &gate_out, float threshold = 0.) {
+    launch_sparse_up_proj_drelu((__half *)weight.data_ptr(),(__half *)x.data_ptr(), (__half *)gate_out.data_ptr(), threshold);
+}
+
+void register_kernel_up_drelu(pybind11::module &m) {
+    m.def("sparse_up_proj_drelu", &torch_launch_sparse_up_proj_drelu, "Sparse up proj drelu");
+}

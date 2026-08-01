@@ -1,0 +1,9 @@
+{
+    "use_beam_search": true,
+    "best_of": 10,
+    "temperature": 0,
+    "top_p": 1,
+    "top_k": -1,
+    "early_stopping": "never",
+    "sampling_num": 1
+}

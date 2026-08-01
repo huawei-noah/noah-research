@@ -1,0 +1,25 @@
+# Core runtime for SVDP experiments. Pinned to the versions used for the paper
+# (Python 3.10, CUDA 12.4).
+#
+# Install with:
+#   pip install -r requirements.txt
+#
+# The --extra-index-url below pulls the CUDA 12.4 builds of torch/vLLM. Install
+# vLLM first in the resolution order so the correct CUDA build of torch is used;
+# pip handles this automatically from the pins below.
+#
+# The UltraEval evaluation framework has its own requirements
+# (see UltraEval/requirements.txt). The optimized CUDA kernels are built
+# separately (see kernels/setup.py and the README).
+
+--extra-index-url https://download.pytorch.org/whl/cu124
+
+vllm==0.8.5.post1
+torch==2.6.0
+transformers==4.51.3
+datasets==3.6.0
+numpy==2.2.6
+matplotlib==3.10.9
+tqdm==4.67.3
+requests==2.34.2
+urllib3==2.7.0

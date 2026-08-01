@@ -1,0 +1,19 @@
+{
+    "task_name": "high-school-geography",
+    "path": "datasets/cmmlu/data/high-school-geography.jsonl",
+    "description": "以下是关于高中地理的单项选择题，请直接给出正确答案的选项。",
+    "transform": "datasets/cmmlu/transform_gen_v1.py",
+    "fewshot": 5,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "prefix_match"
+            }
+        }
+    }
+}

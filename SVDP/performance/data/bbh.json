@@ -1,0 +1,13 @@
+[
+    {"prompt": "Question:\n((7 + 7 * 3 - 3) - (-3 + 4 - -6 + -3)) =\nAnswer:\n21\n\nQuestion:\n((-8 + 6 * -2 + 4) * (-4 * 5 + 2 - 8)) =\nAnswer:\n416\n\nQuestion:\n((1 - 0 + 1 - 4) - (-3 * 1 - -6 * -8)) =\nAnswer:\n49\n\nQuestion:\n((-1 + 2 + 9 * 5) - (-2 + -4 + -4 * -7)) =\nAnswer:\n"},
+    {"prompt":"Question:\n((0 * 9 + -8 * 7) - (7 - 9 + 1 + 0)) =\nAnswer:\n-55\n\nQuestion:\n((-1 - -9 * 8 - -9) + (-9 - 2 * -6 + -6)) =\nAnswer:\n77\n\nQuestion:\n((5 + 6 * 4 * 9) + (-9 - 0 * 3 - 1)) =\nAnswer:\n211\n\nQuestion:\n((-9 * -5 - 6 + -2) - (-8 - -6 * -3 * 1)) =\nAnswer:\n"},
+    {"prompt": "Question:\n((9 * -9 + -4 * -8) - (5 * 0 + 8 - 5)) =\nAnswer:\n-52\n\nQuestion:\n((-9 - -9 + 0 + -3) + (-2 - -1 - 1 + 2)) =\nAnswer:\n-3\n\nQuestion:\n((-5 - -1 - 6 * 0) + (-3 + 5 * 0 + 1)) =\nAnswer:\n-6\n\nQuestion:\n((3 * -3 * 6 + -5) - (-2 + -7 - 7 - -7)) =\nAnswer:\n"},
+    {"prompt": "Question:\n((0 + -9 * 6 * 4) + (5 - -3 + 8 * 5)) =\nAnswer:\n-168\n\nQuestion:\n((-7 * -9 + 8 * -3) * (5 + -7 - 4 * -5)) =\nAnswer:\n702\n\nQuestion:\n((1 + 7 * -9 + -5) + (3 + -5 * 2 - 6)) =\nAnswer:\n-80\n\nQuestion:\n((-6 - -4 + 9 + 0) + (1 + -4 - -9 * 6)) =\nAnswer:\n"},
+    {"prompt": "Question:\n((-7 + 9 * 9 * 6) - (-2 - -5 + 9 + -7)) =\nAnswer:\n474\n\nQuestion:\n((8 - -5 + -9 + 7) + (-9 * -1 * -6 + 4)) =\nAnswer:\n-39\n\nQuestion:\n((-6 - 8 - -7 * -2) - (-9 - 5 + 7 + 1)) =\nAnswer:\n-22\n\nQuestion:\n((6 * -6 * 8 * 1) * (-1 * 7 * -6 + -2)) =\nAnswer:\n"}
+]
+
+
+
+
+
+
