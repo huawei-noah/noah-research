@@ -4,9 +4,6 @@
 
 ICT Mind Team · Noah's Ark Lab, Huawei
 
-- **Project page**: https://huawei-noah.github.io/noah-research/ScienceFlow/website/
-- **Issues / PRs**: https://github.com/huawei-noah/noah-research/issues
-
 ## Highlights
 
 - **MLE-bench**: 70.22 ± 1.18% Any-Medal rate overall (Lite 80.30 / Medium 74.56 / High 44.44), with DeepSeek-V4-Flash-Preview
