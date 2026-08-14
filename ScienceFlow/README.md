@@ -4,6 +4,8 @@
 
 ICT Mind Team · Noah's Ark Lab, Huawei
 
+> **Coming soon**: the source code is being uploaded and will be available shortly.
+
 ## Highlights
 
 - **MLE-bench**: 70.22 ± 1.18% Any-Medal rate overall (Lite 80.30 / Medium 74.56 / High 44.44), with DeepSeek-V4-Flash-Preview
