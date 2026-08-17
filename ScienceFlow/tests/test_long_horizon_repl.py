@@ -59,6 +59,7 @@ from scienceflow.solver.lnr.solver import (
     LHR_STAGE_PERFORMANCE_COLUMNS,
     LnrSolver,
     _append_lnr_main_agent_protocols,
+    _effective_lnr_bash_timeout_sec,
     _validation_leakage_reason,
 )
 from scienceflow.solver.lnr.stage.stage_ledger import (
@@ -111,6 +112,79 @@ def test_lhr_first_user_prompt_includes_resource_context_snapshot() -> None:
     assert "ResourceContext snapshot:" in text
     assert "worker_cpu_list: 32-39" in text
     assert "visible_gpu_list: 6" in text
+
+
+def test_lhr_bash_timeout_respects_configured_cap_and_remaining_fuse() -> None:
+    assert _effective_lnr_bash_timeout_sec(300, 6900) == 300
+    assert _effective_lnr_bash_timeout_sec(14_400, 6900) == 6900
+    assert _effective_lnr_bash_timeout_sec(300, 120) == 120
+
+
+def test_lhr_make_agent_keeps_normal_and_slow_bash_caps() -> None:
+    solver = object.__new__(LnrSolver)
+    solver.deadline = lnr_solver_module.time.monotonic() + 6900
+    solver.worker_id = ""
+    solver.worker_index = 0
+    solver.worker_count = 1
+    solver.worker_extra_env = {}
+    solver.memory_dir = Path("memory")
+    solver.log_dir = Path("logs")
+    solver.task_root_dir = Path("task")
+    solver.ledger_filename = ".run_results.md"
+    solver.resource_observer = None
+    solver.evaluation_service = object()
+    solver.skill_registry = None
+    solver.skill_task_category = ""
+    solver.skill_allow_names = ()
+    solver.skill_tool_mode = "category_only"
+    solver.skill_allow_generic_wildcard = False
+    solver.skill_visible_max = 1
+    solver.lhr = SimpleNamespace(
+        max_steps=10,
+        workspace_git_enabled=False,
+        workspace_git_track_globs=None,
+        workspace_git_auto_review=False,
+        resource_bash_hard_fuse_finalization_reserve_sec=900,
+        clean_repl_mode=False,
+        compact_on_context_limit=True,
+    )
+    solver.cfg = SimpleNamespace(
+        exp_id="test",
+        repl_bash_max_output_chars=8000,
+        repl_bash_max_stream_line_chars=2400,
+        mlebench_data_root_dir="",
+    )
+    bash_tool = SimpleNamespace(
+        bash_timeout_sec=300,
+        bash_timeout_slow_sec=600,
+    )
+    agent = SimpleNamespace(
+        availableTools=SimpleNamespace(tool_map={"bash": bash_tool}),
+        _system_prompt_core="",
+        systemPrompt="",
+    )
+    solver.orchestrator = SimpleNamespace(
+        make_llm_call_tracer=lambda **_kwargs: None,
+        create_science_agent=lambda **_kwargs: agent,
+    )
+    solver._worker_llm_stage_override = lambda: None
+    solver._task_runtime_extra_env = lambda: {}
+    solver._code_organization_hint = lambda: ""
+    solver._attach_lnr_interaction_logger = lambda _agent: None
+    solver._sanitize_agent_prompt_surfaces = lambda _agent: None
+    solver._restore_protected_eda_prefix_marker = lambda _agent: None
+    solver._evaluator_stage_source_mode = lambda: "primary"
+    solver._evaluator_task_profile = lambda: ""
+    solver._evaluator_backend_name = lambda: ""
+    solver._evaluator_candidate_artifact = lambda: "submission.csv"
+    solver._worker_uid_prefix = lambda: "W00"
+
+    built = solver._make_agent(load_existing_memory=False)
+
+    assert bash_tool.bash_timeout_sec == 300
+    assert bash_tool.bash_timeout_slow_sec == 600
+    assert built._bash_timeout_sec == 300
+    assert built._bash_timeout_slow_sec == 600
 
 
 def test_lhr_first_user_prompt_category_skill_hint_is_optional() -> None:

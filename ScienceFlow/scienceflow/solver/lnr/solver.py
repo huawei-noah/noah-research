@@ -170,6 +170,17 @@ from scienceflow.utils.workspace_git import (
 
 logger = logging.getLogger("scienceflow")
 
+
+def _effective_lnr_bash_timeout_sec(
+    configured_sec: float,
+    remaining_sec: float,
+) -> float:
+    """Return the per-command cap bounded by the task hard fuse."""
+    configured = max(1.0, float(configured_sec or 1.0))
+    remaining = max(1.0, float(remaining_sec or 1.0))
+    return min(configured, remaining)
+
+
 _RESOURCE_FEEDBACK_SYSTEM_PROTOCOL = """Resource feedback is runtime context, not a normal shell error.
 Rules:
 - PENDING/REPLAN/policy blocked: update the plan; optional standalone sleep/backoff; do not retry the same blocked GPU command unchanged.
@@ -7756,8 +7767,14 @@ class LnrSolver:
                 remaining_fuse = max(1.0, float(self.deadline - time.monotonic()))
                 bash_tool.bash_hard_fuse_deadline_monotonic = float(self.deadline)
                 bash_tool.bash_hard_fuse_finalization_reserve_sec = finalization_reserve
-                bash_tool.bash_timeout_sec = max(float(getattr(bash_tool, "bash_timeout_sec", 1.0) or 1.0), remaining_fuse)
-                bash_tool.bash_timeout_slow_sec = max(float(getattr(bash_tool, "bash_timeout_slow_sec", 1.0) or 1.0), remaining_fuse)
+                bash_tool.bash_timeout_sec = _effective_lnr_bash_timeout_sec(
+                    float(getattr(bash_tool, "bash_timeout_sec", 1.0) or 1.0),
+                    remaining_fuse,
+                )
+                bash_tool.bash_timeout_slow_sec = _effective_lnr_bash_timeout_sec(
+                    float(getattr(bash_tool, "bash_timeout_slow_sec", 1.0) or 1.0),
+                    remaining_fuse,
+                )
                 setattr(agent, "_bash_timeout_sec", float(bash_tool.bash_timeout_sec))
                 setattr(agent, "_bash_timeout_slow_sec", float(bash_tool.bash_timeout_slow_sec))
             except Exception:
