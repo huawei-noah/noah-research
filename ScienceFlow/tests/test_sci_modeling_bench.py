@@ -594,6 +594,37 @@ def test_shared_evaluator_rejects_manifest_identity_mismatch(tmp_path: Path) -> 
     assert "protocol_id mismatch" in payload["feedback"]
 
 
+def test_shared_evaluator_accepts_runner_symlinked_public_dataset(tmp_path: Path) -> None:
+    evaluator = _load_module("smb_shared_evaluator_runner_links", SHARED_EVALUATOR)
+    config = _tfbind8_config()
+    source = tmp_path / "prepared" / "public"
+    _write_public_dataset(source, config)
+
+    dataset_dir = tmp_path / "workspace" / "dataset"
+    dataset_dir.mkdir(parents=True)
+    for child in source.iterdir():
+        (dataset_dir / child.name).symlink_to(child.resolve())
+
+    manifest = evaluator._validate_public_dataset(dataset_dir, config=config)
+
+    assert manifest.task_id == config["source"]["benchmark_task_id"]
+
+
+def test_shared_evaluator_rejects_dataset_view_parent_traversal(tmp_path: Path) -> None:
+    evaluator = _load_module("smb_shared_evaluator_parent_traversal", SHARED_EVALUATOR)
+    config = _tfbind8_config()
+    dataset_dir = tmp_path / "dataset"
+    _write_public_dataset(dataset_dir, config)
+    files_path = dataset_dir / "dataset_files.json"
+    files = json.loads(files_path.read_text(encoding="utf-8"))
+    files["files"][0]["path"] = "../outside.parquet"
+    files_path.write_text(json.dumps(files), encoding="utf-8")
+    (tmp_path / "outside.parquet").write_bytes(b"not a dataset view")
+
+    with pytest.raises(ValueError, match="escapes dataset directory"):
+        evaluator._validate_public_dataset(dataset_dir, config=config)
+
+
 @pytest.mark.skipif(
     os.environ.get("SCIENCEFLOW_RUN_SCI_MODELING_BENCH_INTEGRATION") != "1",
     reason="requires the official package and pinned Hugging Face dataset",

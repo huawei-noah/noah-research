@@ -568,11 +568,13 @@ def _validate_public_dataset(dataset_dir: Path, *, config: Mapping[str, Any]) ->
             raise ValueError(f"invalid or duplicate dataset view index: {name!r}")
         indexed.add(name)
         relative = Path(str(entry.get("path") or ""))
-        path = (dataset_dir / relative).resolve()
-        try:
-            path.relative_to(dataset_dir.resolve())
-        except ValueError as exc:
-            raise ValueError(f"dataset view path escapes dataset directory: {relative}") from exc
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError(f"dataset view path escapes dataset directory: {relative}")
+        # LNR intentionally exposes the read-only input root through top-level
+        # symlinks under workspace/dataset.  Keep the lexical path boundary
+        # check above, but do not reject those trusted runner-created links by
+        # resolving them against the writable workspace directory.
+        path = dataset_dir / relative
         if not path.is_file():
             raise ValueError(f"dataset view file is missing: {relative}")
         if verify_hashes and file_sha256(path) != str(entry.get("sha256") or ""):
