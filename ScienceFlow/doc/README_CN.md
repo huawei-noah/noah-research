@@ -19,6 +19,11 @@ ScienceFlow 在机器学习、科学建模和数学优化任务上持续开展�
 </p>
 <p align="center"><sub><b>图 1a：完整 MLE-bench Any-Medal 排行榜。</b> ScienceFlow 结果为三次独立运行的均值 ± SEM。</sub></p>
 
+## 最新动态
+
+- **[2026-08]** ScienceFlow 正式开源——框架代码、任务包与文档均已发布在本仓库。
+- **[2026-08]** ScienceFlow 论文已上线 [arXiv](https://arxiv.org/abs/2608.14354)。
+
 ## 核心概念
 
 1. **可恢复的可执行状态。** 每个持续运行的 LNR worker 在隔离的可执行工作空间中推进研究；归档状态将工作空间与紧凑记忆、验证证据和资源记录绑定在一起。

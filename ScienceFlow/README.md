@@ -19,6 +19,11 @@ Across machine learning, scientific modeling, and mathematical optimization, Sci
 </p>
 <p align="center"><sub><b>Figure 1a. Full MLE-bench Any-Medal leaderboard.</b> Mean ± SEM over three independent runs for ScienceFlow.</sub></p>
 
+## News
+
+- **[2026-08]** ScienceFlow is open source — the framework code, task packages, and documentation are available in this repository.
+- **[2026-08]** The ScienceFlow paper is available on [arXiv](https://arxiv.org/abs/2608.14354).
+
 ## Core concepts
 
 1. **Recoverable executable state.** Each persistent LNR worker advances research in an isolated executable workspace. An archived state binds that workspace to compact memory, validation evidence, and resource records.
