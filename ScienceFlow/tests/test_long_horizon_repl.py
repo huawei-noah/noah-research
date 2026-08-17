@@ -1415,6 +1415,120 @@ def test_multi_worker_cpu_slice_is_contiguous() -> None:
     assert LnrSolver._format_cpu_ids(list(range(128, 144))) == "128-143"
 
 
+def test_lhr_final_artifact_mode_is_opt_in_without_restricting_merge() -> None:
+    solver = object.__new__(LnrSolver)
+    solver.lhr = SimpleNamespace(merge_enabled=True)
+    assert solver._final_artifact_mode() == "workspace"
+
+    solver.lhr.final_artifact_mode = "best_stage"
+    assert solver._final_artifact_mode() == "best_stage"
+
+    solver.lhr.final_artifact_mode = "unknown"
+    with pytest.raises(ValueError, match="unsupported lnr.final_artifact_mode"):
+        solver._final_artifact_mode()
+
+
+def test_load_worker_candidates_includes_exact_archived_lineages(tmp_path: Path) -> None:
+    worker_root = tmp_path / "workers" / "w00"
+    worker_log = worker_root / "logs"
+    global_log = tmp_path / "task_logs"
+    global_log.mkdir(parents=True)
+
+    def write(path: Path, text: str) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+
+    def make_snapshot(name: str, node_uid: str, metric: float) -> tuple[Path, str]:
+        snapshot = worker_root / "snapshots" / name
+        artifact = snapshot / "artifacts" / "submission.json"
+        write(artifact, json.dumps({"node_uid": node_uid}) + "\n")
+        artifact_sha = hashlib.sha256(artifact.read_bytes()).hexdigest()
+        write(
+            snapshot / "logs" / "lhr_snapshot_meta.json",
+            json.dumps(
+                {
+                    "source_event": {
+                        "node_uid": node_uid,
+                        "lineage_id": node_uid.split(":")[1],
+                        "metric_value": metric,
+                        "artifact_path": "artifacts/submission.json",
+                        "artifact_sha": artifact_sha,
+                        "candidate_ready": True,
+                        "validation_ok": True,
+                        "selection_eligible": True,
+                        "metric_validity": "high",
+                    }
+                }
+            ),
+        )
+        return snapshot, artifact_sha
+
+    abandoned, _ = make_snapshot("lineage-one", "W00:L01:S01", 0.9)
+    active, _ = make_snapshot("lineage-two", "W00:L02:S01", 0.6)
+    write(
+        worker_log / "lhr_stage_map.json",
+        json.dumps(
+            {
+                "stages": {
+                    "S01": {
+                        "stage_id": "S01",
+                        "node_uid": "W00:L02:S01",
+                        "lineage_id": "L02",
+                        "snapshot_path": str(active),
+                        "metric_value": 0.6,
+                        "metric_name": "score",
+                        "lower_is_better": False,
+                    }
+                },
+                "archive": {
+                    "W00:L01:S01": {
+                        "stage_id": "S01",
+                        "node_uid": "W00:L01:S01",
+                        "lineage_id": "L01",
+                        "snapshot_path": str(abandoned),
+                        "metric_value": 0.9,
+                        "metric_name": "score",
+                        "lower_is_better": False,
+                    },
+                    "W00:L02:S01": {
+                        "stage_id": "S01",
+                        "node_uid": "W00:L02:S01",
+                        "lineage_id": "L02",
+                        "snapshot_path": str(active),
+                        "metric_value": 0.6,
+                        "metric_name": "score",
+                        "lower_is_better": False,
+                    },
+                },
+            }
+        ),
+    )
+    solver = object.__new__(LnrSolver)
+    solver.log_dir = global_log
+    solver._worker_root = lambda _index: worker_root
+    solver._worker_log_dir = lambda _index: worker_log
+    solver._evaluator_candidate_artifact = lambda: "artifacts/submission.json"
+
+    active_candidates = solver._load_worker_candidates(
+        {"worker_id": "W00", "worker_index": 0},
+    )
+    assert {candidate["candidate_id"] for candidate in active_candidates} == {
+        "W00:L02:S01",
+    }
+
+    candidates = solver._load_worker_candidates(
+        {"worker_id": "W00", "worker_index": 0},
+        include_archived=True,
+    )
+
+    assert {candidate["candidate_id"] for candidate in candidates} == {
+        "W00:L01:S01",
+        "W00:L02:S01",
+    }
+    assert {candidate["lineage_id"] for candidate in candidates} == {"L01", "L02"}
+    assert all(candidate["candidate_ready"] is True for candidate in candidates)
+
+
 def test_multi_worker_extra_env_exposes_worker_cpu_slice(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("SCIENCEFLOW_TASK_CPU_LIST", "96-127")
     solver = object.__new__(LnrSolver)
@@ -1553,7 +1667,11 @@ def test_multi_worker_partial_merge_does_not_mask_all_worker_failure(tmp_path: P
 
         solver._run_one_worker = run_one_worker
         solver._aggregate_worker_state = lambda **_kwargs: None
-        solver._load_worker_candidates = lambda result: [candidate] if result.get("worker_id") == "W01" else []
+        solver._load_worker_candidates = (
+            lambda result, **_kwargs: [candidate]
+            if result.get("worker_id") == "W01"
+            else []
+        )
         solver._write_stage_collection_outputs = lambda **_kwargs: tmp_path / "merge"
         solver._write_global_time_trace = lambda _worker_results: None
         solver._cleanup_coordinator_workspace_shell = lambda: None

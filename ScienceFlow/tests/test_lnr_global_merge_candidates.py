@@ -84,6 +84,47 @@ def test_candidate_without_sha_does_not_claim_current_workspace_artifact(
     assert "artifact_source" not in recovered
 
 
+def test_json_recovery_prefers_artifact_sha_over_conflicting_submission_sha(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "snapshot"
+    artifact = snapshot / "artifacts" / "submission.json"
+    _write(artifact, '{"candidate":"value"}\n')
+    artifact_sha = hashlib.sha256(artifact.read_bytes()).hexdigest()
+
+    recovered = recover_candidate_artifact(
+        {
+            "candidate_id": "W00:L01:S01",
+            "snapshot_path": str(snapshot),
+            "artifact_path": "artifacts/submission.json",
+            "artifact_sha": artifact_sha,
+            "submission_sha": "0" * 64,
+        },
+        artifact_path="artifacts/submission.json",
+    )
+
+    assert recovered["candidate_ready"] is True
+    assert recovered["artifact_sha"] == artifact_sha
+
+
+def test_json_recovery_does_not_use_legacy_submission_sha(tmp_path: Path) -> None:
+    snapshot = tmp_path / "snapshot"
+    artifact = snapshot / "submission.json"
+    _write(artifact, '{"candidate":"value"}\n')
+
+    recovered = recover_candidate_artifact(
+        {
+            "candidate_id": "W00:L01:S01",
+            "snapshot_path": str(snapshot),
+            "submission_sha": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+        },
+        artifact_path="submission.json",
+    )
+
+    assert recovered["candidate_ready"] is False
+    assert "artifact_source" not in recovered
+
+
 def test_pack_candidates_deduplicates_and_preserves_diversity(tmp_path: Path) -> None:
     specs = [
         ("W00:S01", "W00", "L01", 0.9, "a"),

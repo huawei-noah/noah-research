@@ -109,7 +109,11 @@ from scienceflow.solver.lnr.resource_runtime.review.arbiter import (
 )
 from scienceflow.solver.lnr.resource_runtime.admission import build_resource_admission_prompt
 from scienceflow.solver.lnr.resume import resume_loaded_agent_from_memory
-from scienceflow.solver.lnr.global_merge import metric_float, run_global_merge
+from scienceflow.solver.lnr.global_merge import (
+    materialize_best_stage_final,
+    metric_float,
+    run_global_merge,
+)
 from scienceflow.solver.lnr.global_merge.candidate_evidence import (
     apply_candidate_evidence,
     load_peer_candidate_evidence,
@@ -9081,6 +9085,14 @@ class LnrSolver:
         reserve = min(configured, max(300.0, budget * 0.15))
         return min(reserve, max(0.0, budget - 60.0))
 
+    def _final_artifact_mode(self) -> str:
+        mode = str(
+            getattr(self.lhr, "final_artifact_mode", "workspace") or "workspace"
+        ).strip().lower()
+        if mode not in {"workspace", "best_stage"}:
+            raise ValueError(f"unsupported lnr.final_artifact_mode: {mode!r}")
+        return mode
+
     def _worker_wall_clock_budget_sec(self) -> int:
         budget = int(float(getattr(self.lhr, "wall_clock_budget_sec", 0) or 0))
         reserve = int(self._global_merge_reserve_sec())
@@ -9394,7 +9406,11 @@ class LnrSolver:
         snapshot_path = Path(str(stage.get("snapshot_path") or ""))
         meta = self._read_json_file(snapshot_path / "logs" / "lhr_snapshot_meta.json") if snapshot_path else {}
         source = meta.get("source_event") if isinstance(meta.get("source_event"), dict) else {}
-        candidate_id = f"{worker_id}:{stage_id}"
+        lineage_id = str(stage.get("lineage_id") or source.get("lineage_id") or "")
+        node_uid = str(stage.get("node_uid") or source.get("node_uid") or "")
+        candidate_id = node_uid or ":".join(
+            part for part in (worker_id, lineage_id, stage_id) if part
+        )
         return {
             "candidate_id": candidate_id,
             "worker_id": worker_id,
@@ -9426,8 +9442,10 @@ class LnrSolver:
             "metric_validity": source.get("metric_validity") or stage.get("metric_validity") or "",
             "metric_validity_note": source.get("metric_validity_note") or stage.get("metric_validity_note") or "",
             "metric_validity_reason_code": source.get("metric_validity_reason_code") or stage.get("metric_validity_reason_code") or "",
-            "lineage_id": str(stage.get("lineage_id") or source.get("lineage_id") or ""),
-            "node_uid": str(stage.get("node_uid") or source.get("node_uid") or ""),
+            "metric_authoritative": source.get("metric_authoritative") is True,
+            "evaluator_backend": str(source.get("evaluator_backend") or ""),
+            "lineage_id": lineage_id,
+            "node_uid": node_uid,
             "route_id": str(source.get("route_id") or stage.get("route_id") or ""),
             "solution_sha": str(source.get("solution_sha") or stage.get("solution_sha") or ""),
             "submission_sha": str(source.get("submission_sha") or stage.get("submission_sha") or ""),
@@ -9439,24 +9457,55 @@ class LnrSolver:
                 if "candidate_ready" in source
                 else stage.get("candidate_ready")
                 if "candidate_ready" in stage
-                else bool(source.get("submission_sha") or stage.get("submission_sha"))
+                else bool(
+                    source.get("artifact_sha")
+                    or stage.get("artifact_sha")
+                    or source.get("submission_sha")
+                    or stage.get("submission_sha")
+                )
             ),
             "submission_status": str(source.get("submission_status") or ""),
             "duplicate_submission_of_stage": str(source.get("duplicate_submission_of_stage") or ""),
         }
 
-    def _load_worker_candidates(self, worker_result: dict[str, Any]) -> list[dict[str, Any]]:
+    def _load_worker_candidates(
+        self,
+        worker_result: dict[str, Any],
+        *,
+        include_archived: bool = False,
+    ) -> list[dict[str, Any]]:
         worker_id = str(worker_result.get("worker_id") or "")
         worker_index = int(worker_result.get("worker_index") or 0)
         worker_root = self._worker_root(worker_index)
         stage_map = self._read_json_file(self._worker_log_dir(worker_index) / "lhr_stage_map.json")
         stages = stage_map.get("stages") if isinstance(stage_map.get("stages"), dict) else {}
+        archive = stage_map.get("archive") if isinstance(stage_map.get("archive"), dict) else {}
         peer_evidence = load_peer_candidate_evidence(
             self.log_dir / "lhr_stage_performance.csv",
             worker_id=worker_id,
         )
         candidates: list[dict[str, Any]] = []
-        for stage_id, stage in sorted(stages.items()):
+        entries: list[tuple[str, dict[str, Any], bool]] = [
+            (str(stage_id), stage, False)
+            for stage_id, stage in sorted(stages.items())
+            if isinstance(stage, dict)
+        ]
+        active_nodes = {
+            str(stage.get("node_uid") or "").strip()
+            for stage in stages.values()
+            if isinstance(stage, dict) and str(stage.get("node_uid") or "").strip()
+        }
+        if include_archived:
+            entries.extend(
+                (
+                    str(stage.get("stage_id") or ""),
+                    stage,
+                    True,
+                )
+                for node_uid, stage in sorted(archive.items())
+                if isinstance(stage, dict) and str(node_uid).strip() not in active_nodes
+            )
+        for stage_id, stage, is_archived in entries:
             if isinstance(stage, dict):
                 candidate = self._candidate_from_stage(
                     worker_id=worker_id,
@@ -9464,10 +9513,11 @@ class LnrSolver:
                     stage_id=str(stage_id),
                     stage=stage,
                 )
-                candidate = apply_candidate_evidence(
-                    candidate,
-                    peer_evidence.get(str(stage_id).upper()),
-                )
+                if not is_archived:
+                    candidate = apply_candidate_evidence(
+                        candidate,
+                        peer_evidence.get(str(stage_id).upper()),
+                    )
                 candidates.append(
                     recover_candidate_artifact(
                         candidate,
@@ -9726,6 +9776,8 @@ class LnrSolver:
 
     async def _run_multi_worker(self) -> dict[str, Any]:
         n_workers = max(1, int(self.lhr.num_workers or 1))
+        final_artifact_mode = self._final_artifact_mode()
+        merge_enabled = bool(getattr(self.lhr, "merge_enabled", True))
         self.root_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.state_machine.mark_run_status(
@@ -9759,7 +9811,15 @@ class LnrSolver:
         try:
             candidates: list[dict[str, Any]] = []
             for result in worker_results:
-                candidates.extend(self._load_worker_candidates(result))
+                candidates.extend(
+                    self._load_worker_candidates(
+                        result,
+                        include_archived=(
+                            not merge_enabled
+                            and final_artifact_mode == "best_stage"
+                        ),
+                    )
+                )
             collection_dir = self._write_stage_collection_outputs(
                 worker_results=worker_results,
                 candidates=candidates,
@@ -9767,13 +9827,24 @@ class LnrSolver:
         except BaseException:
             await self._close_merge_owner_agent()
             raise
-        merge_enabled = bool(getattr(self.lhr, "merge_enabled", True))
         merge_manifest: dict[str, Any] = {}
+        final_artifact_manifest: dict[str, Any] = {}
         try:
             if merge_enabled:
                 merge_manifest = await self._write_merge_outputs(
                     worker_results=worker_results,
                     candidates=candidates,
+                )
+            elif final_artifact_mode == "best_stage":
+                final_artifact_manifest = materialize_best_stage_final(
+                    merge_dir=self._merge_dir(),
+                    candidates=candidates,
+                    artifact_path=self._evaluator_candidate_artifact(),
+                    ledger_filename=self.ledger_filename,
+                )
+                self._jsonl(
+                    "lhr_coordinator_events.jsonl",
+                    {"event": "best_stage_finalized", **final_artifact_manifest},
                 )
             else:
                 self._jsonl(
@@ -9814,7 +9885,10 @@ class LnrSolver:
                 "artifacts": canonicalized,
             },
         )
-        self._refresh_submission_links(n_workers=n_workers, include_merge=merge_enabled)
+        self._refresh_submission_links(
+            n_workers=n_workers,
+            include_merge=merge_enabled or bool(final_artifact_manifest),
+        )
         self._write_global_time_trace(worker_results)
         self._cleanup_coordinator_workspace_shell()
 
@@ -9892,6 +9966,14 @@ class LnrSolver:
             "merge_enabled": merge_enabled,
             "merge_status": str(merge_manifest.get("status") or ""),
             "merge_final_count": int(merge_manifest.get("final_count") or 0),
+            "final_artifact_mode": final_artifact_mode,
+            "final_artifact_status": str(final_artifact_manifest.get("status") or ""),
+            "final_artifact_count": int(final_artifact_manifest.get("final_count") or 0),
+            "final_artifact_manifest": (
+                str(self._merge_dir() / "best_stage_manifest.json")
+                if final_artifact_manifest
+                else ""
+            ),
             "stage_count": len(candidates),
             "global_candidate_count": len(candidates),
             "estra_switch_stage_count": estra_switches,

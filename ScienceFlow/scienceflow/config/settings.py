@@ -187,6 +187,7 @@ class LnrConfig:
     worker_peer_summary_enabled: bool = True
     worker_peer_summary_max_chars: int = 2200
     merge_enabled: bool = True
+    final_artifact_mode: str = "workspace"
     merge_mode: str = "worker_reduce"
     merge_owner_worker: str = "W00"
     merge_dirname: str = "merge"
