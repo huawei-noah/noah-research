@@ -139,6 +139,7 @@ class LnrConfig:
     stage_commit_persist_to_memory: bool = False
     stage_commit_persist_agent_write_to_memory: bool = True
     stage_commit_persist_prompt_to_memory: bool = False
+    expose_runtime_context_each_round: bool = False
     metric_validity_adjudicator_enabled: bool = True
     metric_validity_adjudicator_timeout_sec: float = 60.0
     clean_repl_mode: bool = True
@@ -395,6 +396,7 @@ class GateConfig:
 @dataclass
 class EvaluatorConfig:
     enabled: bool = True
+    expose_wall_clock_remaining_sec: bool = False
     task_profile: str = "auto"
     backend: str = "auto"
     stage_source_mode: str = "primary"

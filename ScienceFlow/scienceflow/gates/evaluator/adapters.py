@@ -14,9 +14,30 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
 from scienceflow.gates.evaluator.models import MetricEvent
+
+
+_FRAMEWORK_AGENT_VISIBLE_EXTRA_KEYS = (
+    "queries_remaining",
+    "queries_used",
+    "query_limit",
+    "wall_clock_remaining_sec",
+)
+
+
+def _agent_visible_event_extra(extra: Mapping[str, Any]) -> dict[str, Any]:
+    visible: dict[str, Any] = {}
+    task_visible = extra.get("agent_visible")
+    if isinstance(task_visible, Mapping):
+        visible.update(dict(task_visible))
+    for key in _FRAMEWORK_AGENT_VISIBLE_EXTRA_KEYS:
+        value = extra.get(key)
+        if value not in (None, ""):
+            visible[key] = value
+    return visible
 
 
 def metric_event_to_stage_facts(event: MetricEvent) -> dict[str, Any]:
@@ -55,6 +76,9 @@ def metric_event_to_stage_facts(event: MetricEvent) -> dict[str, Any]:
         facts["metric_authoritative"] = bool(
             event.extra.get("metric_authoritative", False)
         )
+        visible_extra = _agent_visible_event_extra(event.extra)
+        if visible_extra:
+            facts["extra"] = visible_extra
     deliverable_role = str(event.extra.get("deliverable_role") or "") if isinstance(event.extra, dict) else ""
     if deliverable_role == "submission_csv":
         facts["submission_status"] = event.evaluator_status

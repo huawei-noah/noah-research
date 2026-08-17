@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from deepcraft_core import Message
@@ -24,6 +25,40 @@ class LNRHooksMixin:
         return None
 
     def _lnr_maybe_periodic_inject_at_round_start(self, round_idx: int) -> None:
+        _ = round_idx
+        provider = getattr(self, "_lnr_runtime_context_provider", None)
+        if not callable(provider):
+            return None
+        try:
+            records = self.memory.chat_history_memory.retrieve(window_size=None)
+            messages = [record.memory_record.message for record in records]
+        except (AttributeError, TypeError):
+            return None
+        target_index = next(
+            (
+                index
+                for index in range(len(messages) - 1, -1, -1)
+                if str(getattr(messages[index], "role", "") or "") in {"user", "tool"}
+            ),
+            None,
+        )
+        if target_index is None:
+            return None
+        marker = "Runtime context (current worker limits for planning the next action):"
+        current = str(getattr(messages[target_index], "content", "") or "")
+        context = str(provider() or "").strip()
+        if not context:
+            return None
+        runtime_suffix = re.compile(
+            rf"(?:\n\n)?{re.escape(marker)}\n"
+            r"wall_clock_remaining_sec: \d+"
+            r"(?:\neffective_bash_timeout_sec: \d+)?\s*\Z"
+        )
+        prefix = runtime_suffix.sub("", current).rstrip()
+        messages[target_index].content = prefix + "\n\n" + context
+        rewrite = getattr(getattr(self, "_memory_ctx", None), "rewrite_messages", None)
+        if callable(rewrite):
+            rewrite(messages)
         return None
 
     def _lnr_on_round_complete(self, tool_names: list[str] | None) -> None:

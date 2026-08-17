@@ -1,6 +1,7 @@
 # LNR memory, context compaction, and peer summary defaults.
 
 lnr:
+  expose_runtime_context_each_round: false
   stage_memory_folding_enabled: true
   stage_memory_context_budget_chars: 24000
   stage_memory_rebuild_on_stale: true

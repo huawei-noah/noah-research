@@ -21,7 +21,13 @@ from scienceflow.gates.evaluator.adapters import (
     merge_primary_stage_facts,
     metric_event_to_stage_facts,
 )
-from scienceflow.gates.evaluator.models import MetricEvent
+from scienceflow.gates.evaluator.models import (
+    EvalContext,
+    EvaluationRequest,
+    GateDecision,
+    MetricEvent,
+)
+from scienceflow.gates.service import GateService
 from scienceflow.solver.lnr.prompts import build_first_user_prompt
 
 
@@ -29,6 +35,7 @@ def test_default_evaluator_config_is_task_neutral() -> None:
     cfg = load_cfg(cli_args=False)
 
     assert cfg.evaluator.enabled is True
+    assert cfg.evaluator.expose_wall_clock_remaining_sec is False
     assert cfg.evaluator.backend == "auto"
     assert cfg.evaluator.task_profile == "auto"
     assert cfg.evaluator.stage_source_mode == "primary"
@@ -135,6 +142,107 @@ def test_metric_event_to_stage_facts_maps_common_fields() -> None:
     assert facts["task_profile"] == "opt_solver"
     assert facts["val_score_type"] == "benchmark"
     assert facts["metric_authoritative"] is True
+
+
+def test_metric_event_adapter_exposes_only_explicit_agent_visible_extra() -> None:
+    event = MetricEvent(
+        candidate_id="candidate",
+        worker_id="W00",
+        stage_id="S01",
+        metric_value=0.5,
+        metric_name="score",
+        lower_is_better=False,
+        validation_ok=True,
+        candidate_ready=True,
+        selection_eligible=True,
+        metric_validity="high",
+        metric_validity_reason_code="ok",
+        artifact_path="artifacts/submission.json",
+        artifact_sha="abc",
+        evaluator_backend="task_package",
+        evaluator_status="ok",
+        metric_type="benchmark",
+        extra={
+            "agent_visible": {"normalized_enrichment": 0.7},
+            "queries_remaining": 3,
+            "query_limit": 10,
+            "hidden_lookup_size": 60_000,
+        },
+    )
+
+    facts = metric_event_to_stage_facts(event)
+
+    assert facts["extra"] == {
+        "normalized_enrichment": 0.7,
+        "queries_remaining": 3,
+        "query_limit": 10,
+    }
+    assert "hidden_lookup_size" not in facts["extra"]
+
+
+def test_gate_wall_clock_disclosure_is_opt_in(tmp_path: Path) -> None:
+    class _GateManager:
+        @staticmethod
+        def decide_with_trace(_ctx, _event, *, trigger):
+            _ = trigger
+            return (
+                GateDecision(
+                    action="accept",
+                    accepted=True,
+                    candidate_ready=True,
+                    selection_eligible=True,
+                    reason_code="ok",
+                ),
+                {"policy": "test"},
+            )
+
+    event = MetricEvent(
+        candidate_id="candidate",
+        worker_id="W00",
+        stage_id="S01",
+        metric_value=0.5,
+        metric_name="score",
+        lower_is_better=False,
+        validation_ok=True,
+        candidate_ready=True,
+        selection_eligible=True,
+        metric_validity="high",
+        metric_validity_reason_code="ok",
+        artifact_path="artifacts/submission.json",
+        artifact_sha="abc",
+        evaluator_backend="task_package",
+        evaluator_status="ok",
+        metric_type="benchmark",
+        extra={
+            "wall_clock_remaining_sec": 999,
+            "agent_visible": {
+                "wall_clock_remaining_sec": 998,
+                "safe_task_metric": 0.7,
+            },
+        },
+    )
+    service = GateService(gate_manager=_GateManager())
+
+    for enabled in (False, True):
+        cfg = load_cfg(cli_args=False)
+        cfg.evaluator.expose_wall_clock_remaining_sec = enabled
+        request = EvaluationRequest(
+            context=EvalContext(
+                task_profile="test",
+                task_id="test",
+                task_root=tmp_path,
+                workspace=tmp_path,
+                worker_id="W00",
+                cfg=cfg,
+                wall_clock_remaining_sec=42.9,
+            ),
+        )
+        outcome = service._evaluate_event(request, event)
+        if enabled:
+            assert outcome.event.extra["wall_clock_remaining_sec"] == 42
+        else:
+            assert "wall_clock_remaining_sec" not in outcome.event.extra
+        assert outcome.event.extra["agent_visible"] == {"safe_task_metric": 0.7}
 
 
 def test_adjudicated_merge_preserves_legacy_metric() -> None:

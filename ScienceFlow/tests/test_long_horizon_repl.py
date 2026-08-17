@@ -30,6 +30,7 @@ from scienceflow.core.agent.memory.resource_feedback_memory import (
     ResourceFeedbackMemoryDeduper,
 )
 from scienceflow.core.agent.runtime.run_loop import RunLoopMixin
+from scienceflow.core.agent.runtime.lnr_hooks import LNRHooksMixin
 from scienceflow.core.bash_solution_cmd import (
     looks_like_bare_solution_run,
     python_script_run_rel_path,
@@ -118,6 +119,122 @@ def test_lhr_bash_timeout_respects_configured_cap_and_remaining_fuse() -> None:
     assert _effective_lnr_bash_timeout_sec(300, 6900) == 300
     assert _effective_lnr_bash_timeout_sec(14_400, 6900) == 6900
     assert _effective_lnr_bash_timeout_sec(300, 120) == 120
+
+
+def test_lnr_runtime_context_appends_to_latest_existing_tool_message() -> None:
+    class _History:
+        def __init__(self, messages: list[Message]) -> None:
+            self.messages = messages
+
+        def retrieve(self, window_size=None):
+            return [
+                SimpleNamespace(memory_record=SimpleNamespace(message=message))
+                for message in self.messages
+            ]
+
+    class _MemoryContext:
+        def __init__(self, history: _History) -> None:
+            self.history = history
+
+        def rewrite_messages(self, messages: list[Message]) -> None:
+            self.history.messages = list(messages)
+
+    class _Harness(LNRHooksMixin):
+        pass
+
+    history = _History(
+        [
+            Message.user_message("work"),
+            Message.tool_message("tool output", "bash", "call-1"),
+        ],
+    )
+    harness = _Harness()
+    harness.memory = SimpleNamespace(chat_history_memory=history)
+    harness._memory_ctx = _MemoryContext(history)
+    remaining = iter((100, 90))
+    harness._lnr_runtime_context_provider = lambda: (
+        "Runtime context (current worker limits for planning the next action):\n"
+        f"wall_clock_remaining_sec: {next(remaining)}\n"
+        "effective_bash_timeout_sec: 30"
+    )
+
+    harness._lnr_maybe_periodic_inject_at_round_start(1)
+    harness._lnr_maybe_periodic_inject_at_round_start(1)
+
+    assert len(history.messages) == 2
+    assert str(history.messages[-1].content).count("Runtime context (") == 1
+    assert "wall_clock_remaining_sec: 90" in str(history.messages[-1].content)
+    assert "wall_clock_remaining_sec: 100" not in str(history.messages[-1].content)
+
+
+def test_lnr_runtime_context_uses_existing_user_message_when_no_tool_result() -> None:
+    class _Harness(LNRHooksMixin):
+        pass
+
+    messages = [Message.user_message("work")]
+    history = SimpleNamespace(
+        retrieve=lambda window_size=None: [
+            SimpleNamespace(memory_record=SimpleNamespace(message=message))
+            for message in messages
+        ],
+    )
+    harness = _Harness()
+    harness.memory = SimpleNamespace(chat_history_memory=history)
+    harness._memory_ctx = SimpleNamespace(
+        rewrite_messages=lambda updated: messages.__setitem__(slice(None), updated),
+    )
+    harness._lnr_runtime_context_provider = lambda: (
+        "Runtime context (current worker limits for planning the next action):\n"
+        "wall_clock_remaining_sec: 90"
+    )
+
+    harness._lnr_maybe_periodic_inject_at_round_start(0)
+
+    assert len(messages) == 1
+    assert "wall_clock_remaining_sec: 90" in str(messages[0].content)
+
+
+def test_lnr_runtime_context_preserves_ordinary_text_containing_marker() -> None:
+    class _Harness(LNRHooksMixin):
+        pass
+
+    marker = "Runtime context (current worker limits for planning the next action):"
+    messages = [Message.user_message(f"quote: {marker}\nkeep this explanation")]
+    history = SimpleNamespace(
+        retrieve=lambda window_size=None: [
+            SimpleNamespace(memory_record=SimpleNamespace(message=message))
+            for message in messages
+        ],
+    )
+    harness = _Harness()
+    harness.memory = SimpleNamespace(chat_history_memory=history)
+    harness._memory_ctx = SimpleNamespace(
+        rewrite_messages=lambda updated: messages.__setitem__(slice(None), updated),
+    )
+    harness._lnr_runtime_context_provider = lambda: (
+        f"{marker}\nwall_clock_remaining_sec: 90\n"
+        "effective_bash_timeout_sec: 30"
+    )
+
+    harness._lnr_maybe_periodic_inject_at_round_start(0)
+
+    content = str(messages[0].content)
+    assert "keep this explanation" in content
+    assert content.count(marker) == 2
+
+
+def test_lhr_runtime_context_reports_effective_bash_cap(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.deadline = 1100.0
+    monkeypatch.setattr(lnr_solver_module.time, "monotonic", lambda: 1000.0)
+
+    context = solver._runtime_context_for_agent(SimpleNamespace(_bash_timeout_sec=600))
+
+    assert "wall_clock_remaining_sec: 100" in context
+    assert "effective_bash_timeout_sec: 100" in context
 
 
 def test_lhr_make_agent_keeps_normal_and_slow_bash_caps() -> None:

@@ -8420,6 +8420,12 @@ class LnrSolver:
         setattr(agent, "_context_compact_event_callback", self._record_context_compact_event)
         self._restore_protected_eda_prefix_marker(agent)
         setattr(agent, "_lnr_compact_on_context_threshold", bool(self.lhr.compact_on_context_limit))
+        if bool(getattr(self.lhr, "expose_runtime_context_each_round", False)):
+            setattr(
+                agent,
+                "_lnr_runtime_context_provider",
+                lambda: self._runtime_context_for_agent(agent),
+            )
         setattr(agent, "_mlebench_data_dir", str(getattr(self.cfg, "mlebench_data_root_dir", "") or "") or None)
         setattr(agent, "_mlebench_exp_id", str(getattr(self.cfg, "exp_id", "") or "") or None)
         setattr(
@@ -8432,6 +8438,21 @@ class LnrSolver:
             ),
         )
         return agent
+
+    def _runtime_context_for_agent(self, agent: Any) -> str:
+        remaining = max(0.0, float(self.deadline - time.monotonic()))
+        configured_bash_timeout = max(
+            1.0,
+            float(getattr(agent, "_bash_timeout_sec", 1.0) or 1.0),
+        )
+        effective_bash_timeout = (
+            min(configured_bash_timeout, remaining) if remaining > 0 else 0.0
+        )
+        return (
+            "Runtime context (current worker limits for planning the next action):\n"
+            f"wall_clock_remaining_sec: {int(remaining)}\n"
+            f"effective_bash_timeout_sec: {int(effective_bash_timeout)}"
+        )
 
     def _worker_llm_stage_override(self, stage_name: str = "code") -> Any | None:
         """Spread LHR workers across one LLM stage's endpoint pool.
