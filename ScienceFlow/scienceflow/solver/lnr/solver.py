@@ -455,6 +455,8 @@ class LnrSolver:
         self.current_restored_from_node_uid = ""
         self.pending_estra: dict[str, Any] | None = None
         self.pending_stage_commit_transaction: dict[str, Any] | None = None
+        self.evaluator_stop_requested = False
+        self.evaluator_stop_reason = ""
         self.main_tokens_in = 0
         self.main_tokens_out = 0
         self.main_tokens_cached = 0
@@ -7138,6 +7140,7 @@ class LnrSolver:
         now: float,
         solution_sha: str,
         run_signature: str,
+        allow_followup: bool = True,
     ) -> str | None:
         try:
             return await self._finalize_stage_capture_after_commit_impl(
@@ -7147,6 +7150,7 @@ class LnrSolver:
                 now=now,
                 solution_sha=solution_sha,
                 run_signature=run_signature,
+                allow_followup=allow_followup,
             )
         except BaseException as exc:
             rolled_back = self._rollback_stage_commit_transaction(
@@ -7173,6 +7177,7 @@ class LnrSolver:
         now: float,
         solution_sha: str,
         run_signature: str,
+        allow_followup: bool = True,
     ) -> str | None:
         self.last_stage_commit_ts = now
         self.last_captured_solution_sha = solution_sha
@@ -7285,10 +7290,18 @@ class LnrSolver:
                 sync_current_segment(self.workspace_dir, self._effective_stage_cards(cards_after))
             except OSError:
                 logger.debug("[lnr] stage memory current segment sync failed", exc_info=True)
-        forced_estra_out = await self._force_estra_after_stage_capture(agent=agent, cards_after=cards_after)
+        forced_estra_out = None
         hygiene_estra_out = None
-        if not forced_estra_out:
-            hygiene_estra_out = await self._context_hygiene_compact_after_stage_capture(agent=agent, cards_after=cards_after)
+        if allow_followup:
+            forced_estra_out = await self._force_estra_after_stage_capture(
+                agent=agent,
+                cards_after=cards_after,
+            )
+            if not forced_estra_out:
+                hygiene_estra_out = await self._context_hygiene_compact_after_stage_capture(
+                    agent=agent,
+                    cards_after=cards_after,
+                )
         self._reset_agent_interaction_stage(agent)
         if forced_estra_out:
             return forced_estra_out
@@ -7438,17 +7451,25 @@ class LnrSolver:
                     {"event": "stage_capture_failed", "stage_id": stage_id, "reason": append_reason, "metric_event": metric_event},
                 )
                 return None
+        stop_after_commit = bool(pending.get("stop_after_evaluator_query_budget"))
         self.pending_text_stage_commit = None
         self._clear_stage_commit_transient_prompt(agent)
         setattr(agent, "_lnr_stage_commit_text_handled", True)
-        return await self._finalize_stage_capture_after_commit(
+        finalize_out = await self._finalize_stage_capture_after_commit(
             agent=agent,
             stage_id=stage_id,
             metric_event=metric_event,
             now=float(pending.get("now") or time.monotonic()),
             solution_sha=str(pending.get("solution_sha") or ""),
             run_signature=str(pending.get("run_signature") or ""),
+            allow_followup=not stop_after_commit,
         )
+        if stop_after_commit:
+            return self._request_evaluator_graceful_stop(
+                agent=agent,
+                stage_id=stage_id,
+            )
+        return finalize_out
 
     def _evaluator_stage_source_mode(self) -> str:
         cfg = getattr(self, "cfg", None)
@@ -7752,6 +7773,53 @@ class LnrSolver:
             candidate_artifact=self._evaluator_candidate_artifact(),
         )
 
+    def _evaluator_query_budget_terminal(self, metric_event: dict[str, Any]) -> bool:
+        evaluator = getattr(getattr(self, "cfg", None), "evaluator", None)
+        if not bool(getattr(evaluator, "stop_on_query_budget_exhausted", False)):
+            return False
+        extra = metric_event.get("extra")
+        sources = [metric_event]
+        if isinstance(extra, dict):
+            sources.append(extra)
+        reason = str(metric_event.get("metric_validity_reason_code") or "").strip()
+        for source in sources:
+            terminal = source.get("query_budget_exhausted") is True
+            try:
+                remaining = int(source.get("queries_remaining"))
+                limit = int(source.get("query_limit"))
+            except (TypeError, ValueError):
+                if terminal or reason == "scientific_design_query_budget_exhausted":
+                    return True
+                continue
+            if limit > 0 and remaining <= 0:
+                return bool(
+                    terminal
+                    or reason == "scientific_design_query_budget_exhausted"
+                    or self._csv_bool(
+                        metric_event.get("selection_eligible"),
+                        default=False,
+                    )
+                )
+        return False
+
+    def _request_evaluator_graceful_stop(self, *, agent: Any, stage_id: str) -> str:
+        self.evaluator_stop_requested = True
+        self.evaluator_stop_reason = "evaluator_query_budget_exhausted"
+        setattr(agent, "_lnr_graceful_stop_requested", True)
+        self._jsonl(
+            "lhr_coordinator_events.jsonl",
+            {
+                "event": "evaluator_graceful_stop_requested",
+                "stage_id": str(stage_id or ""),
+                "stop_reason": self.evaluator_stop_reason,
+            },
+        )
+        return (
+            "EVALUATOR_QUERY_BUDGET_EXHAUSTED\n"
+            "The official query budget is exhausted. The current evaluated stage "
+            "and the best prior stage are preserved for final selection."
+        )
+
     def _archive_candidate_artifact_after_tool(
         self,
         *,
@@ -7949,6 +8017,7 @@ class LnrSolver:
                 )
                 return None
             metric_event = self._record_evaluator_stage_events(stage_id=stage_id_for_eval, metric_event={})
+            stop_after_evaluator_query = self._evaluator_query_budget_terminal(metric_event)
             if metric_event.get("_gate_evaluated") and metric_event.get("gate_accepted") is not True:
                 if (
                     observed_artifact_sha
@@ -7956,9 +8025,21 @@ class LnrSolver:
                 ):
                     self._last_metric_missing_gate_artifact_sha = observed_artifact_sha
                 feedback = self._evaluator_feedback_for_agent(metric_event)
+                if stop_after_evaluator_query:
+                    stop_feedback = self._request_evaluator_graceful_stop(
+                        agent=agent,
+                        stage_id=stage_id_for_eval,
+                    )
+                    return "\n\n".join(part for part in (feedback, stop_feedback) if part)
                 return feedback or None
             if not metric_event or metric_event.get("metric_value") is None:
                 feedback = self._evaluator_feedback_for_agent(metric_event)
+                if stop_after_evaluator_query:
+                    stop_feedback = self._request_evaluator_graceful_stop(
+                        agent=agent,
+                        stage_id=stage_id_for_eval,
+                    )
+                    return "\n\n".join(part for part in (feedback, stop_feedback) if part)
                 if feedback:
                     return feedback
                 return None
@@ -8095,6 +8176,7 @@ class LnrSolver:
         stage_id = self._next_active_stage_id(cards_before)
         if not metric_event.pop("_evaluator_stage_facts_applied", False):
             metric_event = self._record_evaluator_stage_events(stage_id=stage_id, metric_event=metric_event)
+        stop_after_evaluator_query = self._evaluator_query_budget_terminal(metric_event)
         gate_evaluated = bool(metric_event.get("_gate_evaluated"))
         if (
             self._evaluator_stage_source_mode() != "shadow"
@@ -8122,6 +8204,12 @@ class LnrSolver:
                 },
             )
             feedback = self._evaluator_feedback_for_agent(metric_event)
+            if stop_after_evaluator_query:
+                stop_feedback = self._request_evaluator_graceful_stop(
+                    agent=agent,
+                    stage_id=stage_id,
+                )
+                return "\n\n".join(part for part in (feedback, stop_feedback) if part)
             return feedback or None
         mark_valid = getattr(agent, "_lnr_mark_valid_bare_run", None)
         if callable(mark_valid) and str(metric_event.get("solution_sha") or ""):
@@ -8142,9 +8230,18 @@ class LnrSolver:
                 solution_sha=solution_sha,
                 run_signature=run_signature,
             )
+            if stop_after_evaluator_query:
+                return self._request_evaluator_graceful_stop(
+                    agent=agent,
+                    stage_id=materialized_stage,
+                )
             return None
         stage_cap = int(getattr(self.lhr, "stage_capture_max_count", 0) or 0)
-        if stage_cap > 0 and len(cards_before) >= stage_cap:
+        if (
+            stage_cap > 0
+            and len(cards_before) >= stage_cap
+            and not stop_after_evaluator_query
+        ):
             self.last_stage_commit_ts = now
             self.last_captured_solution_sha = solution_sha
             self.last_captured_run_signature = run_signature
@@ -8187,9 +8284,21 @@ class LnrSolver:
                 },
             )
             feedback = self._evaluator_feedback_for_agent(metric_event)
+            if stop_after_evaluator_query:
+                stop_feedback = self._request_evaluator_graceful_stop(
+                    agent=agent,
+                    stage_id=stage_id,
+                )
+                return "\n\n".join(part for part in (feedback, stop_feedback) if part)
             return feedback or None
         if primary_evaluator_capture and metric_event.get("metric_value") is None:
             feedback = self._evaluator_feedback_for_agent(metric_event)
+            if stop_after_evaluator_query:
+                stop_feedback = self._request_evaluator_graceful_stop(
+                    agent=agent,
+                    stage_id=stage_id,
+                )
+                return "\n\n".join(part for part in (feedback, stop_feedback) if part)
             if feedback:
                 return feedback
             return None
@@ -8201,6 +8310,7 @@ class LnrSolver:
                 "solution_sha": solution_sha,
                 "run_signature": run_signature,
                 "attempts": 0,
+                "stop_after_evaluator_query_budget": stop_after_evaluator_query,
             }
             self._set_stage_commit_transient_prompt(agent, stage_id=stage_id, metric_event=metric_event)
             self._jsonl(
@@ -8226,14 +8336,21 @@ class LnrSolver:
                 {"event": "stage_capture_failed", "stage_id": stage_id, "reason": reason, "metric_event": metric_event},
             )
             return None
-        return await self._finalize_stage_capture_after_commit(
+        finalize_out = await self._finalize_stage_capture_after_commit(
             agent=agent,
             stage_id=stage_id,
             metric_event=metric_event,
             now=now,
             solution_sha=solution_sha,
             run_signature=run_signature,
+            allow_followup=not stop_after_evaluator_query,
         )
+        if stop_after_evaluator_query:
+            return self._request_evaluator_graceful_stop(
+                agent=agent,
+                stage_id=stage_id,
+            )
+        return finalize_out
 
 
     def _make_agent(self, *, load_existing_memory: bool) -> Any:
@@ -9164,6 +9281,14 @@ class LnrSolver:
         cls, *, run_succeeded: bool, worker_results: list[dict[str, Any]]
     ) -> tuple[str, list[str]]:
         if run_succeeded:
+            success_reasons = {
+                str(result.get("stop_reason") or "").strip()
+                for result in worker_results
+                if str(result.get("status") or "").strip() == "success"
+                and str(result.get("stop_reason") or "").strip()
+            }
+            if success_reasons == {"evaluator_query_budget_exhausted"}:
+                return "evaluator_query_budget_exhausted", []
             return "budget_expired", []
         return "", cls._multi_worker_failure_kind(worker_results)[1]
 
@@ -9664,7 +9789,12 @@ class LnrSolver:
             try:
                 owner = getattr(self, "_merge_owner_solver", None)
                 if owner is not None:
-                    refreshed = owner._result(stop_reason="budget_expired")
+                    refreshed = owner._result(
+                        stop_reason=(
+                            owner.evaluator_stop_reason
+                            or "budget_expired"
+                        )
+                    )
                     for worker_result in worker_results:
                         if worker_result.get("worker_id") == owner.worker_id:
                             worker_result.update(refreshed)
@@ -9746,7 +9876,10 @@ class LnrSolver:
             if run_succeeded
             else self._multi_worker_failure_kind(worker_results)
         )
-        stop_reason = "budget_expired" if run_succeeded else ""
+        stop_reason, _ = self._multi_worker_stop_reason(
+            run_succeeded=run_succeeded,
+            worker_results=worker_results,
+        )
         result = {
             "solver": self.solver_name,
             "status": "success" if run_succeeded else "failed",
@@ -9884,6 +10017,12 @@ class LnrSolver:
                     self._accumulate_main_run_tokens(agent)
                 _ = out
                 request = None
+                if self.evaluator_stop_requested:
+                    stop_reason = (
+                        self.evaluator_stop_reason
+                        or "evaluator_query_budget_exhausted"
+                    )
+                    break
                 if self.pending_estra:
                     await aclose_llm_clients(agent.llm)
                     await self._restore_pending_estra()

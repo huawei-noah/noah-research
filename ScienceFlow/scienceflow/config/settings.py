@@ -397,6 +397,8 @@ class GateConfig:
 class EvaluatorConfig:
     enabled: bool = True
     expose_wall_clock_remaining_sec: bool = False
+    query_budget_scope: str = "task"
+    stop_on_query_budget_exhausted: bool = False
     task_profile: str = "auto"
     backend: str = "auto"
     stage_source_mode: str = "primary"

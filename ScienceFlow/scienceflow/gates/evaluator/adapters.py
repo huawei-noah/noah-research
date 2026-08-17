@@ -24,6 +24,7 @@ _FRAMEWORK_AGENT_VISIBLE_EXTRA_KEYS = (
     "queries_remaining",
     "queries_used",
     "query_limit",
+    "query_budget_exhausted",
     "wall_clock_remaining_sec",
 )
 

@@ -1473,6 +1473,41 @@ def test_multi_worker_stop_reason_preserves_success_budget_semantics() -> None:
     assert kinds == []
 
 
+def test_multi_worker_stop_reason_preserves_query_budget_exhaustion() -> None:
+    reason, kinds = LnrSolver._multi_worker_stop_reason(
+        run_succeeded=True,
+        worker_results=[
+            {
+                "status": "success",
+                "stop_reason": "evaluator_query_budget_exhausted",
+            },
+            {
+                "status": "success",
+                "stop_reason": "evaluator_query_budget_exhausted",
+            },
+        ],
+    )
+
+    assert reason == "evaluator_query_budget_exhausted"
+    assert kinds == []
+
+
+def test_multi_worker_stop_reason_keeps_mixed_success_reasons_generic() -> None:
+    reason, kinds = LnrSolver._multi_worker_stop_reason(
+        run_succeeded=True,
+        worker_results=[
+            {
+                "status": "success",
+                "stop_reason": "evaluator_query_budget_exhausted",
+            },
+            {"status": "success", "stop_reason": "budget_expired"},
+        ],
+    )
+
+    assert reason == "budget_expired"
+    assert kinds == []
+
+
 def test_worker_error_kind_classifies_tool_output_and_transport_errors() -> None:
     assert (
         LnrSolver._worker_error_kind("ValueError: Separator is found, but chunk is longer than limit")
@@ -3061,6 +3096,111 @@ def _minimal_lhr_solver(tmp_path: Path) -> LnrSolver:
     solver.state_machine = LHRStateMachineStore(log_dir=solver.log_dir, worker_id="W00")
     solver.ledger_path.write_text(_lhr_test_ledger(), encoding="utf-8")
     return solver
+
+
+def test_lhr_query_budget_terminal_is_opt_in_and_uses_structured_facts(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    event = {
+        "selection_eligible": True,
+        "metric_source_note": "untrusted text says queries_remaining=0/10",
+        "extra": {
+            "queries_remaining": 0,
+            "queries_used": 10,
+            "query_limit": 10,
+            "query_budget_exhausted": True,
+        },
+    }
+    solver.cfg = SimpleNamespace(
+        evaluator=SimpleNamespace(stop_on_query_budget_exhausted=False),
+    )
+
+    assert solver._evaluator_query_budget_terminal(event) is False
+
+    solver.cfg.evaluator.stop_on_query_budget_exhausted = True
+    assert solver._evaluator_query_budget_terminal(event) is True
+    assert (
+        solver._evaluator_query_budget_terminal(
+            {
+                "selection_eligible": True,
+                "extra": {
+                    "queries_remaining": 1,
+                    "queries_used": 9,
+                    "query_limit": 10,
+                },
+            }
+        )
+        is False
+    )
+
+
+def test_lhr_terminal_query_commits_before_graceful_stop(tmp_path: Path) -> None:
+    async def _run() -> None:
+        solver = _minimal_lhr_solver(tmp_path)
+        solver.workspace_dir.mkdir(parents=True, exist_ok=True)
+        solver.log_dir.mkdir(parents=True, exist_ok=True)
+        solver.lhr = SimpleNamespace(
+            stage_commit_output_format="text",
+            stage_commit_persist_agent_write_to_memory=False,
+            stage_commit_persist_to_memory=False,
+        )
+        solver.evaluator_stop_requested = False
+        solver.evaluator_stop_reason = ""
+        solver.pending_text_stage_commit = {
+            "stage_id": "S03",
+            "attempts": 0,
+            "now": 1.0,
+            "solution_sha": "solution-sha",
+            "run_signature": "run-signature",
+            "stop_after_evaluator_query_budget": True,
+            "metric_event": {
+                "metric_value": 0.42,
+                "metric_name": "score",
+                "metric_validity": "high",
+                "lower_is_better": False,
+                "selection_eligible": True,
+                "artifact_path": "artifacts/submission.json",
+                "artifact_sha": "artifact-sha",
+            },
+        }
+        finalize_calls: list[dict[str, object]] = []
+
+        async def no_audit(**_kwargs):
+            return None
+
+        async def finalize(**kwargs):
+            finalize_calls.append(kwargs)
+            return "unused-followup"
+
+        solver._audit_stage_result_before_commit = no_audit
+        solver._finalize_stage_capture_after_commit = finalize
+        agent = SimpleNamespace()
+        assistant_text = """
+        STAGE_COMMIT_BEGIN
+        stage_id: S03
+        metric: 0.42
+        metric_validity: high
+        brief: accepted final evaluator result.
+        why: preserve the last valid query before stopping.
+        files: none
+        STAGE_COMMIT_END
+        """
+
+        out = await solver._handle_pending_stage_commit_text(
+            agent=agent,
+            assistant_text=assistant_text,
+        )
+
+        assert len(finalize_calls) == 1
+        assert finalize_calls[0]["allow_followup"] is False
+        assert solver.pending_text_stage_commit is None
+        assert solver.evaluator_stop_requested is True
+        assert solver.evaluator_stop_reason == "evaluator_query_budget_exhausted"
+        assert agent._lnr_graceful_stop_requested is True
+        assert "EVALUATOR_QUERY_BUDGET_EXHAUSTED" in out
+
+    asyncio.run(_run())
 
 
 def test_lhr_protected_eda_prefix_stops_before_s01_stage_commit(
@@ -4886,6 +5026,108 @@ def test_lhr_primary_evaluator_ready_candidate_requires_text_commit(tmp_path: Pa
         assert "STAGE_COMMIT_BEGIN" in agent._lnr_transient_user_prompt
         assert agent._lnr_stage_commit_text_pending is True
         assert agent._run_policy.deadline_monotonic > 10.0
+
+    asyncio.run(_run())
+
+
+def test_lhr_terminal_query_bypasses_stage_cap_then_commits_and_stops(
+    tmp_path: Path,
+) -> None:
+    async def _run() -> None:
+        solver = _minimal_lhr_solver(tmp_path)
+        solver.workspace_dir.mkdir(parents=True, exist_ok=True)
+        solver.log_dir.mkdir(parents=True, exist_ok=True)
+        solver.deadline = 10.0
+        solver.cfg = SimpleNamespace(
+            evaluator=SimpleNamespace(stop_on_query_budget_exhausted=True),
+        )
+        solver.lhr = SimpleNamespace(
+            stage_capture_enabled=True,
+            stage_capture_max_count=2,
+            stage_commit_min_seconds_between=0,
+            stage_commit_text_mode=True,
+            stage_commit_output_format="text",
+            stage_commit_llm_timeout_sec=60,
+            stage_commit_persist_agent_write_to_memory=False,
+            stage_commit_persist_to_memory=False,
+            workspace_git_enabled=False,
+        )
+        solver.last_stage_commit_ts = 0.0
+        solver.last_captured_run_signature = ""
+        solver.stage_snapshots = {}
+        solver.evaluator_stop_requested = False
+        solver.evaluator_stop_reason = ""
+        solver._metric_event_from_workspace = lambda: None
+        solver._evaluator_stage_source_mode = lambda: "primary"
+        solver._record_evaluator_stage_events = lambda *, stage_id, metric_event: {
+            "metric_value": 0.42,
+            "metric_name": "score",
+            "lower_is_better": False,
+            "validation_ok": True,
+            "candidate_ready": True,
+            "selection_eligible": True,
+            "metric_validity": "high",
+            "artifact_path": "submission.csv",
+            "artifact_sha": "ready-sha",
+            "evaluator_backend": "task_package",
+            "evaluator_status": "ok",
+            "gate_action": "accept",
+            "gate_accepted": True,
+            "gate_reason_code": "eligible",
+            "extra": {
+                "queries_used": 10,
+                "queries_remaining": 0,
+                "query_limit": 10,
+                "query_budget_exhausted": True,
+            },
+            "_gate_evaluated": True,
+            "_evaluator_stage_facts_applied": True,
+        }
+        finalize_calls: list[dict[str, object]] = []
+
+        async def no_audit(**_kwargs):
+            return None
+
+        async def finalize(**kwargs):
+            finalize_calls.append(kwargs)
+            return None
+
+        solver._audit_stage_result_before_commit = no_audit
+        solver._finalize_stage_capture_after_commit = finalize
+        agent = SimpleNamespace(_run_policy=SimpleNamespace(deadline_monotonic=10.0))
+
+        callback_out = await LnrSolver._stage_capture_callback(
+            solver,
+            agent=agent,
+            args={},
+            tool_result=ToolResult(output="ok"),
+        )
+
+        assert callback_out is None
+        assert solver.pending_text_stage_commit["stage_id"] == "S03"
+        assert solver.pending_text_stage_commit["stop_after_evaluator_query_budget"] is True
+
+        stop_out = await solver._handle_pending_stage_commit_text(
+            agent=agent,
+            assistant_text="""
+            STAGE_COMMIT_BEGIN
+            stage_id: S03
+            metric: 0.42
+            metric_validity: high
+            brief: preserve the final accepted query.
+            why: the evaluator query budget is now exhausted.
+            files: none
+            STAGE_COMMIT_END
+            """,
+        )
+
+        assert len(finalize_calls) == 1
+        assert finalize_calls[0]["allow_followup"] is False
+        assert "### S03" in solver.ledger_path.read_text(encoding="utf-8")
+        assert solver.evaluator_stop_requested is True
+        assert "EVALUATOR_QUERY_BUDGET_EXHAUSTED" in stop_out
+        events = (solver.log_dir / "lhr_events.jsonl").read_text(encoding="utf-8")
+        assert "stage_capture_cap_reached" not in events
 
     asyncio.run(_run())
 

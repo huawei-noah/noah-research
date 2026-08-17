@@ -13,6 +13,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
 
 from scienceflow.core.task_package import (
     description_path_for_task,
@@ -20,6 +23,7 @@ from scienceflow.core.task_package import (
     prepare_task_runtime,
 )
 from scienceflow.gates.evaluator import EvalContext, EvaluatorManager
+from scienceflow.gates.evaluator.backends.task_package import _runner_config
 
 
 def _write(path: Path, text: str) -> None:
@@ -117,3 +121,51 @@ def test_task_package_backend_evaluates_mlebench_submission(tmp_path: Path) -> N
     assert event.validation_ok is True
     assert event.metric_value == 0.5
     assert event.extra["deliverable_role"] == "submission_csv"
+
+
+def test_task_package_runner_passes_trusted_worker_query_context(tmp_path: Path) -> None:
+    spec = SimpleNamespace(
+        task_id="demo-task",
+        profile="demo",
+        config={"id": "demo-task"},
+    )
+    ctx = EvalContext(
+        task_profile="mlebench",
+        task_id=spec.task_id,
+        task_root=tmp_path,
+        workspace=tmp_path,
+        worker_id="W01",
+        stage_id="S03",
+        cfg=SimpleNamespace(
+            evaluator=SimpleNamespace(query_budget_scope="worker"),
+        ),
+    )
+
+    config = _runner_config(ctx, spec, "package-sha")
+
+    assert config["evaluation_context"] == {
+        "worker_id": "W01",
+        "stage_id": "S03",
+        "query_budget_scope": "worker",
+    }
+
+
+def test_task_package_runner_rejects_worker_scope_without_worker_id(tmp_path: Path) -> None:
+    spec = SimpleNamespace(
+        task_id="demo-task",
+        profile="demo",
+        config={"id": "demo-task"},
+    )
+    ctx = EvalContext(
+        task_profile="mlebench",
+        task_id=spec.task_id,
+        task_root=tmp_path,
+        workspace=tmp_path,
+        worker_id="",
+        cfg=SimpleNamespace(
+            evaluator=SimpleNamespace(query_budget_scope="worker"),
+        ),
+    )
+
+    with pytest.raises(ValueError, match="requires a trusted worker_id"):
+        _runner_config(ctx, spec, "package-sha")

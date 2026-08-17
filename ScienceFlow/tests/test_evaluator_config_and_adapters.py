@@ -166,6 +166,7 @@ def test_metric_event_adapter_exposes_only_explicit_agent_visible_extra() -> Non
             "agent_visible": {"normalized_enrichment": 0.7},
             "queries_remaining": 3,
             "query_limit": 10,
+            "query_budget_exhausted": False,
             "hidden_lookup_size": 60_000,
         },
     )
@@ -176,6 +177,7 @@ def test_metric_event_adapter_exposes_only_explicit_agent_visible_extra() -> Non
         "normalized_enrichment": 0.7,
         "queries_remaining": 3,
         "query_limit": 10,
+        "query_budget_exhausted": False,
     }
     assert "hidden_lookup_size" not in facts["extra"]
 
