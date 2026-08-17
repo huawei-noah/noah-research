@@ -132,6 +132,10 @@ class LnrConfig:
     stage_commit_min_seconds_between: float = 20.0
     stage_commit_require_metric: bool = True
     stage_commit_text_mode: bool = True
+    stage_commit_output_format: str = "text"
+    stage_commit_context_mode: str = "compact"
+    stage_commit_tool_choice: str = "none"
+    stage_commit_experiment_state_enabled: bool = False
     stage_commit_persist_to_memory: bool = False
     stage_commit_persist_agent_write_to_memory: bool = True
     stage_commit_persist_prompt_to_memory: bool = False
@@ -177,6 +181,7 @@ class LnrConfig:
     preserve_prefix_and_eda: bool = True
     protected_eda_mode: str = "facts"
     protected_eda_facts_max_chars: int = 6000
+    protected_eda_summary_max_chars: int = 8000
     protected_eda_warn_chars: int = 50_000
     worker_peer_summary_enabled: bool = True
     worker_peer_summary_max_chars: int = 2200

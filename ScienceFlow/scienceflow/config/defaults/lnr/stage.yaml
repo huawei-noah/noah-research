@@ -8,6 +8,10 @@ lnr:
   stage_commit_min_seconds_between: 20.0
   stage_commit_require_metric: true
   stage_commit_text_mode: true
+  stage_commit_output_format: text
+  stage_commit_context_mode: compact
+  stage_commit_tool_choice: none
+  stage_commit_experiment_state_enabled: false
   stage_commit_persist_to_memory: false
   stage_commit_persist_agent_write_to_memory: true
   stage_commit_persist_prompt_to_memory: false

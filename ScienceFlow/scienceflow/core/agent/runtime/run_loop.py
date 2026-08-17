@@ -86,6 +86,12 @@ def _is_stage_commit_memory_text(text: str) -> bool:
         "[stage append-only write]" in clean
         or "[LNR_STAGE_COMMIT_REQUEST]" in clean
         or ("STAGE_COMMIT_BEGIN" in clean and "STAGE_COMMIT_END" in clean)
+        or (
+            "```json" in clean.lower()
+            and '"stage_id"' in clean
+            and '"metric_validity"' in clean
+            and '"files"' in clean
+        )
     )
 
 

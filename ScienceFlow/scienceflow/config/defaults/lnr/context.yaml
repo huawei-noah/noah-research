@@ -9,6 +9,7 @@ lnr:
   preserve_prefix_and_eda: true
   protected_eda_mode: facts
   protected_eda_facts_max_chars: 6000
+  protected_eda_summary_max_chars: 8000
   protected_eda_warn_chars: 50000
   worker_peer_summary_enabled: true
   worker_peer_summary_max_chars: 2200

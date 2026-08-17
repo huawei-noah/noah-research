@@ -442,6 +442,7 @@ class LnrSolver:
         self.last_captured_run_signature = ""
         self.last_stage_commit_ts = 0.0
         self._s01_eda_prefix_end_index: int | None = None
+        self._s01_agent_eda_summary = ""
         self.last_estra_stage_count = 0
         self.last_estra_observation_key = ""
         self.last_force_estra_observation_count = 0
@@ -2118,14 +2119,33 @@ class LnrSolver:
                 setter = getattr(ctx, "replace_protected_raw_prefix_with_summary", None)
                 if not callable(setter):
                     return {}
-                summary = self._build_protected_eda_facts_summary(agent, end_index=end_index)
+                agent_summary = str(getattr(self, "_s01_agent_eda_summary", "") or "").strip()
+                use_agent_summary = mode in {"agent", "agent_summary"} and bool(agent_summary)
+                summary = (
+                    agent_summary
+                    if use_agent_summary
+                    else self._build_protected_eda_facts_summary(agent, end_index=end_index)
+                )
+                summary_mode = (
+                    "agent"
+                    if use_agent_summary
+                    else ("facts_fallback" if mode in {"agent", "agent_summary"} else "facts")
+                )
                 info = setter(
                     end_index,
                     summary,
                     warn_chars=warn_chars,
-                    label="LHR protected EDA facts",
+                    label=(
+                        "LHR protected EDA agent summary"
+                        if use_agent_summary
+                        else "LHR protected EDA facts"
+                    ),
                 )
-                info = {**dict(info), "mode": "facts", "summary_chars": len(summary)}
+                info = {
+                    **dict(info),
+                    "mode": summary_mode,
+                    "summary_chars": len(summary),
+                }
         except Exception:
             logger.debug("[lnr] protected EDA prefix marker failed", exc_info=True)
             return {}
@@ -2173,6 +2193,151 @@ class LnrSolver:
             return
         if getattr(self, "_s01_eda_prefix_end_index", None) is None:
             self._s01_eda_prefix_end_index = self._count_memory_records()
+
+    def _build_protected_eda_agent_prompt(self, agent: Any, *, end_index: int) -> str:
+        messages = self._agent_memory_messages(agent)
+        end = max(1, min(int(end_index), len(messages)))
+        deterministic_facts = self._build_protected_eda_facts_summary(
+            agent,
+            end_index=end,
+        )
+        task_text = self._message_content_text(messages[0]) if messages else self.task_desc
+        task_text = task_text[:6000]
+
+        excerpts: list[str] = []
+        for msg in messages[1:end]:
+            role = str(getattr(msg, "role", "") or "")
+            if role not in {"assistant", "tool"}:
+                continue
+            text = self._message_content_text(msg).strip()
+            if not text:
+                continue
+            cap = 900 if role == "tool" else 600
+            if len(text) > cap:
+                text = text[: cap - 16].rstrip() + "\n... [truncated]"
+            excerpts.append(f"[{role}]\n{text}")
+
+        history_cap = 36_000
+        kept_rev: list[str] = []
+        used = 0
+        for excerpt in reversed(excerpts):
+            size = len(excerpt) + 2
+            if kept_rev and used + size > history_cap:
+                break
+            if not kept_rev and size > history_cap:
+                excerpt = excerpt[-history_cap:]
+                size = len(excerpt) + 2
+            kept_rev.append(excerpt)
+            used += size
+        history = "\n\n".join(reversed(kept_rev)) or "(No usable EDA excerpts.)"
+        s01_card = read_ledger(self.ledger_path).strip()[:3500] or "(S01 ledger entry unavailable.)"
+
+        return (
+            "Create a durable EDA and first-stage foundation summary for a long-running scientific "
+            "modeling agent. Return markdown only and do not call tools. Separate observed facts from "
+            "hypotheses. Use only the supplied evidence for numbers; do not invent fields, metrics, "
+            "files, experiments, or conclusions. This summary is context assistance, not an evaluator "
+            "or metric-validity authority.\n\n"
+            "Use exactly these headings:\n"
+            "## Data contract\n"
+            "## Observed data facts\n"
+            "## Source-candidate relationship\n"
+            "## Modeling implications\n"
+            "## Initial stage\n"
+            "## Open questions and risks\n\n"
+            "Keep concrete schema, scale, distribution, data-quality, validation, feature, model, and "
+            "submission-construction details that matter for future stages. Preserve uncertainty explicitly.\n\n"
+            f"[TASK CONTEXT]\n{task_text}\n\n"
+            f"[DETERMINISTIC FACT EXTRACT]\n{deterministic_facts}\n\n"
+            f"[AUTHORITATIVE S01 STAGE CARD]\n{s01_card}\n\n"
+            f"[PRE-S01 EDA EXCERPTS]\n{history}"
+        )
+
+    @staticmethod
+    def _normalize_protected_eda_agent_summary(text: str, *, max_chars: int) -> str:
+        summary = str(text or "").strip()
+        summary = re.sub(r"^```(?:markdown|md|text)?\s*", "", summary, flags=re.I)
+        summary = re.sub(r"\s*```$", "", summary)
+        if len(summary) > max_chars:
+            summary = summary[: max(0, max_chars - 36)].rstrip() + "\n... [EDA summary truncated]"
+        return summary
+
+    async def _prepare_protected_eda_agent_summary(self, agent: Any, *, stage_id: str) -> None:
+        if str(stage_id or "").upper() != "S01":
+            return
+        mode = str(getattr(self.lhr, "protected_eda_mode", "facts") or "facts").strip().lower()
+        if mode not in {"agent", "agent_summary"}:
+            return
+        llm = getattr(agent, "llm", None)
+        if llm is None or not callable(getattr(llm, "ask", None)):
+            return
+        t0 = time.time()
+        try:
+            captured_end = getattr(self, "_s01_eda_prefix_end_index", None)
+            end_index = int(captured_end) if captured_end is not None else self._count_memory_records()
+            prompt = self._build_protected_eda_agent_prompt(agent, end_index=end_index)
+            max_chars = max(
+                1200,
+                int(getattr(self.lhr, "protected_eda_summary_max_chars", 8000) or 8000),
+            )
+            timeout = max(
+                1.0,
+                float(getattr(self.lhr, "stage_commit_llm_timeout_sec", 180.0) or 180.0),
+            )
+            text = await llm.ask(
+                messages=[Message.user_message(prompt)],
+                system_msgs=[
+                    Message.system_message(
+                        "You summarize scientific EDA and the first evaluated modeling stage. "
+                        "Return grounded markdown only. Never call tools or invent evidence.",
+                    ),
+                ],
+                stream=False,
+                timeout=timeout,
+            )
+            summary = self._normalize_protected_eda_agent_summary(text, max_chars=max_chars)
+            if not summary:
+                raise ValueError("empty agent EDA summary")
+            self._s01_agent_eda_summary = summary
+            if hasattr(agent, "_record_llm_call"):
+                agent._record_llm_call(
+                    "lnr_protected_eda_summary",
+                    time.time() - t0,
+                    None,
+                    "ok",
+                    recovery=True,
+                    turn_kind="stage_commit",
+                )
+            self._accumulate_ephemeral_tokens(agent, "stage")
+            self._jsonl(
+                "lhr_context_events.jsonl",
+                {
+                    "event": "protected_eda_agent_summary_ok",
+                    "stage_id": "S01",
+                    "prompt_chars": len(prompt),
+                    "summary_chars": len(summary),
+                },
+            )
+        except Exception as exc:
+            self._s01_agent_eda_summary = ""
+            if hasattr(agent, "_record_llm_call"):
+                agent._record_llm_call(
+                    "lnr_protected_eda_summary",
+                    time.time() - t0,
+                    None,
+                    "error",
+                    recovery=True,
+                    turn_kind="stage_commit",
+                )
+            self._jsonl(
+                "lhr_context_events.jsonl",
+                {
+                    "event": "protected_eda_agent_summary_error",
+                    "stage_id": "S01",
+                    "error": str(exc),
+                    "fallback": "facts",
+                },
+            )
 
     def _restore_protected_eda_prefix_marker(self, agent: Any) -> None:
         if not bool(getattr(self.lhr, "preserve_prefix_and_eda", True)):
@@ -4473,6 +4638,157 @@ class LnrSolver:
         return text
 
     @staticmethod
+    def _stage_commit_query_state(metric_event: dict[str, Any]) -> dict[str, Any]:
+        """Return only structured query counters already present in the event."""
+        state: dict[str, Any] = {}
+        extra = metric_event.get("extra")
+        sources = [metric_event, extra] if isinstance(extra, dict) else [metric_event]
+        aliases = {
+            "queries_remaining": ("queries_remaining", "query_remaining"),
+            "queries_used": ("queries_used", "query_used"),
+            "query_limit": ("query_limit", "max_queries"),
+        }
+        for output_key, input_keys in aliases.items():
+            for source in sources:
+                for input_key in input_keys:
+                    value = source.get(input_key)
+                    if value not in (None, ""):
+                        state[output_key] = value
+                        break
+                if output_key in state:
+                    break
+        return state
+
+    def _build_stage_commit_experiment_state(
+        self,
+        *,
+        stage_id: str,
+        metric_event: dict[str, Any],
+    ) -> str:
+        target = normalize_stage_id(stage_id) or str(stage_id or "").strip().upper()
+        cards = parse_stage_cards(read_ledger(self.ledger_path))
+        current_metric = self._metric_value_float(metric_event.get("metric_value"))
+        lower_is_better = metric_event.get("lower_is_better")
+        if not isinstance(lower_is_better, bool):
+            lower_is_better = getattr(self, "_task_metric_lower_is_better", False)
+
+        candidates: list[tuple[str, float]] = []
+        seen_candidates: set[str] = set()
+        rejected_candidates: set[str] = set()
+
+        def add_candidate(label: str, metric: Any) -> None:
+            value = self._metric_value_float(metric)
+            normalized_label = str(label or "").strip()
+            if value is None or not normalized_label or normalized_label in seen_candidates:
+                return
+            seen_candidates.add(normalized_label)
+            candidates.append((normalized_label, value))
+
+        # The active ledger is route-local after a pivot. The append-only stage
+        # performance history retains abandoned lineages with unique node IDs.
+        global_log_dir = Path(getattr(self, "global_log_dir", self.log_dir))
+        history_path = global_log_dir / LHR_STAGE_PERFORMANCE_CSV
+        if history_path.is_file():
+            try:
+                with history_path.open("r", encoding="utf-8", errors="replace", newline="") as handle:
+                    for row in csv.DictReader(handle):
+                        row_worker = str(row.get("worker_id") or "W00").strip() or "W00"
+                        if row_worker != self._worker_uid_prefix():
+                            continue
+                        label = str(
+                            row.get("candidate_id")
+                            or row.get("node_uid")
+                            or ":".join(
+                                part
+                                for part in (
+                                    row_worker,
+                                    str(row.get("lineage_id") or "").strip(),
+                                    str(row.get("stage_id") or "").strip(),
+                                )
+                                if part
+                            )
+                            or ""
+                        ).strip()
+                        if self._csv_bool(row.get("validation_ok"), default=True) is False:
+                            rejected_candidates.add(label)
+                            continue
+                        if str(row.get("metric_validity") or "").strip().lower() == "low":
+                            rejected_candidates.add(label)
+                            continue
+                        if self._csv_bool(row.get("selection_eligible"), default=True) is False:
+                            rejected_candidates.add(label)
+                            continue
+                        add_candidate(label, row.get("metric_value"))
+            except OSError:
+                logger.debug("[lnr] experiment state could not read stage history", exc_info=True)
+
+        for card in cards:
+            metric = self._metric_value_float(card.metric)
+            if metric is None or str(card.metric_validity or "").strip().lower() == "low":
+                continue
+            if self._csv_bool(getattr(card, "selection_eligible", ""), default=True) is False:
+                continue
+            active_snapshot = getattr(self, "stage_snapshots", {}).get(card.stage_id)
+            source = (
+                active_snapshot.source_event
+                if active_snapshot is not None and isinstance(active_snapshot.source_event, dict)
+                else {}
+            )
+            label = self._snapshot_node_uid(active_snapshot) or card.stage_id
+            if label in rejected_candidates:
+                continue
+            if self._csv_bool(source.get("validation_ok"), default=True) is False:
+                continue
+            if str(source.get("metric_validity") or "").strip().lower() == "low":
+                continue
+            if self._csv_bool(source.get("selection_eligible"), default=True) is False:
+                continue
+            add_candidate(label, metric)
+        current_in_ledger = any(card.stage_id == target for card in cards)
+        current_validity = str(metric_event.get("metric_validity") or "").strip().lower()
+        current_eligible = metric_event.get("selection_eligible") is not False
+        if (
+            current_metric is not None
+            and current_validity != "low"
+            and current_eligible
+        ):
+            current_label = self._stage_node_uid(target)
+            candidates = [item for item in candidates if item[0] != current_label]
+            seen_candidates.discard(current_label)
+            add_candidate(current_label, current_metric)
+
+        if candidates:
+            best_stage, best_metric = (
+                min(candidates, key=lambda item: item[1])
+                if lower_is_better
+                else max(candidates, key=lambda item: item[1])
+            )
+            best_metric_text = f"{best_metric:.12g}"
+        else:
+            best_stage, best_metric_text = "unknown", "unknown"
+
+        latest_metric_text = f"{current_metric:.12g}" if current_metric is not None else "unknown"
+        lines = [
+            "EXPERIMENT_STATE",
+            f"latest_stage: {target}",
+            f"latest_metric: {latest_metric_text}",
+            f"global_best_stage: {best_stage}",
+            f"global_best_metric: {best_metric_text}",
+        ]
+        for key, value in self._stage_commit_query_state(metric_event).items():
+            lines.append(f"{key}: {value}")
+        lines.append("recent_route_results:")
+        for card in cards[-3:]:
+            method = self._stage_commit_one_line(
+                card.brief or card.why or "method not recorded",
+                max_chars=180,
+            )
+            lines.append(f"- {card.stage_id}: metric={card.metric or 'unknown'}; {method}")
+        if not current_in_ledger:
+            lines.append(f"- {target}: metric={latest_metric_text}; current stage pending summary")
+        return "\n".join(lines)
+
+    @staticmethod
     def _stage_commit_bool_text(value: Any, *, default: bool = False) -> str:
         if isinstance(value, bool):
             return "true" if value else "false"
@@ -4693,6 +5009,15 @@ class LnrSolver:
             metric_event=self._sanitize_metric_event_for_agent_prompt(agent, metric_event),
             existing_ledger=agent._sanitize_agent_visible_paths(read_ledger(self.ledger_path)),
         )
+        if bool(getattr(self.lhr, "stage_commit_experiment_state_enabled", False)):
+            prompt += (
+                "\n\nUse this deterministic experiment state when comparing the current route "
+                "with the latest and global-best stages:\n"
+                + self._build_stage_commit_experiment_state(
+                    stage_id=stage_id,
+                    metric_event=metric_event,
+                )
+            )
         legacy_persist = bool(getattr(self.lhr, "stage_commit_persist_to_memory", False))
         persist_agent_write = bool(getattr(self.lhr, "stage_commit_persist_agent_write_to_memory", True)) or legacy_persist
         persist_stage_prompt = bool(getattr(self.lhr, "stage_commit_persist_prompt_to_memory", False)) or legacy_persist
@@ -4787,7 +5112,15 @@ class LnrSolver:
         if persist_agent_write:
             if persist_stage_prompt:
                 agent.memory.add_message(stage_user_msg)
-            stage_msg = Message.assistant_message(agent._sanitize_agent_visible_paths(entry))
+            stage_memory_text = entry
+            if bool(getattr(self.lhr, "stage_commit_experiment_state_enabled", False)):
+                stage_memory_text += "\n" + self._build_stage_commit_experiment_state(
+                    stage_id=stage_id,
+                    metric_event=metric_event,
+                )
+            stage_msg = Message.assistant_message(
+                agent._sanitize_agent_visible_paths(stage_memory_text),
+            )
             agent.memory.add_message(stage_msg)
             self._jsonl(
                 "lhr_stage_commit_events.jsonl",
@@ -6230,6 +6563,54 @@ class LnrSolver:
         return data, block_text, ""
 
     @classmethod
+    def _parse_stage_commit_json_block(cls, text: str) -> tuple[dict[str, Any], str, str]:
+        raw = str(text or "").strip()
+        match = re.fullmatch(r"```json\s*(\{.*\})\s*```", raw, flags=re.I | re.S)
+        if not match:
+            return {}, "", "missing_json_block"
+        try:
+            parsed = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            return {}, raw, "invalid_json"
+        if not isinstance(parsed, dict):
+            return {}, raw, "json_not_object"
+        required = (
+            "stage_id",
+            "metric",
+            "metric_validity",
+            "metric_source",
+            "lower_is_better",
+            "run_time_sec",
+            "brief",
+            "why",
+            "files",
+        )
+        missing = [key for key in required if parsed.get(key) in (None, "")]
+        if missing:
+            return parsed, raw, "missing=" + ",".join(missing)
+        validity = str(parsed.get("metric_validity") or "").strip().lower()
+        if validity not in {"high", "medium", "low"}:
+            return parsed, raw, "invalid_metric_validity"
+        try:
+            float(parsed.get("metric"))
+        except (TypeError, ValueError):
+            return parsed, raw, "invalid_metric"
+        if not isinstance(parsed.get("lower_is_better"), bool):
+            return parsed, raw, "invalid_lower_is_better"
+        return parsed, raw, ""
+
+    def _parse_stage_commit_block(self, text: str) -> tuple[dict[str, Any], str, str]:
+        output_format = str(
+            getattr(getattr(self, "lhr", None), "stage_commit_output_format", "text")
+            or "text"
+        ).strip().lower()
+        if output_format == "json":
+            return self._parse_stage_commit_json_block(text)
+        if output_format != "text":
+            return {}, "", f"unsupported_output_format:{output_format}"
+        return self._parse_stage_commit_text_block(text)
+
+    @classmethod
     def _stage_commit_judgment_from_text_block(cls, parsed: dict[str, Any]) -> dict[str, Any]:
         return {
             "brief": parsed.get("brief") or "",
@@ -6245,11 +6626,75 @@ class LnrSolver:
         def one(key: str, default: str = "") -> str:
             return self._stage_commit_one_line(metric_event.get(key) if isinstance(metric_event, dict) else default, max_chars=180)
 
+        experiment_state_enabled = bool(
+            getattr(getattr(self, "lhr", None), "stage_commit_experiment_state_enabled", False)
+        )
+        brief_shape = (
+            "<model + key features + data processing + submission construction>"
+            if experiment_state_enabled
+            else "<one compact judgment sentence>"
+        )
+        why_shape = (
+            "<compare with latest and global best; state the route lesson and what to retain or avoid>"
+            if experiment_state_enabled
+            else "<one compact reason this stage matters, including any route lesson or avoid-repeat evidence>"
+        )
+        output_format = str(
+            getattr(getattr(self, "lhr", None), "stage_commit_output_format", "text")
+            or "text"
+        ).strip().lower()
+        if output_format not in {"text", "json"}:
+            raise ValueError(f"unsupported lnr.stage_commit_output_format: {output_format!r}")
+        json_output = output_format == "json"
+        if not json_output and not experiment_state_enabled:
+            lines = [
+                "[LNR_STAGE_COMMIT_REQUEST]",
+                "Emit exactly one text-only STAGE_COMMIT block now. Do not call tools in this turn.",
+                "Use only the observed metric/artifact facts below. Keep brief/why as compact judgments, not a log summary.",
+                "The request is transient; only your STAGE_COMMIT block and the append confirmation will remain in memory.",
+            ]
+            if correction:
+                lines.append(f"Previous block parse issue: {self._stage_commit_one_line(correction, max_chars=220)}")
+            lines.extend(
+                [
+                    "",
+                    "FACTS:",
+                    f"stage_id: {normalize_stage_id(stage_id) or stage_id}",
+                    f"metric: {metric_event.get('metric_value', metric_event.get('reported_val_score', 'unknown'))}",
+                    f"metric_name: {one('metric_name', 'Final Validation Score')}",
+                    f"metric_validity: {one('metric_validity', 'medium') or 'medium'}",
+                    f"metric_source: {one('metric_source_note') or one('val_score_type') or one('metric_protocol') or 'metric source not specified'}",
+                    f"lower_is_better: {self._stage_commit_bool_text(metric_event.get('lower_is_better'))}",
+                    f"run_time_sec: {metric_event.get('run_time_sec') or metric_event.get('wall_sec') or metric_event.get('duration_sec') or 'unknown'}",
+                    f"solution_path: {one('solution_path') or 'unknown'}",
+                    f"submission_status: {one('submission_status') or 'unknown'}",
+                    f"candidate_ready: {metric_event.get('candidate_ready')}",
+                    f"validation_issue: {one('validation_issue') or 'none'}",
+                    "",
+                    "Required output shape:",
+                    "STAGE_COMMIT_BEGIN",
+                    f"stage_id: {normalize_stage_id(stage_id) or stage_id}",
+                    "metric: <numeric metric>",
+                    "metric_validity: high|medium|low",
+                    "metric_source: <one short source phrase>",
+                    "lower_is_better: true|false",
+                    "run_time_sec: <seconds|unknown>",
+                    "brief: <one compact judgment sentence>",
+                    "why: <one compact reason this stage matters, including any route lesson or avoid-repeat evidence>",
+                    "files: <code=core.py,helper.py weights=model.ckpt; write none only when no core code/weights exist>",
+                    "STAGE_COMMIT_END",
+                ]
+            )
+            return "\n".join(lines).strip()
         lines = [
             "[LNR_STAGE_COMMIT_REQUEST]",
-            "Emit exactly one text-only STAGE_COMMIT block now. Do not call tools in this turn.",
+            (
+                "Return exactly one fenced JSON object and no additional text. Do not call tools in this turn."
+                if json_output
+                else "Emit exactly one text-only STAGE_COMMIT block now. Do not call tools in this turn."
+            ),
             "Use only the observed metric/artifact facts below. Keep brief/why as compact judgments, not a log summary.",
-            "The request is transient; only your STAGE_COMMIT block and the append confirmation will remain in memory.",
+            "The request is transient; only your bookkeeping output and the append confirmation will remain in memory.",
         ]
         if correction:
             lines.append(f"Previous block parse issue: {self._stage_commit_one_line(correction, max_chars=220)}")
@@ -6268,21 +6713,73 @@ class LnrSolver:
                 f"submission_status: {one('submission_status') or 'unknown'}",
                 f"candidate_ready: {metric_event.get('candidate_ready')}",
                 f"validation_issue: {one('validation_issue') or 'none'}",
-                "",
-                "Required output shape:",
-                "STAGE_COMMIT_BEGIN",
-                f"stage_id: {normalize_stage_id(stage_id) or stage_id}",
-                "metric: <numeric metric>",
-                "metric_validity: high|medium|low",
-                "metric_source: <one short source phrase>",
-                "lower_is_better: true|false",
-                "run_time_sec: <seconds|unknown>",
-                "brief: <one compact judgment sentence>",
-                "why: <one compact reason this stage matters, including any route lesson or avoid-repeat evidence>",
-                "files: <code=core.py,helper.py weights=model.ckpt; write none only when no core code/weights exist>",
-                "STAGE_COMMIT_END",
             ]
         )
+        if experiment_state_enabled:
+            lines.extend(
+                [
+                    "",
+                    "Use the deterministic experiment state below for comparisons; do not replace its metrics with recollection:",
+                    self._build_stage_commit_experiment_state(
+                        stage_id=stage_id,
+                        metric_event=metric_event,
+                    ),
+                ]
+            )
+        lines.extend(
+            [
+                "",
+                "FILES guidance: filenames in examples are illustrative only. List only actual existing persistent core code and model-weight files used by this stage. Do not list submission artifacts or temporary/cache files. Write none when no such files exist.",
+                "",
+                "Required output shape:",
+            ]
+        )
+        if json_output:
+            metric_value = metric_event.get(
+                "metric_value",
+                metric_event.get("reported_val_score", "unknown"),
+            )
+            run_time = (
+                metric_event.get("run_time_sec")
+                or metric_event.get("wall_sec")
+                or metric_event.get("duration_sec")
+                or "unknown"
+            )
+            example = {
+                "stage_id": normalize_stage_id(stage_id) or stage_id,
+                "metric": metric_value,
+                "metric_validity": one("metric_validity", "medium") or "medium",
+                "metric_source": (
+                    one("metric_source_note")
+                    or one("val_score_type")
+                    or one("metric_protocol")
+                    or "metric source not specified"
+                ),
+                "lower_is_better": self._stage_commit_bool_text(
+                    metric_event.get("lower_is_better"),
+                ) == "true",
+                "run_time_sec": run_time,
+                "brief": brief_shape,
+                "why": why_shape,
+                "files": "<actual persistent core files or none>",
+            }
+            lines.extend(["```json", json.dumps(example, ensure_ascii=False, indent=2), "```"])
+        else:
+            lines.extend(
+                [
+                    "STAGE_COMMIT_BEGIN",
+                    f"stage_id: {normalize_stage_id(stage_id) or stage_id}",
+                    "metric: <numeric metric>",
+                    "metric_validity: high|medium|low",
+                    "metric_source: <one short source phrase>",
+                    "lower_is_better: true|false",
+                    "run_time_sec: <seconds|unknown>",
+                    f"brief: {brief_shape}",
+                    f"why: {why_shape}",
+                    "files: <actual existing core code and weight files used by this stage; write none only when no such files exist>",
+                    "STAGE_COMMIT_END",
+                ]
+            )
         return "\n".join(lines).strip()
 
     def _extend_stage_commit_text_policy_deadline(self, agent: Any) -> None:
@@ -6299,13 +6796,29 @@ class LnrSolver:
                 policy.deadline_monotonic = grace_deadline
 
     def _set_stage_commit_transient_prompt(self, agent: Any, *, stage_id: str, metric_event: dict[str, Any], correction: str = "") -> None:
+        tool_choice = str(
+            getattr(getattr(self, "lhr", None), "stage_commit_tool_choice", "none")
+            or "none"
+        ).strip().lower()
+        if tool_choice not in {"auto", "none"}:
+            raise ValueError(f"unsupported lnr.stage_commit_tool_choice: {tool_choice!r}")
+        context_mode = str(
+            getattr(getattr(self, "lhr", None), "stage_commit_context_mode", "compact")
+            or "compact"
+        ).strip().lower()
+        if context_mode not in {"compact", "inherit"}:
+            raise ValueError(f"unsupported lnr.stage_commit_context_mode: {context_mode!r}")
         prompt = self._build_stage_commit_text_prompt(stage_id=stage_id, metric_event=metric_event, correction=correction)
         setattr(agent, "_lnr_transient_user_prompt", prompt)
-        # Stage commits are ledger records, not work turns. Enforce text-only at
-        # the API layer and keep a run-loop guard for providers that still return
-        # tool calls.
-        setattr(agent, "_lnr_transient_tool_choice_none", True)
-        setattr(agent, "_lnr_transient_context_mode", "stage_commit_compact")
+        # Most profiles disable tools at the API layer. Cache-sensitive profiles
+        # may retain tool_choice=auto; the run-loop guard still rejects tool calls
+        # during this bookkeeping turn.
+        setattr(agent, "_lnr_transient_tool_choice_none", tool_choice == "none")
+        setattr(
+            agent,
+            "_lnr_transient_context_mode",
+            "" if context_mode == "inherit" else "stage_commit_compact",
+        )
         setattr(agent, "_lnr_stage_commit_text_pending", True)
         setattr(agent, "_lnr_stage_commit_text_handled", False)
         self._extend_stage_commit_text_policy_deadline(agent)
@@ -6318,9 +6831,15 @@ class LnrSolver:
             "_lnr_transient_user_prompt_active",
             "_lnr_stage_commit_text_pending",
             "_lnr_suppress_current_text_only_memory",
+            "_lnr_stage_commit_text_handled",
         ):
             try:
-                if name in {"_lnr_transient_tool_choice_none", "_lnr_transient_user_prompt_active", "_lnr_stage_commit_text_pending"}:
+                if name in {
+                    "_lnr_transient_tool_choice_none",
+                    "_lnr_transient_user_prompt_active",
+                    "_lnr_stage_commit_text_pending",
+                    "_lnr_stage_commit_text_handled",
+                }:
                     setattr(agent, name, False)
                 else:
                     setattr(agent, name, "")
@@ -6330,11 +6849,15 @@ class LnrSolver:
     def _pending_stage_commit_text_active(self) -> bool:
         return isinstance(getattr(self, "pending_text_stage_commit", None), dict)
 
+    def _abandon_pending_stage_commit_text(self, agent: Any) -> None:
+        self.pending_text_stage_commit = None
+        self._clear_stage_commit_transient_prompt(agent)
+
     def _stage_commit_text_memory_message(self, *, block_text: str, stage_id: str, metric_event: dict[str, Any], entry: str) -> str:
         metric = self._stage_commit_one_line(metric_event.get("metric_value"), max_chars=80)
         validity = self._stage_commit_one_line(metric_event.get("metric_validity") or "medium", max_chars=40).lower()
         checked_text = entry.strip() or block_text.strip()
-        return (
+        text = (
             f"{checked_text}\n\n"
             "bash/edit output:\n"
             "[stage append-only write]\n"
@@ -6345,6 +6868,14 @@ class LnrSolver:
             f"metric_validity: {validity}\n"
             "appended: true"
         )
+        if bool(
+            getattr(getattr(self, "lhr", None), "stage_commit_experiment_state_enabled", False)
+        ):
+            text += "\n\n" + self._build_stage_commit_experiment_state(
+                stage_id=stage_id,
+                metric_event=metric_event,
+            )
+        return text
 
     def _append_stage_commit_from_judgment(
         self,
@@ -6692,6 +7223,7 @@ class LnrSolver:
             },
         )
         self._prune_workspace_control_artifacts()
+        await self._prepare_protected_eda_agent_summary(agent, stage_id=stage_id)
         self._mark_protected_eda_prefix(agent, stage_id=stage_id)
         cards_after = parse_stage_cards(read_ledger(self.ledger_path))
         await self._adjudicate_metric_validity_for_stage(agent=agent, stage_id=stage_id, metric_event=metric_event, cards_after=cards_after)
@@ -6775,7 +7307,7 @@ class LnrSolver:
             return None
         stage_id = str(pending.get("stage_id") or "").strip().upper()
         metric_event = pending.get("metric_event") if isinstance(pending.get("metric_event"), dict) else {}
-        parsed, block_text, reason = self._parse_stage_commit_text_block(assistant_text)
+        parsed, block_text, reason = self._parse_stage_commit_block(assistant_text)
         parsed_stage = normalize_stage_id(parsed.get("stage_id")) if parsed else ""
         if not reason and parsed_stage and parsed_stage != stage_id:
             reason = f"stage_id_mismatch:{parsed_stage}!={stage_id}"
@@ -6793,16 +7325,32 @@ class LnrSolver:
                 )
                 return None
             judgment = self._stage_commit_fallback_judgment(metric_event)
-            block_text = (
-                "STAGE_COMMIT_BEGIN\n"
-                f"stage_id: {stage_id}\n"
-                f"metric: {metric_event.get('metric_value', 'unknown')}\n"
-                f"metric_validity: {metric_event.get('metric_validity') or 'medium'}\n"
-                "brief: fallback stage commit after malformed text block.\n"
-                f"why: parser issue {self._stage_commit_one_line(reason, max_chars=120)}; metric event preserved; continue from preserved evidence.\n"
-                f"files: {judgment['files']}\n"
-                "STAGE_COMMIT_END"
-            )
+            fallback_data = {
+                "stage_id": stage_id,
+                "metric": metric_event.get("metric_value", "unknown"),
+                "metric_validity": metric_event.get("metric_validity") or "medium",
+                "brief": "fallback stage commit after malformed output.",
+                "why": (
+                    "parser issue "
+                    f"{self._stage_commit_one_line(reason, max_chars=120)}; "
+                    "metric event preserved; continue from preserved evidence."
+                ),
+                "files": judgment["files"],
+            }
+            if str(
+                getattr(self.lhr, "stage_commit_output_format", "text") or "text"
+            ).strip().lower() == "json":
+                block_text = (
+                    "```json\n"
+                    + json.dumps(fallback_data, ensure_ascii=False, indent=2)
+                    + "\n```"
+                )
+            else:
+                block_text = (
+                    "STAGE_COMMIT_BEGIN\n"
+                    + "\n".join(f"{key}: {value}" for key, value in fallback_data.items())
+                    + "\nSTAGE_COMMIT_END"
+                )
             source = "fallback_after_text_parse_failed"
         else:
             judgment = self._stage_commit_judgment_from_text_block(parsed)
@@ -9346,6 +9894,7 @@ class LnrSolver:
                 )
             raise
         finally:
+            self._abandon_pending_stage_commit_text(agent)
             if not retain_agent:
                 try:
                     await aclose_llm_clients(agent.llm)

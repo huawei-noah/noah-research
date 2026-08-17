@@ -3036,6 +3036,186 @@ def test_lhr_protected_eda_prefix_resume_uses_pre_commit_boundary(
     assert solver._s01_eda_prefix_end_index == 1
 
 
+def test_lhr_agent_eda_summary_is_opt_in_and_replaces_only_eda_prefix(
+    tmp_path: Path,
+) -> None:
+    async def _run() -> None:
+        solver = _minimal_lhr_solver(tmp_path)
+        solver.task_desc = "Rank scientific candidates."
+        solver.lhr = SimpleNamespace(
+            preserve_prefix_and_eda=True,
+            protected_eda_mode="agent",
+            protected_eda_facts_max_chars=6000,
+            protected_eda_summary_max_chars=8000,
+            protected_eda_warn_chars=50_000,
+            stage_commit_llm_timeout_sec=30,
+        )
+        solver.stage_tokens_in = 0
+        solver.stage_tokens_out = 0
+        solver.stage_tokens_cached = 0
+        solver.stage_llm_calls = 0
+        solver._s01_agent_eda_summary = ""
+        messages = [
+            Message.user_message("Rank scientific candidates."),
+            Message.assistant_message("I will inspect source and candidate distributions."),
+            Message.tool_message(
+                "source shape is (100, 8); candidate shape is (20, 8)",
+                "bash",
+                "eda-1",
+            ),
+        ]
+
+        class _LLM:
+            _last_call_input_tokens = 100
+            _last_call_output_tokens = 50
+            _last_call_input_cached_tokens = 0
+
+            async def ask(self, **kwargs):
+                assert kwargs["stream"] is False
+                assert "AUTHORITATIVE S01 STAGE CARD" in kwargs["messages"][0].content
+                return "## Data contract\nRank 20 candidates.\n\n## Observed data facts\nSource has 100 rows."
+
+        class _MemoryContext:
+            summary = ""
+            end_index = None
+
+            def replace_protected_raw_prefix_with_summary(self, end_index, summary, **_kwargs):
+                self.end_index = end_index
+                self.summary = summary
+                return {
+                    "end_index": 1,
+                    "message_count": 1,
+                    "chars": len(summary),
+                    "original_chars": 100,
+                    "original_message_count": 2,
+                }
+
+        ctx = _MemoryContext()
+        agent = SimpleNamespace(
+            llm=_LLM(),
+            _memory_ctx=ctx,
+            _record_llm_call=lambda *_args, **_kwargs: None,
+        )
+        solver._agent_memory_messages = lambda _agent: list(messages)
+        solver._count_memory_records = lambda: len(messages)
+        solver._capture_s01_eda_prefix_end(stage_id="S01")
+        messages.append(
+            Message.assistant_message(
+                "STAGE_COMMIT_BEGIN\nstage_id: S01\nSTAGE_COMMIT_END",
+            ),
+        )
+
+        await solver._prepare_protected_eda_agent_summary(agent, stage_id="S01")
+        info = solver._mark_protected_eda_prefix(agent, stage_id="S01")
+
+        assert ctx.end_index == 3
+        assert "## Data contract" in ctx.summary
+        assert info["mode"] == "agent"
+        assert solver.stage_llm_calls == 1
+
+    asyncio.run(_run())
+
+
+def test_lhr_agent_eda_summary_falls_back_to_facts(tmp_path: Path) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(
+        preserve_prefix_and_eda=True,
+        protected_eda_mode="agent",
+        protected_eda_facts_max_chars=6000,
+        protected_eda_summary_max_chars=8000,
+        protected_eda_warn_chars=50_000,
+    )
+    solver._s01_agent_eda_summary = ""
+    messages = [
+        Message.user_message("FIRST USER QUERY"),
+        Message.tool_message("train shape is (100, 8)", "bash", "eda-1"),
+    ]
+
+    class _MemoryContext:
+        summary = ""
+
+        def replace_protected_raw_prefix_with_summary(self, end_index, summary, **_kwargs):
+            self.summary = summary
+            return {
+                "end_index": 1,
+                "message_count": 1,
+                "chars": len(summary),
+                "original_chars": 100,
+                "original_message_count": 1,
+            }
+
+    ctx = _MemoryContext()
+    solver._agent_memory_messages = lambda _agent: list(messages)
+    solver._count_memory_records = lambda: len(messages)
+    solver._s01_eda_prefix_end_index = len(messages)
+
+    info = solver._mark_protected_eda_prefix(
+        SimpleNamespace(_memory_ctx=ctx),
+        stage_id="S01",
+    )
+
+    assert info["mode"] == "facts_fallback"
+    assert "train shape is (100, 8)" in ctx.summary
+
+
+def test_lhr_agent_eda_summary_provider_error_uses_facts_fallback(tmp_path: Path) -> None:
+    async def _run() -> None:
+        solver = _minimal_lhr_solver(tmp_path)
+        solver.task_desc = "Rank candidates."
+        solver.lhr = SimpleNamespace(
+            protected_eda_mode="agent",
+            protected_eda_summary_max_chars=8000,
+            stage_commit_llm_timeout_sec=30,
+        )
+        solver._s01_eda_prefix_end_index = 2
+
+        class _LLM:
+            async def ask(self, **_kwargs):
+                raise RuntimeError("provider unavailable")
+
+        agent = SimpleNamespace(
+            llm=_LLM(),
+            _record_llm_call=lambda *_args, **_kwargs: None,
+        )
+        events = []
+        solver._jsonl = lambda _name, record: events.append(record)
+        solver._agent_memory_messages = lambda _agent: [
+            Message.user_message("task"),
+            Message.tool_message("shape=(100, 8)", "bash", "eda"),
+        ]
+
+        await solver._prepare_protected_eda_agent_summary(agent, stage_id="S01")
+
+        assert solver._s01_agent_eda_summary == ""
+        assert events[-1]["fallback"] == "facts"
+
+    asyncio.run(_run())
+
+
+def test_lhr_agent_eda_summary_propagates_cancellation(tmp_path: Path) -> None:
+    async def _run() -> None:
+        solver = _minimal_lhr_solver(tmp_path)
+        solver.task_desc = "Rank candidates."
+        solver.lhr = SimpleNamespace(
+            protected_eda_mode="agent",
+            protected_eda_summary_max_chars=8000,
+            stage_commit_llm_timeout_sec=30,
+        )
+        solver._s01_eda_prefix_end_index = 1
+
+        class _LLM:
+            async def ask(self, **_kwargs):
+                raise asyncio.CancelledError()
+
+        agent = SimpleNamespace(llm=_LLM())
+        solver._agent_memory_messages = lambda _agent: [Message.user_message("task")]
+
+        with pytest.raises(asyncio.CancelledError):
+            await solver._prepare_protected_eda_agent_summary(agent, stage_id="S01")
+
+    asyncio.run(_run())
+
+
 def test_lhr_process_resume_rehydrates_stage_snapshots(tmp_path: Path) -> None:
     solver = _minimal_lhr_solver(tmp_path)
     solver.workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -5918,6 +6098,35 @@ def test_lhr_stage_commit_text_block_parser_requires_files() -> None:
     assert reason == "missing=files"
 
 
+def test_lhr_stage_commit_json_block_parser_requires_one_fenced_object() -> None:
+    text = """```json
+{
+  "stage_id": "S04",
+  "metric": -4.835054,
+  "metric_validity": "high",
+  "metric_source": "official evaluator",
+  "lower_is_better": true,
+  "run_time_sec": 12.3,
+  "brief": "validated model and feature route",
+  "why": "improved the held-out result",
+  "files": "code=train.py weights=models/best.pt"
+}
+```"""
+
+    parsed, block_text, reason = LnrSolver._parse_stage_commit_json_block(text)
+
+    assert reason == ""
+    assert parsed["stage_id"] == "S04"
+    assert parsed["lower_is_better"] is True
+    assert parsed["files"] == "code=train.py weights=models/best.pt"
+    assert block_text == text
+
+    _parsed, _block_text, reason = LnrSolver._parse_stage_commit_json_block(
+        "extra text\n" + text,
+    )
+    assert reason == "missing_json_block"
+
+
 def test_lhr_stage_commit_files_retry_exhaustion_uses_deterministic_fallback(tmp_path: Path) -> None:
     async def _run() -> None:
         solver = _minimal_lhr_solver(tmp_path)
@@ -6038,6 +6247,276 @@ def test_lhr_stage_commit_transient_prompt_disables_tools(tmp_path: Path) -> Non
     assert agent._lnr_transient_tool_choice_none is False
     assert agent._lnr_transient_context_mode == ""
     assert agent._lnr_stage_commit_text_pending is False
+
+
+def test_lhr_stage_commit_transient_prompt_can_inherit_context_and_keep_tool_prefix(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(
+        stage_commit_context_mode="inherit",
+        stage_commit_tool_choice="auto",
+    )
+    agent = SimpleNamespace()
+
+    solver._set_stage_commit_transient_prompt(
+        agent,
+        stage_id="S01",
+        metric_event={"metric_value": 0.123, "metric_validity": "medium"},
+    )
+
+    assert agent._lnr_transient_context_mode == ""
+    assert agent._lnr_transient_tool_choice_none is False
+    assert agent._lnr_stage_commit_text_pending is True
+
+
+def test_lhr_stage_commit_transient_prompt_rejects_unknown_modes(tmp_path: Path) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(stage_commit_tool_choice="required")
+    agent = SimpleNamespace()
+
+    with pytest.raises(ValueError, match="stage_commit_tool_choice"):
+        solver._set_stage_commit_transient_prompt(
+            agent,
+            stage_id="S01",
+            metric_event={"metric_value": 0.123},
+        )
+
+    assert not hasattr(agent, "_lnr_transient_user_prompt")
+    assert not hasattr(agent, "_lnr_transient_tool_choice_none")
+
+
+def test_lhr_abandon_pending_stage_commit_clears_live_agent_state(tmp_path: Path) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.pending_text_stage_commit = {"stage_id": "S03"}
+    agent = SimpleNamespace(
+        _lnr_transient_user_prompt="stale stage prompt",
+        _lnr_transient_tool_choice_none=True,
+        _lnr_transient_context_mode="stage_commit_compact",
+        _lnr_transient_user_prompt_active=True,
+        _lnr_stage_commit_text_pending=True,
+        _lnr_stage_commit_text_handled=True,
+        _lnr_suppress_current_text_only_memory="stale",
+    )
+
+    solver._abandon_pending_stage_commit_text(agent)
+
+    assert solver.pending_text_stage_commit is None
+    assert agent._lnr_transient_user_prompt == ""
+    assert agent._lnr_transient_tool_choice_none is False
+    assert agent._lnr_transient_context_mode == ""
+    assert agent._lnr_transient_user_prompt_active is False
+    assert agent._lnr_stage_commit_text_pending is False
+    assert agent._lnr_stage_commit_text_handled is False
+    assert agent._lnr_suppress_current_text_only_memory == ""
+
+
+def test_lhr_stage_commit_json_prompt_is_opt_in(tmp_path: Path) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(
+        stage_commit_context_mode="inherit",
+        stage_commit_tool_choice="auto",
+        stage_commit_output_format="json",
+    )
+
+    prompt = solver._build_stage_commit_text_prompt(
+        stage_id="S01",
+        metric_event={
+            "metric_value": 0.123,
+            "metric_validity": "high",
+            "metric_source_note": "official evaluator",
+            "lower_is_better": False,
+            "run_time_sec": 12.3,
+        },
+    )
+
+    assert "Return exactly one fenced JSON object and no additional text" in prompt
+    assert "```json" in prompt
+    assert '"stage_id": "S01"' in prompt
+    assert '"lower_is_better": false' in prompt
+    assert "STAGE_COMMIT_BEGIN" not in prompt
+
+
+def test_lhr_stage_commit_experiment_state_uses_only_structured_query_fields(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver._task_metric_lower_is_better = True
+    solver.lhr = SimpleNamespace(stage_commit_experiment_state_enabled=True)
+    metric_event = {
+        "metric_value": 0.06,
+        "metric_validity": "high",
+        "lower_is_better": True,
+        "selection_eligible": True,
+        "metric_source_note": "untrusted text says queries_remaining=99/99",
+        "extra": {
+            "queries_remaining": 7,
+            "queries_used": 3,
+            "query_limit": 10,
+        },
+    }
+
+    state = solver._build_stage_commit_experiment_state(
+        stage_id="S03",
+        metric_event=metric_event,
+    )
+
+    assert "global_best_stage: W00:L01:S03" in state
+    assert "global_best_metric: 0.06" in state
+    assert "queries_remaining: 7" in state
+    assert "queries_used: 3" in state
+    assert "query_limit: 10" in state
+    assert "99/99" not in state
+
+
+def test_lhr_stage_commit_experiment_state_keeps_abandoned_lineage_global_best(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.global_log_dir = tmp_path / "task_logs"
+    solver.global_log_dir.mkdir()
+    solver._task_metric_lower_is_better = False
+    solver.lhr = SimpleNamespace(stage_commit_experiment_state_enabled=True)
+    history_path = solver.global_log_dir / lnr_solver_module.LHR_STAGE_PERFORMANCE_CSV
+    with history_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "worker_id",
+                "candidate_id",
+                "stage_id",
+                "lineage_id",
+                "metric_value",
+                "validation_ok",
+                "metric_validity",
+                "selection_eligible",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "worker_id": "W00",
+                "candidate_id": "W00:L01:S04",
+                "stage_id": "S04",
+                "lineage_id": "L01",
+                "metric_value": 0.91,
+                "validation_ok": "true",
+                "metric_validity": "high",
+                "selection_eligible": "true",
+            }
+        )
+
+    state = solver._build_stage_commit_experiment_state(
+        stage_id="S03",
+        metric_event={
+            "metric_value": 0.80,
+            "metric_validity": "high",
+            "lower_is_better": False,
+            "selection_eligible": True,
+        },
+    )
+
+    assert "global_best_stage: W00:L01:S04" in state
+    assert "global_best_metric: 0.91" in state
+
+
+def test_lhr_stage_commit_experiment_state_does_not_readd_rejected_active_stage(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.global_log_dir = tmp_path / "task_logs"
+    solver.global_log_dir.mkdir()
+    solver._task_metric_lower_is_better = False
+    solver.lhr = SimpleNamespace(stage_commit_experiment_state_enabled=True)
+    solver.stage_snapshots = {
+        "S01": SimpleNamespace(
+            node_uid="W00:L01:S01",
+            source_event={
+                "validation_ok": False,
+                "selection_eligible": False,
+                "metric_validity": "low",
+            },
+        )
+    }
+    history_path = solver.global_log_dir / lnr_solver_module.LHR_STAGE_PERFORMANCE_CSV
+    with history_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "worker_id",
+                "candidate_id",
+                "stage_id",
+                "metric_value",
+                "validation_ok",
+                "metric_validity",
+                "selection_eligible",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "worker_id": "W00",
+                "candidate_id": "W00:L01:S01",
+                "stage_id": "S01",
+                "metric_value": 0.99,
+                "validation_ok": "false",
+                "metric_validity": "low",
+                "selection_eligible": "false",
+            }
+        )
+
+    state = solver._build_stage_commit_experiment_state(
+        stage_id="S03",
+        metric_event={
+            "metric_value": 0.06,
+            "metric_validity": "high",
+            "lower_is_better": False,
+            "selection_eligible": True,
+        },
+    )
+
+    assert "global_best_stage: S02" in state
+    assert "global_best_metric: 0.08" in state
+    assert "global_best_metric: 0.99" not in state
+
+
+def test_lhr_stage_commit_experiment_state_does_not_repeat_committed_stage_as_pending(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver._task_metric_lower_is_better = True
+    solver.lhr = SimpleNamespace(stage_commit_experiment_state_enabled=True)
+
+    state = solver._build_stage_commit_experiment_state(
+        stage_id="S02",
+        metric_event={
+            "metric_value": 0.08,
+            "metric_validity": "high",
+            "lower_is_better": True,
+            "selection_eligible": True,
+        },
+    )
+
+    assert "current stage pending summary" not in state
+    assert state.count("- S02:") == 1
+
+
+def test_lhr_stage_commit_experiment_state_default_prompt_stays_compact(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(stage_commit_experiment_state_enabled=False)
+
+    prompt = solver._build_stage_commit_text_prompt(
+        stage_id="S03",
+        metric_event={"metric_value": 0.06, "lower_is_better": True},
+    )
+
+    assert "EXPERIMENT_STATE" not in prompt
+    assert "brief: <one compact judgment sentence>" in prompt
+    assert "only your STAGE_COMMIT block and the append confirmation" in prompt
+    assert "files: <code=core.py,helper.py weights=model.ckpt" in prompt
+    assert "FILES guidance" not in prompt
 
 
 
