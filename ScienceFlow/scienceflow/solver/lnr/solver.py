@@ -3705,7 +3705,10 @@ class LnrSolver:
         )
         event_hint = metric_lower_is_better_hint(hint_text)
         task_hint = getattr(self, "_task_metric_lower_is_better", None)
-        if task_hint is not None:
+        if metric_event.get("metric_authoritative") is True and declared is not None:
+            lower = bool(declared)
+            source = "authoritative_evaluator"
+        elif task_hint is not None:
             lower = bool(task_hint)
             source = "task_description"
         elif event_hint is not None:

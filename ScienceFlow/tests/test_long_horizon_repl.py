@@ -1639,6 +1639,24 @@ def test_metric_event_uses_task_direction_over_declared_snapshot_value(tmp_path:
     assert event["metric_direction_conflict"] is True
 
 
+def test_authoritative_evaluator_direction_overrides_task_text_hint(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver._task_metric_lower_is_better = True
+    event = {
+        "metric_name": "global_ndcg",
+        "lower_is_better": False,
+        "metric_authoritative": True,
+    }
+
+    decision = solver._metric_lower_is_better_decision(event)
+
+    assert decision["lower_is_better"] is False
+    assert decision["metric_direction_source"] == "authoritative_evaluator"
+    assert decision["metric_direction_conflict"] is False
+
+
 def test_stage_result_audit_rewrites_formal_entry_before_commit(tmp_path: Path) -> None:
     async def _run() -> None:
         solver = _minimal_lhr_solver(tmp_path)
