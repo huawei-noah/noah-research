@@ -2928,6 +2928,96 @@ def _minimal_lhr_solver(tmp_path: Path) -> LnrSolver:
     return solver
 
 
+def test_lhr_protected_eda_prefix_stops_before_s01_stage_commit(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(
+        preserve_prefix_and_eda=True,
+        protected_eda_mode="facts",
+        protected_eda_facts_max_chars=6000,
+        protected_eda_warn_chars=50_000,
+    )
+    messages = [
+        Message.user_message("FIRST USER QUERY"),
+        Message.assistant_message("inspect the dataset"),
+        Message.tool_message("train shape is (100, 8)", "bash", "eda-1"),
+    ]
+
+    class _MemoryContext:
+        end_index = None
+
+        def replace_protected_raw_prefix_with_summary(
+            self,
+            end_index: int,
+            summary: str,
+            **_kwargs: object,
+        ) -> dict[str, object]:
+            self.end_index = end_index
+            messages[:] = [Message.user_message(summary)] + messages[end_index:]
+            return {
+                "end_index": 1,
+                "message_count": 1,
+                "chars": len(summary),
+                "original_chars": 100,
+                "original_message_count": end_index,
+            }
+
+    ctx = _MemoryContext()
+    agent = SimpleNamespace(_memory_ctx=ctx)
+    solver._agent_memory_messages = lambda _agent: list(messages)
+    solver._count_memory_records = lambda: len(messages)
+    solver._capture_s01_eda_prefix_end(stage_id="S01")
+    messages.append(
+        Message.assistant_message(
+            "STAGE_COMMIT_BEGIN\nstage_id: S01\nmetric: 0.2\nSTAGE_COMMIT_END"
+        )
+    )
+
+    info = solver._mark_protected_eda_prefix(agent, stage_id="S01")
+
+    assert ctx.end_index == 3
+    assert info["boundary_source"] == "pre_stage_commit"
+    assert info["protected_end_index"] == 1
+    assert solver._s01_eda_prefix_end_index == 1
+    assert len(messages) == 2
+    assert "Fixed EDA facts" in str(messages[0].content)
+    assert "STAGE_COMMIT_BEGIN" in str(messages[1].content)
+
+
+def test_lhr_protected_eda_prefix_resume_uses_pre_commit_boundary(
+    tmp_path: Path,
+) -> None:
+    solver = _minimal_lhr_solver(tmp_path)
+    solver.lhr = SimpleNamespace(
+        preserve_prefix_and_eda=True,
+        protected_eda_warn_chars=50_000,
+    )
+    solver._s01_eda_prefix_end_index = None
+    solver.stage_snapshots = {
+        "S01": SimpleNamespace(
+            memory_cut=2,
+            source_event={"protected_eda_end_index": 1},
+        )
+    }
+
+    class _MemoryContext:
+        end_index = None
+
+        def set_protected_raw_prefix(
+            self,
+            end_index: int,
+            **_kwargs: object,
+        ) -> None:
+            self.end_index = end_index
+
+    ctx = _MemoryContext()
+    solver._restore_protected_eda_prefix_marker(SimpleNamespace(_memory_ctx=ctx))
+
+    assert ctx.end_index == 1
+    assert solver._s01_eda_prefix_end_index == 1
+
+
 def test_lhr_process_resume_rehydrates_stage_snapshots(tmp_path: Path) -> None:
     solver = _minimal_lhr_solver(tmp_path)
     solver.workspace_dir.mkdir(parents=True, exist_ok=True)

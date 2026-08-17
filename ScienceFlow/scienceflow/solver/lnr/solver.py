@@ -441,6 +441,7 @@ class LnrSolver:
         self.initial_workspace_state = ""
         self.last_captured_run_signature = ""
         self.last_stage_commit_ts = 0.0
+        self._s01_eda_prefix_end_index: int | None = None
         self.last_estra_stage_count = 0
         self.last_estra_observation_key = ""
         self.last_force_estra_observation_count = 0
@@ -2096,7 +2097,12 @@ class LnrSolver:
             return {}
         ctx = getattr(agent, "_memory_ctx", None)
         warn_chars = int(getattr(self.lhr, "protected_eda_warn_chars", 50_000) or 0)
-        end_index = self._count_memory_records()
+        captured_end = getattr(self, "_s01_eda_prefix_end_index", None)
+        end_index = (
+            int(captured_end)
+            if captured_end is not None
+            else self._count_memory_records()
+        )
         mode = str(getattr(self.lhr, "protected_eda_mode", "facts") or "facts").strip().lower()
         try:
             if mode in {"raw", "verbatim"}:
@@ -2124,6 +2130,19 @@ class LnrSolver:
         except Exception:
             logger.debug("[lnr] protected EDA prefix marker failed", exc_info=True)
             return {}
+        try:
+            effective_end_index = int(info.get("end_index", end_index))
+        except (TypeError, ValueError):
+            effective_end_index = end_index
+        if captured_end is not None:
+            self._s01_eda_prefix_end_index = effective_end_index
+        info = {
+            **dict(info),
+            "protected_end_index": effective_end_index,
+            "boundary_source": (
+                "pre_stage_commit" if captured_end is not None else "current_memory"
+            ),
+        }
         self._jsonl(
             "lhr_context_events.jsonl",
             {
@@ -2150,12 +2169,26 @@ class LnrSolver:
             )
         return dict(info)
 
+    def _capture_s01_eda_prefix_end(self, *, stage_id: str) -> None:
+        if str(stage_id or "").upper() != "S01":
+            return
+        if getattr(self, "_s01_eda_prefix_end_index", None) is None:
+            self._s01_eda_prefix_end_index = self._count_memory_records()
+
     def _restore_protected_eda_prefix_marker(self, agent: Any) -> None:
         if not bool(getattr(self.lhr, "preserve_prefix_and_eda", True)):
             return
         snap = self.stage_snapshots.get("S01")
         if snap is None or not int(getattr(snap, "memory_cut", 0) or 0):
             return
+        raw_source = getattr(snap, "source_event", {})
+        source = raw_source if isinstance(raw_source, dict) else {}
+        captured_end = source.get("protected_eda_end_index")
+        try:
+            end_index = int(captured_end)
+        except (TypeError, ValueError):
+            end_index = int(snap.memory_cut)
+        self._s01_eda_prefix_end_index = end_index
         ctx = getattr(agent, "_memory_ctx", None)
         setter = getattr(ctx, "set_protected_raw_prefix", None)
         if not callable(setter):
@@ -2163,7 +2196,7 @@ class LnrSolver:
         warn_chars = int(getattr(self.lhr, "protected_eda_warn_chars", 50_000) or 0)
         try:
             setter(
-                int(snap.memory_cut),
+                end_index,
                 warn_chars=warn_chars,
                 label="LHR protected EDA fixed prefix",
             )
@@ -4749,6 +4782,7 @@ class LnrSolver:
             "lhr_stage_commit_events.jsonl",
             {"event": "stage_commit_ok", "stage_id": stage_id, "turn": 1},
         )
+        self._capture_s01_eda_prefix_end(stage_id=stage_id)
         if persist_agent_write:
             if persist_stage_prompt:
                 agent.memory.add_message(stage_user_msg)
@@ -6375,6 +6409,7 @@ class LnrSolver:
         persist_agent_write = bool(getattr(self.lhr, "stage_commit_persist_agent_write_to_memory", True)) or bool(
             getattr(self.lhr, "stage_commit_persist_to_memory", False)
         )
+        self._capture_s01_eda_prefix_end(stage_id=stage_id)
         if persist_agent_write:
             mem_text = self._stage_commit_text_memory_message(
                 block_text=block_text,
@@ -6669,6 +6704,10 @@ class LnrSolver:
             "visible_stage_id": stage_id,
             "worker_id": self._worker_uid_prefix(),
         }
+        if stage_id == "S01" and self._s01_eda_prefix_end_index is not None:
+            metric_event_for_snapshot["protected_eda_end_index"] = int(
+                self._s01_eda_prefix_end_index
+            )
         append_stage_event(
             stage_log_dir(self.workspace_dir),
             "stage_capture_begin",
