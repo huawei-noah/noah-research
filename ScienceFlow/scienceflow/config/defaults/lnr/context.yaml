@@ -1,0 +1,23 @@
+# LNR memory, context compaction, and peer summary defaults.
+
+lnr:
+  stage_memory_folding_enabled: true
+  stage_memory_context_budget_chars: 24000
+  stage_memory_rebuild_on_stale: true
+  compact_on_context_limit: true
+  context_limit_min_messages: 5000
+  preserve_prefix_and_eda: true
+  protected_eda_mode: facts
+  protected_eda_facts_max_chars: 6000
+  protected_eda_warn_chars: 50000
+  worker_peer_summary_enabled: true
+  worker_peer_summary_max_chars: 2200
+  context_hygiene_compact_enabled: true
+  context_hygiene_max_stages_without_compact: 25
+  context_hygiene_code_churn_stage_threshold: 10
+  context_hygiene_large_file_repeat_threshold: 10
+  context_hygiene_low_incremental_cache_rate: 0.8
+  context_hygiene_low_cache_window: 5
+  context_hygiene_min_tokens_since_compact: 250000
+  context_hygiene_large_tool_output_chars: 12000
+  context_hygiene_tool_output_min_interval_sec: 1800.0

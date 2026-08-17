@@ -1,0 +1,3 @@
+id: hubmap-kidney-segmentation
+metric:
+  lower_is_better: false

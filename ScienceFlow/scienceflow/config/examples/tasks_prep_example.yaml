@@ -1,0 +1,30 @@
+# Optional legacy prep manifest.
+# Current LNR usually runs directly against a single dataset root such as
+#   ./data/mlebench_all_data/<competition>/prepared/dataset_split/Deep
+# Use prep only when you explicitly need to build or refresh prepared workspace data.
+
+max_concurrent: 2
+time_limit: 1800
+resume: false
+
+defaults:
+  config: scienceflow/config/default.yaml
+  phase: prep
+  workspace_base: ./workspaces/DATE_run/prep_example
+  mlebench_data_root_dir: ./data/mlebench_all_data
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-prep-example
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/public
+    cpu_list: "0-15"
+    gpu_list: ""
+
+  - exp_id: tabular-playground-series-may-2022
+    run_id: tabular-may2022-prep-example
+    input_data_dir: ./data/mlebench_all_data/tabular-playground-series-may-2022/prepared/public
+    cpu_list: "16-31"
+    gpu_list: ""
+
+# Run from repo root:
+#   uv run python -m scienceflow.cli parallel -m scienceflow/config/examples/tasks_prep_example.yaml -j 2 --log-dir parallel_prep_logs

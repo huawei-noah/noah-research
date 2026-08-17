@@ -1,0 +1,11 @@
+# ESTRA meta-agent defaults.
+
+lnr:
+  estra_magent_enabled: false
+  estra_magent_min_parent_runtime_sec: 300.0
+  estra_magent_sidecar_enabled: false
+  estra_magent_sidecar_mode: cpu_only
+  estra_magent_budget_sec: 900.0
+  estra_magent_join_inject_parent: true
+  estra_magent_join_inject_estra: true
+  estra_magent_join_inject_resource_context: true

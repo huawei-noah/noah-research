@@ -1,0 +1,12 @@
+# ScienceFlow default config.
+# Keep this file small; stable category defaults live under config/defaults/.
+# Later keys in this file override included defaults.
+
+include:
+- defaults/agent.yaml
+- defaults/exec.yaml
+- defaults/workspace.yaml
+- defaults/evaluator.yaml
+- defaults/repl.yaml
+- defaults/tool.yaml
+- defaults/lnr/index.yaml

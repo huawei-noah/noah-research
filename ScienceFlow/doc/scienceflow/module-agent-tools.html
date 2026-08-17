@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Agent and Tools</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Agent and Tools</h1><p>The ScienceAgent run loop, tool execution, workspace interaction, and context hygiene.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. ScienceAgent composition</h2>
+      <p><code>core/agent/agent.py</code> is the composition point for a shared agent used by REPL sessions, data preparation, and LNR workers. Behavior is divided by responsibility rather than duplicated across solver modes.</p>
+      <table>
+        <thead><tr><th>Area</th><th>Current responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><code>runtime/run_loop.py</code></td><td>LLM/tool rounds, auto-continue policy, text-only retry, and completion.</td></tr>
+          <tr><td><code>runtime/llm_stream.py</code></td><td>Streaming, retry, repetition detection, and usage tracing.</td></tr>
+          <tr><td><code>runtime/recovery.py</code></td><td>Tool, edit, and runtime-error recovery.</td></tr>
+          <tr><td><code>runtime/lnr_hooks.py</code></td><td>Stage, resource observer, memory, and ESTRA integration points.</td></tr>
+          <tr><td><code>tool_exec/</code></td><td>Single, sequential, parallel bash, and parallel read-only tool scheduling.</td></tr>
+          <tr><td><code>run_control/embedded_fullrun.py</code></td><td>Optional embedded full-run handling and unified final-candidate evaluation.</td></tr>
+          <tr><td><code>memory/</code></td><td>Tool-memory compression, reasoning replay, and resource-feedback folding.</td></tr>
+          <tr><td><code>io/</code></td><td>Human-readable interaction logs and logging policy.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. Tool collection</h2>
+      <p><code>core/tools/tool_collection.py</code> builds the tool surface. The default agent can receive <code>bash</code>, <code>read</code>, <code>grep</code>, <code>glob</code>, and <code>ls</code>, with optional <code>write</code>, <code>edit</code>, <code>skill</code>, and <code>resource_wait</code>.</p>
+      <table>
+        <thead><tr><th>Tool</th><th>Role</th><th>Controls</th></tr></thead>
+        <tbody>
+          <tr><td><code>bash</code></td><td>Run code, training, evaluation, and file-changing commands.</td><td>Sandbox and path guards, timeout, output shaping, command classification, process tracking, resource observation.</td></tr>
+          <tr><td><code>read/grep/glob/ls</code></td><td>Inspect workspace and permitted read-only roots.</td><td>PathGuard, result caps, overlap protection, and parallel read-only scheduling.</td></tr>
+          <tr><td><code>write/edit</code></td><td>Legacy structured file changes when the tool preset enables them.</td><td>Snapshots, syntax-oriented feedback, size limits, and edit diagnostics.</td></tr>
+          <tr><td><code>skill</code></td><td>List and read Markdown skills from a loaded registry.</td><td>Mode/category filtering, visibility limit, aliases, and priority.</td></tr>
+          <tr><td><code>resource_wait</code></td><td>Wait on a resource-runtime token until an unlock condition changes.</td><td>Only available when the observer supplies a valid wait state.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. Bash as an observed execution surface</h2>
+      <p><code>core/tools/bash_tool.py</code> is more than a shell wrapper. It classifies commands, normalizes selected package-install invocations, registers long jobs with the resource observer, streams compact interaction logs, parses <code>SCIENCEFLOW_HB</code> heartbeats and metric history, detects artifact updates, enforces visible GPU boundaries, and returns bounded feedback.</p>
+      <p>Supporting code is split into <code>core/tools/bash/guards.py</code>, <code>output.py</code>, <code>signals.py</code>, <code>progress_signals.py</code>, and <code>spawn_feedback.py</code>. Resource value judgments do not belong in the tool facade; they are made by the task-local resource runtime.</p>
+    </section>
+
+    <section>
+      <h2>4. Context hygiene</h2>
+      <ul>
+        <li>Sliding-window projection prioritizes task and recent execution context.</li>
+        <li>Tool output is capped, deduplicated, summarized, or stored as an artifact reference.</li>
+        <li>Repeated resource feedback is folded by capability state rather than appended as a live summary stream.</li>
+        <li>File snapshots can remain latest-only in the model-visible memory.</li>
+        <li>LNR may trigger context-hygiene compaction after stage count, code churn, repeated large files, low cache efficiency, or large tool output.</li>
+      </ul>
+      <div class="note">Full evaluator, Gate, resource-advisory, and arbiter facts remain in append-only audit files. The main agent receives only the evidence needed to take the next action.</div>
+    </section>
+
+    <section>
+      <h2>5. Workspace protection</h2>
+      <p>Path guards constrain file tools to the workspace and explicitly allowed read-only roots. The REPL and LNR profiles can maintain a lightweight workspace Git baseline for source and Markdown files, while generated data, snapshots, submissions, and runtime logs are excluded from source checkpointing.</p>
+    </section>
+  </main>
+</body>
+</html>

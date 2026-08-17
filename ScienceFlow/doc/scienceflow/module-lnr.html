@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow LNR Long-Horizon Solver</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>LNR Long-Horizon Solver</h1><p>Persistent workers, evidence-gated Stages, recoverable snapshots, ESTRA, folding, resume, and final merge.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Runtime role</h2>
+      <p>LNR is the primary long-horizon execution path in <code>scienceflow/solver/lnr/</code>. It maintains one or more persistent ScienceAgent workers within a wall-clock budget, preserves validated experimental states, periodically reassesses the active route, and produces a set of evaluated final artifacts.</p>
+      <div class="flow">
+        <div class="node">Initialize<small>task, dataset, optional prior workspace</small></div>
+        <div class="node">Explore<small>persistent LLM/tool session</small></div>
+        <div class="node">Evaluate<small>Gate-owned task evaluator</small></div>
+        <div class="node">Commit Stage<small>ledger, facts, snapshot</small></div>
+        <div class="node">ESTRA<small>continue, redirect, or restore</small></div>
+        <div class="node">Resume / Fold<small>bounded active context</small></div>
+        <div class="node">Global Merge<small>validated finals</small></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Worker and workspace layout</h2>
+      <p>The task root owns shared logs and resource state. Each worker receives an indexed execution root and a workspace containing the flat dataset view, source files, artifacts, memory, ledger, and snapshots.</p>
+      <pre class="tree">task_root/
+├── task_logs/
+│   ├── lhr_stage_performance.csv
+│   ├── lhr_events.jsonl
+│   └── resource/resource_events.jsonl
+├── workers/
+│   ├── w00/
+│   │   ├── workspace/
+│   │   │   ├── dataset/
+│   │   │   ├── .run_results.md
+│   │   │   └── .agent_memory/stage_memory/
+│   │   ├── snapshots/
+│   │   └── logs/
+│   └── w01/...
+└── merge/</pre>
+      <p><code>lnr.init_workspace.workspace_path</code> can copy ordinary files from a prior workspace before the new Git baseline is created. Runtime-control directories and the dataset view are not blindly copied. If present, the prior <code>.logs/initial_workspace_state.md</code> is included in the first-user context.</p>
+    </section>
+
+    <section>
+      <h2>3. Candidate-to-Stage transaction</h2>
+      <div class="flow">
+        <div class="node">Candidate Trigger<small>artifact appears or finalization runs</small></div>
+        <div class="node">Duplicate Check<small>compare artifact SHA</small></div>
+        <div class="node">Evaluator<small>produce normalized facts</small></div>
+        <div class="node">Gate Policy<small>accept, retry, or reject</small></div>
+        <div class="node">Stage Commit<small>normalize research metadata</small></div>
+        <div class="node">Snapshot &amp; Row<small>durable atomic result</small></div>
+      </div>
+      <p><code>GateService</code> is the authoritative entry point. In the default <code>primary</code> mode, exactly one evaluation outcome is required and only <code>GateDecision.accepted=true</code> may create a Stage. Missing artifacts, duplicate outcomes, unknown policies, invalid configuration, evaluator exceptions, and failed invariants fail closed.</p>
+      <table>
+        <thead><tr><th><code>stage_source_mode</code></th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td><code>primary</code></td><td>The Gate outcome is the sole Stage-admission decision.</td></tr>
+          <tr><td><code>shadow</code></td><td>Write evaluator events for audit without changing Stage creation.</td></tr>
+          <tr><td><code>adjudicate</code></td><td>Merge evaluator facts into an existing Stage record rather than making evaluator evidence the only source.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Tool callbacks are candidate triggers, not admission decisions. Primary mode suppresses unchanged artifact SHAs before Gate evaluation so a mutable filename cannot create duplicate Stages.</div>
+    </section>
+
+    <section>
+      <h2>4. Stage commit and hidden ledger</h2>
+      <p>After the Gate accepts a candidate, the controller requests a short text-only Stage card. The temporary <code>LNR_STAGE_COMMIT_REQUEST</code> uses <code>tool_choice=none</code>; tool calls are rejected so bookkeeping cannot execute new work.</p>
+      <table>
+        <thead><tr><th>Field</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td><code>STAGE_ID</code></td><td>Normalized Stage identifier.</td></tr>
+          <tr><td><code>METRIC</code></td><td>Metric tied to the accepted evaluator event.</td></tr>
+          <tr><td><code>METRIC_VALIDITY</code></td><td>Evidence quality used by selection and later audit.</td></tr>
+          <tr><td><code>BRIEF</code> / <code>WHY</code></td><td>Concise result and rationale for the research trajectory.</td></tr>
+          <tr><td><code>FILES</code></td><td>Required workspace-relative files. The controller does not infer this list from a full workspace scan or recent mtime.</td></tr>
+        </tbody>
+      </table>
+      <p>The append-only <code>.run_results.md</code> ledger is durable audit state and is not exposed as an ordinary agent-readable file. By default, the normalized Stage entry and simulated append result are projected into agent memory, while the temporary commit prompt itself is not persisted. If model-authored metadata remains malformed after retry, deterministic ledger-valid fallback metadata preserves the accepted evaluator evidence.</p>
+    </section>
+
+    <section>
+      <h2>5. Snapshots and effective facts</h2>
+      <p><code>solver/lnr/snapshot_store.py</code> captures the source and artifact state associated with an accepted Stage. Workspace snapshots are enabled by default and verify content-addressed objects. Large weights or feature files can be stored once in the object store while compatibility views retain the expected selection/audit paths.</p>
+      <p>The ledger remains append-only. Decision-time consumers use effective Stage facts: snapshot <code>source_event</code> metadata may lower metric validity, change selection eligibility, or attach a reason code after the original commit without rewriting history.</p>
+      <div class="note ok">This separation preserves provenance: the historical Gate decision, the agent-authored Stage narrative, and the later selection audit remain distinguishable.</div>
+    </section>
+
+    <section>
+      <h2>6. ESTRA decisions</h2>
+      <p>ESTRA periodically evaluates the current trajectory from structured Stage evidence, score summary, peer evidence, recent context, and bottleneck information. Each decision is made on two axes. The <strong>start point</strong> selects the execution base for the next research segment: the current workspace files (<code>current_workspace</code>), or a selected historical Stage snapshot (<code>previous_stage</code>). The <strong>intent</strong> selects the direction from that base: <code>continue</code> keeps deepening the current route when it is still reasonable, while <code>redirect</code> steers the next segment around the stated bottleneck when recent work has become shallow or repetitive. A redirect decision carries a short <code>redirect_focus</code> note naming the new focus.</p>
+      <table>
+        <thead><tr><th>Start point</th><th>Intent</th><th>Normalized action</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>current_workspace</code></td><td><code>continue</code></td><td><code>keep_current</code></td><td>Compact context and deepen the current route.</td></tr>
+          <tr><td><code>current_workspace</code></td><td><code>redirect</code></td><td><code>keep_but_redirect</code></td><td>Keep files but refocus the next experiment.</td></tr>
+          <tr><td><code>previous_stage</code></td><td><code>continue</code></td><td><code>switch_stage</code></td><td>Restore a named Stage snapshot, then continue from that state.</td></tr>
+          <tr><td><code>previous_stage</code></td><td><code>redirect</code></td><td><code>switch_stage</code></td><td>Restore a named Stage snapshot, then refocus the next experiment from that state.</td></tr>
+        </tbody>
+      </table>
+      <p>When the two axes are combined, the start point dominates: any decision anchored at a <code>previous_stage</code> normalizes to <code>switch_stage</code>, while the recorded intent still steers how the next research segment is focused after the restore.</p>
+      <p>The default trigger interval is two accepted Stages. Context-limit and context-hygiene paths can also request ESTRA or deterministic compaction. Invalid decisions fall back to a safe current-workspace compact action rather than corrupting the run.</p>
+    </section>
+
+    <section>
+      <h2>7. Stage-memory folding</h2>
+      <p><code>solver/lnr/stage_memory.py</code> builds a prompt-safe view from effective Stage cards. The raw ledger remains the source of truth; folding is a persistent cache for active context.</p>
+      <ol>
+        <li>If all Stage cards fit within <code>stage_memory_context_budget_chars</code> (24,000 by default), render them directly.</li>
+        <li>Otherwise keep the most recent three cards raw and identify verification-critical target/best cards.</li>
+        <li>Fold the older prefix into an <code>L</code>-level summary stored under <code>.agent_memory/stage_memory/</code>.</li>
+        <li>If the view is still too large, fold summaries into a <code>G</code>-level summary before clipping.</li>
+        <li>Persist summary identifiers, verification Stage ids, the current segment, and folding events for reuse and audit.</li>
+      </ol>
+      <div class="note">Folding does not delete Stage cards or snapshots. “Unfolding” means retrieving a preserved raw verification card or restoring the corresponding Stage snapshot; it is not lossy reconstruction from a summary.</div>
+    </section>
+
+    <section>
+      <h2>8. Resume</h2>
+      <table>
+        <thead><tr><th>Level</th><th>Current behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Task resume</td><td>ParallelRunner reuses the task workspace and derives the remaining/fresh budget from <code>task_logs/state.json</code>.</td></tr>
+          <tr><td>Agent-memory resume</td><td>LNR reloads persisted ScienceAgent memory and chooses between a new LLM round and a pending tool continuation.</td></tr>
+          <tr><td>Tool-cursor resume</td><td>If the memory tail contains one assistant tool call without a result, the tool call is executed directly and its result is written before the next LLM turn.</td></tr>
+        </tbody>
+      </table>
+      <p>Resume events are audit records and are not appended as synthetic user messages. Multiple pending tail tool calls are detected and audited but are not automatically replayed. <code>scienceflow replay-prepare</code> can create an isolated reproduction for a selected pending call.</p>
+    </section>
+
+    <section>
+      <h2>9. Multi-worker reduction and finals</h2>
+      <p>Workers share task-level score and resource evidence but retain separate workspaces and agent memories. At finalization, <code>global_merge</code> collects selection-eligible Stage artifacts, creates a bounded merge workspace, and asks the live owner worker (W00 by default) to produce the configured number of distinct finals. Every final directory is evaluated through the same Gate-owned evaluator service, and structured fallback promotes ranked valid candidates when necessary.</p>
+      <p>Default selection settings enable merge, reserve up to 900 seconds for global merge, and request exactly three finals. The output is a set under <code>merge/finals/final_*</code>, not a single mutable winner file.</p>
+    </section>
+
+    <section>
+      <h2>10. Resource integration</h2>
+      <p>Each worker BashTool publishes job facts to the shared task-local resource runtime. LNR injects task and worker CPU lists, current budget context, resource feedback contracts, and resource observer hooks without moving research-route decisions into the control plane. Stage and score evidence are available to the resource arbiter as facts when it evaluates opportunity cost or a bounded proof window.</p>
+    </section>
+  </main>
+</body>
+</html>

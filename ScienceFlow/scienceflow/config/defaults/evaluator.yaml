@@ -1,0 +1,34 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Task-neutral evaluator defaults. Registered task packages resolve the profile,
+# backend, candidate artifact, and metric contract during configuration.
+
+evaluator:
+  enabled: true
+  task_profile: auto
+  backend: auto
+  stage_source_mode: primary
+  event_log: evaluator_events.jsonl
+  cache_log: evaluator_cache.jsonl
+  candidate:
+    artifact: ''
+    artifact_kind: ''
+    commit_file: ''
+    require_sha: false
+    scan_mode: root_file
+    emit_missing_artifact_event: false
+  metric:
+    name: metric
+    lower_is_better: null
+    type: ''
+    regex: ''
+    json_path: ''
+    selection_requires_direction: true
+  command:
+    evaluator_command: ''
+    python_executable: ''
+    environment_path: ''
+    timeout_sec: 300
+    cwd: workspace
+    env: {}
+    stdout_tail_chars: 4000
+    stderr_tail_chars: 4000

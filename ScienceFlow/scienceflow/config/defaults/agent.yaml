@@ -1,0 +1,47 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Override this block in your run manifest or custom config when needed.
+
+agent:
+  code:
+    model: deepseek-v4-flash
+    models: []
+    temp: 0.7
+    base_url: ''
+    api_key: ''
+    max_tokens: 32768
+    api_keys: []
+    base_urls: []
+    http_timeout: 300
+    headers: {}
+    use_proxy: false
+  feedback:
+    model: deepseek-v4-flash
+    models: []
+    temp: 0.3
+    base_url: ''
+    api_key: ''
+    max_tokens: 16384
+    api_keys: []
+    base_urls: []
+    http_timeout: 300
+    headers: {}
+    use_proxy: false
+  # USD per 1M tokens. DeepSeek official pricing checked on 2026-06-19:
+  # https://api-docs.deepseek.com/quick_start/pricing
+  llm_prices:
+    deepseek-v4-flash:
+      cached_input_usd_per_1m: 0.0028
+      input_usd_per_1m: 0.14
+      output_usd_per_1m: 0.28
+    deepseek-chat:
+      cached_input_usd_per_1m: 0.0028
+      input_usd_per_1m: 0.14
+      output_usd_per_1m: 0.28
+    deepseek-reasoner:
+      cached_input_usd_per_1m: 0.0028
+      input_usd_per_1m: 0.14
+      output_usd_per_1m: 0.28
+    deepseek-v4-pro:
+      cached_input_usd_per_1m: 0.003625
+      input_usd_per_1m: 0.435
+      output_usd_per_1m: 0.87

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Resource Management</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Resource Management</h1><p>A state-machine control plane for admission, observation, advisory, arbitration, guarded intervention, and recovery.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Responsibility boundary</h2>
+      <p>The resource control plane combines reusable safety primitives in <code>scienceflow/safety/resource/</code> with the LNR task-local runtime in <code>solver/lnr/resource_runtime/</code>. It observes Bash jobs, enforces resource boundaries, manages GPU ownership and waiters, reviews execution progress, and returns compact operational feedback.</p>
+      <div class="note">Resource management decides whether and how an execution should receive more time or scarce resources. It does not select the scientific model, feature set, optimization method, or research hypothesis for the main agent.</div>
+    </section>
+
+    <section>
+      <h2>2. Control loop</h2>
+      <div class="flow">
+        <div class="node">Observe<small>process, CPU/GPU, output, metric, artifact</small></div>
+        <div class="node">Review State<small>heartbeat state machine</small></div>
+        <div class="node">Boundary<small>stall, value, progress, pressure, expiry</small></div>
+        <div class="node">Advisory<small>owning agent preference</small></div>
+        <div class="node">Arbiter<small>value and opportunity cost</small></div>
+        <div class="node">Strict Gate<small>target and evidence fuse</small></div>
+        <div class="node">Execution<small>KILL, TIMEBOX, NO_ACTION</small></div>
+      </div>
+      <p>The default <code>resource_smart_llm</code> profile uses a monitor-first loop. Deterministic code identifies hard boundaries and decides when a review is warranted. The owning-agent advisory and resource arbiter reason over a compact fact packet, and a strict execution gate validates any destructive intervention.</p>
+    </section>
+
+    <section>
+      <h2>3. User-facing modes</h2>
+      <table>
+        <thead><tr><th><code>resource_control_mode</code></th><th>Enabled control surface</th></tr></thead>
+        <tbody>
+          <tr><td><code>off</code></td><td>Resource runtime, monitoring, review state, queue, arbiter, advisory, observation, and sharing are disabled.</td></tr>
+          <tr><td><code>resource_smart_policy</code></td><td>Deterministic runtime, queue, review state, and policy arbiter are enabled; admission LLM, owning-agent advisory, and GPU sharing are disabled.</td></tr>
+          <tr><td><code>resource_smart_llm</code></td><td>The full system is enabled: admission LLM, LLM resource arbiter, owning-agent advisory, task-local queue, observation, and GPU sharing.</td></tr>
+        </tbody>
+      </table>
+      <p><code>config/resource_modes.py</code> expands the selected mode into low-level switches. Explicit keys in the same LNR mapping take precedence, allowing narrow expert overrides without duplicating a complete profile.</p>
+    </section>
+
+    <section>
+      <h2>4. Task-local multi-worker control</h2>
+      <p>All workers in one LNR task share a task-local resource runtime, unified event store, GPU lease store, pressure state, history, and waiter queue. No worker is permanently the “main” resource holder. The current lease owner is determined by actual admission and can change as workers explore stronger routes.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Mechanism</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Task CPU boundary</td><td>Manifest <code>cpu_list</code> and <code>SCIENCEFLOW_TASK_CPU_LIST</code></td><td>Constrains the complete task process tree.</td></tr>
+          <tr><td>Worker CPU slice</td><td><code>SCIENCEFLOW_WORKER_CPU_LIST</code>, <code>SCIENCEFLOW_CPU_LIST</code>, <code>_SCIENCEFLOW_CPU_SET</code></td><td>LNR subdivides the task CPUs across workers and caps OpenMP threads.</td></tr>
+          <tr><td>GPU visibility</td><td>Task <code>gpu_list</code> and configured <code>resource_gpu_pool</code></td><td>Establish the hard set of devices the task may use.</td></tr>
+          <tr><td>GPU ownership</td><td>Task-local lease, queue, sharing, and TTL</td><td>Coordinates heavy, test-time, feature, and secondary jobs inside the allowed pool.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Startup admission and monitored trials</h2>
+      <p>The default startup policy is <code>trial_first</code>. Admission first checks deterministic hard boundaries and atomic lease availability. Uncertain or historical soft blocks can become <code>OBSERVE_THEN_RUN</code> monitored trials, allowing the runtime to gather current evidence before making a value judgment.</p>
+      <table>
+        <thead><tr><th>Condition</th><th>Typical result</th></tr></thead>
+        <tbody>
+          <tr><td>GPU visibility/pool violation, unsafe workspace boundary, invalid deliverable preflight, or explicit stop</td><td>Hard block before execution.</td></tr>
+          <tr><td>Stale pressure, soft post-feedback restriction, active-plan concern, or historical queue timeout</td><td>Monitored trial when a safe task-local lease is available.</td></tr>
+          <tr><td>Capacity exhausted, incompatible active class, class limit, or an earlier waiter</td><td>Pending queue, managed wait, or sharing review.</td></tr>
+          <tr><td>Blocked state with several safe candidate devices</td><td>Admission arbiter chooses <code>RUN_NOW</code>, <code>OBSERVE_THEN_RUN</code>, <code>PENDING</code>, or <code>REPLAN</code> within the task-local candidate set.</td></tr>
+        </tbody>
+      </table>
+      <div class="note ok">A monitored trial is still resource-governed. It acquires a lease, records trial events, and enters normal heartbeat review; it is not a bypass around admission.</div>
+    </section>
+
+    <section>
+      <h2>6. Observed execution facts</h2>
+      <p>BashTool and the observer build a time-consistent snapshot rather than treating a growing log file as sufficient evidence of value.</p>
+      <table>
+        <thead><tr><th>Fact</th><th>Current semantics</th></tr></thead>
+        <tbody>
+          <tr><td>Process liveness</td><td>Actual process tree, exit status, CPU activity, elapsed time, and target identity.</td></tr>
+          <tr><td>GPU utilization</td><td>Visible device, memory, utilization samples, lease role, and pressure state.</td></tr>
+          <tr><td><code>stdout_observation</code></td><td>Distinguishes direct stdout from redirected-log activity; stale redirected logs do not become fresh stdout progress.</td></tr>
+          <tr><td>Metric history</td><td>Comparable metric values, scope, direction, changes, best-so-far relation, and final-score signals.</td></tr>
+          <tr><td><code>artifact_updates</code></td><td>Current-run file growth and age. Logs are context, not deliverables; recent non-log artifacts may be value signals.</td></tr>
+          <tr><td><code>recoverability</code></td><td>Whether the current job has a current-run, stable artifact that lowers stop cost. Ages are refreshed when each snapshot is built.</td></tr>
+          <tr><td>Opportunity cost</td><td>Active waiter pressure, blocked worker count, queue age, holder role, and estimated unlock conditions.</td></tr>
+        </tbody>
+      </table>
+      <p>Artifact, recoverability, and nested update ages share the same elapsed-time basis. This avoids decisions where a top-level artifact appears stale while a nested recoverability record still appears fresh.</p>
+    </section>
+
+    <section>
+      <h2>7. Review state machine</h2>
+      <p><code>safety/resource/review_signal.py</code> compresses raw observations into <code>ResourceReviewSignal</code>. <code>review_state.py</code> advances one state per job, and <code>review_boundary.py</code> decides when to request a review.</p>
+      <table>
+        <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>WARMUP</code></td><td>Collect evidence before route-value no-progress counters become active.</td></tr>
+          <tr><td><code>RUNNING_HEALTHY</code></td><td>Active work and recent useful progress support continued observation.</td></tr>
+          <tr><td><code>RUNNING_NO_PROGRESS</code></td><td>Work is active but the configured useful-progress window has not advanced.</td></tr>
+          <tr><td><code>STALL_SUSPECT</code></td><td>Repeated inactivity lacks CPU/GPU/output/artifact counter-evidence.</td></tr>
+          <tr><td><code>TIMEBOX_ACTIVE</code></td><td>A bounded proof window is running until its clear condition, pressure interrupt, or deadline.</td></tr>
+          <tr><td><code>ACTIONED</code></td><td>A terminal control action has been executed.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Boundary</th><th>Trigger role</th></tr></thead>
+        <tbody>
+          <tr><td><code>stall</code></td><td>Inactive windows support a possible stop review.</td></tr>
+          <tr><td><code>route_value</code></td><td>Active execution has not produced useful progress for the configured value window.</td></tr>
+          <tr><td><code>progress_window</code></td><td>Useful progress exists, but a low-frequency value review is due.</td></tr>
+          <tr><td><code>resource_pressure</code></td><td>New contention can interrupt a long proof window.</td></tr>
+          <tr><td><code>timebox_expired</code></td><td>The previous bounded continuation must prove its named clear condition.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>8. Advisory, arbiter, and strict gate</h2>
+      <p>When the owning main agent is blocked on a Bash result, the control plane can ask a narrow no-tools question through a side channel. The advisory reports a preference such as <code>safe_to_stop</code>, <code>timebox_continue</code>, <code>continue</code>, or <code>unknown</code>, plus confidence and status. The raw exchange is audited but not inserted into the live research transcript.</p>
+      <p>The resource arbiter then evaluates progress, metric history, remaining budget, ETA, recoverability, waiter pressure, and prior review commitments. <code>review_outcome.py</code> normalizes the value-review execution surface to:</p>
+      <ul>
+        <li><code>KILL</code> — request termination and replan feedback.</li>
+        <li><code>TIMEBOX</code> — continue for a bounded interval with a concrete <code>clear_on</code> condition.</li>
+        <li><code>NO_ACTION</code> — continue observation, normally without main-agent feedback.</li>
+      </ul>
+      <p><code>resource_runtime/review/arbiter_gate.py</code> is the execution fuse. It validates action class, target job, lease ownership, advisory/evidence support, confidence, deliverable state, and secondary-only targeting before an actual kill is allowed.</p>
+      <div class="note warn">An advisory is evidence, not authorization. A discretionary kill normally requires owning-agent advisory support, high-confidence arbiter output, and strict-gate approval. Hard safety boundaries remain separate.</div>
+    </section>
+
+    <section>
+      <h2>9. Timeboxes and proof windows</h2>
+      <p>A timebox names a measurable clear condition such as metric update, artifact growth, structured progress advance, active-work recovery, or cleared opportunity cost. <code>compute_timebox_sec</code> combines observed cadence, heartbeat, configured minimum/maximum, remaining-budget fraction, and waiter pressure.</p>
+      <p>During <code>TIMEBOX_ACTIVE</code>, ordinary route-value retriggers are frozen. If the clear condition is met, intervention pressure falls. If a proof window expires without useful progress, its failure is recorded. After <code>resource_review_max_proof_windows</code> failures, the proposal carries <code>resource_budget_escalation.kind=final_resource_review</code>; the resource arbiter makes one final budget decision from structured facts without repeating owning-agent advisory.</p>
+    </section>
+
+    <section>
+      <h2>10. GPU queue, sharing, and release</h2>
+      <table>
+        <thead><tr><th>Mechanism</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Exclusive lease</td><td>A worker atomically acquires a task-local device and BashTool receives the corresponding visible-device environment.</td></tr>
+          <tr><td>Waiter queue</td><td>Blocked requests retain queue position, holder, ETA/unlock facts, priority, and expiry rather than busy-waiting.</td></tr>
+          <tr><td>Managed wait</td><td>The agent may use <code>resource_wait</code> with a runtime-provided token and wake when the capability state changes.</td></tr>
+          <tr><td>Shared lease</td><td>When utilization and memory headroom permit, a waiter may receive a revocable secondary lease.</td></tr>
+          <tr><td>Primary protection</td><td>If sharing threatens the primary holder, the secondary is revoked first.</td></tr>
+          <tr><td>Idle release</td><td>An idle lease can be released after warmup and sample thresholds, then conservative admission accounts for residual memory.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>11. Feedback and audit hygiene</h2>
+      <p>Complete control-plane events are appended to <code>task_logs/resource/resource_events.jsonl</code>. The main agent receives only actionable wait, share, replan, kill, or compact review facts through the current tool result. <code>ResourceFeedbackMemoryDeduper</code> folds repeated capability states and does not create a continuously changing live-summary slot.</p>
+      <table>
+        <thead><tr><th>Channel</th><th>Content</th></tr></thead>
+        <tbody>
+          <tr><td>Resource event log</td><td>Admission, trial, lease/share/wait, review signal/state/boundary, advisory audit, arbiter decision, strict gate, and execution.</td></tr>
+          <tr><td>Main-agent memory</td><td>Only the compact operational consequence needed for the next action; repeated state is folded.</td></tr>
+          <tr><td>Monitor</td><td>Pending/wait/share state, timeboxes, active jobs, <code>kill_req</code>, and actual <code>kill_exec</code>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>12. Current file ownership</h2>
+      <pre class="tree">scienceflow/
+├── safety/resource/
+│   ├── review_signal.py      # Stable observed-fact summary
+│   ├── review_state.py       # Per-job state machine and timebox sizing
+│   ├── review_boundary.py    # Review trigger types
+│   ├── review_outcome.py     # KILL / TIMEBOX / NO_ACTION normalization
+│   └── ...                   # Process, completion, artifact, lifecycle helpers
+└── solver/lnr/resource_runtime/
+    ├── runtime.py            # Task-local coordination
+    ├── observer/controller.py# Bash-job observation and event production
+    ├── admission.py          # Startup admission arbiter
+    ├── gpu_lease_store.py    # Lease persistence
+    ├── gpu_sharing.py        # Sharing policy and configuration
+    ├── unified_store.py      # Canonical resource event store
+    └── review/
+        ├── arbiter.py        # Resource-value decision
+        ├── arbiter_gate.py   # Pre-execution strict gate
+        ├── execution_facts.py
+        ├── progress.py
+        ├── research_cadence.py
+        └── state_generation.py</pre>
+    </section>
+
+    <section>
+      <h2>13. Important defaults</h2>
+      <table>
+        <thead><tr><th>Setting</th><th>Default</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td><code>resource_startup_policy</code></td><td><code>trial_first</code></td><td>Convert eligible soft startup blocks into monitored trials.</td></tr>
+          <tr><td><code>resource_review_heartbeat_sec</code></td><td><code>60</code></td><td>Review-state heartbeat.</td></tr>
+          <tr><td><code>resource_review_warmup_windows</code></td><td><code>10</code></td><td>Warmup before route-value no-progress counting.</td></tr>
+          <tr><td><code>resource_review_inactive_windows</code></td><td><code>3</code></td><td>Inactive windows before stall suspicion.</td></tr>
+          <tr><td><code>resource_review_value_windows</code></td><td><code>5</code></td><td>Active-work windows without useful progress before route-value review.</td></tr>
+          <tr><td><code>resource_review_progress_event_min_windows</code></td><td><code>5</code></td><td>Minimum spacing between progress-based reviews.</td></tr>
+          <tr><td><code>resource_review_timebox_windows</code></td><td><code>10</code></td><td>Fallback timebox length in heartbeat windows.</td></tr>
+          <tr><td><code>resource_review_min_timebox_sec</code> / <code>max_timebox_sec</code></td><td><code>60</code> / <code>1800</code></td><td>Explicit timebox bounds.</td></tr>
+          <tr><td><code>resource_review_timebox_budget_fraction</code></td><td><code>0.10</code></td><td>Maximum fraction of remaining budget used by a proof window.</td></tr>
+          <tr><td><code>resource_review_max_proof_windows</code></td><td><code>2</code></td><td>Failed proof windows before final resource review.</td></tr>
+          <tr><td><code>resource_gpu_queue_max_wait_sec</code></td><td><code>1800</code></td><td>Maximum configured GPU queue wait.</td></tr>
+          <tr><td><code>resource_gpu_lease_ttl_sec</code></td><td><code>7200</code></td><td>Lease expiry horizon.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

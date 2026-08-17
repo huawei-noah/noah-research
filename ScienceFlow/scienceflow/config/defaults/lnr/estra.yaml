@@ -1,0 +1,21 @@
+# ESTRA trigger, evidence, and compact defaults.
+
+lnr:
+  estra_enabled: true
+  estra_trigger_stage_count: 2
+  force_estra_after_stage_count: 0
+  force_estra_target_stage: ''
+  force_estra_capture_duplicate_submissions: false
+  estra_use_main_agent_context: true
+  estra_peer_evidence_enabled: true
+  estra_peer_evidence_max_chars: 1400
+  estra_peer_evidence_min_delta_ratio: 0.0
+  estra_backtrack_reflection_enabled: true
+  estra_backtrack_reflection_max_chars: 1000
+  estra_reflection_prompt_enabled: true
+  tail_summary_max_chars: 1200
+  estra_compact_enabled: true
+  estra_compact_max_chars: 1200
+  state_packet_max_chars: 12000
+  state_packet_stage_card_max_chars: 420
+  state_packet_archived_branch_max_chars: 1500

@@ -1,0 +1,17 @@
+id: kttsp
+category: opt_solver
+profile: opt_solver
+description: description_lite.md
+artifact:
+  path: artifacts/best_solution.json
+  kind: json_solution
+metric:
+  name: mission_duration_days
+  lower_is_better: true
+  type: benchmark
+evaluator:
+  entrypoint: evaluator.py:evaluate
+  timeout_sec: 300
+  visible_to_agent: false
+  problem: problem.kttsp
+  max_revs: 20

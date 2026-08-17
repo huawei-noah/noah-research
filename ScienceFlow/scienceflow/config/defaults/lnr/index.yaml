@@ -1,0 +1,18 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Keep LNR defaults split by feature area so local overrides can include only the
+# module they intend to replace.
+
+include:
+- runtime.yaml
+- workspace.yaml
+- stage.yaml
+- skills.yaml
+- snapshots.yaml
+- estra.yaml
+- context.yaml
+- selection.yaml
+- resource-monitor.yaml
+- resource-gpu.yaml
+- resource-guards.yaml
+- resource-arbiter.yaml
+- estra-magent.yaml

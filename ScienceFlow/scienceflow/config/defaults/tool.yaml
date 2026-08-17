@@ -1,0 +1,64 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Override this block in your run manifest or custom config when needed.
+
+tool:
+  exec_feedback_max_chars: 3000
+  sliding_window_budget_chars: 240000
+  sliding_window_priority_enabled: true
+  mid_run_compact_enabled: false
+  round_budget_prompt_cap: 15
+  scienceflow_tools_sandbox: true
+  parallel_bash_enabled: true
+  parallel_llm_tool_calls: true
+  path_guard_extra_roots: []
+  scienceflow_llm_stream_timeout_sec: 1800
+  stream_repetition_detection: true
+  stream_repetition_window_chars: 4000
+  stream_repetition_ngram_len: 150
+  stream_repetition_max_repeats: 3
+  stream_max_output_chars_soft: 30000
+  stream_repetition_retry_max: 2
+  scienceflow_bash_timeout_sec: 14400
+  scienceflow_bash_timeout_slow_sec: 14400
+  scienceflow_stdout_max_chars: 32768
+  scienceflow_interaction_log_level: minimal
+  scienceflow_interaction_log_full: false
+  scienceflow_interaction_log_color: true
+  scienceflow_interaction_log_llm_stream: false
+  bash_output_dedup_enabled: true
+  bash_output_dedup_min_repeat: 3
+  bash_output_dedup_summary_prefix: '[log-dedup]'
+  bash_output_dedup_apply_to_memory: true
+  tool_memory_compression: true
+  grep_max_results_lines: 50
+  msg0_compress_body: false
+  bash_success_tail_lines: 50
+  bash_success_tail_lines_solution: 8
+  bash_success_tail_lines_test: 120
+  bash_success_tail_lines_readonly: 30
+  bash_success_tail_lines_install: 5
+  read_success_max_lines: 200
+  write_auto_snapshot_enabled: true
+  write_auto_snapshot_paths: []
+  write_auto_snapshot_code_extensions:
+  - .py
+  write_auto_snapshot_max_lines: 400
+  write_auto_snapshot_max_chars: 4000
+  write_auto_snapshot_changed_context_lines: 10
+  write_auto_snapshot_symbol_body_lines: 3
+  read_overlap_guard_enabled: true
+  rotating_runtime_error_threshold: 3
+  rotating_distinct_types_min: 2
+  no_success_run_soft_threshold: 6
+  no_success_run_hard_threshold: 12
+  edit_short_old_str_chars: 40
+  write_return_full_max_chars: 12000
+  write_return_full_max_lines: 250
+  write_return_head_tail_lines: 40
+  edit_return_full_max_chars: 12000
+  edit_return_full_max_lines: 250
+  edit_return_head_tail_lines: 40
+  edit_return_change_ctx_lines: 8
+  edit_failure_top_k_candidates: 3
+  edit_failure_diag_max_chars: 2000
+  file_snapshot_latest_only: true

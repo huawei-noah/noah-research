@@ -1,0 +1,22 @@
+# Canonical compact REPL manifest. Runtime defaults come from
+# scienceflow/config/default.yaml; this file only keeps run-specific overrides.
+#
+# Launch:
+#   uv run python -m scienceflow.cli repl -m scripts/repl.yaml
+#
+# If the task needs semantic data preparation, run scripts/prep.yaml first and
+# point input_data_dir below to that prep workspace's dataset/ directory.
+
+defaults:
+  config: scienceflow/config/default.yaml
+  workspace_base: ./workspaces/manual_repl
+  qa_max_steps: 100000
+  scienceflow_bash_timeout_sec: 3600
+  scienceflow_bash_timeout_slow_sec: 3600
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-repl
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/public
+    cpu_list: "0-31"
+    gpu_list: "auto"

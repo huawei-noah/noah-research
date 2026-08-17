@@ -1,0 +1,13 @@
+# Worker workspace and git checkpoint defaults.
+
+lnr:
+  init_workspace:
+    workspace_path: ''
+  workspace_git_enabled: true
+  workspace_git_track_globs:
+  - '*.py'
+  - '*.md'
+  workspace_git_initial_commit: true
+  workspace_git_auto_checkpoint: true
+  workspace_git_auto_review: false
+  worker_dirname: workers

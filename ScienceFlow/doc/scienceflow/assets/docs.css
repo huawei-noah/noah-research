@@ -1,0 +1,40 @@
+:root {
+  --bg: #f7f8fa;
+  --panel: #ffffff;
+  --ink: #1f2937;
+  --muted: #64748b;
+  --line: #d9e0ea;
+  --brand: #2563eb;
+  --soft: #eef4ff;
+  --ok: #047857;
+  --warn: #b45309;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.65; }
+header { background: #101827; color: white; padding: 28px 36px; }
+header h1 { margin: 0 0 6px; font-size: 30px; }
+header p { margin: 0; color: #cbd5e1; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 36px; background: white; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+nav a { color: #1d4ed8; text-decoration: none; border: 1px solid #bfdbfe; background: #eff6ff; padding: 5px 9px; border-radius: 6px; font-size: 14px; }
+main { max-width: 1160px; margin: 0 auto; padding: 28px 24px 56px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px; margin: 18px 0; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
+h2 { margin: 0 0 12px; font-size: 22px; }
+h3 { margin: 18px 0 8px; font-size: 17px; }
+code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+pre { background: #0f172a; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow: auto; line-height: 1.5; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f8fafc; }
+ul, ol { padding-left: 22px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfdff; }
+.card h3 { margin-top: 0; }
+.flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; align-items: stretch; }
+.node { background: var(--soft); border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; text-align: center; font-weight: 600; }
+.node small { display: block; color: #475569; font-weight: 400; }
+.note { border-left: 4px solid var(--brand); padding: 10px 12px; background: #f8fbff; color: #334155; }
+.note.warn { border-left-color: var(--warn); background: #fff7ed; }
+.note.ok { border-left-color: var(--ok); background: #f0fdf4; }
+.tree { white-space: pre; overflow: auto; }
+footer { color: var(--muted); font-size: 13px; margin-top: 24px; }
+@media (max-width: 800px) { nav { position: static; padding: 12px 20px; } header { padding: 24px 20px; } main { padding: 20px 14px 40px; } }

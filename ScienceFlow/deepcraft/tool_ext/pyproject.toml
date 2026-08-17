@@ -1,0 +1,27 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name    = "deepcraft-tool-ext"
+version = "0.1.0"
+description = "MinG"
+
+readme  = "README.md"
+authors = [
+    { name = "Mingming Zhao", email = "zhaomingming9@huawei.com" }
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "deepcraft-core",
+    "googlesearch-python",
+    "aiofiles",
+    "browser-use==0.3.2",
+    "ipython>=8.0",
+]

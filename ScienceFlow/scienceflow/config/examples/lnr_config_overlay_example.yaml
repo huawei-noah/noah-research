@@ -1,0 +1,37 @@
+# Copy this file when you want a reusable run profile.
+# It is a real Config YAML: defaults are inherited from ../default.yaml.
+
+include: ../default.yaml
+
+agent:
+  code:
+    # You may also set CODE_MODEL / CODE_API_KEYS / CODE_BASE_URLS in .env.
+    model: gpt-4o
+  feedback:
+    model: gpt-4o
+
+repl:
+  repl_profile: lite
+  repl_tool_preset: bash_write
+  repl_workspace_git_enabled: true
+  repl_workspace_git_auto_checkpoint: true
+  repl_bash_observation_summary: true
+
+tool:
+  parallel_bash_enabled: true
+  parallel_llm_tool_calls: true
+  scienceflow_interaction_log_level: minimal
+
+lnr:
+  wall_clock_budget_sec: 43200
+  max_steps: 500
+  num_workers: 2
+  omp_threads_cap: 8
+  stage_capture_enabled: true
+  stage_commit_require_metric: true
+  metric_validation_leakage_guard_enabled: true
+  estra_enabled: true
+  estra_trigger_stage_count: 2
+  estra_compact_enabled: true
+  compact_on_context_limit: true
+  resource_control_mode: resource_smart_llm

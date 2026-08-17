@@ -1,0 +1,15 @@
+category: ml
+provider: mlebench
+profile: mlebench
+description: description_lite.md
+artifact:
+  path: submission.csv
+  kind: submission_csv
+metric:
+  name: Final Validation Score
+  lower_is_better: null
+  type: holdout
+evaluator:
+  entrypoint: ../_shared/evaluator.py:evaluate
+  timeout_sec: 300
+  visible_to_agent: false

@@ -1,0 +1,3 @@
+id: cassava-leaf-disease-classification
+metric:
+  lower_is_better: false

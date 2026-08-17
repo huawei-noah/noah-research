@@ -1,0 +1,10 @@
+# Core LNR runtime defaults.
+
+lnr:
+  wall_clock_budget_sec: 3600
+  max_steps: 500
+  num_workers: 1
+  seed: 0
+  omp_threads_cap: 8
+  code_organization_hint: beyond_mfiles
+  clean_repl_mode: true

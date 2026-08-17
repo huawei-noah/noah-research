@@ -1,0 +1,35 @@
+# Current LNR parallel manifest template.
+# Run from repo root:
+#   uv run python -m scienceflow.cli parallel -m scienceflow/config/examples/tasks_lnr_parallel_example.yaml -j 1 --log-dir parallel_lnr_logs
+# Monitor:
+#   uv run python -m scienceflow.cli monitor --manifest scienceflow/config/examples/tasks_lnr_parallel_example.yaml --refresh 2
+
+max_concurrent: 1
+time_limit: 45000
+resume: true
+
+# Top-level lnr values override defaults.config for every task in this manifest.
+lnr:
+  wall_clock_budget_sec: 43200
+  num_workers: 2
+  max_steps: 500
+
+defaults:
+  config: scienceflow/config/examples/lnr_config_overlay_example.yaml
+  phase: run
+  type: lnr
+  workspace_base: ./workspaces/DATE_run/example_lnr_run
+  mlebench_data_root_dir: ./data/mlebench_all_data
+  workspace:
+    enable_time_trace: true
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-lnr-w2-gpu0-12h-example
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/dataset_split/Deep
+    cpu_list: "0-31"
+    gpu_list: "0"
+
+# Add more tasks by copying the item above and changing exp_id/run_id/input_data_dir/cpu_list/gpu_list.
+# Result task root:
+#   <workspace_base>/<run_id>/<exp_id>/
