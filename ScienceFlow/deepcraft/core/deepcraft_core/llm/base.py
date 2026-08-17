@@ -24,6 +24,14 @@ from ..tracker.token_usage import TokenUsageTracker
 
 
 @dataclass
+class GuardStreamChunk:
+    """Stream text consumed by guards but hidden from user-facing output and logs."""
+
+    text: str
+    channel: str
+
+
+@dataclass
 class StreamHandle:
     """Per-call streaming control — owns the chunk queue and interrupt signal.
 
@@ -71,6 +79,11 @@ class StreamHandle:
         """Enqueue a chunk.  No-op after ``interrupt`` / ``stop`` to prevent late writes."""
         if not self._event.is_set():
             await self.queue.put(chunk)
+
+    async def put_guard(self, chunk: str, *, channel: str) -> None:
+        """Enqueue hidden text for stream guards without rendering or logging it."""
+        if chunk and not self._event.is_set():
+            await self.queue.put(GuardStreamChunk(text=chunk, channel=channel))
 
     def finish(self) -> None:
         """Signal normal end-of-stream.  Idempotent (at most one EOS sentinel)."""

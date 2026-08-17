@@ -821,15 +821,14 @@ class LnrSolver:
                         "Return exactly one RESOURCE_ADVISORY_RESPONSE block. "
                         "Do not call tools, write files, or continue experiments."
                     ))
-                    handle = StreamHandle()
-                    assistant_msg = await agent.llm.ask_tool_stream(
+                    assistant_msg = await self._ask_agent_tool_stream_guarded(
+                        agent,
                         messages=messages,
                         system_msgs=system_msgs,
                         timeout=float(getattr(self.lhr, "resource_main_agent_advisory_timeout_sec", 60.0) or 60.0),
                         tools=[],
                         tool_choice="none",
                         parallel_tool_calls=False,
-                        handle=handle,
                         collect_all_tool_calls=True,
                     )
                     text = (getattr(assistant_msg, "content", None) or "").strip()
@@ -3922,8 +3921,9 @@ class LnrSolver:
         prompt = build_metric_output_interpreter_prompt(facts)
         t0 = time.time()
         try:
-            handle = StreamHandle()
-            assistant_msg = await metric_llm.ask_tool_stream(
+            assistant_msg = await self._ask_agent_tool_stream_guarded(
+                agent,
+                llm=metric_llm,
                 messages=[Message.user_message(prompt)],
                 system_msgs=[Message.system_message(build_metric_output_interpreter_system_prompt())],
                 timeout=max(
@@ -3933,7 +3933,6 @@ class LnrSolver:
                 tools=[],
                 tool_choice="none",
                 parallel_tool_calls=False,
-                handle=handle,
                 collect_all_tool_calls=True,
             )
             if hasattr(agent, "_record_llm_call"):
@@ -4021,15 +4020,15 @@ class LnrSolver:
         )
         t0 = time.time()
         try:
-            handle = StreamHandle()
-            assistant_msg = await metric_llm.ask_tool_stream(
+            assistant_msg = await self._ask_agent_tool_stream_guarded(
+                agent,
+                llm=metric_llm,
                 messages=[Message.user_message(prompt)],
                 system_msgs=[Message.system_message(build_metric_validity_adjudicator_system_prompt())],
                 timeout=max(1.0, float(getattr(self.lhr, "metric_validity_adjudicator_timeout_sec", 60.0) or 60.0)),
                 tools=[],
                 tool_choice="none",
                 parallel_tool_calls=False,
-                handle=handle,
                 collect_all_tool_calls=True,
             )
             if hasattr(agent, "_record_llm_call"):
@@ -4619,15 +4618,14 @@ class LnrSolver:
                 messages.append(Message.user_message(prompt))
                 system_msgs = list(agent._build_system_messages())
                 system_msgs.append(Message.system_message(stage_system))
-                handle = StreamHandle()
-                assistant_msg = await agent.llm.ask_tool_stream(
+                assistant_msg = await self._ask_agent_tool_stream_guarded(
+                    agent,
                     messages=messages,
                     system_msgs=system_msgs,
                     timeout=timeout_sec,
                     tools=[],
                     tool_choice="none",
                     parallel_tool_calls=False,
-                    handle=handle,
                     collect_all_tool_calls=True,
                 )
                 text = (getattr(assistant_msg, "content", None) or "").strip()
@@ -5165,15 +5163,14 @@ class LnrSolver:
                 decision_mode = "main_agent_context"
                 messages = agent._memory_ctx.build_messages_for_llm()
                 messages.append(Message.user_message(prompt))
-                handle = StreamHandle()
-                assistant_msg = await agent.llm.ask_tool_stream(
+                assistant_msg = await self._ask_agent_tool_stream_guarded(
+                    agent,
                     messages=messages,
                     system_msgs=agent._build_system_messages(),
                     timeout=agent._llm_stream_timeout_sec,
                     tools=[],
                     tool_choice="none",
                     parallel_tool_calls=False,
-                    handle=handle,
                     collect_all_tool_calls=True,
                 )
                 text = (getattr(assistant_msg, "content", None) or "").strip()
@@ -9368,3 +9365,19 @@ class LnrSolver:
         if str(getattr(self, "worker_id", "") or ""):
             return await self._run_single()
         return await self._run_multi_worker()
+
+    @staticmethod
+    async def _ask_agent_tool_stream_guarded(
+        agent: Any,
+        *,
+        llm: Any | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        guarded = getattr(agent, "_ask_tool_stream_guarded", None)
+        if callable(guarded):
+            return await guarded(llm=llm, **kwargs)
+        # Compatibility for focused test doubles and custom legacy agents. The
+        # production ScienceAgent always provides the guarded path above.
+        target = llm or agent.llm
+        handle = StreamHandle()
+        return await target.ask_tool_stream(handle=handle, **kwargs)
