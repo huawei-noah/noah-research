@@ -15,9 +15,9 @@ Hosted benchmark task; see full `description.md` for citations and organizers.
 
 ## Submission
 - **File:** `submission.csv`.
-- **Schema:** ID,TARGET; one row per test key (see `sample_submission.csv`).
+- **Schema:** image_id,PredictionString; one row per test key (see `sample_submission.csv`).
 ```
-ID,TARGET
+image_id,PredictionString
 004f33259ee4aef671c2b95d54e4be68,14 1 0 0 1 1
 004f33259ee4aef671c2b95d54e4be69,11 0.5 100 100 200 200 13 0.7 10 10 20 20
 ```

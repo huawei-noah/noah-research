@@ -8,7 +8,7 @@ The Multi-modal gesture recognition challenge, focused on gesture recognition fr
 - **Output:** Predict the ordered gesture sequence for each test session.
 
 ## Target metric (evaluation)
-The focus of the challenge is on "multiple instance, user independent learning" of gestures, which means learning to recognize gestures from several instances for each category performed by different users, drawn from a gesture vocabulary of 20 categories. A gesture vocabulary is …
+Submissions are evaluated on the Levenshtein edit distance between the predicted gesture label sequence and the ground-truth sequence, averaged over test sessions (lower is better). The challenge uses a "multiple instance, user independent" gesture vocabulary of 20 categories.
 
 ## Brief background
 Hosted benchmark task; see full `description.md` for citations and organizers.

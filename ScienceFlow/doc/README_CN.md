@@ -149,9 +149,9 @@ uv run python -m scienceflow.cli parallel \
 
 论文使用同一套 ScienceFlow 工作流评测三类可执行研究任务：
 
-- **机器学习工程：**通过 pipeline-construction 接口覆盖完整 75 题 [MLE-bench](https://github.com/openai/mle-bench)。
-- **科学建模与设计：**通过 candidate-optimization 接口覆盖 Hugging Face 上的 12 个 [SciModelingBench 任务](https://huggingface.co/datasets/sci-modeling-bench/design-bench)。
-- **数学与工程优化：**通过 candidate-optimization 接口覆盖 [Circle Packing](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/circle_packing)、[Ratio Minimization](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/alphaevolve_math_problems/minimizing_max_min_dist)、[Uncertainty Inequality](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/alphaevolve_math_problems/uncertainty_ineq)，以及 [SpOC4 KTTSP](https://www.esa.int/gsp/ACT/news/spoc-2026/) 的 easy、medium 和 hard 三个 track。
+- **机器学习工程**：通过 pipeline-construction 接口覆盖完整 75 题 [MLE-bench](https://github.com/openai/mle-bench)。
+- **科学建模与设计**：通过 candidate-optimization 接口覆盖 Hugging Face 上的 12 个 [SciModelingBench 任务](https://huggingface.co/datasets/sci-modeling-bench/design-bench)。
+- **数学与工程优化**：通过 candidate-optimization 接口覆盖 [Circle Packing](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/circle_packing)、[Ratio Minimization](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/alphaevolve_math_problems/minimizing_max_min_dist)、[Uncertainty Inequality](https://github.com/algorithmicsuperintelligence/openevolve/tree/main/examples/alphaevolve_math_problems/uncertainty_ineq)，以及 [SpOC4 KTTSP](https://www.esa.int/gsp/ACT/news/spoc-2026/) 的 easy、medium 和 hard 三个 track。
 
 所有任务类型共享 Stage Gate 与 Evaluator contract；每个 `task.yaml` 在通用 solver 之外声明 provider/profile、artifact schema、metric direction、evaluator backend、authoritative status 与 Gate policy。
 

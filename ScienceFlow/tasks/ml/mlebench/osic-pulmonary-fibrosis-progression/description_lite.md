@@ -32,8 +32,6 @@ ID00126637202218610655908_-2,2000,100
 - The authoritative runtime data directory is `dataset_split_v2`.
 - `train.csv` contains 1,238 rows for 140 patients, with complete longitudinal histories. `validation.csv` contains 18 baseline-only rows for 18 patients, and `test.csv` contains 18 rows for 18 patients.
 - The seed-42 split is grouped by patient: the train, validation, and test patient sets are mutually disjoint.
-- Validation matches the public test set exactly on the joint `Sex` x `SmokingStatus` counts.
-- Hidden evaluation labels comprise the last three distinct post-baseline weeks for each validation patient, for 54 rows total.
 - `validation_sample_submission.csv` contains weeks -3 through 102 for every validation patient, for 1,908 rows total.
 - CT data are in `train/ct`, `validation/ct`, and `test/ct`. Use each view only for Patient IDs present in its corresponding CSV.
 - The 18-patient validation set is small; use inner patient-grouped folds to check stability.
