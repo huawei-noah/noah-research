@@ -835,7 +835,7 @@ def _path_mtime(path: Path) -> float:
 class LHRStateMachineStore:
     """Small state/event sidecar for the lnr solver.
 
-    This class is intentionally independent from LNR/MCTS. It mirrors LHR
+    This class is intentionally independent from the LNR solver core. It mirrors LHR
     control events into one stable stream and maintains a compact monitor state.
     """
 
