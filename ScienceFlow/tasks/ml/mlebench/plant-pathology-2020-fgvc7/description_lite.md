@@ -15,15 +15,16 @@ Hosted benchmark task; see full `description.md` for citations and organizers.
 
 ## Submission
 - **File:** `submission.csv`.
-- **Schema:** image_id,; one row per test key (see `sample_submission.csv`).
+- **Schema:** image_id,healthy,multiple_diseases,rust,scab; one row per test key (see `sample_submission.csv`).
 ```
-image_id,
+image_id,healthy,multiple_diseases,rust,scab
 test_0,0.25,0.25,0.25,0.25
 test_1,0.25,0.25,0.25,0.25
 ```
 
 ## Dataset and construction
 - `image_id`: the foreign key
-- combinations: one of the target labels
 - healthy: one of the target labels
+- multiple_diseases: one of the target labels
 - rust: one of the target labels
+- scab: one of the target labels

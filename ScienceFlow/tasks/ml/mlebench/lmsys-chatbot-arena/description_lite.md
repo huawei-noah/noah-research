@@ -18,8 +18,8 @@ Hosted benchmark task; see full `description.md` for citations and organizers.
 - **Schema:** id, … (remaining columns per sample_submission.csv); one row per test key (see `sample_submission.csv`).
 ```
 id,winner_model_a,winner_model_b,winner_tie
- 136060,0.33,0,33,0.33
- 211333,0.33,0,33,0.33
+136060,0.33,0.33,0.33
+211333,0.33,0.33,0.33
 ```
 
 ## Dataset and construction
