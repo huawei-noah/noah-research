@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 import time
 
 import pytest
@@ -1122,6 +1123,7 @@ async def test_lnr_admission_share_review_denies_to_waiter_cpu_support(tmp_path,
     assert "post_feedback_action=cpu_support" in result["feedback"]
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="taskset CPU pinning is Linux-only")
 @pytest.mark.asyncio
 async def test_bash_tool_admission_share_grant_runs_waiter_without_queue_timeout(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr("scienceflow.solver.lnr.resource_runtime.runtime.sample_nvidia_smi", _fake_low_util_sample)

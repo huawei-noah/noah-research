@@ -130,7 +130,7 @@ def test_prepare_lnr_replay_accepts_explicit_short_term_relative_path(tmp_path: 
 
     assert result.memory_source_kind == "short_term"
     assert result.selected_message_index == 1
-    assert Path(result.short_term_path).relative_to(output) == rel_memory
+    assert Path(result.short_term_path).relative_to(output.resolve()) == rel_memory
     assert Path(result.long_term_path).is_file()
     assert len(_read_jsonl(Path(result.long_term_path))) == 2
 

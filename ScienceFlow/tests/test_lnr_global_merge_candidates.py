@@ -60,7 +60,7 @@ def test_peer_evidence_recovers_failed_worker_submission(tmp_path: Path) -> None
 
     assert recovered["candidate_ready"] is True
     assert recovered["submission_sha"] == sha
-    assert Path(recovered["artifact_source"]) == submission
+    assert Path(recovered["artifact_source"]) == submission.resolve()
 
 
 def test_candidate_without_sha_does_not_claim_current_workspace_artifact(

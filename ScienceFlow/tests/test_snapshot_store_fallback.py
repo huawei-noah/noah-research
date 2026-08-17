@@ -496,6 +496,7 @@ def test_snapshot_store_partial_restore_preserves_baseline_and_removes_later_fil
 
 
 def test_snapshot_store_workspace_snapshot_backend_restores_without_copying_weight_view(tmp_path: Path) -> None:
+    tmp_path = tmp_path.resolve()  # macOS symlinks /tmp to /private/tmp; keep base paths canonical
     worker_root = tmp_path / "worker"
     workspace = worker_root / "workspace"
     workspace.mkdir(parents=True)
@@ -609,7 +610,7 @@ def test_snapshot_restore_terminal_archive_uses_object_store(tmp_path: Path) -> 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["entries"]["solution.py"]["kind"] == "file"
     assert manifest["entries"]["artifacts/model.pkl"]["kind"] == "file"
-    assert Path(archive_meta["workspace_snapshot_object_store_root"]) == worker_root / "snapshots" / "objects"
+    assert Path(archive_meta["workspace_snapshot_object_store_root"]) == (worker_root / "snapshots" / "objects").resolve()
     assert (workspace / "solution.py").read_text(encoding="utf-8") == "print('stage1')\n"
     assert (workspace / "artifacts" / "model.pkl").read_bytes() == b"stage1-weights"
 

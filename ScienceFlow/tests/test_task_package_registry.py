@@ -40,7 +40,7 @@ def test_task_package_registry_finds_mlebench_description() -> None:
 def test_task_runtime_copy_registers_shared_evaluator(tmp_path: Path) -> None:
     runtime = prepare_task_runtime("nomad2018-predict-transparent-conductors", task_root=tmp_path)
 
-    assert runtime.runtime_root == tmp_path / "task_runtime"
+    assert runtime.runtime_root == (tmp_path / "task_runtime").resolve()
     assert runtime.runtime_task_dir.is_dir()
     assert runtime.entrypoint_path.name == "evaluator.py"
     assert runtime.entrypoint_sha256
