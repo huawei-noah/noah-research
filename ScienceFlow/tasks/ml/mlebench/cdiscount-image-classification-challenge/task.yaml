@@ -1,0 +1,3 @@
+id: cdiscount-image-classification-challenge
+metric:
+  lower_is_better: false

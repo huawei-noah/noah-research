@@ -1,0 +1,47 @@
+# Canonical LNR two-task parallel manifest.
+#
+# Launch:
+#   uv run python -m scienceflow.cli parallel -m scripts/lnr_two_tasks.yaml -j 2
+#
+# If a task needs semantic data preparation, run scripts/prep.yaml first and
+# point that task's input_data_dir below to the prep workspace's dataset/.
+#
+# Monitor in another terminal:
+#   cd <scienceflow-repo> && ./scripts/monitor_lnr.sh scripts/lnr_two_tasks.yaml 5
+#
+# This is intentionally small: task-specific experiment manifests should live
+# outside scripts/ when they are temporary run records.
+
+max_concurrent: 2
+time_limit: 43800
+resume: false
+
+lnr:
+  wall_clock_budget_sec: 43200
+  max_steps: 1200
+  num_workers: 2
+  omp_threads_cap: 8
+
+  resource_control_mode: resource_smart_llm
+
+defaults:
+  config: scienceflow/config/default.yaml
+  workspace_base: ./workspaces/manual_lnr_two_tasks
+  mlebench_data_root_dir: ./data/mlebench_all_data
+  repl_max_steps: 1200
+  repl_code_organization_hint: beyond_mfiles
+  repl_bash_max_output_chars: 8000
+  repl_bash_max_stream_line_chars: 2400
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-lnr-two-task-a
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/public
+    cpu_list: "0-31"
+    gpu_list: "auto"
+
+  - exp_id: nfl-player-contact-detection
+    run_id: nfl-contact-lnr-two-task-b
+    input_data_dir: ./data/mlebench_all_data/nfl-player-contact-detection/prepared/public
+    cpu_list: "32-63"
+    gpu_list: "auto"

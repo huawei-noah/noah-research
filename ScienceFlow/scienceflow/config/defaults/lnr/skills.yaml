@@ -1,0 +1,11 @@
+# Optional skill/category hint defaults.
+
+lnr:
+  lnr_skill_tool_enabled: false
+  lnr_skill_tool_mode: category_only
+  lnr_skill_category_source: tasks/ml/mlebench/competition_categories.json
+  lnr_skill_category_label_field: category_label
+  lnr_skill_auto_read: false
+  lnr_skill_auto_read_max_chars: 6000
+  lnr_skill_visible_max: 1
+  lnr_skill_allow_generic_wildcard: false

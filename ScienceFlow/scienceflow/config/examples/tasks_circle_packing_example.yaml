@@ -1,0 +1,41 @@
+# Circle Packing example: a self-contained math optimization task.
+#
+# No dataset or optional extra is required. Prepare the tiny task package
+# (writes problem.json and a valid baseline), then run from the repository root:
+#   uv run python tasks/opt_solver/_tools/prepare_math_opt_solver_tasks.py
+#   uv run python -m scienceflow.cli parallel \
+#     -m scienceflow/config/examples/tasks_circle_packing_example.yaml -j 1
+
+max_concurrent: 1
+time_limit: 1200
+resume: false
+
+lnr:
+  max_steps: 500
+  resource_control_mode: resource_smart_policy
+
+defaults:
+  config: scienceflow/config/default.yaml
+  phase: run
+  type: lnr
+  workspace_base: ./workspaces/manual_circle_packing_example
+  evaluator:
+    enabled: true
+    backend: task_package
+  gate:
+    params:
+      minimum_metric_validity: high
+
+tasks:
+  - exp_id: circle-packing
+    run_id: example-circle-packing
+    input_data_dir: ./data/opt_solver/circle_packing
+    time_limit: 1200
+    cpu_list: "0-7"
+    gpu_list: cpu
+    lnr:
+      wall_clock_budget_sec: 900
+      num_workers: 1
+      omp_threads_cap: 8
+      resource_gpu_pool: []
+      seed: 2222

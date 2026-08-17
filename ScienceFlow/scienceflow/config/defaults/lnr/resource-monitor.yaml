@@ -1,0 +1,37 @@
+# Resource monitor, runtime, review-state, and heartbeat defaults.
+
+lnr:
+  resource_control_mode: resource_smart_llm
+  resource_control_profile: normal
+  resource_startup_policy: trial_first
+  resource_trial_window_sec: 300.0
+  resource_trial_hard_review_sec: 900.0
+  resource_bash_monitor_all_enabled: true
+  resource_bash_hard_fuse_finalization_reserve_sec: 900.0
+  resource_monitor_min_register_sec: 600.0
+  resource_monitor_check_interval_sec: 10.0
+  resource_monitor_stalled_stdout_sec: 600.0
+  resource_monitor_agent_mode: 'off'
+  resource_monitor_agent_min_interval_sec: 60.0
+  resource_monitor_low_progress_enabled: true
+  resource_monitor_low_progress_warmup_sec: 1800.0
+  resource_monitor_low_progress_no_heartbeat_sec: 1800.0
+  resource_monitor_low_progress_no_artifact_sec: 1800.0
+  resource_review_state_enabled: true
+  resource_review_heartbeat_sec: 60.0
+  resource_review_warmup_windows: 10
+  resource_review_inactive_windows: 3
+  resource_review_value_windows: 5
+  resource_review_progress_event_min_windows: 5
+  resource_review_timebox_windows: 10
+  resource_review_max_proof_windows: 2
+  resource_review_min_timebox_sec: 60.0
+  resource_review_max_timebox_sec: 1800.0
+  resource_review_timebox_budget_fraction: 0.1
+  resource_progress_heartbeat_min_interval_sec: 30.0
+  resource_artifact_heartbeat_scan_interval_sec: 30.0
+  resource_artifact_recoverable_settle_sec: 5.0
+  resource_recoverable_stop_enabled: true
+  resource_recoverable_stop_sigusr1_grace_sec: 60.0
+  resource_recoverable_stop_marker_exit_grace_sec: 10.0
+  resource_recoverable_stop_sigterm_grace_sec: 5.0

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Skills and Safety</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Skills and Safety</h1><p>Optional procedural knowledge and system-owned execution evidence.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Skill registry</h2>
+      <p><code>core/skills/registry.py</code> scans Markdown files under <code>.scienceflow/skills/</code>, reads frontmatter, and indexes names, aliases, categories, tags, task types, phases, and priorities. <code>core/tools/skill_tool.py</code> exposes list and read actions to an agent with a loaded registry.</p>
+      <p>The repository skill library currently contains only <code>data_processing/</code>. It covers the general flat-dataset protocol plus selected image, BSON, recommendation-time-split, tabular, and self-evaluation guidance.</p>
+    </section>
+
+    <section>
+      <h2>2. Injection boundary</h2>
+      <p>LNR defaults to <code>lnr_skill_tool_enabled: false</code>. When enabled, category-only mode can filter visible skills using the task category source, while auto-read and generic wildcard behavior remain explicit opt-ins. The data-preparation agent uses a broader registry mode because skill discovery is part of its required workflow.</p>
+      <div class="note">A skill is optional guidance. It does not authorize a Stage, validate an artifact, or replace system-owned safety evidence.</div>
+    </section>
+
+    <section>
+      <h2>3. Execution safety</h2>
+      <p><code>safety/execution_policy.py</code> implements the post-agent full execution policy for <code>solution.py</code>. It can avoid duplicate runs through a hash-bound <code>full_run_stamp.json</code>, capture a finite final validation metric, keep compact stdout/stderr tails, and use an epoch watchdog when projected remaining work exceeds the available budget.</p>
+      <p><code>core/agent/run_control/embedded_fullrun.py</code> provides the optional embedded handoff. Embedded full runs can be evaluated through the same framework service; they do not bypass Gate ownership.</p>
+    </section>
+
+    <section>
+      <h2>4. Static and artifact checks</h2>
+      <table>
+        <thead><tr><th>Component</th><th>Current responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><code>safety/code_guard.py</code></td><td>Checks syntax, hard-coded environment paths, CUDA/CPU mismatch hints, unsafe <code>result.md</code> writes, submission-save heuristics, duplicate workspaces, and optional leakage warnings before expensive execution.</td></tr>
+          <tr><td><code>safety/leakage_detector.py</code></td><td>Detects suspicious training/validation or target-derived feature patterns.</td></tr>
+          <tr><td><code>safety/stdout_checker.py</code></td><td>Detects hostile or excessively noisy output patterns and supports tqdm cleanup.</td></tr>
+          <tr><td><code>safety/resource/</code></td><td>Defines reusable resource facts, review signal/state/boundary/outcome, process lifecycle, completion, and recoverability helpers.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Relationship to LNR</h2>
+      <p>Skills help an agent choose a procedure. Safety modules produce or validate execution evidence. LNR then combines evaluator facts, Gate decisions, Stage metadata, snapshots, and resource evidence. These responsibilities are intentionally separate so model advice cannot be mistaken for validated progress.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+id: ratio-minimization
+category: opt_solver
+profile: opt_solver
+description: description_lite.md
+artifact:
+  path: artifacts/best_solution.json
+  kind: json_solution
+metric:
+  name: inv_ratio_squared
+  lower_is_better: false
+  type: benchmark
+evaluator:
+  backend: task_package
+  entrypoint: evaluator.py:evaluate
+  timeout_sec: 300
+  visible_to_agent: false
+gate:
+  policy: default

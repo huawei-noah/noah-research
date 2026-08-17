@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Selection and Observability</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Selection and Observability</h1><p>Structured evidence, score summaries, final candidates, live monitoring, and audit traces.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Structured run artifacts</h2>
+      <table>
+        <thead><tr><th>Path</th><th>Producer</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>task_logs/lhr_stage_performance.csv</code></td><td>LNR Stage capture and adjudication</td><td>Candidate rows, metric evidence, validity, selection eligibility, artifact identity, Gate fields, and worker/ESTRA context.</td></tr>
+          <tr><td><code>task_logs/lhr_events.jsonl</code></td><td>LNR state-machine store</td><td>Append-only run, Stage, ESTRA, resume, and merge events.</td></tr>
+          <tr><td><code>task_logs/resource/resource_events.jsonl</code></td><td>Unified resource store</td><td>Admission, lease, queue, review, advisory, arbiter, strict-gate, timebox, and execution events.</td></tr>
+          <tr><td><code>task_logs/state.json</code></td><td>ParallelRunner/finalizer</td><td>Final status and elapsed/resume-budget accounting.</td></tr>
+          <tr><td><code>workers/w*/logs/evaluator_events.jsonl</code></td><td>Gate-owned evaluator manager</td><td>Artifact SHA, backend/status, metric, validity, readiness, selection eligibility, and policy trace.</td></tr>
+          <tr><td><code>workers/w*/logs/scienceflow_time_trace.csv</code></td><td>Orchestrator trace callback</td><td>LLM timing, model, token, cache, and cost analysis.</td></tr>
+          <tr><td><code>workers/w*/logs/interaction.log</code></td><td>Agent interaction logger</td><td>Human-readable agent and tool activity.</td></tr>
+          <tr><td><code>workers/w*/snapshots/</code></td><td>SnapshotStore</td><td>Validated source and artifact state, with content-addressed storage for large objects when enabled.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. Evaluator and Gate evidence</h2>
+      <p>The evaluator produces a normalized <code>MetricEvent</code>. The Gate policy then decides whether that evidence is acceptable for Stage creation. The event trace preserves both fact generation and policy decision so later analysis can distinguish evaluator failure, policy rejection, duplicate candidate suppression, and a successful Stage transaction.</p>
+      <table>
+        <thead><tr><th>Evidence group</th><th>Representative fields</th></tr></thead>
+        <tbody>
+          <tr><td>Identity</td><td><code>candidate_id</code>, <code>stage_id</code>, <code>worker_id</code>, <code>artifact_path</code>, <code>artifact_sha</code>, <code>artifact_kind</code></td></tr>
+          <tr><td>Metric</td><td><code>metric_name</code>, <code>metric_value</code>, <code>lower_is_better</code>, <code>metric_validity</code></td></tr>
+          <tr><td>Readiness</td><td><code>validation_ok</code>, <code>candidate_ready</code>, <code>selection_eligible</code></td></tr>
+          <tr><td>Evaluator</td><td><code>evaluator_backend</code>, <code>evaluator_status</code>, runtime and output-tail metadata</td></tr>
+          <tr><td>Gate</td><td>Policy name/version, parameters, trigger, accepted/retry/reject result, reason code</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Gate-time metric validity and post-commit Stage audit validity are separate fields. A later audit may lower selection confidence without rewriting the historical Gate decision.</div>
+    </section>
+
+    <section>
+      <h2>3. Score summary and effective Stage facts</h2>
+      <p><code>solver/lnr/stage/score_summary.py</code> normalizes metric direction and computes raw best, valid best, worker summaries, and selection context for ESTRA, resource review, and finalization. Selection uses effective Stage facts: the append-only ledger preserves the research narrative, while snapshot source events can update validity, eligibility, and reason codes used by current decisions.</p>
+      <ul>
+        <li>A numerically best metric is not automatically the valid best.</li>
+        <li>Missing direction metadata blocks selection when the evaluator contract requires direction.</li>
+        <li>Invalid schema, evaluator failure, and a valid zero baseline remain distinct states.</li>
+        <li>Artifact SHA and workspace-relative paths are preferred over mutable filenames.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Global merge outputs</h2>
+      <p><code>solver/lnr/global_merge/</code> builds a candidate evidence pack from validated worker stages, exposes those candidates to a merge workspace, asks the live owner agent to construct the required final artifacts, and evaluates every <code>finals/final_*</code> directory through the configured evaluator. Structured fallback can promote ranked valid candidates when the agent does not produce enough finals.</p>
+      <pre class="tree">merge/
+├── global_merge_workspace/
+├── submission_snapshots/
+├── finals/
+│   ├── final_00/
+│   ├── final_01/
+│   └── final_02/
+└── global_merge_manifest.json</pre>
+      <p>The default configuration requests three finals and allows at most three. The manifest records the required, produced, and valid counts plus fallback sources and evaluator results.</p>
+    </section>
+
+    <section>
+      <h2>5. Monitor surfaces</h2>
+      <table>
+        <thead><tr><th>Surface</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>scienceflow monitor --manifest ...</code></td><td>Live multi-task Rich dashboard assembled from Stage, resource, ESTRA, trace, process, and final-state files.</td></tr>
+          <tr><td><code>scienceflow monitor --log-dir ...</code></td><td>Single-task compatibility view from a monitor-state path.</td></tr>
+          <tr><td><code>scienceflow monitor-trace -m ... -o ...</code></td><td>Self-refreshing HTML trend view with optional JSON cache.</td></tr>
+          <tr><td><code>scienceflow resource-summary &lt;root&gt;</code></td><td>Run-level aggregation of resource events as a table or JSON.</td></tr>
+        </tbody>
+      </table>
+      <p>The monitor distinguishes unique Stages from candidate rows. Stage totals are deduplicated by worker and Stage id, while readiness and eligibility counts retain candidate-row semantics. Resource <code>kill_req</code> records a requested/approved review outcome; <code>kill_exec</code> records an actual process termination.</p>
+    </section>
+
+    <section>
+      <h2>6. Operational interpretation</h2>
+      <ul>
+        <li>Use Stage CSV and evaluator events together when determining why a candidate was or was not selectable.</li>
+        <li>Use stable snapshots and merge finals for artifact comparison; temporary trial directories are not final evidence.</li>
+        <li>Use <code>task_logs/state.json</code> for completed or manually stopped elapsed time rather than stale process observations.</li>
+        <li>Keep offline experiment reports outside the canonical <code>scripts/</code> entry-point set.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Data Preparation</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Data Preparation</h1><p>Agent-driven construction of a flat, auditable workspace data view.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Boundary</h2>
+      <p>Solver code reads a single workspace-relative root: <code>workspace/dataset/</code>. Raw task data is treated as read-only. Preparation may create metadata and derived splits inside the workspace, while large unchanged media directories are linked rather than copied.</p>
+      <div class="note">The current protocol does not create <code>Deep/</code> or <code>Shallow/</code> subtrees. Legacy prepared inputs are adapted to the flat view by <code>solver/lnr/prep_fs.py</code>.</div>
+    </section>
+
+    <section>
+      <h2>2. Entry points</h2>
+      <table>
+        <thead><tr><th>Mode</th><th>Behavior</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td><code>scienceflow prep</code></td><td>Creates an empty workspace dataset directory, loads the repository skill registry, and runs the data-preparation ScienceAgent.</td><td>Prepared <code>dataset/</code>, optional split manifest, and a human-readable report.</td></tr>
+          <tr><td><code>scienceflow prep --link-only</code></td><td>Skips the agent and symlinks every top-level input entry into the flat dataset view.</td><td>A fast, non-semantic workspace view.</td></tr>
+          <tr><td><code>scienceflow repl</code></td><td>Uses the same flat-symlink fast path when the workspace has no dataset view yet.</td><td>Dataset access for an interactive agent session.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. Agent protocol</h2>
+      <div class="flow">
+        <div class="node">Inspect Input<small>read-only task data</small></div>
+        <div class="node">List Skills<small>category=data_processing</small></div>
+        <div class="node">Read Guidance<small>data_prep plus matching skill</small></div>
+        <div class="node">Build Dataset<small>flat files and safe symlinks</small></div>
+        <div class="node">Audit Split<small>manifest and report</small></div>
+      </div>
+      <p><code>solver/data_prep.py</code> requires the agent to list data-preparation skills, read <code>data_prep</code>, inspect the input root, and write only within the workspace. It uses the standard ScienceAgent with a stable system prompt, bash-write tools, repository skills, and a dedicated memory directory.</p>
+    </section>
+
+    <section>
+      <h2>4. Validation policy</h2>
+      <ul>
+        <li>Prefer group-aware splitting over row-level random splitting when stable patient, study, source, sequence, or paired-item identifiers exist.</li>
+        <li>Prefer task-like validation when test examples are constructed differently from raw training rows.</li>
+        <li>Use stratification or coverage balancing for imbalanced, multilabel, medical, detection, segmentation, and sparse-positive tasks when feasible.</li>
+        <li>Keep held-out groups and rows completely outside the remaining training files.</li>
+        <li>Do not use private answers, test labels, or final-test keys for tuning.</li>
+        <li>If a safe split cannot be inferred, preserve the usable data view and document the limitation instead of manufacturing a misleading holdout.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Split artifacts</h2>
+      <table>
+        <thead><tr><th>Artifact</th><th>Contract</th></tr></thead>
+        <tbody>
+          <tr><td><code>dataset/train*</code></td><td>Training-side records and labels after any holdout has been removed.</td></tr>
+          <tr><td><code>dataset/validation*</code></td><td>Optional local validation records in the schema expected by the task.</td></tr>
+          <tr><td><code>dataset/mask_validation_label.*</code></td><td>Optional hidden labels when validation features must not expose the target.</td></tr>
+          <tr><td><code>dataset/split_manifest.json</code></td><td>Machine-readable seed, strategy, group key, target columns, counts, distributions, and validity notes.</td></tr>
+          <tr><td><code>dataset/split_report.md</code></td><td>Short explanation of the resulting layout, validation policy, and known limitations.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. Current skill library</h2>
+      <p>The repository currently provides <code>data_prep</code>, image-task guidance, BSON image loading, recommendation time splitting, tabular preprocessing speedups, and self-evaluation guidance under <code>.scienceflow/skills/data_processing/</code>. New dataset knowledge should normally be added as a skill rather than embedded as task-specific branches in the runtime.</p>
+    </section>
+  </main>
+</body>
+</html>

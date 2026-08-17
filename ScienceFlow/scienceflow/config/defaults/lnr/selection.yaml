@@ -1,0 +1,12 @@
+# Merge and finalization defaults.
+
+lnr:
+  merge_enabled: true
+  merge_mode: worker_reduce
+  merge_owner_worker: W00
+  merge_dirname: merge
+  global_merge_wall_clock_sec: 900.0
+  merge_prediction_file_max_bytes: 536870912
+  merge_prediction_total_max_bytes: 2147483648
+  merge_required_finals: 3
+  merge_max_finals: 3

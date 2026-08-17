@@ -1,0 +1,33 @@
+# Canonical data-prep manifest.
+#
+# Launch:
+#   uv run python -m scienceflow.cli parallel -m scripts/prep.yaml -j 1
+#
+# Output dataset:
+#   ./workspaces/manual_data_prep/hm-data-prep/h-and-m-personalized-fashion-recommendations/dataset
+#
+# Use that output as a later LNR input_data_dir when the task needs a prepared
+# validation view. For already-flat public data, LNR may point directly at
+# prepared/public.
+
+max_concurrent: 1
+time_limit: 7200
+resume: false
+
+defaults:
+  phase: prep
+  config: scienceflow/config/default.yaml
+  workspace_base: ./workspaces/manual_data_prep
+  mlebench_data_root_dir: ./data/mlebench_all_data
+  qa_max_steps: 80
+  scienceflow_bash_timeout_sec: 3600
+  scienceflow_bash_timeout_slow_sec: 3600
+  repl_bash_max_output_chars: 12000
+  repl_bash_max_stream_line_chars: 2400
+
+tasks:
+  - exp_id: h-and-m-personalized-fashion-recommendations
+    run_id: hm-data-prep
+    input_data_dir: ./data/mlebench_all_data/h-and-m-personalized-fashion-recommendations/prepared/public
+    cpu_list: "0-15"
+    gpu_list: "cpu"

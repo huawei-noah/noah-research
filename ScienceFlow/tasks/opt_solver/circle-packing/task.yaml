@@ -1,0 +1,15 @@
+id: circle-packing
+category: opt_solver
+profile: opt_solver
+description: description_lite.md
+artifact:
+  path: artifacts/best_solution.json
+  kind: json_solution
+metric:
+  name: radii_sum
+  lower_is_better: false
+  type: benchmark
+evaluator:
+  entrypoint: evaluator.py:evaluate
+  timeout_sec: 300
+  visible_to_agent: false

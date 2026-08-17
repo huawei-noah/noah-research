@@ -1,0 +1,8 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Override this block in your run manifest or custom config when needed.
+
+exec:
+  fast_debug_max_samples: 10
+  use_filtered: false
+  cpu_list: ''
+  gpu_list: ''

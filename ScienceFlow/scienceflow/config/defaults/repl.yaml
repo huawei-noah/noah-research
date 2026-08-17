@@ -1,0 +1,25 @@
+# Auto-loaded by scienceflow/config/default.yaml.
+# Override this block in your run manifest or custom config when needed.
+
+repl:
+  qa_max_steps: 20
+  repl_max_steps: 500
+  repl_profile: lite
+  repl_tool_preset: bash_write
+  repl_stable_system_prompt: true
+  repl_pin_environment_context: true
+  repl_code_organization_hint: beyond_mfiles
+  repl_workspace_git_enabled: true
+  repl_workspace_git_track_globs:
+  - '*.py'
+  - '*.md'
+  repl_workspace_git_initial_commit: true
+  repl_workspace_git_auto_checkpoint: true
+  repl_workspace_git_auto_review: false
+  repl_pin_task_description_when_auto_first_user: false
+  repl_bash_max_output_chars: 8000
+  repl_bash_max_stream_line_chars: 2400
+  repl_bash_observation_summary: true
+  preview_raw_files: false
+  data_preview_max_chars: 32000
+  data_preview_max_items_per_dir: 40

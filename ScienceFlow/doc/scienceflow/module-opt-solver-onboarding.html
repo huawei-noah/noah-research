@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Task Onboarding</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Task Onboarding</h1><p>Add optimization or scientific-modeling tasks through the task-package contract.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Minimal extension point</h2>
+      <p>A new task normally does not require changes to LNR, ESTRA, resume, resource management, monitoring, or global merge. Add a task package that declares the artifact and metric contract and provides a system-side evaluator capable of validating one workspace candidate.</p>
+      <pre class="tree">tasks/&lt;family&gt;/&lt;task-id&gt;/
+├── task.yaml
+├── description_lite.md
+├── evaluator.py
+└── optional problem assets</pre>
+    </section>
+
+    <section>
+      <h2>2. Task manifest contract</h2>
+      <pre>id: example-task
+category: opt_solver
+profile: opt_solver
+description: description_lite.md
+artifact:
+  path: artifacts/best_solution.json
+  kind: json_solution
+metric:
+  name: objective
+  lower_is_better: false
+  type: benchmark
+evaluator:
+  backend: task_package
+  entrypoint: evaluator.py:evaluate
+  timeout_sec: 300
+  visible_to_agent: false
+gate:
+  policy: default</pre>
+      <p><code>provider</code> is optional. <code>profile</code> selects the prompt/artifact profile, while the evaluator and Gate remain domain-neutral. A task may select a trusted alternative Gate policy, but workspace code cannot register arbitrary policies.</p>
+    </section>
+
+    <section>
+      <h2>3. Evaluator function</h2>
+      <pre>def evaluate(*, artifact_path, workspace_dir, task_dir, dataset_dir, config):
+    # Validate schema, instance identity, constraints, and numerical values.
+    return {
+        "metric": {"name": "objective", "value": 1.23},
+        "valid": True,
+    }</pre>
+      <p>The entry point must return a JSON object. The task-package backend copies the package to a system-owned runtime directory, verifies its hash, launches it in a subprocess, and normalizes its result. Exceptions, non-zero exit status, timeouts, malformed output, non-finite metrics, and invalid candidates remain explicit evaluator states.</p>
+      <ul>
+        <li>Reject missing or malformed artifacts with actionable errors.</li>
+        <li>Validate array lengths, identifiers, bounds, feasibility constraints, and finite numeric values.</li>
+        <li>Compute the metric from the artifact and task data; never trust an agent-reported score.</li>
+        <li>Keep <code>lower_is_better</code> aligned with the actual objective.</li>
+        <li>Return <code>valid: true</code> only after the complete task contract passes.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Current packages</h2>
+      <table>
+        <thead><tr><th>Task</th><th>Artifact</th><th>Metric</th><th>Direction</th></tr></thead>
+        <tbody>
+          <tr><td><code>opt_solver/circle-packing</code></td><td><code>artifacts/best_solution.json</code></td><td><code>radii_sum</code></td><td>Higher is better</td></tr>
+          <tr><td><code>opt_solver/kttsp</code></td><td><code>artifacts/best_solution.json</code></td><td><code>mission_duration_days</code></td><td>Lower is better</td></tr>
+          <tr><td><code>opt_solver/ratio-minimization</code></td><td><code>artifacts/best_solution.json</code></td><td><code>inv_ratio_squared</code></td><td>Higher is better</td></tr>
+          <tr><td><code>opt_solver/uncertainty-ineq</code></td><td><code>artifacts/best_solution.json</code></td><td><code>c4_score</code></td><td>Higher is better</td></tr>
+          <tr><td><code>sci_modeling_bench/tfbind8-black-box-v1</code></td><td><code>artifacts/submission.json</code></td><td><code>top_1_normalized_e_score</code></td><td>Higher is better</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Onboarding sequence</h2>
+      <ol>
+        <li>Place task data outside the source tree and expose it through <code>input_data_dir</code>.</li>
+        <li>Write a concise <code>description_lite.md</code> that names the artifact path and constraints.</li>
+        <li>Add <code>task.yaml</code> with task identity, profile, artifact, metric, evaluator, and optional Gate policy.</li>
+        <li>Implement a deterministic system-side evaluator and test valid, invalid, malformed, missing, and boundary cases.</li>
+        <li>Create a run manifest with budget and CPU/GPU boundaries.</li>
+        <li>Run a short end-to-end task and inspect evaluator events, Gate decisions, Stage rows, snapshots, and final artifacts.</li>
+      </ol>
+      <div class="note warn">Task data, evaluator dependencies, and large benchmark packages should remain external to the ScienceFlow source directory. The task package contains the contract and lightweight evaluator integration, not a vendored benchmark installation.</div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScienceFlow Architecture</title>
+  <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+  <header>
+    <h1>ScienceFlow Architecture</h1>
+    <p>Recoverable workspaces, adaptive exploration, evidence-aware evaluation, and resource-governed long-horizon research.</p>
+  </header>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="module-cli-config.html">CLI &amp; Configuration</a>
+    <a href="module-data-prep.html">Data Preparation</a>
+    <a href="module-core-runtime.html">Core Runtime</a>
+    <a href="module-agent-tools.html">Agent &amp; Tools</a>
+    <a href="module-lnr.html">LNR</a>
+    <a href="module-resource.html">Resource Management</a>
+    <a href="module-skills-safety.html">Skills &amp; Safety</a>
+    <a href="module-selection-observability.html">Selection &amp; Observability</a>
+    <a href="module-opt-solver-onboarding.html">Task Onboarding</a>
+  </nav>
+  <main>
+    <section>
+      <h2>1. Framework scope</h2>
+      <p>
+        ScienceFlow is an end-to-end autoresearch agent framework for productive, stable, and goal-aligned research over hours or days. The current implementation centers on a recoverable executable workspace: agents inspect task data, write and run code, evaluate candidate artifacts, preserve validated stages, reconsider research direction, and resume interrupted work without discarding established evidence.
+      </p>
+      <p>
+        The same runtime supports machine-learning tasks, mathematical optimization, and scientific modeling. Task-specific artifact schemas and metrics live in registered task packages, while the core runtime remains task-domain agnostic.
+      </p>
+      <div class="note">
+        The authoritative candidate path is <code>GateService → evaluator backend → MetricEvent → GatePolicy → GateDecision</code>. An evaluator result is evidence; only an accepted Gate decision can create a Stage.
+      </div>
+    </section>
+
+    <section>
+      <h2>2. End-to-end flow</h2>
+      <div class="flow">
+        <div class="node">CLI / Manifest<small>task, budget, workspace, resources</small></div>
+        <div class="node">Workspace Setup<small>flat dataset and optional prior state</small></div>
+        <div class="node">LNR Workers<small>persistent ScienceAgent sessions</small></div>
+        <div class="node">Gate &amp; Evaluator<small>artifact evidence and admission</small></div>
+        <div class="node">Stage &amp; Snapshot<small>durable result and source state</small></div>
+        <div class="node">ESTRA &amp; Folding<small>continue, redirect, or restore</small></div>
+        <div class="node">Global Merge<small>validated final artifacts</small></div>
+      </div>
+      <p>
+        Resource control runs alongside this flow. Bash jobs publish execution facts to a task-local runtime that manages CPU boundaries, GPU leases, queues, monitored trials, review state, bounded timeboxes, and guarded intervention. The control plane manages execution opportunity and efficiency; the research agent remains responsible for scientific route selection.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Module map</h2>
+      <div class="grid">
+        <div class="card"><h3><a href="module-cli-config.html">CLI &amp; Configuration</a></h3><p>Click commands, modular defaults, manifests, profiles, evaluator settings, and resource-control presets.</p></div>
+        <div class="card"><h3><a href="module-data-prep.html">Data Preparation</a></h3><p>Agent-driven preparation of a flat <code>dataset/</code> view and auditable train/validation split artifacts.</p></div>
+        <div class="card"><h3><a href="module-core-runtime.html">Core Runtime</a></h3><p>Orchestration, task packages, parallel task isolation, model routing, tracing, and process cleanup.</p></div>
+        <div class="card"><h3><a href="module-agent-tools.html">Agent &amp; Tools</a></h3><p>The ScienceAgent run loop, tool execution, workspace guards, output compression, and memory projection.</p></div>
+        <div class="card"><h3><a href="module-lnr.html">LNR</a></h3><p>Long-horizon workers, Stage transactions, snapshots, ESTRA, stage-memory folding, resume, and final merge.</p></div>
+        <div class="card"><h3><a href="module-resource.html">Resource Management</a></h3><p>Task-local admission, lease and queue control, review state, advisory, arbiter, strict gate, and feedback hygiene.</p></div>
+        <div class="card"><h3><a href="module-skills-safety.html">Skills &amp; Safety</a></h3><p>Markdown skill discovery plus execution, code, leakage, stdout, and resource safety evidence.</p></div>
+        <div class="card"><h3><a href="module-selection-observability.html">Selection &amp; Observability</a></h3><p>Stage/evaluator/resource event stores, score summaries, monitors, traces, and finals.</p></div>
+        <div class="card"><h3><a href="module-opt-solver-onboarding.html">Task Onboarding</a></h3><p>The current task-package contract for optimization and scientific-modeling tasks.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Current repository boundaries</h2>
+      <pre class="tree">ScienceFlow/
+├── scienceflow/
+│   ├── core/                 # Agent, tools, orchestration, task registry
+│   ├── gates/                # Gate policies and evaluator plugins
+│   ├── safety/               # Execution, code, leakage, stdout, resource safety
+│   ├── solver/lnr/           # Long-horizon runtime, stages, ESTRA, resume, merge
+│   └── ui/                   # Live monitor and HTML trace renderer
+├── tasks/
+│   ├── ml/mlebench/          # MLE-bench task packages
+│   ├── opt_solver/           # Optimization task packages
+│   └── sci_modeling_bench/   # Scientific-modeling task packages
+├── scripts/                  # Maintained example manifests and monitor helpers
+├── .scienceflow/skills/      # Repository skill library
+└── doc/scienceflow/          # This documentation set</pre>
+    </section>
+
+    <section>
+      <h2>5. Stable contracts</h2>
+      <table>
+        <thead><tr><th>Contract</th><th>Current implementation</th></tr></thead>
+        <tbody>
+          <tr><td>Task identity</td><td><code>tasks/**/task.yaml</code> declares task id, category, provider/profile, description, artifact, metric, evaluator, and optional Gate policy.</td></tr>
+          <tr><td>Candidate admission</td><td><code>scienceflow/gates/service.py</code> owns evaluation and policy application. Primary mode fails closed on missing, duplicate, or invalid outcomes.</td></tr>
+          <tr><td>Validated progress</td><td>An accepted candidate is recorded in the hidden ledger, materialized as a Stage, captured in a workspace snapshot, and summarized in <code>task_logs/lhr_stage_performance.csv</code>.</td></tr>
+          <tr><td>Long-term memory</td><td>The append-only ledger remains the source of truth. <code>stage_memory.py</code> folds older cards into persistent summaries while retaining recent and verification-critical raw cards.</td></tr>
+          <tr><td>Recovery</td><td>Task resume reuses the workspace and budget state; agent resume reloads persisted memory; a single pending tail tool call can be replayed directly.</td></tr>
+          <tr><td>Finalization</td><td><code>solver/lnr/global_merge/</code> evaluates worker evidence and writes one or more final directories under <code>merge/finals/final_*</code>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. Runtime artifact layout</h2>
+      <pre class="tree">task_root/
+├── task_logs/
+│   ├── lhr_stage_performance.csv
+│   ├── lhr_events.jsonl
+│   ├── state.json
+│   └── resource/resource_events.jsonl
+├── workers/
+│   └── w00/
+│       ├── workspace/
+│       ├── snapshots/
+│       └── logs/
+│           ├── evaluator_events.jsonl
+│           └── scienceflow_time_trace.csv
+└── merge/
+    ├── global_merge_manifest.json
+    └── finals/final_*/</pre>
+      <p class="note">Some readers retain compatibility with older run layouts, but new documentation and default configuration use <code>workers/</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

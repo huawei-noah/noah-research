@@ -1,0 +1,51 @@
+# Nomad2018 LNR validation manifest: 3 seeds, 2 workers, 8 CPU/worker, CPU-only, 1h.
+#
+# Launch:
+#   uv run python -m scienceflow.cli parallel -m scripts/lnr_nomad2018_3seed_cpu.yaml -j 3
+#
+# Monitor:
+#   ./scripts/monitor_lnr.sh scripts/lnr_nomad2018_3seed_cpu.yaml 5
+
+max_concurrent: 3
+time_limit: 3900
+resume: false
+
+lnr:
+  wall_clock_budget_sec: 3600
+  num_workers: 2
+  omp_threads_cap: 8
+
+  resource_control_mode: resource_smart_llm
+
+defaults:
+  config: scienceflow/config/default.yaml
+  workspace_base: ./workspaces/manual_lnr_nomad2018_3seed_cpu
+  mlebench_data_root_dir: ./data/mlebench_all_data
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-w2cpu8-1h-nogpu-seed2222
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/dataset_split/Deep
+    cpu_list: "48-63"
+    gpu_list: cpu
+    lnr:
+      seed: 2222
+      resource_gpu_pool: []
+
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-w2cpu8-1h-nogpu-seed3333
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/dataset_split/Deep
+    cpu_list: "64-79"
+    gpu_list: cpu
+    lnr:
+      seed: 3333
+      resource_gpu_pool: []
+
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-w2cpu8-1h-nogpu-seed4444
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/dataset_split/Deep
+    cpu_list: "80-95"
+    gpu_list: cpu
+    lnr:
+      seed: 4444
+      resource_gpu_pool: []

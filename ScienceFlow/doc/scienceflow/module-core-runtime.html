@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ScienceFlow Core Runtime</title><link rel="stylesheet" href="assets/docs.css"></head>
+<body>
+  <header><h1>Core Runtime</h1><p>Orchestration, task registration, parallel isolation, model routing, tracing, and process lifecycle.</p></header>
+  <nav><a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a></nav>
+  <main>
+    <section>
+      <h2>1. Orchestrator</h2>
+      <p><code>core/orchestrator.py</code> converts the resolved configuration into a ScienceAgent or LNR solver, constructs model clients and callbacks, attaches time tracing, and returns the run result. The orchestrator is the assembly layer; task-specific scoring belongs to task packages and the Gate service.</p>
+      <div class="flow"><div class="node">Resolved Config</div><div class="node">Orchestrator</div><div class="node">ScienceAgent / LNR</div><div class="node">Run Artifacts</div></div>
+    </section>
+
+    <section>
+      <h2>2. Task-package registry</h2>
+      <p><code>core/task_package.py</code> recursively discovers <code>tasks/**/task.yaml</code>, merges optional provider-family defaults from <code>_shared/task_defaults.yaml</code>, and builds a domain-neutral <code>TaskPackageSpec</code>.</p>
+      <table>
+        <thead><tr><th>Responsibility</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Discovery</td><td>Find exactly one package for a task id and reject ambiguous registrations.</td></tr>
+          <tr><td>Contract resolution</td><td>Expose description, artifact path/kind, metric name/type/direction, evaluator entry point, and timeout.</td></tr>
+          <tr><td>Runtime isolation</td><td>Copy the package or provider family to <code>task_runtime/</code>, record entry-point and tree hashes, and run the evaluator outside the writable worker source tree.</td></tr>
+          <tr><td>Domain boundary</td><td>The registry contains no MLE-bench, optimization, or scientific-modeling scoring logic.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. ParallelRunner</h2>
+      <p><code>core/parallel_runner.py</code> parses the manifest, resolves task text and workspace paths, launches child processes, applies task-level CPU/GPU boundaries, assigns model endpoints, records task state, and terminates process groups during cancellation.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Current behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Concurrency</td><td><code>max_concurrent</code> or <code>-j</code> bounds the number of simultaneously active tasks.</td></tr>
+          <tr><td>CPU</td><td><code>cpu_list</code> establishes the task boundary and exports <code>SCIENCEFLOW_TASK_CPU_LIST</code>; LNR may subdivide it among workers.</td></tr>
+          <tr><td>GPU</td><td><code>gpu_list</code> constrains task visibility. The LNR resource runtime manages task-local leases within that boundary.</td></tr>
+          <tr><td>Configuration</td><td>General config patches are serialized through <code>SCIENCEFLOW_PARALLEL_MANIFEST_CFG_JSON</code>; agent and LNR blocks have dedicated override paths.</td></tr>
+          <tr><td>Final state</td><td><code>task_logs/state.json</code> records success, failure, timeout, or <code>stopped_by_user</code>, plus elapsed and resume-budget accounting.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Model clients and tracing</h2>
+      <p><code>core/llm_http.py</code>, <code>core/key_pool.py</code>, and <code>core/llm_usage.py</code> provide controlled asynchronous clients, retry/cooldown behavior, round-robin or sticky routing across configured keys and base URLs, and token/cost accounting. <code>utils/time_trace.py</code> writes <code>scienceflow_time_trace.csv</code> through the orchestrator callback.</p>
+    </section>
+
+    <section>
+      <h2>5. Process lifecycle</h2>
+      <p>Subprocess helpers register live process groups. CLI signal handlers send <code>SIGTERM</code>, wait for cleanup, then send <code>SIGKILL</code> to surviving groups. Bash execution, the full-run policy, and ParallelRunner share this process-tree discipline so interrupted research does not leave orphan training jobs.</p>
+      <div class="note">A manually stopped parallel task is recorded as <code>stopped_by_user</code>, not failed. Resume logic can reuse its workspace and charged elapsed time.</div>
+    </section>
+
+    <section>
+      <h2>6. Core memory utilities</h2>
+      <p><code>core/mem/memory_context.py</code> manages prompt and memory fragments, while <code>core/mem/source_snapshot.py</code> builds source views and code maps. Agent-specific compression and replay live under <code>core/agent/memory/</code>; LNR stage-memory folding remains in <code>solver/lnr/stage_memory.py</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

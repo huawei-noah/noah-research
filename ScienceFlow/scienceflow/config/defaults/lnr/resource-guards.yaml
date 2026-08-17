@@ -1,0 +1,27 @@
+# Resource guard defaults for probes, bottlenecks, deliverables, and metric health.
+
+lnr:
+  resource_quick_probe_guard_enabled: true
+  resource_quick_probe_expected_runtime_sec: 300.0
+  resource_quick_probe_hard_review_sec: 600.0
+  resource_quick_probe_small_scope_threshold: 1000
+  resource_gpu_dataloader_bottleneck_guard_enabled: true
+  resource_gpu_dataloader_bottleneck_warmup_sec: 600.0
+  resource_gpu_dataloader_bottleneck_min_samples: 3
+  resource_gpu_dataloader_bottleneck_util_pct: 15.0
+  resource_gpu_dataloader_bottleneck_min_mem_gb: 2.0
+  resource_gpu_dataloader_bottleneck_child_cpu_pct: 200.0
+  resource_gpu_dataloader_bottleneck_busy_children: 2
+  resource_deliverable_completion_guard_enabled: true
+  resource_deliverable_completion_warmup_sec: 120.0
+  resource_deliverable_completion_settle_sec: 120.0
+  resource_deliverable_completion_scan_interval_sec: 60.0
+  resource_deliverable_completion_quiet_sec: 60.0
+  resource_metric_health_guard_enabled: true
+  resource_metric_health_warmup_sec: 600.0
+  resource_metric_health_invalid_min_events: 2
+  resource_metric_health_zero_score_min_events: 2
+  resource_checkpoint_submission_guard_enabled: true
+  resource_queue_timeout_hard_gate_enabled: true
+  resource_queue_timeout_block_train_after: 1
+  resource_queue_timeout_tt_only_after: 2

@@ -1,0 +1,7 @@
+# Workspace snapshot and archive defaults.
+
+lnr:
+  snapshot_dirname: .snapshots
+  archive_dirname: snapshots/archives
+  workspace_snapshot_enabled: true
+  workspace_snapshot_verify_objects: true

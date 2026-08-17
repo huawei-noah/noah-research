@@ -1,0 +1,157 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scienceflow"
+version = "0.1.0"
+description = "Autonomous ML agent framework with MCTS-driven long-horizon optimization"
+requires-python = ">=3.11"
+# The default ``uv sync`` already includes: runtime dependencies + pytest + the workspace
+# script stack + the ML packages needed by category_models (@pretrained), plus **mlebench**
+# pinned to the official Git commit and the **2D detection** packages (dicomsdl, ensemble-boxes).
+dependencies = [
+    "python-dotenv>=1.0",
+    "pydantic>=2.0",
+    "omegaconf>=2.3",
+    "pyyaml>=6.0",
+    "psutil>=5.9",
+    "aiofiles>=23.0",
+    "rich>=13.0",
+    "click>=8.1",
+    "dataclasses-json>=0.6.0",
+    "openai>=1.0",
+    "deepcraft-core",
+    "deepcraft-agent",
+    "deepcraft-tool-ext",
+    "pydicom>=2.4",
+    # langchain→langsmith→requests→urllib3: the optional zstd in 2.12+ requires the full
+    # backports.zstd (unrelated to installing dev only)
+    "backports-zstd>=1.3",
+    # tenacity loads tornadoweb when `import tornado` succeeds; a leftover empty tornado
+    # namespace in site-packages would cause ImportError: gen
+    "tornado>=6.4",
+    # --- tests (formerly optional dev) ---
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "pytest-cov>=4.0",
+    # --- workspace scripts (formerly optional workspace) ---
+    "openpyxl>=3.1",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "tabpfn>=7.0",
+    # --- PyTorch stack + category / pretrained tests (formerly optional pretrained-test, merged and deduplicated) ---
+    "torch>=2.11",
+    "torchvision>=0.20",
+    "pillow>=10.0",
+    "torchaudio>=2.11.0,<2.12",
+    "sentencepiece>=0.2",
+    "timm>=1.0.3",
+    "segmentation-models-pytorch>=0.3.4",
+    "ultralytics>=8.0",
+    "transformers>=4.40",
+    "protobuf>=4.25",
+    "tiktoken>=0.7",
+    "librosa>=0.10",
+    "muq",
+    "catboost>=1.2",
+    "xgboost>=2.0",
+    "lightgbm>=4.0",
+    "scipy>=1.12",
+    "opencv-python-headless>=4.8",
+    "scikit-learn>=1.3",
+    "pandas>=2.2",
+    "torchmetrics>=1.0",
+    "termcolor>=2.0",
+    # --- MLE-bench (pinned to the official Git commit; see ``[tool.uv.sources]``) ---
+    "mlebench",
+    # --- 2D detection skill (``skills/library/categories/detection_2d.md``) ---
+    "dicomsdl>=0.107",
+    "ensemble-boxes>=1.0",
+]
+
+# Local packages under ./deepcraft (paths resolved by uv; with pip, install the subpackages
+# with -e first, in README order)
+[tool.uv.sources]
+deepcraft-core = { path = "deepcraft/core", editable = true }
+deepcraft-agent = { path = "deepcraft/agent", editable = true }
+deepcraft-tool-ext = { path = "deepcraft/tool_ext", editable = true }
+mlebench = { git = "https://github.com/openai/mle-bench.git", rev = "507f92e1138bb6e40dac5c6ee7a6758e6424bf97" }
+# PyTorch: the default PyPI build is +cu130, which needs a CUDA 13 driver; switch to cu128
+# to match common 570/575 drivers (nvidia-smi shows CUDA 12.8)
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[project.optional-dependencies]
+# Merged into the main ``dependencies``; the empty extras are kept for compatibility with
+# ``uv sync --extra mlebench`` / ``--extra detection-2d``.
+mlebench = []
+detection-2d = []
+scientific-design = ["sci-modeling-bench==0.2.0"]
+
+[project.scripts]
+scienceflow = "scienceflow.cli:main"
+
+[tool.setuptools]
+# Keep editable builds bounded to the Python package. Repo-local workspaces can
+# contain dataset symlinks; automatic package-data discovery may otherwise walk
+# into external MLE-bench data during `uv run`.
+include-package-data = false
+license-files = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scienceflow*"]
+exclude = [
+    "workspace*",
+    "deepcraft*",
+    "doc*",
+    "scripts*",
+    "tests*",
+    "parallel_logs*",
+    "cache*",
+]
+namespaces = false
+
+[tool.setuptools.package-data]
+"scienceflow.core.agent.prompts" = [
+    "*.md",
+    "L0/*.md",
+]
+"scienceflow.solver.lnr.prompt_templates" = [
+    "evaluation/*.md",
+    "estra/*.md",
+    "resources/*.md",
+    "stage/*.md",
+    "task/*/*.md",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["deepcraft/core", "deepcraft/agent", "deepcraft/tool_ext"]
+addopts = [
+    "--ignore=tests/test_llm_ask.py",
+    "--ignore=tests/test_llm_tool_call.py",
+    "--ignore=tests/test_openai_parallel_tool_calls.py",
+]
+filterwarnings = [
+    # jieba still uses pkg_resources (setuptools); not actionable in this repo.
+    "ignore:pkg_resources is deprecated as an API:UserWarning",
+    # Third-party / extension noise during pretrained tests (not actionable here).
+    "ignore:builtin type SwigPyPacked has no __module__ attribute:DeprecationWarning",
+    "ignore:builtin type SwigPyObject has no __module__ attribute:DeprecationWarning",
+    "ignore:builtin type swigvarlink has no __module__ attribute:DeprecationWarning",
+    "ignore:`torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.:DeprecationWarning",
+    "ignore:`torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.:FutureWarning",
+]
+markers = [
+    "pretrained: end-to-end tests that load pretrained weights and run forward (may download; prefer GPU)",
+    "mlebench: official mlebench Git dependency (installed by default with uv sync)",
+]

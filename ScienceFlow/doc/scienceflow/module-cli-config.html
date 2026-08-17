@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScienceFlow CLI and Configuration</title>
+  <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+  <header><h1>CLI and Configuration</h1><p>Commands, modular defaults, task manifests, profiles, evaluation, and resource-control presets.</p></header>
+  <nav>
+    <a href="index.html">Overview</a><a href="module-cli-config.html">CLI &amp; Configuration</a><a href="module-data-prep.html">Data Preparation</a><a href="module-core-runtime.html">Core Runtime</a><a href="module-agent-tools.html">Agent &amp; Tools</a><a href="module-lnr.html">LNR</a><a href="module-resource.html">Resource Management</a><a href="module-skills-safety.html">Skills &amp; Safety</a><a href="module-selection-observability.html">Selection &amp; Observability</a><a href="module-opt-solver-onboarding.html">Task Onboarding</a>
+  </nav>
+  <main>
+    <section>
+      <h2>1. Command surface</h2>
+      <p>The package entry point is <code>scienceflow = scienceflow.cli:main</code>. The Click group loads repository and working-directory environment files and installs process-group cleanup handlers before dispatching a command.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Purpose</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td><code>prep</code></td><td>Prepare a flat workspace dataset. It runs the data-preparation agent by default; <code>--link-only</code> exposes input entries as symlinks.</td><td><code>solver/data_prep.py</code>, <code>solver/lnr/prep_fs.py</code></td></tr>
+          <tr><td><code>run</code></td><td>Run the REPL-native long-horizon solver. The current supported type is <code>lnr</code>.</td><td><code>core/orchestrator.py</code>, <code>solver/lnr/solver.py</code></td></tr>
+          <tr><td><code>repl</code></td><td>Run an interactive ScienceAgent session from explicit paths or a single-task manifest, with optional automatic first turn.</td><td><code>core/orchestrator.py</code></td></tr>
+          <tr><td><code>parallel</code></td><td>Launch manifest tasks with bounded concurrency and per-task CPU/GPU environment isolation.</td><td><code>core/parallel_runner.py</code></td></tr>
+          <tr><td><code>monitor</code></td><td>Render a Rich dashboard from one task log directory or a parallel manifest.</td><td><code>ui/monitor/</code></td></tr>
+          <tr><td><code>monitor-trace</code></td><td>Build a self-refreshing HTML trend view from a parallel manifest.</td><td><code>ui/monitor_trace/</code></td></tr>
+          <tr><td><code>resource-summary</code></td><td>Aggregate one or more <code>resource_events.jsonl</code> files as a table or JSON.</td><td><code>resource_runtime/unified_store.py</code></td></tr>
+          <tr><td><code>replay-prepare</code></td><td>Copy a saved LNR run into an isolated replay directory and truncate memory to a selected pending tool call.</td><td><code>solver/lnr/replay_prepare.py</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. Configuration model</h2>
+      <p><code>scienceflow/config/default.yaml</code> is a small include file. Stable defaults are split by responsibility under <code>scienceflow/config/defaults/</code>, and LNR defaults are further split under <code>defaults/lnr/</code>.</p>
+      <pre class="tree">Config
+├── agent       # code and feedback model settings, routing, price metadata
+├── exec        # debug and task CPU/GPU lists
+├── workspace   # input root, task root, task identity, tracing
+├── repl        # interactive profile, step budget, workspace Git behavior
+├── tool        # sandbox, tool concurrency, output and memory limits
+├── lnr         # workers, stages, ESTRA, folding, snapshots, resources, merge
+├── evaluator   # candidate, metric, backend, command environment, event logs
+├── gate        # trusted Gate policy and configurable parameters
+└── profile_overrides</pre>
+      <p>Configuration is represented by dataclasses in <code>config/settings.py</code>. A run starts from the default include graph or a custom overlay, then applies task profile and explicit manifest/CLI overrides. Task packages remain authoritative for their artifact, metric, evaluator, and Gate declarations.</p>
+    </section>
+
+    <section>
+      <h2>3. Current default behavior</h2>
+      <table>
+        <thead><tr><th>Setting</th><th>Default</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>lnr.wall_clock_budget_sec</code></td><td><code>3600</code></td><td>One-hour task budget unless the manifest overrides it.</td></tr>
+          <tr><td><code>lnr.max_steps</code></td><td><code>500</code></td><td>Maximum LLM/tool rounds for a worker session.</td></tr>
+          <tr><td><code>lnr.num_workers</code></td><td><code>1</code></td><td>One persistent worker by default.</td></tr>
+          <tr><td><code>lnr.omp_threads_cap</code></td><td><code>8</code></td><td>Maximum OpenMP threads assigned to each worker CPU slice.</td></tr>
+          <tr><td><code>lnr.estra_enabled</code></td><td><code>true</code></td><td>Enable evidence-based continue, redirect, and previous-stage restoration decisions.</td></tr>
+          <tr><td><code>lnr.stage_memory_folding_enabled</code></td><td><code>true</code></td><td>Fold old stage cards into persistent summaries when the stage-memory view exceeds its budget.</td></tr>
+          <tr><td><code>lnr.resource_control_mode</code></td><td><code>resource_smart_llm</code></td><td>Enable the full resource runtime, admission LLM, arbiter LLM, owning-agent advisory, queue, and GPU sharing.</td></tr>
+          <tr><td><code>evaluator.task_profile</code> / <code>backend</code></td><td><code>auto</code> / <code>auto</code></td><td>Resolve the effective profile and evaluator from a registered task package.</td></tr>
+          <tr><td><code>evaluator.stage_source_mode</code></td><td><code>primary</code></td><td>Use the Gate outcome as the sole Stage-admission decision.</td></tr>
+          <tr><td><code>repl.repl_profile</code> / <code>repl_tool_preset</code></td><td><code>lite</code> / <code>bash_write</code></td><td>Use the compact REPL prompt and write files through bash rather than legacy write/edit tools.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Manifest shape</h2>
+      <pre>max_concurrent: 1
+time_limit: 3900
+resume: false
+
+lnr:
+  wall_clock_budget_sec: 3600
+  num_workers: 2
+  omp_threads_cap: 8
+  resource_control_mode: resource_smart_llm
+
+defaults:
+  config: scienceflow/config/default.yaml
+  workspace_base: /path/to/runs
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad-example
+    input_data_dir: /path/to/task/data
+    cpu_list: "0-15"
+    gpu_list: cpu
+    lnr:
+      seed: 2222
+      resource_gpu_pool: []</pre>
+      <p><code>ParallelRunner</code> resolves a task workspace from explicit task fields or <code>workspace_base/run_id/exp_id</code>, applies task-level CPU/GPU boundaries, and passes the structured configuration patch to the child process. The maintained examples are in <code>scripts/lnr.yaml</code>, <code>scripts/repl.yaml</code>, <code>scripts/prep.yaml</code>, and <code>scripts/lnr_two_tasks.yaml</code>.</p>
+    </section>
+
+    <section>
+      <h2>5. Evaluator and Gate configuration</h2>
+      <p>The evaluator defaults are intentionally task-neutral. At runtime, <code>TaskPackageSpec</code> resolves the effective profile, candidate path, artifact kind, metric name and direction, evaluator entry point, and timeout from <code>tasks/**/task.yaml</code>.</p>
+      <table>
+        <thead><tr><th>Field</th><th>Current role</th></tr></thead>
+        <tbody>
+          <tr><td><code>evaluator.backend</code></td><td><code>auto</code> resolves registered tasks to <code>task_package</code>. <code>artifact_command</code> remains available for command-template integration.</td></tr>
+          <tr><td><code>evaluator.candidate</code></td><td>Defines a workspace-relative artifact path, kind, scan mode, and optional SHA requirement for command-based evaluation.</td></tr>
+          <tr><td><code>evaluator.metric</code></td><td>Defines the metric name, direction, parser fields, and whether selection requires a known direction.</td></tr>
+          <tr><td><code>evaluator.command</code></td><td>Defines the evaluator command, isolated Python/environment path, working directory, timeout, environment variables, and output tails.</td></tr>
+          <tr><td><code>gate.policy</code></td><td>Selects a trusted registered Gate policy. Runtime configuration may tune permitted parameters but cannot disable core invariants.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">The built-in <code>default</code> policy requires validation, candidate readiness, a finite primary metric, required direction metadata, and sufficient metric validity. The opt-in <code>optimization_feasibility</code> policy adds a constraint-violation bound.</div>
+    </section>
+
+    <section>
+      <h2>6. Resource-control presets</h2>
+      <table>
+        <thead><tr><th>Mode</th><th>Expanded behavior</th></tr></thead>
+        <tbody>
+          <tr><td><code>off</code></td><td>Disables the resource runtime, review state, queue, arbiter, advisory, observation, and sharing.</td></tr>
+          <tr><td><code>resource_smart_policy</code></td><td>Enables deterministic runtime, queue, review state, and policy arbiter without admission LLM, owning-agent advisory, or GPU sharing.</td></tr>
+          <tr><td><code>resource_smart_llm</code></td><td>Enables the complete control plane, including admission LLM, LLM arbiter, owning-agent advisory, and GPU sharing.</td></tr>
+        </tbody>
+      </table>
+      <p>Expert fields can override individual switches after selecting a coarse mode. The canonical expansion lives in <code>scienceflow/config/resource_modes.py</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Resource arbiter, advisory, and sidecar defaults.
+
+lnr:
+  resource_arbiter_timeout_sec: 90.0
+  resource_arbiter_min_progress_windows: 2
+  resource_arbiter_kill_requires_high_confidence: true
+  resource_main_agent_advisory_min_interval_sec: 600.0
+  resource_main_agent_advisory_timeout_sec: 60.0
+  resource_advisory_mode: inline_memory_edit
+  resource_arbiter_contention_review_enabled: false
+  resource_arbiter_contention_min_runtime_sec: 900.0
+  resource_arbiter_contention_min_waiter_age_sec: 300.0
+  resource_arbiter_contention_min_interval_sec: 600.0
+  resource_research_cadence_enabled: true
+  resource_research_cadence_observe_sec: 300.0
+  resource_first_comparable_metric_budget_sec: 900.0
+  resource_proven_route_metric_budget_sec: 1800.0
+  resource_arbiter_periodic_review_enabled: false
+  resource_arbiter_periodic_min_runtime_sec: 1800.0
+  resource_arbiter_periodic_min_interval_sec: 900.0
+  resource_arbiter_proposal_coalesce_window_sec: 60.0
+  resource_arbiter_job_llm_call_cap: 12
+  resource_arbiter_job_advisory_call_cap: 3
+  resource_arbiter_job_token_cap: 48000
+  resource_sidecar_enabled: false
+  resource_sidecar_min_parent_runtime_sec: 900.0

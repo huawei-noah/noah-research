@@ -1,0 +1,39 @@
+# Compact multi-task LNR manifest with endpoint-pool examples.
+# This is a manifest, not a Config YAML. It references a config through defaults.config.
+
+max_concurrent: 2
+time_limit: 45000
+resume: true
+
+# Optional global endpoint pool. Most runs should prefer .env instead.
+# CODE_MODELS=model-a,model-b
+# CODE_API_KEYS=sk-a,sk-b
+# CODE_BASE_URLS=https://a.example/v1,https://b.example/v1
+
+defaults:
+  config: scienceflow/config/examples/lnr_config_overlay_example.yaml
+  phase: run
+  type: lnr
+  workspace_base: ./workspaces/DATE_run/example_multi_task
+  mlebench_data_root_dir: ./data/mlebench_all_data
+
+lnr:
+  wall_clock_budget_sec: 43200
+  num_workers: 2
+
+tasks:
+  - exp_id: nomad2018-predict-transparent-conductors
+    run_id: nomad2018-example
+    input_data_dir: ./data/mlebench_all_data/nomad2018-predict-transparent-conductors/prepared/dataset_split/Deep
+    cpu_list: "0-31"
+    gpu_list: "0"
+
+  - exp_id: tabular-playground-series-may-2022
+    run_id: tabular-may2022-example
+    input_data_dir: ./data/mlebench_all_data/tabular-playground-series-may-2022/prepared/dataset_split/Deep
+    cpu_list: "32-63"
+    gpu_list: ""
+
+# Per-task endpoint overrides may be placed on a task item when needed:
+#   api_key: sk-task-specific
+#   base_url: https://gateway.example/v1

@@ -1,0 +1,16 @@
+# Stage capture, stage commit, and metric validation defaults.
+
+lnr:
+  ledger_filename: .run_results.md
+  stage_capture_enabled: true
+  stage_capture_max_count: 0
+  stage_commit_llm_timeout_sec: 180.0
+  stage_commit_min_seconds_between: 20.0
+  stage_commit_require_metric: true
+  stage_commit_text_mode: true
+  stage_commit_persist_to_memory: false
+  stage_commit_persist_agent_write_to_memory: true
+  stage_commit_persist_prompt_to_memory: false
+  metric_validity_adjudicator_enabled: true
+  metric_validity_adjudicator_timeout_sec: 60.0
+  metric_validation_leakage_guard_enabled: true
