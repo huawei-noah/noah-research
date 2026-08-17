@@ -460,9 +460,6 @@ class OnlineLLM(BaseLLM):
             else:
                 messages = self.format_messages(messages)
 
-            # import pdb
-            # pdb.set_trace()
-
             return await self._stream_request_vllm_logits(messages, temperature, stream)
 
         except ValueError as ve:
