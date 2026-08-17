@@ -1,19 +1,16 @@
-# Prepare with tasks/sci_modeling_bench/_shared/prepare_data.py --task-id
-# sci-modeling-bench-tfbind8 before running this example.
-
 max_concurrent: 1
-time_limit: 1800
+time_limit: 7800
 resume: false
 
 lnr:
-  max_steps: 300
+  max_steps: 500
   resource_control_mode: resource_smart_policy
 
 defaults:
   config: scienceflow/config/sci_modeling_bench.yaml
   phase: run
   type: lnr
-  workspace_base: ./workspaces/manual_sci_modeling_bench_examples
+  workspace_base: workspaces/sci_modeling_bench_2h
   tool:
     scienceflow_bash_timeout_sec: 600
     scienceflow_bash_timeout_slow_sec: 600
@@ -22,12 +19,12 @@ defaults:
     backend: task_package
 
 tasks:
-  - exp_id: sci-modeling-bench-tfbind8
-    run_id: sci-modeling-bench-tfbind8-example
-    input_data_dir: cache/sci_modeling_bench/tfbind8/public
+  - exp_id: sci-modeling-bench-drugmatrix-sodium
+    run_id: sci-modeling-bench-drugmatrix-sodium-v010-w2-2h
+    input_data_dir: cache/sci_modeling_bench/drugmatrix-sodium/public
     gpu_list: cpu
     lnr:
-      wall_clock_budget_sec: 1500
+      wall_clock_budget_sec: 7200
       num_workers: 2
       omp_threads_cap: 4
       resource_gpu_pool: []

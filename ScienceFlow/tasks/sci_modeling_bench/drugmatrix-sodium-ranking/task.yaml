@@ -1,0 +1,40 @@
+id: sci-modeling-bench-drugmatrix-sodium
+category: scientific_design
+provider: sci_modeling_bench
+profile: sci_modeling_bench
+description: description_lite.md
+artifact: {path: artifacts/submission.json, kind: ordered_candidate_batch}
+metric: {name: global_ndcg, lower_is_better: false, type: benchmark, authoritative: true}
+evaluator:
+  backend: task_package
+  entrypoint: ../_shared/evaluator.py:evaluate
+  timeout_sec: 180
+  max_queries: 4
+  feedback_metrics: [best_k_mean_regret, normalized_enrichment]
+gate:
+  require_validation: true
+  require_candidate_ready: true
+  require_finite_metric: true
+  require_metric_direction: true
+  minimum_metric_validity: high
+source:
+  package: sci-modeling-bench==0.10.0
+  benchmark_task_id: design-bench/drugmatrix-sodium-candidate-pool-ranking-v3
+  repo_id: sci-modeling-bench/design-bench
+  config_name: drugmatrix_clinical_pathology
+  split: observations
+  revision: d8b9ea3c78ed33edf0869a427940a0651eb49f52
+  protocol_id: design-bench/drugmatrix-measured-pool-v1
+  task_factory: sci_modeling_bench.suites.design_bench:DrugMatrixCandidatePoolRankingTask
+  task_kwargs:
+    endpoint: sodium
+    repo_id: sci-modeling-bench/design-bench
+    config_name: drugmatrix_clinical_pathology
+    revision: d8b9ea3c78ed33edf0869a427940a0651eb49f52
+submission:
+  size: 16
+  summary_size: 5
+  count_rule: scored_prefix
+  candidate_source: candidates_view
+  candidate_fields: [condition_id]
+  validation_view: candidates
