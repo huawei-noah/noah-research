@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "scienceflow"
 version = "0.1.0"
-description = "Autonomous ML agent framework with MCTS-driven long-horizon optimization"
+description = "An end-to-end autoresearch agent framework for long-horizon ML research, scientific discovery, and beyond"
 requires-python = ">=3.11"
 # The default ``uv sync`` already includes: runtime dependencies + pytest + the workspace
 # script stack + the ML packages needed by category_models (@pretrained), plus **mlebench**
