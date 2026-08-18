@@ -1178,7 +1178,7 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-.release a {
+.release-inner > a {
   flex: 0 0 auto;
   padding: 7px 11px;
   border: 1px solid var(--red-dark);
@@ -1189,8 +1189,8 @@ tbody tr:hover {
   text-decoration: none;
 }
 
-.release a:hover,
-.release a:focus-visible {
+.release-inner > a:hover,
+.release-inner > a:focus-visible {
   color: #ffffff;
   background: var(--red);
 }
