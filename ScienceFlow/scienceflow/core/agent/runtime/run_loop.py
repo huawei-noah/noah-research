@@ -86,6 +86,12 @@ def _is_stage_commit_memory_text(text: str) -> bool:
         "[stage append-only write]" in clean
         or "[LNR_STAGE_COMMIT_REQUEST]" in clean
         or ("STAGE_COMMIT_BEGIN" in clean and "STAGE_COMMIT_END" in clean)
+        or (
+            "```json" in clean.lower()
+            and '"stage_id"' in clean
+            and '"metric_validity"' in clean
+            and '"files"' in clean
+        )
     )
 
 
@@ -293,16 +299,14 @@ class RunLoopMixin:
         messages = list(base_messages) if base_messages is not None else self._memory_ctx.build_messages_for_llm()
         messages.append(Message.user_message(route_prompt))
         t0 = time.time()
-        handle = StreamHandle()
         try:
-            assistant_msg = await self.llm.ask_tool_stream(
+            assistant_msg = await self._ask_tool_stream_guarded(
                 messages=messages,
                 system_msgs=self._build_system_messages(),
                 timeout=self._llm_stream_timeout_sec,
                 tools=self._tools_with_thought,
                 tool_choice="none",
                 parallel_tool_calls=self._parallel_llm_tool_calls,
-                handle=handle,
                 collect_all_tool_calls=True,
             )
         except BaseException:

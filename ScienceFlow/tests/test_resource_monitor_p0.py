@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
@@ -298,6 +299,43 @@ async def test_bash_tool_observer_releases_on_timeout(tmp_path) -> None:
     assert "timed out" in result.error.lower()
     assert "RESOURCE_FEEDBACK: command timed out because" in (result.output or "")
     assert "resource_gpu_lease_acquired" not in event_types(sm)
+
+
+@pytest.mark.asyncio
+async def test_bash_tool_timeout_terminates_child_process_tree(tmp_path) -> None:
+    tool = BashTool(
+        workspace_dir=tmp_path,
+        bash_timeout_sec=1.0,
+        bash_timeout_slow_sec=1.0,
+    )
+    streamed: list[str] = []
+    command = (
+        "python3 -c \"import subprocess; "
+        "p=subprocess.Popen(['sleep','30']); "
+        "print('CHILD_PID='+str(p.pid), flush=True); p.wait()\""
+    )
+
+    result = await tool.execute(command, on_output=streamed.append)
+
+    match = re.search(r"CHILD_PID=(\d+)", "".join(streamed))
+    assert match is not None
+    child_pid = int(match.group(1))
+    for _ in range(20):
+        try:
+            os.kill(child_pid, 0)
+        except ProcessLookupError:
+            break
+        await asyncio.sleep(0.05)
+    else:
+        pytest.fail(f"child process {child_pid} survived Bash timeout")
+
+    assert result.error
+    assert "timed out" in result.error.lower()
+    assert "RESOURCE_FEEDBACK: command timed out because" in (result.output or "")
+
+    followup = await tool.execute("python3 -c \"print('followup-ok')\"")
+    assert followup.error is None
+    assert "followup-ok" in (followup.output or "")
 
 
 def _heavy_job(observer, tmp_path):

@@ -25,7 +25,6 @@ from typing import TYPE_CHECKING, Any, Callable, Sequence
 
 from deepcraft_agent import BaseAgent
 from deepcraft_core import Message
-from deepcraft_core.llm import StreamHandle
 from deepcraft_core.tool import ToolResult
 from pydantic import ConfigDict
 
@@ -1839,16 +1838,14 @@ class ScienceAgent(
         if not hasattr(self.llm, "ask_tool_stream"):
             return "Compact failed: LLM backend has no ask_tool_stream()."
 
-        handle = StreamHandle()
         try:
-            assistant_msg = await self.llm.ask_tool_stream(
+            assistant_msg = await self._ask_tool_stream_guarded(
                 messages=compact_messages,
                 system_msgs=[Message.system_message(self._build_system_prompt())],
                 timeout=self._llm_stream_timeout_sec,
                 tools=self._tools_with_thought,
                 tool_choice="none",
                 parallel_tool_calls=self._parallel_llm_tool_calls,
-                handle=handle,
                 collect_all_tool_calls=True,
             )
         except BaseException:

@@ -116,15 +116,9 @@ def infer_metric_validity(fields: Mapping[str, Any]) -> tuple[str, str]:
         return "low", str(fields.get("validation_issue") or "validation_ok=false")
     if submission_validation_ok is False or submission_status == "invalid_submission":
         return "low", "invalid_submission"
-    if reason_code in _LOW_REASON_CODES:
-        return "low", reason_code
-    lowered_text = text.lower()
-    if "train+val" in lowered_text and "validation features" in lowered_text:
-        return "low", "metric_text_reports_fulltrain_validation_reuse"
-    for reason, pattern in _LOW_PATTERNS:
-        if pattern.search(text):
-            return "low", reason
-
+    # A declared authoritative evaluator owns the validity of an accepted
+    # metric. Free-text route judgments describe modeling risk and must not
+    # invalidate the evaluator result.
     if _boolish(fields.get("metric_authoritative"), default=False) and evaluator_backend:
         if evaluator_status == "ok":
             if not _metric_value_present(fields.get("metric_value")):
@@ -133,8 +127,18 @@ def infer_metric_validity(fields: Mapping[str, Any]) -> tuple[str, str]:
                 return "medium", "authoritative_evaluator_metric_direction_missing"
             if candidate_ready and validation_ok is not False and selection_eligible:
                 return "high", "authoritative_evaluator_ok"
-        elif evaluator_status:
+            return "medium", "authoritative_evaluator_candidate_not_selection_eligible"
+        if evaluator_status:
             return "low", "authoritative_evaluator_not_ok"
+
+    if reason_code in _LOW_REASON_CODES:
+        return "low", reason_code
+    lowered_text = text.lower()
+    if "train+val" in lowered_text and "validation features" in lowered_text:
+        return "low", "metric_text_reports_fulltrain_validation_reuse"
+    for reason, pattern in _LOW_PATTERNS:
+        if pattern.search(text):
+            return "low", reason
 
     if task_profile in _OPT_SOLVER_TASK_PROFILES and evaluator_backend:
         if evaluator_status == "ok":

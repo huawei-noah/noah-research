@@ -93,7 +93,10 @@ explicit = true
 # ``uv sync --extra mlebench`` / ``--extra detection-2d``.
 mlebench = []
 detection-2d = []
-scientific-design = ["sci-modeling-bench==0.2.0"]
+scientific-design = [
+    "cloudpickle>=3.0",
+    "sci-modeling-bench==0.10.0",
+]
 
 [project.scripts]
 scienceflow = "scienceflow.cli:main"

@@ -289,9 +289,28 @@ def _runner_config(ctx: EvalContext, spec: TaskPackageSpec, package_sha: str) ->
         "task_id": spec.task_id,
         "task_profile": ctx.task_profile or spec.profile,
         "metric_event": dict(metric_event),
+        "evaluation_context": {
+            "worker_id": str(ctx.worker_id or ""),
+            "stage_id": str(ctx.stage_id or ""),
+            "query_budget_scope": _query_budget_scope(ctx),
+        },
         "mlebench_data_root_dir": str(_cfg(ctx.cfg, "mlebench_data_root_dir", "") or ""),
         "package_sha256": package_sha,
     }
+
+
+def _query_budget_scope(ctx: EvalContext) -> str:
+    evaluator = _cfg(ctx.cfg, "evaluator", None)
+    scope = str(_cfg(evaluator, "query_budget_scope", "task") or "task").strip().lower()
+    if scope not in {"task", "worker"}:
+        raise ValueError(
+            "evaluator.query_budget_scope must be either 'task' or 'worker'"
+        )
+    if scope == "worker" and not str(ctx.worker_id or "").strip():
+        raise ValueError(
+            "evaluator.query_budget_scope=worker requires a trusted worker_id"
+        )
+    return scope
 
 
 def _result_from_payload(

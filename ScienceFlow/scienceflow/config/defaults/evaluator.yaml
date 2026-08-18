@@ -4,6 +4,9 @@
 
 evaluator:
   enabled: true
+  expose_wall_clock_remaining_sec: false
+  query_budget_scope: task
+  stop_on_query_budget_exhausted: false
   task_profile: auto
   backend: auto
   stage_source_mode: primary

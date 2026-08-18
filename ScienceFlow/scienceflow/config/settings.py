@@ -132,9 +132,14 @@ class LnrConfig:
     stage_commit_min_seconds_between: float = 20.0
     stage_commit_require_metric: bool = True
     stage_commit_text_mode: bool = True
+    stage_commit_output_format: str = "text"
+    stage_commit_context_mode: str = "compact"
+    stage_commit_tool_choice: str = "none"
+    stage_commit_experiment_state_enabled: bool = False
     stage_commit_persist_to_memory: bool = False
     stage_commit_persist_agent_write_to_memory: bool = True
     stage_commit_persist_prompt_to_memory: bool = False
+    expose_runtime_context_each_round: bool = False
     metric_validity_adjudicator_enabled: bool = True
     metric_validity_adjudicator_timeout_sec: float = 60.0
     clean_repl_mode: bool = True
@@ -177,10 +182,12 @@ class LnrConfig:
     preserve_prefix_and_eda: bool = True
     protected_eda_mode: str = "facts"
     protected_eda_facts_max_chars: int = 6000
+    protected_eda_summary_max_chars: int = 8000
     protected_eda_warn_chars: int = 50_000
     worker_peer_summary_enabled: bool = True
     worker_peer_summary_max_chars: int = 2200
     merge_enabled: bool = True
+    final_artifact_mode: str = "workspace"
     merge_mode: str = "worker_reduce"
     merge_owner_worker: str = "W00"
     merge_dirname: str = "merge"
@@ -390,6 +397,9 @@ class GateConfig:
 @dataclass
 class EvaluatorConfig:
     enabled: bool = True
+    expose_wall_clock_remaining_sec: bool = False
+    query_budget_scope: str = "task"
+    stop_on_query_budget_exhausted: bool = False
     task_profile: str = "auto"
     backend: str = "auto"
     stage_source_mode: str = "primary"

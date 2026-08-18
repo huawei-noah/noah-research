@@ -17,6 +17,8 @@ import csv
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from scienceflow.solver.lnr.stage.metric_adjudication import (
     MetricValidityJudgment,
     adjudicate_metric_validity,
@@ -313,6 +315,60 @@ def test_declared_authoritative_evaluator_ignores_ml_protocol_downgrade() -> Non
     assert adjudicated["selection_eligible"] is True
     assert adjudicated["metric_validity_reason_code"] == "authoritative_evaluator_ok"
     assert adjudicated["metric_validity_source"] == "metric_validity_system"
+
+
+@pytest.mark.parametrize(
+    "why",
+    [
+        "The added prototype feature is slightly overfitting.",
+        "This reproduction rules out overfitting as the explanation.",
+    ],
+)
+def test_authoritative_evaluator_ignores_overfit_route_language(why: str) -> None:
+    fields = {
+        "task_profile": "sci_modeling_bench",
+        "evaluator_backend": "task_package",
+        "evaluator_status": "ok",
+        "metric_authoritative": True,
+        "metric_value": 0.235,
+        "metric_name": "global_ndcg",
+        "lower_is_better": False,
+        "validation_ok": True,
+        "selection_eligible": True,
+        "candidate_ready": True,
+        "submission_status": "ok",
+        "metric_validity": "high",
+        "why": why,
+    }
+
+    adjudicated = adjudicate_metric_validity(fields)
+
+    assert adjudicated["metric_validity"] == "high"
+    assert adjudicated["selection_eligible"] is True
+    assert adjudicated["metric_validity_reason_code"] == "authoritative_evaluator_ok"
+
+
+def test_authoritative_evaluator_does_not_override_invalid_submission() -> None:
+    fields = {
+        "task_profile": "sci_modeling_bench",
+        "evaluator_backend": "task_package",
+        "evaluator_status": "ok",
+        "metric_authoritative": True,
+        "metric_value": 0.9,
+        "lower_is_better": False,
+        "validation_ok": True,
+        "submission_validation_ok": False,
+        "selection_eligible": True,
+        "candidate_ready": True,
+        "submission_status": "invalid_submission",
+        "why": "official score",
+    }
+
+    adjudicated = adjudicate_metric_validity(fields)
+
+    assert adjudicated["metric_validity"] == "low"
+    assert adjudicated["selection_eligible"] is False
+    assert adjudicated["metric_validity_reason_code"] == "invalid_submission"
 
 
 def test_evaluator_verified_medium_keeps_selection_eligible() -> None:

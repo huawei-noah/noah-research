@@ -22,7 +22,7 @@ from typing import Any
 from scienceflow.solver.lnr.global_merge.candidate_pack import (
     candidate_artifact_source,
 )
-from scienceflow.solver.lnr.global_merge.fallback import ranked_candidates
+from scienceflow.solver.lnr.global_merge.fallback import metric_float, ranked_candidates
 
 
 def _sha256_file(path: Path) -> str:
@@ -166,6 +166,7 @@ def _write_fallback_finals(
     artifact_path: str,
     ledger_filename: str,
     max_finals: int = 3,
+    ordered_candidates: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     artifact = artifact_path or "submission.csv"
     finals_dir.mkdir(parents=True, exist_ok=True)
@@ -184,7 +185,11 @@ def _write_fallback_finals(
     while (finals_dir / f"final_{next_index:02d}").exists():
         next_index += 1
     sources: list[dict[str, Any]] = []
-    for candidate in ranked_candidates(candidates):
+    for candidate in (
+        ordered_candidates
+        if ordered_candidates is not None
+        else ranked_candidates(candidates)
+    ):
         if len(seen_artifact_shas) >= limit:
             break
         src_artifact = candidate_artifact_source(candidate, artifact_path=artifact)
@@ -237,3 +242,129 @@ def _write_fallback_finals(
         seen_artifact_shas.add(artifact_sha)
         sources.append(source)
     return sources
+
+
+def _ranked_authoritative_candidates(
+    candidates: list[dict[str, Any]],
+    *,
+    artifact_path: str,
+) -> list[dict[str, Any]]:
+    eligible: list[dict[str, Any]] = []
+    for candidate in candidates:
+        if candidate.get("metric_authoritative") is not True:
+            continue
+        if candidate.get("candidate_ready") is not True:
+            continue
+        if candidate.get("validation_ok") is not True:
+            continue
+        if candidate.get("selection_eligible") is not True:
+            continue
+        if str(candidate.get("metric_validity") or "").strip().lower() != "high":
+            continue
+        expected_sha = str(candidate.get("artifact_sha") or "").strip()
+        if not expected_sha and Path(artifact_path).suffix.lower() == ".csv":
+            expected_sha = str(candidate.get("submission_sha") or "").strip()
+        if not expected_sha:
+            continue
+        if metric_float(candidate) is None:
+            continue
+        if not isinstance(candidate.get("lower_is_better"), bool):
+            continue
+        eligible.append(candidate)
+    directions = {bool(candidate["lower_is_better"]) for candidate in eligible}
+    if len(directions) != 1:
+        return []
+    lower_is_better = directions.pop()
+    return sorted(
+        eligible,
+        key=lambda candidate: (
+            float(metric_float(candidate) or 0.0)
+            if lower_is_better
+            else -float(metric_float(candidate) or 0.0),
+            str(candidate.get("candidate_id") or ""),
+        ),
+    )
+
+
+def materialize_best_stage_final(
+    *,
+    merge_dir: Path,
+    candidates: list[dict[str, Any]],
+    artifact_path: str,
+    ledger_filename: str,
+) -> dict[str, Any]:
+    """Expose the best eligible historical Stage without invoking a merge Agent."""
+
+    merge_dir.mkdir(parents=True, exist_ok=True)
+    finals_dir = merge_dir / "finals"
+    shutil.rmtree(finals_dir, ignore_errors=True)
+    ranked = _ranked_authoritative_candidates(
+        candidates,
+        artifact_path=artifact_path,
+    )
+    sources = _write_fallback_finals(
+        finals_dir=finals_dir,
+        candidates=ranked,
+        artifact_path=artifact_path,
+        ledger_filename=ledger_filename,
+        max_finals=1,
+        ordered_candidates=ranked,
+    )
+    manifest: dict[str, Any] = {
+        "mode": "best_stage",
+        "status": "no_valid_candidate",
+        "final_count": 0,
+    }
+    if sources:
+        source = sources[0]
+        candidate_id = str(source.get("candidate_id") or "")
+        original = next(
+            (
+                candidate
+                for candidate in candidates
+                if str(candidate.get("candidate_id") or "") == candidate_id
+            ),
+            {},
+        )
+        artifact = artifact_path or "submission.csv"
+        expected_sha = str(original.get("artifact_sha") or "").strip().lower()
+        if not expected_sha and Path(artifact).suffix.lower() == ".csv":
+            expected_sha = str(original.get("submission_sha") or "").strip().lower()
+        final_dir = finals_dir / "final_00"
+        final_artifact = final_dir / artifact
+        actual_sha = ""
+        try:
+            if final_artifact.is_file():
+                actual_sha = _sha256_file(final_artifact)
+        except OSError:
+            actual_sha = ""
+        if not actual_sha:
+            manifest["status"] = "missing_artifact"
+        elif not expected_sha or actual_sha != expected_sha:
+            shutil.rmtree(final_dir, ignore_errors=True)
+            manifest.update(
+                {
+                    "status": "artifact_sha_mismatch",
+                    "expected_artifact_sha": expected_sha,
+                    "actual_artifact_sha": actual_sha,
+                }
+            )
+        else:
+            manifest.update(
+                {
+                    "status": "success",
+                    "final_count": 1,
+                    "artifact_path": artifact,
+                    "artifact_sha": actual_sha,
+                    "final_dir": str(final_dir),
+                    "selected_candidate": source,
+                }
+            )
+    manifest_path = merge_dir / "best_stage_manifest.json"
+    temporary = manifest_path.with_suffix(".json.tmp")
+    temporary.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(manifest_path)
+    return manifest

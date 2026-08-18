@@ -55,6 +55,15 @@ def test_config_recursive_include_fails(tmp_path: Path):
 def test_default_resource_control_mode_is_full_smart_monitoring():
     cfg = load_cfg(None, cli_args=False)
 
+    assert cfg.lnr.stage_commit_output_format == "text"
+    assert cfg.lnr.stage_commit_context_mode == "compact"
+    assert cfg.lnr.stage_commit_tool_choice == "none"
+    assert cfg.lnr.stage_commit_experiment_state_enabled is False
+    assert cfg.lnr.protected_eda_mode == "facts"
+    assert cfg.lnr.protected_eda_summary_max_chars == 8000
+    assert cfg.evaluator.query_budget_scope == "task"
+    assert cfg.evaluator.stop_on_query_budget_exhausted is False
+    assert cfg.lnr.final_artifact_mode == "workspace"
     assert cfg.lnr.merge_required_finals == 3
     assert cfg.lnr.merge_max_finals == 3
     assert cfg.lnr.resource_control_mode == "resource_smart_llm"

@@ -146,6 +146,16 @@ def apply_candidate_evidence(
     return merged
 
 
+def _expected_artifact_sha(candidate: dict[str, Any], *, artifact_path: str) -> str:
+    artifact_sha = str(candidate.get("artifact_sha") or "").strip()
+    if artifact_sha:
+        return artifact_sha
+    candidate_artifact = str(candidate.get("artifact_path") or artifact_path or "")
+    if Path(candidate_artifact).suffix.lower() == ".csv":
+        return str(candidate.get("submission_sha") or "").strip()
+    return ""
+
+
 def _candidate_paths(candidate: dict[str, Any], *, artifact_path: str) -> list[Path]:
     worker_text = str(candidate.get("worker_root") or "").strip()
     snapshot_text = str(candidate.get("snapshot_path") or "").strip()
@@ -177,9 +187,7 @@ def _candidate_paths(candidate: dict[str, Any], *, artifact_path: str) -> list[P
                 )
             )
 
-    expected_sha = str(
-        candidate.get("submission_sha") or candidate.get("artifact_sha") or ""
-    ).strip()
+    expected_sha = _expected_artifact_sha(candidate, artifact_path=artifact_path)
     if worker_root is not None and expected_sha:
         paths.append(worker_root / "workspace" / rel_artifact)
     return paths
@@ -214,9 +222,10 @@ def recover_candidate_artifact(
     """Resolve a stable local artifact and verify its content identity."""
 
     recovered = dict(candidate)
-    expected_sha = str(
-        recovered.get("submission_sha") or recovered.get("artifact_sha") or ""
-    ).strip()
+    expected_sha = _expected_artifact_sha(recovered, artifact_path=artifact_path)
+    if not expected_sha:
+        recovered["candidate_ready"] = False
+        return recovered
     candidates = [*_candidate_paths(recovered, artifact_path=artifact_path)]
     candidates.extend(_stage_snapshot_fallbacks(recovered))
     seen: set[Path] = set()

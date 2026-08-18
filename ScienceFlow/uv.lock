@@ -936,6 +936,15 @@ wheels = [
 ]
 
 [[package]]
+name = "cloudpickle"
+version = "3.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/fb/576f067976d320f5f0114a8d9fa1215425441bb35627b1993e5afd8111e5/cloudpickle-3.1.2.tar.gz", hash = "sha256:7fda9eb655c9c230dab534f1983763de5835249750e85fbcef43aaa30a9a2414", size = 22330, upload-time = "2025-11-03T09:25:26.604Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/39/799be3f2f0f38cc727ee3b4f1445fe6d5e4133064ec2e4115069418a5bb6/cloudpickle-3.1.2-py3-none-any.whl", hash = "sha256:9acb47f6afd73f60dc1df93bb801b472f05ff42fa6c84167d25cb206be1fbf4a", size = 22228, upload-time = "2025-11-03T09:25:25.534Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -9408,18 +9417,19 @@ wheels = [
 
 [[package]]
 name = "sci-modeling-bench"
-version = "0.2.0"
+version = "0.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "datasets" },
+    { name = "filelock" },
     { name = "huggingface-hub" },
     { name = "numpy" },
     { name = "pyarrow" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/63/7954ed8c4e4ea344cf331faaec62f7351826661fbb447cd4360851684df7/sci_modeling_bench-0.2.0.tar.gz", hash = "sha256:a2d25122c665be720ac72eb848d17178292421d904f02c4ed94a08cf917804d4", size = 1015094, upload-time = "2026-07-16T12:18:04.432Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/83/8b626cc5732b2dca81f9c497dd829cf8623474b41cfa2b945f4a23fc3c05/sci_modeling_bench-0.10.0.tar.gz", hash = "sha256:835f8a5aa6ba54564522d76e56773ec39c28dabd84829833f7f1bf8bc1c27c2b", size = 5481531, upload-time = "2026-07-23T14:58:32.833Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/6d/d62f53f876ff8438f84ff06cca281d8306f730939d712a92f659351060ff/sci_modeling_bench-0.2.0-py3-none-any.whl", hash = "sha256:a404761ce3c217b98d149669b746855e392bca31568c21a96d155f826ebf04b3", size = 39264, upload-time = "2026-07-16T12:18:02.934Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/40/75a5ca3be033b26502c50a63783c404339556449184001a11e717b6873d1/sci_modeling_bench-0.10.0-py3-none-any.whl", hash = "sha256:84d220609ddc3f64ee2f742811f3b4f3d15aada16d63486dd6bb4663ef933246", size = 330023, upload-time = "2026-07-23T14:58:31.333Z" },
 ]
 
 [[package]]
@@ -9479,6 +9489,7 @@ dependencies = [
 
 [package.optional-dependencies]
 scientific-design = [
+    { name = "cloudpickle" },
     { name = "sci-modeling-bench" },
 ]
 
@@ -9488,6 +9499,7 @@ requires-dist = [
     { name = "backports-zstd", specifier = ">=1.3" },
     { name = "catboost", specifier = ">=1.2" },
     { name = "click", specifier = ">=8.1" },
+    { name = "cloudpickle", marker = "extra == 'scientific-design'", specifier = ">=3.0" },
     { name = "dataclasses-json", specifier = ">=0.6.0" },
     { name = "deepcraft-agent", editable = "deepcraft/agent" },
     { name = "deepcraft-core", editable = "deepcraft/core" },
@@ -9515,7 +9527,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "rich", specifier = ">=13.0" },
-    { name = "sci-modeling-bench", marker = "extra == 'scientific-design'", specifier = "==0.2.0" },
+    { name = "sci-modeling-bench", marker = "extra == 'scientific-design'", specifier = "==0.10.0" },
     { name = "scikit-learn", specifier = ">=1.3" },
     { name = "scipy", specifier = ">=1.12" },
     { name = "seaborn", specifier = ">=0.13" },

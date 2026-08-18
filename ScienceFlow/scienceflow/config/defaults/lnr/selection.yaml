@@ -2,6 +2,7 @@
 
 lnr:
   merge_enabled: true
+  final_artifact_mode: workspace
   merge_mode: worker_reduce
   merge_owner_worker: W00
   merge_dirname: merge

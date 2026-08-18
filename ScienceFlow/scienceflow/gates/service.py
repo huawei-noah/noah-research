@@ -98,6 +98,24 @@ class GateService:
             trigger=request.trigger,
         )
         extra = dict(raw_event.extra or {})
+        evaluator_cfg = getattr(ctx.cfg, "evaluator", None)
+        extra.pop("wall_clock_remaining_sec", None)
+        agent_visible = extra.get("agent_visible")
+        if isinstance(agent_visible, Mapping):
+            sanitized_visible = dict(agent_visible)
+            sanitized_visible.pop("wall_clock_remaining_sec", None)
+            if sanitized_visible:
+                extra["agent_visible"] = sanitized_visible
+            else:
+                extra.pop("agent_visible", None)
+        if (
+            bool(getattr(evaluator_cfg, "expose_wall_clock_remaining_sec", False))
+            and ctx.wall_clock_remaining_sec is not None
+        ):
+            extra["wall_clock_remaining_sec"] = max(
+                0,
+                int(ctx.wall_clock_remaining_sec),
+            )
         extra["gate"] = gate_trace
         event = replace(
             raw_event,

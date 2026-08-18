@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -26,6 +27,9 @@ from scienceflow.solver.lnr.global_merge.runner import (
     _evaluate_finals,
     run_global_merge,
 )
+from scienceflow.solver.lnr.global_merge.final_artifacts import (
+    materialize_best_stage_final,
+)
 from scienceflow.solver.lnr.submission_links import (
     canonicalize_worker_workspace_artifacts,
     refresh_submission_links,
@@ -36,6 +40,204 @@ from scienceflow.solver.lnr.solver import LnrSolver
 def _write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_materialize_best_stage_final_selects_verified_historical_best(
+    tmp_path: Path,
+) -> None:
+    low = tmp_path / "snap-low"
+    high = tmp_path / "snap-high"
+    _write(low / "artifacts" / "submission.json", '{"candidate":"low"}\n')
+    _write(high / "artifacts" / "submission.json", '{"candidate":"high"}\n')
+    candidates = [
+        {
+            "candidate_id": "W00:L01:S01",
+            "node_uid": "W00:L01:S01",
+            "snapshot_path": str(low),
+            "metric_value": 0.4,
+            "lower_is_better": False,
+            "validation_ok": True,
+            "candidate_ready": True,
+            "selection_eligible": True,
+            "metric_validity": "high",
+            "metric_authoritative": True,
+            "artifact_sha": _sha256(low / "artifacts" / "submission.json"),
+        },
+        {
+            "candidate_id": "W01:L02:S04",
+            "node_uid": "W01:L02:S04",
+            "snapshot_path": str(high),
+            "metric_value": 0.9,
+            "lower_is_better": False,
+            "validation_ok": True,
+            "candidate_ready": True,
+            "selection_eligible": True,
+            "metric_validity": "high",
+            "metric_authoritative": True,
+            "artifact_sha": _sha256(high / "artifacts" / "submission.json"),
+        },
+    ]
+
+    manifest = materialize_best_stage_final(
+        merge_dir=tmp_path / "merge",
+        candidates=candidates,
+        artifact_path="artifacts/submission.json",
+        ledger_filename=".run_results.md",
+    )
+
+    final = tmp_path / "merge" / "finals" / "final_00" / "artifacts" / "submission.json"
+    assert manifest["status"] == "success"
+    assert manifest["selected_candidate"]["node_uid"] == "W01:L02:S04"
+    assert manifest["artifact_sha"] == candidates[1]["artifact_sha"]
+    assert final.is_symlink()
+    assert json.loads(final.read_text(encoding="utf-8"))["candidate"] == "high"
+    assert json.loads(
+        (tmp_path / "merge" / "best_stage_manifest.json").read_text(encoding="utf-8")
+    )["selected_candidate"]["node_uid"] == "W01:L02:S04"
+
+
+def test_materialize_best_stage_final_rejects_sha_mismatch(tmp_path: Path) -> None:
+    snapshot = tmp_path / "snapshot"
+    _write(snapshot / "submission.json", '{"candidate":"actual"}\n')
+
+    manifest = materialize_best_stage_final(
+        merge_dir=tmp_path / "merge",
+        candidates=[
+            {
+                "candidate_id": "W00:L01:S01",
+                "snapshot_path": str(snapshot),
+                "metric_value": 0.9,
+                "lower_is_better": False,
+                "validation_ok": True,
+                "candidate_ready": True,
+                "selection_eligible": True,
+                "metric_validity": "high",
+                "metric_authoritative": True,
+                "artifact_sha": "0" * 64,
+            }
+        ],
+        artifact_path="submission.json",
+        ledger_filename=".run_results.md",
+    )
+
+    assert manifest["status"] == "artifact_sha_mismatch"
+    assert manifest["final_count"] == 0
+    assert not (tmp_path / "merge" / "finals" / "final_00").exists()
+
+
+def test_materialize_best_stage_final_supports_lower_metric_and_legacy_submission_sha(
+    tmp_path: Path,
+) -> None:
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    _write(first / "submission.csv", "id,value\n1,first\n")
+    _write(second / "submission.csv", "id,value\n1,second\n")
+
+    manifest = materialize_best_stage_final(
+        merge_dir=tmp_path / "merge",
+        candidates=[
+            {
+                "candidate_id": "W00:L01:S01",
+                "snapshot_path": str(first),
+                "metric_value": 0.3,
+                "lower_is_better": True,
+                "validation_ok": True,
+                "candidate_ready": True,
+                "selection_eligible": True,
+                "metric_validity": "high",
+                "metric_authoritative": True,
+                "submission_sha": _sha256(first / "submission.csv"),
+            },
+            {
+                "candidate_id": "W00:L01:S02",
+                "snapshot_path": str(second),
+                "metric_value": 0.1,
+                "lower_is_better": True,
+                "validation_ok": True,
+                "candidate_ready": True,
+                "selection_eligible": True,
+                "metric_validity": "high",
+                "metric_authoritative": True,
+                "submission_sha": _sha256(second / "submission.csv"),
+            },
+        ],
+        artifact_path="submission.csv",
+        ledger_filename=".run_results.md",
+    )
+
+    assert manifest["status"] == "success"
+    assert manifest["selected_candidate"]["candidate_id"] == "W00:L01:S02"
+
+
+def test_materialize_best_stage_prefers_authoritative_direction_over_metric_name(
+    tmp_path: Path,
+) -> None:
+    low = tmp_path / "low"
+    high = tmp_path / "high"
+    _write(low / "submission.json", '{"candidate":"low"}\n')
+    _write(high / "submission.json", '{"candidate":"high"}\n')
+
+    def candidate(candidate_id: str, snapshot: Path, metric: float) -> dict[str, object]:
+        return {
+            "candidate_id": candidate_id,
+            "snapshot_path": str(snapshot),
+            "metric_name": "validation_loss",
+            "metric_value": metric,
+            "lower_is_better": False,
+            "validation_ok": True,
+            "candidate_ready": True,
+            "selection_eligible": True,
+            "metric_validity": "high",
+            "metric_authoritative": True,
+            "artifact_sha": _sha256(snapshot / "submission.json"),
+        }
+
+    manifest = materialize_best_stage_final(
+        merge_dir=tmp_path / "merge",
+        candidates=[
+            candidate("W00:L01:S01", low, 0.1),
+            candidate("W00:L01:S02", high, 0.9),
+        ],
+        artifact_path="submission.json",
+        ledger_filename=".run_results.md",
+    )
+
+    assert manifest["status"] == "success"
+    assert manifest["selected_candidate"]["candidate_id"] == "W00:L01:S02"
+
+
+def test_materialize_best_stage_rejects_submission_sha_for_json_artifact(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "snapshot"
+    _write(snapshot / "submission.json", '{"candidate":"value"}\n')
+
+    manifest = materialize_best_stage_final(
+        merge_dir=tmp_path / "merge",
+        candidates=[
+            {
+                "candidate_id": "W00:L01:S01",
+                "snapshot_path": str(snapshot),
+                "metric_value": 0.9,
+                "lower_is_better": False,
+                "validation_ok": True,
+                "candidate_ready": True,
+                "selection_eligible": True,
+                "metric_validity": "high",
+                "metric_authoritative": True,
+                "submission_sha": _sha256(snapshot / "submission.json"),
+            }
+        ],
+        artifact_path="submission.json",
+        ledger_filename=".run_results.md",
+    )
+
+    assert manifest["status"] == "no_valid_candidate"
+    assert manifest["final_count"] == 0
 
 
 def test_pack_candidates_links_artifact_metadata_and_ledger(tmp_path: Path) -> None:

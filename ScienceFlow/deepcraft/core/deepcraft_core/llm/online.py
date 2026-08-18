@@ -96,6 +96,18 @@ async def _chunked_put(handle: StreamHandle, text: str) -> None:
         await asyncio.sleep(0)
 
 
+async def _chunked_guard_put(handle: StreamHandle, text: str, *, channel: str) -> None:
+    """Feed hidden provider output to stream guards without displaying or logging it."""
+    if not text:
+        return
+    n = _STREAM_PUT_CHUNK_CHARS
+    for i in range(0, len(text), n):
+        if handle.interrupted:
+            break
+        await handle.put_guard(text[i : i + n], channel=channel)
+        await asyncio.sleep(0)
+
+
 class _WriteToolArgStreamDecoder:
     """Incrementally decode the ``content`` field of streamed ``write`` tool JSON for TTY.
 
@@ -751,6 +763,7 @@ class OnlineLLM(BaseLLM):
                     if hasattr(delta, "reasoning_content") and delta.reasoning_content:
                         rchunk = delta.reasoning_content or ""
                         reasoning_parts.append(rchunk)
+                        await _chunked_guard_put(handle, rchunk, channel="reasoning")
                         num_tokens_estimated = self.estimate_tokens(rchunk)
                         local_output_tokens += num_tokens_estimated
                         self.token_tracker(0, num_tokens_estimated)

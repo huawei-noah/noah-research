@@ -1,0 +1,21 @@
+# SciModelingBench research-context profile. General LNR defaults remain
+# unchanged unless this profile is selected explicitly.
+
+include:
+- default.yaml
+
+evaluator:
+  stop_on_query_budget_exhausted: true
+  expose_wall_clock_remaining_sec: true
+  query_budget_scope: worker
+
+lnr:
+  expose_runtime_context_each_round: true
+  merge_enabled: false
+  final_artifact_mode: best_stage
+  stage_commit_output_format: json
+  stage_commit_context_mode: inherit
+  stage_commit_tool_choice: auto
+  stage_commit_experiment_state_enabled: true
+  protected_eda_mode: agent
+  protected_eda_summary_max_chars: 8000

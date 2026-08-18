@@ -55,9 +55,9 @@ tasks:
       resource_gpu_pool: []
       seed: 2222
 
-  - exp_id: sci-modeling-bench-tfbind8-v1
+  - exp_id: sci-modeling-bench-tfbind8
     run_id: unified-evaluator-sci-modeling-bench-tfbind8
-    input_data_dir: cache/sci_modeling_bench/tfbind8-v1/public
+    input_data_dir: cache/sci_modeling_bench/tfbind8/public
     time_limit: 1800
     cpu_list: "48-55"
     gpu_list: cpu

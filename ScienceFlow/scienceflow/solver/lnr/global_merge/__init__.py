@@ -13,6 +13,9 @@
 """Global merge finalization for LNR runs."""
 
 from scienceflow.solver.lnr.global_merge.fallback import metric_float
+from scienceflow.solver.lnr.global_merge.final_artifacts import (
+    materialize_best_stage_final,
+)
 from scienceflow.solver.lnr.global_merge.runner import run_global_merge
 
-__all__ = ["metric_float", "run_global_merge"]
+__all__ = ["materialize_best_stage_final", "metric_float", "run_global_merge"]

@@ -1,0 +1,48 @@
+id: sci-modeling-bench-utr-mrl
+category: scientific_design
+provider: sci_modeling_bench
+profile: sci_modeling_bench
+description: description_lite.md
+artifact:
+  path: artifacts/submission.json
+  kind: ordered_candidate_batch
+metric:
+  name: normalized_enrichment
+  lower_is_better: false
+  type: benchmark
+  authoritative: true
+evaluator:
+  backend: task_package
+  entrypoint: ../_shared/evaluator.py:evaluate
+  timeout_sec: 180
+  max_queries: 5
+  feedback_metrics:
+    - best_k_mean_regret
+    - global_ndcg
+gate:
+  require_validation: true
+  require_candidate_ready: true
+  require_finite_metric: true
+  require_metric_direction: true
+  minimum_metric_validity: high
+source:
+  package: sci-modeling-bench==0.10.0
+  benchmark_task_id: design-bench/utr-mrl-egfp-unmodified-compositional-ranking-v2
+  repo_id: sci-modeling-bench/design-bench
+  config_name: utr_mrl_egfp_unmodified
+  split: measurements
+  revision: d8b9ea3c78ed33edf0869a427940a0651eb49f52
+  protocol_id: design-bench/utr-mrl-compositional-v1
+  task_factory: sci_modeling_bench.suites.design_bench:UTRMRLCompositionalRankingTask
+  task_kwargs:
+    repo_id: sci-modeling-bench/design-bench
+    config_name: utr_mrl_egfp_unmodified
+    revision: d8b9ea3c78ed33edf0869a427940a0651eb49f52
+submission:
+  size: 128
+  summary_size: 16
+  count_rule: scored_prefix
+  candidate_source: candidates_view
+  candidate_fields:
+    - sequence
+  validation_view: candidates
