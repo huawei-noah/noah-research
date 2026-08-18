@@ -247,6 +247,36 @@ h1 strong {
   font-size: 13.5px;
 }
 
+.hero-links {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+.hero-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--red-dark);
+  border-radius: 6px;
+  color: var(--red-dark);
+  text-decoration: none;
+}
+
+.hero-icon-link svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.hero-icon-link:hover,
+.hero-icon-link:focus-visible {
+  color: #ffffff;
+  background: var(--red);
+}
+
 hr {
   width: var(--shell);
   margin: 0 auto;
