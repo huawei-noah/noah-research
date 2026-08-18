@@ -250,8 +250,8 @@ h1 strong {
 .hero-links {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 16px 0 0;
+  gap: 12px;
+  margin: 28px 0 0;
 }
 
 .hero-icon-link {
@@ -260,7 +260,7 @@ h1 strong {
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: var(--muted);
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -282,7 +282,7 @@ h1 strong {
 
 .hero-icon-link:hover,
 .hero-icon-link:focus-visible {
-  color: var(--ink);
+  color: var(--red);
 }
 
 hr {
