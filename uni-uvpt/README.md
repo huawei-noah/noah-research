@@ -12,7 +12,7 @@ Please check your CUDA version and install the requirements with:
 ```shell
 pip install -r requirements.txt
 pip install mmcv-full==1.7.0 -f  https://download.openmmlab.com/mmcv/dist/{cu_version}/torch1.10.0/index.html
-git clone https://github.com/chengdazhi/Deformable-Convolution-V2-PyTorch.git
+git clone https://github.com/FscoreLab/MultiScaleDeformableAttention.git
 sh install.sh
 ```
 
