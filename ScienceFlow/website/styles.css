@@ -248,10 +248,14 @@ h1 strong {
 }
 
 .hero-links {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  left: 0;
   display: flex;
   justify-content: center;
   gap: 26px;
-  margin: 104px 0 0;
+  margin: 0;
 }
 
 .hero-icon-link {
