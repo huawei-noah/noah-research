@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import SimpleNamespace
 
+import httpx
 import pytest
 from deepcraft_core import Memory
 from deepcraft_core.llm.base import GuardStreamChunk, StreamHandle
@@ -41,6 +45,67 @@ class _FakeCompletions:
         return self._response
 
 
+class _SSEState:
+    def __init__(self, mode: str) -> None:
+        self.mode = mode
+        self.requests = 0
+        self.paths: list[str] = []
+
+
+class _ReasoningSSEHandler(BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.0"
+
+    def log_message(self, _format: str, *_args: object) -> None:
+        return
+
+    def do_POST(self) -> None:
+        state: _SSEState = self.server.state  # type: ignore[attr-defined]
+        length = int(self.headers.get("content-length", "0"))
+        self.rfile.read(length)
+        state.requests += 1
+        state.paths.append(self.path)
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+
+        if state.requests == 1 and state.mode == "repetition":
+            deltas = [{"reasoning_content": "R" * 32}] * 3
+        elif state.requests == 1:
+            deltas = [
+                {"reasoning_content": f"private-step-{idx:03d}: hypothesis {idx * 17 + 3}; "}
+                for idx in range(12)
+            ]
+        else:
+            deltas = [{"content": "transport recovered"}]
+
+        try:
+            for delta in deltas:
+                self._send_chunk(delta=delta, finish_reason=None)
+            self._send_chunk(delta={}, finish_reason="stop")
+            self.wfile.write(b"data: [DONE]\n\n")
+            self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
+    def _send_chunk(self, *, delta: dict[str, str], finish_reason: str | None) -> None:
+        payload = {
+            "id": "chatcmpl-reasoning-guard",
+            "object": "chat.completion.chunk",
+            "created": 0,
+            "model": "fake-model",
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": delta,
+                    "finish_reason": finish_reason,
+                }
+            ],
+        }
+        self.wfile.write(f"data: {json.dumps(payload)}\n\n".encode())
+        self.wfile.flush()
+
+
 def _chat_chunk(
     *,
     reasoning: str | None = None,
@@ -60,27 +125,29 @@ def _chat_chunk(
 async def test_online_llm_routes_reasoning_to_hidden_guard_channel() -> None:
     from deepcraft_core.llm.online import OnlineLLM
 
-    llm = OnlineLLM(
-        model="unit-test-model",
-        api_key="test-key",
-        base_url="https://example.invalid/v1",
-    )
-    response = _AsyncChunks(
-        [
-            _chat_chunk(reasoning="private reasoning"),
-            _chat_chunk(content="visible answer", finish_reason="stop"),
-        ],
-    )
-    llm.client = SimpleNamespace(
-        chat=SimpleNamespace(completions=_FakeCompletions(response)),
-    )
+    async with httpx.AsyncClient(trust_env=False) as http_client:
+        llm = OnlineLLM(
+            model="unit-test-model",
+            api_key="test-key",
+            base_url="https://example.invalid/v1",
+            http_asyncclient=http_client,
+        )
+        response = _AsyncChunks(
+            [
+                _chat_chunk(reasoning="private reasoning"),
+                _chat_chunk(content="visible answer", finish_reason="stop"),
+            ],
+        )
+        llm.client = SimpleNamespace(
+            chat=SimpleNamespace(completions=_FakeCompletions(response)),
+        )
 
-    handle = StreamHandle()
-    message = await llm.ask_tool_stream(
-        messages=[{"role": "user", "content": "hi"}],
-        handle=handle,
-        collect_all_tool_calls=True,
-    )
+        handle = StreamHandle()
+        message = await llm.ask_tool_stream(
+            messages=[{"role": "user", "content": "hi"}],
+            handle=handle,
+            collect_all_tool_calls=True,
+        )
 
     items: list[object] = []
     while True:
@@ -97,6 +164,62 @@ async def test_online_llm_routes_reasoning_to_hidden_guard_channel() -> None:
     assert "".join(visible) == "visible answer"
     assert message.reasoning_content == "private reasoning"
     assert message.content == "visible answer"
+
+
+@pytest.mark.parametrize("mode", ["repetition", "soft_limit"])
+@pytest.mark.asyncio
+async def test_reasoning_guard_retries_real_sse_transport(
+    mode: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from deepcraft_core.llm.online import OnlineLLM
+
+    monkeypatch.setattr(asyncio, "sleep", _sleep_noop)
+    state = _SSEState(mode)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _ReasoningSSEHandler)
+    server.state = state  # type: ignore[attr-defined]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+
+    try:
+        host, port = server.server_address
+        async with httpx.AsyncClient(trust_env=False) as http_client:
+            llm = OnlineLLM(
+                model="fake-model",
+                api_key="fake-key",
+                base_url=f"http://{host}:{port}/v1",
+                max_tokens=128,
+                http_asyncclient=http_client,
+            )
+            agent = ScienceAgent(
+                llm=llm,
+                memory=Memory(max_messages=20),
+                workspace_dir=tmp_path,
+                max_steps=1,
+                llm_tool_stream_retry_base_delay_sec=0.0,
+                llm_tool_stream_retry_max_delay_sec=0.0,
+                stream_repetition_detection=mode == "repetition",
+                stream_repetition_window_chars=256,
+                stream_repetition_ngram_len=32,
+                stream_repetition_max_repeats=3,
+                stream_max_output_chars_soft=10_000 if mode == "repetition" else 256,
+                stream_repetition_retry_max=1,
+            )
+
+            result = await agent.run("transport canary")
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+
+    output = capsys.readouterr().out
+    assert result == "transport recovered"
+    assert state.requests == 2
+    assert state.paths == ["/v1/chat/completions", "/v1/chat/completions"]
+    assert "private-step" not in output
+    assert "R" * 16 not in output
 
 
 @pytest.mark.asyncio
