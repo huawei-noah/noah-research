@@ -16,12 +16,13 @@ Run the TFBind8 scientific-design example from the repository root:
 
 ```bash
 uv sync --extra scientific-design
-uv run python tasks/sci_modeling_bench/tfbind8-black-box-v1/prepare_data.py
+uv run python tasks/sci_modeling_bench/_shared/prepare_data.py \
+  --task-id sci-modeling-bench-tfbind8
 uv run python -m scienceflow.cli parallel \
   -m scienceflow/config/examples/tasks_sci_modeling_bench_tfbind8_example.yaml -j 1
 ```
 
-The generated `cache/sci_modeling_bench/tfbind8-v1/public` directory contains only the protocol-visible observations. The complete public upstream table is loaded by the trusted evaluator; isolation from worker network and Hugging Face cache is still required for leakage-resistant runs.
+The generated `cache/sci_modeling_bench/tfbind8/public` directory contains the protocol-visible observations and task contract. Hidden outcomes and evaluator caches remain outside the worker workspace.
 
 Resource control modes in new examples:
 

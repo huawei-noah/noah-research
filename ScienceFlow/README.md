@@ -148,7 +148,7 @@ The prepare step writes a tiny task package (`problem.json` plus a valid baselin
 
 ## Documentation
 
-[Architecture overview](doc/scienceflow/index.html) · [Recoverable states and LNR](doc/scienceflow/module-lnr.html) · [Evidence-aware execution control](doc/scienceflow/module-resource.html) · [Adding opt-solver tasks](doc/scienceflow/module-opt-solver-onboarding.html) · [Scientific modeling example](tasks/sci_modeling_bench/tfbind8-black-box-v1/README.md)
+[Architecture overview](doc/scienceflow/index.html) · [Recoverable states and LNR](doc/scienceflow/module-lnr.html) · [Evidence-aware execution control](doc/scienceflow/module-resource.html) · [Adding optimization tasks](doc/scienceflow/module-opt-solver-onboarding.html) · [SciModelingBench](tasks/sci_modeling_bench/README.md)
 
 ## Paper task coverage
 

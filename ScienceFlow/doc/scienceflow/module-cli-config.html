@@ -103,10 +103,14 @@ tasks:
           <tr><td><code>evaluator.candidate</code></td><td>Defines a workspace-relative artifact path, kind, scan mode, and optional SHA requirement for command-based evaluation.</td></tr>
           <tr><td><code>evaluator.metric</code></td><td>Defines the metric name, direction, parser fields, and whether selection requires a known direction.</td></tr>
           <tr><td><code>evaluator.command</code></td><td>Defines the evaluator command, isolated Python/environment path, working directory, timeout, environment variables, and output tails.</td></tr>
+          <tr><td><code>evaluator.query_budget_scope</code></td><td>Selects a task-wide or worker-local evaluator query budget.</td></tr>
+          <tr><td><code>evaluator.stop_on_query_budget_exhausted</code></td><td>Stops research after an accepted evaluation uses the final available query.</td></tr>
+          <tr><td><code>evaluator.expose_wall_clock_remaining_sec</code></td><td>Adds the current task time budget to evaluator feedback when enabled.</td></tr>
           <tr><td><code>gate.policy</code></td><td>Selects a trusted registered Gate policy. Runtime configuration may tune permitted parameters but cannot disable core invariants.</td></tr>
         </tbody>
       </table>
       <div class="note">The built-in <code>default</code> policy requires validation, candidate readiness, a finite primary metric, required direction metadata, and sufficient metric validity. The opt-in <code>optimization_feasibility</code> policy adds a constraint-violation bound.</div>
+      <p>The optional <code>scienceflow/config/sci_modeling_bench.yaml</code> profile combines worker-local query budgets with runtime context, structured Stage commits, agent-generated EDA summaries, and best-Stage finalization.</p>
     </section>
 
     <section>

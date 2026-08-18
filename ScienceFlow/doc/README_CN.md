@@ -148,7 +148,7 @@ uv run python -m scienceflow.cli parallel \
 
 ## 文档
 
-[架构总览](scienceflow/index.html) · [可恢复状态与 LNR](scienceflow/module-lnr.html) · [证据感知执行控制](scienceflow/module-resource.html) · [新增 opt-solver 任务](scienceflow/module-opt-solver-onboarding.html) · [科学建模示例](../tasks/sci_modeling_bench/tfbind8-black-box-v1/README.md)
+[架构总览](scienceflow/index.html) · [可恢复状态与 LNR](scienceflow/module-lnr.html) · [证据感知执行控制](scienceflow/module-resource.html) · [新增优化任务](scienceflow/module-opt-solver-onboarding.html) · [SciModelingBench](../tasks/sci_modeling_bench/README.md)
 
 ## 论文任务覆盖
 

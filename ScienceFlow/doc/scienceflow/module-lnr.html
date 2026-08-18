@@ -76,6 +76,7 @@
         </tbody>
       </table>
       <p>The append-only <code>.run_results.md</code> ledger is durable audit state and is not exposed as an ordinary agent-readable file. By default, the normalized Stage entry and simulated append result are projected into agent memory, while the temporary commit prompt itself is not persisted. If model-authored metadata remains malformed after retry, deterministic ledger-valid fallback metadata preserves the accepted evaluator evidence.</p>
+      <p>Optional settings support JSON Stage metadata, the active agent context, automatic tool selection, and a compact experiment-state view. The SciModelingBench profile enables these modes while the default text-only commit remains unchanged.</p>
     </section>
 
     <section>
@@ -112,6 +113,7 @@
         <li>Persist summary identifiers, verification Stage ids, the current segment, and folding events for reuse and audit.</li>
       </ol>
       <div class="note">Folding does not delete Stage cards or snapshots. “Unfolding” means retrieving a preserved raw verification card or restoring the corresponding Stage snapshot; it is not lossy reconstruction from a summary.</div>
+      <p><code>protected_eda_mode</code> selects rule-based facts, the raw prefix, or an agent-generated EDA summary. Per-round runtime context can also expose the remaining wall-clock budget and effective Bash timeout.</p>
     </section>
 
     <section>
@@ -131,6 +133,7 @@
       <h2>9. Multi-worker reduction and finals</h2>
       <p>Workers share task-level score and resource evidence but retain separate workspaces and agent memories. At finalization, <code>global_merge</code> collects selection-eligible Stage artifacts, creates a bounded merge workspace, and asks the live owner worker (W00 by default) to produce the configured number of distinct finals. Every final directory is evaluated through the same Gate-owned evaluator service, and structured fallback promotes ranked valid candidates when necessary.</p>
       <p>Default selection settings enable merge, reserve up to 900 seconds for global merge, and request exactly three finals. The output is a set under <code>merge/finals/final_*</code>, not a single mutable winner file.</p>
+      <p>When merge is disabled, the opt-in <code>final_artifact_mode: best_stage</code> materializes the highest-ranked eligible Stage instead.</p>
     </section>
 
     <section>

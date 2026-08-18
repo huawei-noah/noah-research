@@ -3,6 +3,7 @@
 - **`ml/mlebench/`** — MLE-bench/Kaggle-style task packages and shared evaluator.
 - **`ml/mlebench/competition_categories.json`** — Maps a Kaggle-style competition id (`exp_id`) to a preset task category (for example, `Image Classification`). The LNR task-package resolver uses this table during cold start; update it when adding ML competitions.
 - **`opt_solver/`** — Optimization/artifact task descriptions, including Luna Tomato Logistics and OpenEvolve-style math tasks.
+- **`sci_modeling_bench/`** — SciModelingBench candidate-optimization and candidate-pool-ranking tasks with a shared system-side evaluator. See its [task guide](sci_modeling_bench/README.md).
 - **`alg_opt/`** — Algorithm-theory research task packages. These may contain multi-stage controller templates in addition to the usual `task.yaml` and `description_lite.md`.
 - **Per-task folders** — Each task package contains `task.yaml` plus `description_lite.md`; task-local `evaluator.py` is allowed when the provider has no shared evaluator.
 
