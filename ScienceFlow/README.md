@@ -75,8 +75,8 @@ ScienceFlow/
 curl -LsSf https://astral.sh/uv/install.sh | sh   # or: pip install uv
 
 # Clone the repository and enter the project
-git clone https://github.com/huawei-noah/noah-research.git
-cd noah-research/ScienceFlow
+git clone https://github.com/science-learner/ScienceFlow.git
+cd ScienceFlow
 
 # Configure LLM credentials
 cp env.example .env   # then edit .env: set API_KEY and BASE_URL for your provider

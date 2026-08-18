@@ -247,6 +247,40 @@ h1 strong {
   font-size: 13.5px;
 }
 
+.hero-links {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin: 104px 0 0;
+}
+
+.hero-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hero-icon-link svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.hero-icon-link.arxiv-link svg {
+  width: auto;
+  height: 25px;
+}
+
+.hero-icon-link:hover,
+.hero-icon-link:focus-visible {
+  color: var(--red);
+}
+
 hr {
   width: var(--shell);
   margin: 0 auto;
@@ -1178,7 +1212,7 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-.release a {
+.release-inner > a {
   flex: 0 0 auto;
   padding: 7px 11px;
   border: 1px solid var(--red-dark);
@@ -1189,8 +1223,8 @@ tbody tr:hover {
   text-decoration: none;
 }
 
-.release a:hover,
-.release a:focus-visible {
+.release-inner > a:hover,
+.release-inner > a:focus-visible {
   color: #ffffff;
   background: var(--red);
 }
