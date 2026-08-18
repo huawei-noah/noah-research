@@ -1,0 +1,19 @@
+{
+    "task_name": "conceptual-physics",
+    "path": "datasets/mmlu/data/conceptual-physics.jsonl",
+    "description": "The following are multiple choice questions (with answers) about conceptual_physics.\n\n",
+    "transform": "datasets/mmlu/transform_gen_v1.py",
+    "fewshot": 5,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "prefix_match"
+            }
+        }
+    }
+}

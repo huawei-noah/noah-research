@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: >-
+  SVDP: Training-Free Contextual Sparsity Predictors for
+  Fast LLM Inference
+message: 'If you use this software, please cite the preprint below.'
+type: software
+authors:
+  - family-names: Serbin
+    given-names: Georgii
+  - family-names: Koshkin
+    given-names: Kirill
+  - family-names: Sun
+    given-names: Zhongao
+  - family-names: Bistrigova
+    given-names: Anastasiya
+  - family-names: Korikov
+    given-names: Constantine
+    orcid: 'https://orcid.org/0000-0001-6227-5542'
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2603.14110
+url: 'https://arxiv.org/abs/2603.14110'
+license: MIT

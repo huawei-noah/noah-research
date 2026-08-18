@@ -1,0 +1,19 @@
+{
+    "task_name": "fire-engineer",
+    "path": "datasets/ceval/data/fire-engineer.jsonl",
+    "description": "以下是中国关于消防工程师考试的单项选择题，请选出其中的正确答案。",
+    "transform": "datasets/ceval/transform_gen_v1.py",
+    "fewshot": 5,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "prefix_match"
+            }
+        }
+    }
+}

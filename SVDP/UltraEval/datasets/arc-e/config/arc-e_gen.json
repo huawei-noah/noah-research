@@ -1,0 +1,19 @@
+{
+    "task_name": "arc-e",
+    "path": "datasets/arc-e/data/arc-e.jsonl",
+    "description": "",
+    "transform": "datasets/arc-e/transform_gen_v1.py",
+    "fewshot": 0,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "qa_match"
+            }
+        }
+    }
+}

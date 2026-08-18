@@ -1,0 +1,19 @@
+{
+    "task_name": "discrete-mathematics",
+    "path": "datasets/ceval/data/discrete-mathematics.jsonl",
+    "description": "以下是中国关于离散数学考试的单项选择题，请选出其中的正确答案。",
+    "transform": "datasets/ceval/transform_gen_v1.py",
+    "fewshot": 5,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_short_answer.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "prefix_match"
+            }
+        }
+    }
+}

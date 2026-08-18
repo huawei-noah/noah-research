@@ -1,0 +1,11 @@
+__pycache__/
+RawData/
+**/data/
+configs/eval_config.json
+UltraEval.egg-info/
+build/
+logs/
+wip-*
+.idea/
+RawData.zip
+logs*/

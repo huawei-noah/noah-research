@@ -1,0 +1,44 @@
+# Ruff configuration for SVDP.
+#
+# Usage:
+#   pip install ruff
+#   ruff check .              # lint (report issues)
+#   ruff check --fix .        # lint and auto-fix the safe ones
+#   ruff format --check .     # check formatting without changing files
+#   ruff format .             # apply formatting
+#
+# The rule set is intentionally conservative so it flags real problems
+# (unused imports, undefined names, obvious bugs) without forcing a mass
+# reformat of the existing research code. Line length is not enforced.
+
+target-version = "py310"
+line-length = 120
+
+# Vendored / generated / non-source paths — not our code to lint.
+extend-exclude = [
+    "UltraEval",
+    "notebooks",
+    "build",
+    "dist",
+    "*.egg-info",
+]
+
+[lint]
+# E/W: pycodestyle,
+# F: pyflakes (unused imports, undefined names),
+# B: bugbear,
+# UP: pyupgrade,
+# I: isort (import sorting).
+select = ["E", "W", "F", "B", "UP", "I"]
+ignore = [
+    "E501",  # line too long — existing code has many long lines
+    "E741",  # ambiguous variable name (e.g. paper hyperparam `s`, `l`)
+]
+
+[lint.isort]
+# Local modules imported by bare name (utils/ is on sys.path at runtime), so
+# ruff groups them as first-party rather than third-party.
+known-first-party = ["utils", "configure_logger"]
+
+[format]
+# ruff format defaults are fine

@@ -1,0 +1,19 @@
+{
+    "task_name": "causal-judgement",
+    "path": "datasets/bbh/data/causal-judgement.jsonl",
+    "description": "",
+    "transform": "datasets/bbh/transform_gen_v0.py",
+    "fewshot": 3,
+    "generate": {
+        "method": "generate",
+        "params": "models/model_params/vllm_params/vllm_sample_default.json"
+    },
+    "postprocess": "",
+    "metric": {
+        "accuracy": {
+            "evaluation": {
+                "type": "prefix_match"
+            }
+        }
+    }
+}
