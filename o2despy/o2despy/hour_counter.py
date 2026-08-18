@@ -291,7 +291,7 @@ class HourCounter(IHourCounter):
                     if self.__paused:
                         f.write(', Paused')
                     f.writelines('')
-        self.__last_count = clock_time
+        self.__last_time = clock_time
         self.__last_count = count
         if self.__keep_history:
             self.__history[clock_time] = count
