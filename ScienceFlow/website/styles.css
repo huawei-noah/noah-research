@@ -260,9 +260,7 @@ h1 strong {
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--red-dark);
-  border-radius: 6px;
-  color: var(--red-dark);
+  color: var(--muted);
   text-decoration: none;
 }
 
@@ -274,7 +272,7 @@ h1 strong {
 
 .hero-icon-link.arxiv-link {
   width: auto;
-  padding: 0 11px;
+  padding: 0;
 }
 
 .hero-icon-link.arxiv-link svg {
@@ -284,8 +282,7 @@ h1 strong {
 
 .hero-icon-link:hover,
 .hero-icon-link:focus-visible {
-  color: #ffffff;
-  background: var(--red);
+  color: var(--ink);
 }
 
 hr {
