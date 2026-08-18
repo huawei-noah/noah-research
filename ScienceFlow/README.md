@@ -88,7 +88,6 @@ uv sync
 Notes:
 
 - `uv sync` installs the locked `uv.lock` environment, including the in-repo `deepcraft` subpackages, the official `mlebench` Git revision, and the full test/ML stack.
-- PyTorch wheels default to the **cu128** index (for CUDA 12.8-era drivers). Adjust `[[tool.uv.index]]` in `pyproject.toml` if you need a different CUDA build.
 - SciModelingBench support is an optional extra: `uv sync --extra scientific-design`.
 - Run commands either via `uv run ...` or by using `.venv/bin/python` directly.
 

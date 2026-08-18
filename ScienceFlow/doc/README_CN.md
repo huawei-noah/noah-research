@@ -88,7 +88,6 @@ uv sync
 说明：
 
 - `uv sync` 会按 `uv.lock` 安装锁定环境，包括仓库内的 `deepcraft` 子包、官方 `mlebench` Git 固定版本以及完整的测试/ML 依赖栈。
-- PyTorch 默认使用 **cu128** 源（适配 CUDA 12.8 时代的驱动）。如需其他 CUDA 版本，请修改 `pyproject.toml` 中的 `[[tool.uv.index]]`。
 - SciModelingBench 支持为可选 extra：`uv sync --extra scientific-design`。
 - 运行命令既可以用 `uv run ...`，也可以直接使用 `.venv/bin/python`。
 
