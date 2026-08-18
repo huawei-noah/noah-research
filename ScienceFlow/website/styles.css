@@ -249,6 +249,7 @@ h1 strong {
 
 .hero-links {
   display: flex;
+  justify-content: center;
   gap: 10px;
   margin: 16px 0 0;
 }
@@ -257,8 +258,8 @@ h1 strong {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--red-dark);
   border-radius: 6px;
   color: var(--red-dark);
@@ -266,9 +267,19 @@ h1 strong {
 }
 
 .hero-icon-link svg {
-  width: 17px;
-  height: 17px;
+  width: 22px;
+  height: 22px;
   fill: currentColor;
+}
+
+.hero-icon-link.arxiv-link {
+  width: auto;
+  padding: 0 11px;
+}
+
+.hero-icon-link.arxiv-link svg {
+  width: auto;
+  height: 18px;
 }
 
 .hero-icon-link:hover,
