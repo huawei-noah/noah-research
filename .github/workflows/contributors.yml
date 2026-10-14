@@ -1,0 +1,63 @@
+name: Update Contributors
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'    # 每周一 UTC 0 点自动更新
+  workflow_dispatch:         # 支持在 Actions 页面手动触发
+  push:
+    branches: [main, dev]   # 也可在这些分支有新提交时触发
+
+permissions:
+  contents: write            # 允许 workflow 推送回仓库
+
+jobs:
+  contributors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout（拉取全部分支和完整历史）
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # 关键：0 表示拉取全部提交历史
+
+      - name: 统计全部分支贡献者
+        run: |
+          {
+            echo '| 提交数 | 贡献者 |'
+            echo '| ---: | --- |'
+            # --all 遍历所有分支；-s 只显示数量，-n 按数量排序
+            git shortlog -sn --all | sed 's/^ *//' \
+              | awk -F'\t' '{printf "| %s | %s |\n", $1, $2}'
+          } > /tmp/section.md
+          cat /tmp/section.md
+
+      - name: 写入 README.md 的标记区块
+        run: |
+          # 删除标记之间的旧内容（保留标记本身）
+          sed -i '/<!--START_SECTION:contributors-->/,/<!--END_SECTION:contributors-->/{
+            /<!--START_SECTION:contributors-->/!{
+              /<!--END_SECTION:contributors-->/!d
+            }
+          }' README.md
+          # 在起始标记后插入新内容
+          sed -i '/<!--START_SECTION:contributors-->/r /tmp/section.md' README.md
+
+      - name: 提交并推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # 没有变化就不提交，避免空提交；[skip ci] 防止触发自身造成循环
+          git diff --cached --quiet || \
+            (git commit -m "chore: update contributors [skip ci]" && git push)
+      - uses: actions/checkout@v4
+      - uses: jaywcjlove/github-action-contributors@main
+        id: contributors
+        with:
+          filter-author: '(renovate\[bot\]|dependabot\[bot\])'  # 过滤机器人账号
+          avatarSize: 40
+          count: 50        # 最多列 50 人
+      - name: 写入 README
+        uses: jaywcjlove/github-action-modify-file-content@main
+        with:
+          path: README.md
+          body: '${{ steps.contributors.outputs.htmlTable }}'
