@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # evaluation/run.sh
 
 # Make sure you have set OPENAI_API_KEY in your environment

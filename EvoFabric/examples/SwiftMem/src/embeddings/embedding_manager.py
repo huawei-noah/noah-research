@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/embeddings/embedding_manager.py
 """
 Embedding Manager for TridentMem - Caching and batch processing

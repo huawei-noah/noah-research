@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/consolidation/types.py
 """
 Co-consolidation 类型定义

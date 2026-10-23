@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # storage/unified_index.py
 """
 统一索引层 - 集成三层索引

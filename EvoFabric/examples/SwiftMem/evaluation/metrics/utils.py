@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # evaluation/metrics/utils.py
 """Evaluation metrics utilities"""
 

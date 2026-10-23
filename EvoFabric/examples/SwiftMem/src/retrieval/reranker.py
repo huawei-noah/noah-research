@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 """
 Reranker for search results
 Combines BM25, vector similarity, and temporal decay

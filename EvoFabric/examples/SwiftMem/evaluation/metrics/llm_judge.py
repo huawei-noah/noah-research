@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # evaluation/metrics/llm_judge.py
 """LLM-based evaluation judge"""
 

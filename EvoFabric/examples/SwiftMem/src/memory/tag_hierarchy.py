@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/memory/tag_hierarchy.py
 """
 Tag Hierarchy - 预定义的标签层级关系

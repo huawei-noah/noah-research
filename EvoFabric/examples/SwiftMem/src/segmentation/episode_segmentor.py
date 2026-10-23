@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 """
 Episode Segmentor - 智能对话分段和Episode生成
 将粗粒度的Session拆分为细粒度的Episodes
