@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/memory/memory_manager.py
 """
 Memory Manager - 统一的记忆管理接口

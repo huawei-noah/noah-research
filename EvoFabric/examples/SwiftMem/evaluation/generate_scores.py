@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # evaluation/generate_scores.py
 """Generate final scores and summary report"""
 

@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/models/message.py
 """
 消息模型 - 对话中的单条消息

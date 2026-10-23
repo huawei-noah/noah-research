@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/models/episode.py
 """
 Episode模型 - 一段连续的对话片段

@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # src/memory/tag_generator.py
 """
 Tag Generator - 使用LLM为对话生成语义标签

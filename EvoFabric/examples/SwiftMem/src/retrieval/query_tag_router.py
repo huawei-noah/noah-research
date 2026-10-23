@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 """
 Query Tag Router - 将 query 映射到相关 tags
 """

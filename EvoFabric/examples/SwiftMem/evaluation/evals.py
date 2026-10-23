@@ -1,3 +1,4 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd. All Rights Reserved.
 # evaluation/evals.py
 """Evaluate search results using F1, BLEU, and LLM Judge"""
 
