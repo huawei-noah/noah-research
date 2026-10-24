@@ -1,208 +1,323 @@
-# CURL: Neural Curve Layers for Global Image Enhancement (ICPR 2020)
+<div align="center">
 
-[Sean Moran](http://www.seanjmoran.com),  [Steven McDonagh](https://smcdonagh.github.io/), [Greg Slabaugh](http://gregslabaugh.net/)
+<h1>CURL</h1>
 
-**Huawei Noah's Ark Lab**
+<p><b>Neural Curve Layers for Global Image Enhancement</b><br>
+<sub>ICPR 2020 · Huawei Noah's Ark Lab</sub></p>
 
-<p>
-   Repository links for the paper <i>CURL: Neural Curve Layers for Global Image Enhancement</i>. In this repository you will find a link to the code and information of the datasets. Please raise a Github issue if you need assistance of have any questions on the research. 
-</p>
+[![arXiv](https://img.shields.io/badge/arXiv-1911.13175-b31b1b.svg)](https://arxiv.org/abs/1911.13175)
+[![Conference](https://img.shields.io/badge/ICPR-2020-4b44ce.svg)](https://doi.org/10.1109/ICPR48806.2021.9412677)
+[![Model](https://img.shields.io/badge/model-1.7M%20params-informational.svg)](#pre-trained-model)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-green.svg)](#license)
 
-**_BATCH SIZE:_ Note this code is designed for a batch size of 1. It needs re-engineered to support higher batch sizes. Using higher batch sizes is not supported currently. To replicate our reported results please use a batch size of 1 only.**
+[Sean Moran](https://sjmoran.github.io/) ·
+[Steven McDonagh](https://smcdonagh.github.io/) ·
+Greg Slabaugh
 
-### [[Paper]](https://arxiv.org/pdf/1911.13175)  [[Supplementary]](https://sjmoran.github.io/pdfs/CURL_supplementary.pdf) [[Video]](https://youtu.be/66FnRfDR_Oo) [[Poster]](https://sjmoran.github.io/pdfs/CURL_ICPR_POSTER.pdf) [[Slides]](https://sjmoran.github.io/pdfs/DeepLPFDataBites.pdf) 
+[**Paper**](https://arxiv.org/pdf/1911.13175) ·
+[**Supplementary**](https://sjmoran.github.io/pdfs/CURL_supplementary.pdf) ·
+[**Video**](https://youtu.be/66FnRfDR_Oo) ·
+[**Poster**](https://sjmoran.github.io/pdfs/CURL_ICPR_POSTER.pdf) ·
+[**Slides**](https://sjmoran.github.io/pdfs/DeepLPFDataBites.pdf)
 
-<p align="center">
-<img src="./images/teaser.PNG" width="80%"/>
-</p>
+</div>
 
-<p align="center">
-<a href="https://www.youtube.com/watch?v=66FnRfDR_Oo" span>
-   <img src="./images/youtube-thumbnail.png" width="90%"/>
-</a>
-<a href="https://sjmoran.github.io/pdfs/CURL_ICPR_POSTER.pdf" span>
-   <img src="./images/poster-img.png" width="100%"/>
-</a>
-</p>
-
-<table>
-  <tr>
-      <td><img src="https://github.com/sjmoran/CURL/blob/877d67ed4cf706fc8408630003e740c1078c3475/adobe5k_dpe/curl_example_test_input/a3102-JI2E4053%202.png"/></td>     
-     <td><img src="https://github.com/sjmoran/CURL/blob/2937522378a81c7f9a2e5ad20ddbe966820bb6c2/adobe5k_dpe/curl_example_test_output/a3102-JI2E4053.png"/></td> 
-    <td><img src="https://github.com/sjmoran/CURL/blob/6a7ffde24c38a3ae0a65dd0603bf7fcef9019dd3/adobe5k_dpe/curl_example_test_inference/a3102-JI2E4053_VALID_460_29_PSNR_21.413_SSIM_0.902.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (CURL)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/CURL/blob/2451eaf5b9d37a2384339c1d5ba412e4498cbce3/adobe5k_dpe/curl_example_test_input/a4714-Duggan_080613_8704_input.png"/></td>
-     <td><img src="https://github.com/sjmoran/CURL/blob/2451eaf5b9d37a2384339c1d5ba412e4498cbce3/adobe5k_dpe/curl_example_test_output/a4714-Duggan_080613_8704.png"/></td> 
-    <td><img src="https://github.com/sjmoran/CURL/blob/2451eaf5b9d37a2384339c1d5ba412e4498cbce3/adobe5k_dpe/curl_example_test_inference/a4714-Duggan_080613_8704_TEST_510_3_PSNR_27.102_SSIM_0.898.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (CURL)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/64f8873d93e8e2eaf259b1dd8a66d34894232788/adobe5k_dpe/curl_example_test_input/a4857-_DSC0008-1_input.png"/></td>     
-     <td><img src="https://github.com/sjmoran/CURL/blob/64f8873d93e8e2eaf259b1dd8a66d34894232788/adobe5k_dpe/curl_example_test_output/a4857-_DSC0008-1.png"/></td>     
-     <td><img src="https://github.com/sjmoran/CURL/blob/64f8873d93e8e2eaf259b1dd8a66d34894232788/adobe5k_dpe/curl_example_test_inference/a4857-_DSC0008-1_TEST_510_17_PSNR_26.826_SSIM_0.944.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th> 
-    <th>Label</th>
-    <th>Ours (CURL)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/c58bdeeb948662419e1d15ccf4d11498b5a23379/adobe5k_dpe/curl_example_test_input/a4774-_DGW0330_input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/c58bdeeb948662419e1d15ccf4d11498b5a23379/adobe5k_dpe/curl_example_test_output/a4774-_DGW0330.png"/></td>     
-     <td><img src="https://github.com/sjmoran/CURL/blob/c58bdeeb948662419e1d15ccf4d11498b5a23379/adobe5k_dpe/curl_example_test_inference/a4774-_DGW0330_TEST_510_31_PSNR_21.773_SSIM_0.899.jpg"/></td> 
-  </tr>
-   <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_input/a4723-_DGW7894_input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_output/a4723-_DGW7894.png"/></td>     
-     <td><img src="https://github.com/sjmoran/CURL/blob/2f885e1b779fa0924138355f80fd9f7b1d3e8f6e/adobe5k_dpe/curl_example_test_inference/a4723-_DGW7894_TEST_510_8_PSNR_28.702_SSIM_0.902.jpg"/></td> 
-  </tr>
-   <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_input/a2803-060810_075208_GM6A0020_input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_output/a2803-060810_075208_GM6A0020.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/6a13e32b0b10f3a3188496e5030a592b0b69ebfc/adobe5k_dpe/curl_example_test_inference/a2803-060810_075208_GM6A0020_VALID_510_30_PSNR_27.756_SSIM_0.982.jpg"/></td> 
-  </tr>
-   <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_input/a2917-jmac_DSC3800_input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_output/a2917-jmac_DSC3800.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/4200767971b31dd715b8c544c9af5d415abdf47d/adobe5k_dpe/curl_example_test_inference/a2917-jmac_DSC3800_VALID_510_4_PSNR_31.279_SSIM_0.977.jpg"/></td> 
-  </tr>
-   <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_input/a3232-_DGW6397%20input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_output/a3232-_DGW6397.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/89b56a5fd539fecac32b14103ddb58e2babc5d3c/adobe5k_dpe/curl_example_test_inference/a3232-_DGW6397_VALID_510_2_PSNR_27.860_SSIM_0.952.jpg"/></td> 
-  </tr>
-   <tr>
-    <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_input/a4232-Duggan_090323_6181%20input.png"/></td> 
-     <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_output/a4232-Duggan_090323_6181.png"/></td>   
-     <td><img src="https://github.com/sjmoran/CURL/blob/e610b8525c277c64baa9b3ef6eaf7a6a4c339c0a/adobe5k_dpe/curl_example_test_inference/a4232-Duggan_090323_6181_VALID_510_19_PSNR_28.413_SSIM_0.975.jpg"/></td> 
-  </tr>
-</table>
-
-### Requirements
-
-_requirements.txt_ contains the Python packages used by the code.
-
-### How to train CURL and use the model for inference
-
-#### Training CURL
-
-Instructions:
-
-To get this code working on your system / problem you will need to edit the data loading functions, as follows:
-
-1. main.py, change the paths for the data directories to point to your data directory
-2. data.py, lines 248, 256, change the folder names of the data input and output directories to point to your folder names
-
-To train, run the command:
-
-```
-python3 main.py
-```
+Enhancement networks usually learn a mapping straight to output pixels. CURL
+instead predicts **tone curves** — the same piecewise-linear curves a raw
+converter exposes — and applies them in three colour spaces in turn: CIELab,
+RGB, then HSV. Each stage is 16 knots per channel, so the whole enhancement is
+160 numbers, and each one says what it did to lightness, to colour, or to
+saturation.
 
 <p align="center">
-<img src="./images/curl_training_loss.png" width="80%"/>
+<img src="./images/teaser.PNG" width="85%" alt="CURL enhancement examples"/>
 </p>
 
-#### Inference - Using Pre-trained Models for Prediction
+## Contents
 
-The directory _pretrained_models_ contains a CURL pre-trained model on the Adobe5K_DPE dataset. The model with the highest validation dataset PSNR (23.58dB) is at epoch 510:
+[How it works](#how-it-works) ·
+[Install](#install) ·
+[Enhance your photos](#enhance-your-photos) ·
+[Inference on a split](#inference-on-a-split) ·
+[Train it yourself](#train-it-yourself) ·
+[Pre-trained model](#pre-trained-model) ·
+[Results](#results) ·
+[Datasets](#datasets) ·
+[Other versions](#other-versions) ·
+[Citation](#citation)
 
-* curl_validpsnr_23.073045286204017_validloss_0.0701291635632515_testpsnr_23.584083321292365_testloss_0.061363041400909424_epoch_510_model.pt
+## How it works
 
-This pre-trained CURL model obtains 23.58dB on the test dataset for Adobe DPE.
+A **TED** backbone (Transformed Encoder-Decoder) reads the image and produces
+per-pixel features. The **CURL** block then runs three curve layers in sequence,
+each one a small convolutional head that predicts knot positions from the
+features and the current image:
 
-To use this model for inference:
+| Stage | Space | Curves | What it adjusts |
+|---|---|---|---|
+| 1 | CIELab | 3 × 16 knots | lightness and the two chroma axes |
+| 2 | RGB | 3 × 16 knots | per-channel tone, so white balance and contrast |
+| 3 | HSV | 4 × 16 knots | hue, saturation and value |
 
-1. Place the images you wish to infer in a directory e.g. ./adobe5k_dpe/curl_example_test_input/. Make sure the directory path has the word "input" somewhere in the path.
-2. Place the images you wish to use as groundtruth in a directory e.g. ./adobe5k_dpe/curl_example_test_output/. Make sure the directory path has the word "output" somewhere in the path.
-3. Place the names of the images (without extension) in a text file in the directory above the directory containing the images i.e. ./adobe5k_dpe/ e.g. ./adobe5k_dpe/images_inference.txt
-4. Run the command and the results will appear in a timestamped directory in the same directory as main.py:
+Between stages the image is converted into the next space and back, and each
+stage's output is blended as a residual. A smoothness regulariser on the knot
+spacing, weighted by `--reg_weight`, keeps the curves smoother rather than
+jagged, and the training loss combines L1 in RGB, CIELab and HSV with a
+cosine term on RGB vectors and MS-SSIM.
+
+Because the output is a set of curves rather than a painted image, the
+enhancement is global, resolution-independent, and can be read off and applied
+elsewhere. The [paper](https://arxiv.org/pdf/1911.13175) gives the full
+formulation.
+
+<p align="center">
+<a href="https://www.youtube.com/watch?v=66FnRfDR_Oo"><img src="./images/youtube-thumbnail.png" width="70%" alt="CURL talk video"/></a>
+</p>
+
+## Install
+
+```bash
+git clone https://github.com/huawei-noah/noah-research.git
+cd noah-research/CURL
+pip install -e .
+```
+
+Python 3.9 or newer. Torch comes from your platform's usual wheel; if you
+already have a CUDA or ROCm build, keep it — installing the generic one would
+replace it and the GPU goes with it.
+
+## Enhance your photos
+
+```bash
+curl-enhance enhance photo.jpg               # one file
+curl-enhance enhance ~/photos --out ~/done   # or a whole directory
+```
+
+Results land in `enhanced/` as PNGs. PNG, JPEG, TIFF, BMP and WebP are read,
+greyscale and RGBA included. The device is picked for you — CUDA, Apple Silicon
+(MPS), or CPU — and `--device` overrides it. A file that cannot be read is
+reported and skipped rather than taking the rest of the batch down with it.
+
+| | |
+|---|---|
+| Model size | 1.7M parameters |
+| Input | any resolution with both edges ≥ 48 px |
+
+## Inference on a split
+
+To score a dataset split rather than enhance loose files, the bundled example
+uses the checkpoint in `pretrained_models/adobe_dpe/`:
+
+1. Put the images to enhance in a directory whose path contains the word
+   `input`, e.g. `./adobe5k_dpe/curl_example_test_input/`.
+2. Put the matching ground-truth images in a directory whose path contains the
+   word `output`, e.g. `./adobe5k_dpe/curl_example_test_output/`.
+3. List the image names, without extensions, in a text file one directory up,
+   e.g. `./adobe5k_dpe/images_inference.txt`.
+4. Run:
+
+```bash
+python3 main.py \
+  --inference_img_dirpath=./adobe5k_dpe/ \
+  --checkpoint_filepath=./pretrained_models/adobe_dpe/curl_validpsnr_23.18146999041522_validloss_0.05043014452109734_testpsnr_24.1456055407235_testloss_0.04208333077654242_epoch_270_model.pt
+```
+
+Results are written to a timestamped directory next to `main.py`, one image per
+input with its PSNR and SSIM in the filename. The device is picked for you —
+CUDA, Apple Silicon (MPS), or CPU.
+
+As written, over the thirteen bundled examples, that command reports **29.43
+dB / 0.957 SSIM**.
+
+## Train it yourself
+
+Point it at a directory holding `input/` and `output/` folders and one text
+file per split listing the image ids:
+
+```bash
+python3 main.py \
+  --training_img_dirpath=./adobe5k_dpe_data/ \
+  --num_epoch=500 \
+  --reg_weight=1e-2 \
+  --lr_schedule=cosine \
+  --seed=0
+```
+
+Checkpoints are written whenever validation PSNR improves, into a timestamped
+`log_*` directory with the metrics in the filename.
+
+`--reg_weight` scales the smoothness penalty on the predicted curves;
+`--lr_schedule=cosine` anneals the learning rate to `--lr_min` over
+`--num_epoch`, which is what the shipped checkpoint was trained with over 500
+epochs. `--batch_size` above 1 needs `--crop_size`, because the
+images vary in size and cannot otherwise be stacked. Evaluation and
+inference always run at a batch size of 1, so per-image PSNR and SSIM are
+reported and saved individually. On CUDA, `--tf32`, `--compile` and
+`--amp bf16` are available.
+
+### Watching the curves
+
+The curves are the point of the method, so the training loop can record them:
+
+```bash
+python3 main.py --training_img_dirpath=./data/ --dump_curves_every=5
+python3 tools/plot_curves.py log_*/curves.jsonl -o curves.png
+```
+
+Every fifth epoch, one fixed validation image goes through the network and all
+ten predicted curves are appended to `curves.jsonl`, along with each curve's
+spread and its curvature. `tools/plot_curves.py` draws the knot trajectories
+over the run and the curvature against epoch.
+
+<p align="center">
+<img src="./images/curl_training_loss.png" width="85%" alt="CURL training loss"/>
+</p>
+
+All ten predicted curves for one validation image, at the epoch the shipped
+checkpoint was selected:
+
+<p align="center">
+<img src="./images/curl_predicted_curves.png" width="95%" alt="All ten predicted CURL curves"/>
+</p>
+
+## Results
+
+| Model | Split | PSNR | SSIM |
+|---|---|---|---|
+| the checkpoint in this repo, epoch 270 | DPE | **24.15 dB** | 0.915 |
+| CURL as published (Table 3) | DPE | 24.04 dB | 0.900 |
+
+FiveK is reported under several incompatible protocols — different test sets,
+input renderings and resolutions — so a FiveK number is only comparable with
+another measured the same way. See the
+[protocol table](https://github.com/sjmoran/deeplpf-image-enhancement/blob/master/docs/BENCHMARK_TABLE.md).
+The checkpoint above trains on the DPE lists shipped in
+[`adobe5k_dpe/`](./adobe5k_dpe/), with `--reg_weight=1e-2` and
+`--lr_schedule=cosine`, selected at the epoch with the best validation PSNR
+over 500 epochs.
+
+### Examples
+
+Input, the curves CURL predicted for it, the Expert C retouch, and the result.
+The curves are the whole enhancement: a lift through the shadows, a roll-off
+through the highlights, and a gentle rise in saturation, read straight off the
+network's output.
+
+<p align="center">
+<img src="./images/gallery.jpg" width="100%" alt="Four photographs: the input, the curves CURL predicted, the Expert C retouch, and CURL's output"/>
+</p>
+
+Regenerate it for any checkpoint with:
+
+```bash
+python3 tools/curve_gallery.py . <checkpoint> gallery.jpg
+```
+
+## Datasets
+
+- **Adobe-DPE** (5000 RGB→RGB pairs): download
+  [here](https://data.csail.mit.edu/graphics/fivek/), then pre-process per the
+  DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer);
+  Expert C retouching is the target and the images must be exported in sRGB.
+  See the
+  [DPE instructions](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636).
+  The splits used here are in [`adobe5k_dpe/`](./adobe5k_dpe/).
+
+- **Adobe-UPE** (5000 RGB→RGB pairs): same download, pre-processed per the
+  DeepUPE [paper](https://github.com/wangruixing/DeepUPE) and
+  [this issue](https://github.com/wangruixing/DeepUPE/issues/26). Expert C is
+  the target. Test images
+  [here](https://drive.google.com/file/d/1HZnNgptNxjKJAhekz2K5yh0mW0yKIws2/view?usp=sharing).
+
+- **Samsung S7** (110 RAW→RGB pairs): download
+  [here](https://www.kaggle.com/knn165897/s7-isp-dataset). Training uses random
+  512×512 crops; everything not listed below is training data.
+
+<details>
+<summary>S7 validation and test image lists</summary>
+
+**Validation**
 
 ```
-python3 main.py --inference_img_dirpath=./adobe5k_dpe/ --checkpoint_filepath=./pretrained_models/curl_validpsnr_23.073045286204017_validloss_0.0701291635632515_testpsnr_23.584083321292365_testloss_0.061363041400909424_epoch_510_model.pt
+S7-ISP-Dataset-20161110_125321   S7-ISP-Dataset-20161109_131627
+S7-ISP-Dataset-20161109_225318   S7-ISP-Dataset-20161110_124727
+S7-ISP-Dataset-20161109_130903   S7-ISP-Dataset-20161109_222408
+S7-ISP-Dataset-20161107_234316   S7-ISP-Dataset-20161109_132214
+S7-ISP-Dataset-20161109_161410   S7-ISP-Dataset-20161109_140043
 ```
 
-### CURL for RGB images
+**Test**
 
-- __rgb_ted.py__ contains the TED model for RGB images 
+```
+S7-ISP-Dataset-20161110_130812   S7-ISP-Dataset-20161110_120803
+S7-ISP-Dataset-20161109_224347   S7-ISP-Dataset-20161109_155348
+S7-ISP-Dataset-20161110_122918   S7-ISP-Dataset-20161109_183259
+S7-ISP-Dataset-20161109_184304   S7-ISP-Dataset-20161109_131033
+S7-ISP-Dataset-20161110_130117   S7-ISP-Dataset-20161109_134017
+```
 
-### CURL for RAW images
+</details>
 
-- __raw_ted.py__ contains the TED model for RGB images 
+## Other versions
 
-### Github user contributions
+The TED backbone is available on its own: `rgb_ted.py` for RGB images,
+`raw_ted.py` for RAW.
 
-__CURL_for_RGB_images.zip__ is a contribution (RGB model and pre-trained weights) courtsey of Github user [hermosayhl](https://github.com/hermosayhl)
+This code is also maintained as a standalone repository at
+[sjmoran/curl-image-enhancement](https://github.com/sjmoran/curl-image-enhancement),
+tagged
+[v1.0.0](https://github.com/sjmoran/curl-image-enhancement/releases/tag/v1.0.0),
+which is where the checkpoint above was trained.
 
-### Bibtex
+Three community contributions exist. None has been tested by the paper's
+authors, and copies of each are mirrored there.
 
-If you do use ideas from the paper in your research please kindly consider citing as below:
+| Contribution | By |
+|---|---|
+| Refactored CURL ([issue 31](https://github.com/sjmoran/CURL/issues/31)) | [mahdip72](https://github.com/mahdip72/CURL) |
+| Batch size > 1 ([issue 27](https://github.com/sjmoran/CURL/issues/27)) | [barbodpj](https://github.com/barbodpj) |
+| RGB model and weights | [hermosayhl](https://github.com/hermosayhl) |
+
+## Repository layout
+
+| | |
+|---|---|
+| `main.py` | entry point, dispatching to training or inference |
+| `cli.py` · `train.py` · `inference.py` | arguments, the training loop, running a checkpoint |
+| `model.py` · `losses.py` · `blocks.py` | the network, the loss, the conv blocks |
+| `colour.py` · `curves.py` | colour-space conversions and the curve arithmetic |
+| `metrics.py` · `images.py` · `tensors.py` | PSNR/SSIM, image I/O, shape helpers |
+| `curl_cli.py` | the `curl-enhance` command |
+| `curvelog.py` · `tools/plot_curves.py` | recording and plotting the predicted curves |
+| `test_curl.py` | 42 CPU-only tests, no dataset needed |
+
+```bash
+python3 -m pytest test_curl.py
+```
+
+The suite covers the colour round-trips and their known anchors, the curve's
+interpolation of its knots and the locality of each knot, gradient flow into
+every parameter, the loss and metric invariants, shape handling from 48 px
+upwards, and the checkpoint contract.
+
+## Citation
 
 ```
 @INPROCEEDINGS{moran2020curl,
   author={Moran, Sean and McDonagh, Steven and Slabaugh, Gregory},
-  booktitle={2020 25th International Conference on Pattern Recognition (ICPR)}, 
-  title={CURL: Neural Curve Layers for Global Image Enhancement}, 
+  booktitle={2020 25th International Conference on Pattern Recognition (ICPR)},
+  title={CURL: Neural Curve Layers for Global Image Enhancement},
   year={2021},
-  volume={},
-  number={},
   pages={9796-9803},
   doi={10.1109/ICPR48806.2021.9412677}}
 ```
 
-### Datasets
+## License
 
-* __Samsung S7__ (110 images, RAW, RGB pairs): this dataset can be downloaded [here](https://www.kaggle.com/knn165897/s7-isp-dataset). The validation and testing images are listed below, the remaining images serve as our training dataset. For all results in the paper we use random crops of patch size 512x512 pixels during training.
+BSD-3-Clause.
 
-  * __Validation Dataset Images__
+## Contributing
 
-    * S7-ISP-Dataset-20161110_125321
-    * S7-ISP-Dataset-20161109_131627
-    * S7-ISP-Dataset-20161109_225318
-    * S7-ISP-Dataset-20161110_124727
-    * S7-ISP-Dataset-20161109_130903
-    * S7-ISP-Dataset-20161109_222408
-    * S7-ISP-Dataset-20161107_234316
-    * S7-ISP-Dataset-20161109_132214
-    * S7-ISP-Dataset-20161109_161410
-    * S7-ISP-Dataset-20161109_140043
-
-
-  * __Test Dataset Images__
-  
-    * S7-ISP-Dataset-20161110_130812
-    * S7-ISP-Dataset-20161110_120803
-    * S7-ISP-Dataset-20161109_224347
-    * S7-ISP-Dataset-20161109_155348
-    * S7-ISP-Dataset-20161110_122918
-    * S7-ISP-Dataset-20161109_183259
-    * S7-ISP-Dataset-20161109_184304
-    * S7-ISP-Dataset-20161109_131033
-    * S7-ISP-Dataset-20161110_130117
-    * S7-ISP-Dataset-20161109_134017
-
-* __Adobe-DPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). After downloading this dataset you will need to use Lightroom to pre-process the images according to the procedure outlined in the DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer). Please see the issue [here](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636) for instructions. Artist C retouching is used as the groundtruth/target. Note, that the images should be extracted in sRGB space. Feel free to raise a Gitlab issue if you need assistance with this (or indeed the Adobe-UPE dataset below). You can also find the training, validation and testing dataset splits for Adobe-DPE in the following [file](https://www.cmlab.csie.ntu.edu.tw/project/Deep-Photo-Enhancer/%5BExperimental_Code_Data%5D_Deep-Photo-Enhancer.zip). 
-
-* __Adobe-UPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). As above, you will need to use Lightroom to pre-process the images according to the procedure outlined in the Underexposed Photo Enhancement Using Deep Illumination Estimation (DeepUPE) [paper](https://github.com/wangruixing/DeepUPE) and detailed in the issue [here](https://github.com/wangruixing/DeepUPE/issues/26). Artist C retouching is used as the groundtruth/target. You can find the test images for the Adobe-UPE dataset at this [link](https://drive.google.com/file/d/1HZnNgptNxjKJAhekz2K5yh0mW0yKIws2/view?usp=sharing).
-
-### License
-
-BSD-3-Clause License
-
-### Contributions
-
-We appreciate all contributions. If you are planning to contribute back bug-fixes, please do so without any further discussion.
-
-If you plan to contribute new features, utility functions or extensions to the core, please first open an issue and discuss the feature with us. Sending a PR without discussion might end up resulting in a rejected PR, because we might be taking the core in a different direction than you might be aware of.
-
-【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
+Bug fixes are welcome as pull requests. For new features or extensions, open an
+issue first so the shape can be agreed before the work is written. If you are
+training CURL and run into trouble, open an issue — we are happy to help.

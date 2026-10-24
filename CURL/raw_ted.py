@@ -10,26 +10,11 @@ Tested with Pytorch 1.7.1, Python 3.7.9
 Authors: Sean Moran (sean.j.moran@gmail.com), 2020
 
 '''
-import numpy as np
 import torch
 import torch.nn as nn
-from math import sqrt
-from torch.nn import init
-from torch.autograd import Variable
-import torch.nn.functional as F
 
-
-class Flatten(nn.Module):
-
-    def forward(self, x):
-        """Flatten a Tensor to a Vector
-
-        :param x: Tensor
-        :returns: 1D Tensor
-        :rtype: Tensor
-
-        """
-        return x.view(x.size()[0], -1)
+# Shared with the RGB backbone: these four were duplicated verbatim.
+from rgb_ted import Flatten, LocalNet, MidNet2, MidNet4
 
 
 class TED(nn.Module):
@@ -183,103 +168,6 @@ class TED(nn.Module):
         out = self.conv_last(x)
 
         return out
-
-
-class LocalNet(nn.Module):
-
-    def forward(self, x_in):
-        """Defines a double convolution
-
-        :param x_in: input convolutional features
-        :returns: convolutional features
-        :rtype: Tensor
-
-        """
-        x = self.lrelu(self.conv1(self.refpad(x_in)))
-        x = self.lrelu(self.conv2(self.refpad(x)))
-
-        return x
-
-    def __init__(self, in_channels=16, out_channels=64):
-        """Initialisation function
-
-        :param in_channels:  number of input channels
-        :param out_channels: number of output channels
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(LocalNet, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, 1, 0, 1)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, 1, 0, 1)
-        self.lrelu = nn.LeakyReLU()
-        self.refpad = nn.ReflectionPad2d(1)
-
-
-class MidNet2(nn.Module):
-
-    def forward(self, x_in):
-        """Network with dilation rate 2
-
-        :param x_in: input convolutional features        
-        :returns: processed convolutional features        
-        :rtype: Tensor
-
-        """
-        x = self.lrelu(self.conv1((x_in)))
-        x = self.lrelu(self.conv2((x)))
-        x = self.lrelu(self.conv3(x))
-        x = self.conv4(x)
-
-        return x
-
-    def __init__(self, in_channels=16):
-        """FIXME! briefly describe function
-
-        :param in_channels: Input channels
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(MidNet2, self).__init__()
-        self.lrelu = nn.LeakyReLU()
-        self.conv1 = nn.Conv2d(in_channels, 64, 3, 1, 2, 2)
-        self.conv2 = nn.Conv2d(64, 64, 3, 1, 2, 2)
-        self.conv3 = nn.Conv2d(64, 64, 3, 1, 2, 2)
-        self.conv4 = nn.Conv2d(64, 64, 3, 1, 2, 2)
-
-
-class MidNet4(nn.Module):
-
-    def forward(self, x_in):
-        """Network with dilation rate 4
-
-        :param x_in: input convolutional features
-        :returns: processed convolutional features
-        :rtype: Tensor
-
-        """
-        x = self.lrelu(self.conv1((x_in)))
-        x = self.lrelu(self.conv2((x)))
-        x = self.lrelu(self.conv3(x))
-        x = self.conv4(x)
-
-        return x
-
-    def __init__(self, in_channels=16):
-        """FIXME! briefly describe function
-
-        :param in_channels: Input channels
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(MidNet4, self).__init__()
-        self.lrelu = nn.LeakyReLU()
-        self.conv1 = nn.Conv2d(in_channels, 64, 3, 1, 4, 4)
-        self.conv2 = nn.Conv2d(64, 64, 3, 1, 4, 4)
-        self.conv3 = nn.Conv2d(64, 64, 3, 1, 4, 4)
-        self.conv4 = nn.Conv2d(64, 64, 3, 1, 4, 4)
 
 
 class SimpleUpsampler(nn.Sequential):

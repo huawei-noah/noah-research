@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "curl-image-enhancement"
+version = "1.0.0"
+description = "CURL: Neural Curve Layers for Global Image Enhancement (ICPR 2020)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "Sean Moran", email = "sean.j.moran@gmail.com" },
+    { name = "Steven McDonagh" },
+    { name = "Gregory Slabaugh" },
+]
+keywords = ["image-enhancement", "photo-retouching", "tone-curves", "pytorch"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "numpy>=1.24",
+    "torch>=2.0",
+    "torchvision>=0.15",
+    "scikit-image>=0.19",
+    "matplotlib>=3.6",
+    "Pillow>=9.0",
+    "tensorboard>=2.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/huawei-noah/noah-research/tree/master/CURL"
+Paper = "https://arxiv.org/abs/1911.13175"
+
+[project.scripts]
+curl-enhance = "curl_cli:main"
+
+[tool.setuptools]
+# A flat layout of single-file modules rather than a package directory, which
+# is how the research entry points expect to import each other.
+py-modules = [
+    "blocks", "cli", "colour", "curl_cli", "curvelog", "curves", "data",
+    "device", "images", "inference", "losses", "main", "metric", "metrics",
+    "model", "raw_ted", "rgb_ted", "tensors", "train", "util",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["test_curl.py"]

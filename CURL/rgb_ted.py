@@ -40,13 +40,8 @@ class TED(nn.Module):
         def layer(nIn, nOut, k, s, p, d=1):
             return nn.Sequential(nn.Conv2d(nIn, nOut, k, s, p, d), nn.LeakyReLU(inplace=True))
 
-        self.conv1 = nn.Conv2d(16, 64, 1)
-        self.conv2 = nn.Conv2d(32, 64, 1)
-        self.conv3 = nn.Conv2d(64, 64, 1)
-
         self.mid_net2_1 = MidNet2(in_channels=16)
         self.mid_net4_1 = MidNet4(in_channels=16)
-        self.local_net = LocalNet(16)
 
         self.dconv_down1 = LocalNet(3, 16)
         self.dconv_down2 = LocalNet(16, 32)
@@ -119,8 +114,6 @@ class TED(nn.Module):
         elif x.shape[3] != conv4.shape[3]:
             x = torch.nn.functional.pad(x, (1, 0, 0, 0))
 
-        del conv4
-
         x = self.dconv_up4(x)
         x = self.up_conv1x1_2(self.upsample(x))
 
@@ -134,8 +127,6 @@ class TED(nn.Module):
         x = self.dconv_up3(x)
         x = self.up_conv1x1_3(self.upsample(x))
 
-        del conv3
-
         if x.shape[3] != conv2.shape[3] and x.shape[2] != conv2.shape[2]:
             x = torch.nn.functional.pad(x, (1, 0, 0, 1))
         elif x.shape[2] != conv2.shape[2]:
@@ -145,8 +136,6 @@ class TED(nn.Module):
 
         x = self.dconv_up2(x)
         x = self.up_conv1x1_4(self.upsample(x))
-
-        del conv2
 
         mid_features1 = self.mid_net2_1(conv1)
         mid_features2 = self.mid_net4_1(conv1)
@@ -167,7 +156,6 @@ class TED(nn.Module):
             x = torch.nn.functional.pad(x, (1, 0, 0, 0))
 
         x = torch.cat([x, conv1_fuse], dim=1)
-        del conv1
 
         x = self.dconv_up1(x)
 

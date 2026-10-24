@@ -15,7 +15,7 @@ matplotlib.use('agg')
 import numpy as np
 import sys
 import torch
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from collections import defaultdict
 import logging
 import os
@@ -23,9 +23,29 @@ import util
 import torchvision.transforms.functional as TF
 import random
 import matplotlib.pyplot as plt
-from PIL import Image 
 
 np.set_printoptions(threshold=sys.maxsize)
+
+def match_orientation(input_img, target_img):
+    """Transpose the target when it is the input's transpose, and only then.
+
+    Some FiveK exports differ in orientation between the input and the
+    retouched target. The previous test, ``input.shape[1] == target.shape[2]``,
+    compares the input's height against the target's width, which is true for
+    any square image: a square pair had its target silently transposed.
+
+    :param input_img: CHW tensor
+    :param target_img: CHW tensor
+    :returns: the target, transposed only if its orientation is the mirror of
+        the input's
+    :rtype: Tensor
+    """
+    _, in_h, in_w = input_img.shape
+    _, out_h, out_w = target_img.shape
+    if (in_h, in_w) == (out_w, out_h) and in_h != in_w:
+        return target_img.permute(0, 2, 1)
+    return target_img
+
 
 class SamsungDataset(torch.utils.data.Dataset):
 
@@ -56,38 +76,38 @@ class SamsungDataset(torch.utils.data.Dataset):
         :returns: dictionary containing input and output images and their identifier
         :rtype: dictionary
         """
-        while True:
 
-            if idx in self.data_dict:
+        if idx not in self.data_dict:
+            raise KeyError('no image pair with index %s' % idx)
 
-                output_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['output_img'], normaliser=self.normaliser)
-                input_img = np.load(self.data_dict[idx]['input_img'])
+        output_img = util.ImageProcessing.load_image(
+            self.data_dict[idx]['output_img'], normaliser=self.normaliser)
+        input_img = np.load(self.data_dict[idx]['input_img'])
 
-                input_img = input_img / (2**10-1)  # change this normalisation
-                                        # factor for your data
-                shape = input_img.shape
-                input_img = np.clip(input_img, 0, 1)
-                input_img[np.isnan(input_img)] = 0
+        input_img = input_img / (2**10-1)  # change this normalisation
+                                # factor for your data
+        input_img = np.clip(input_img, 0, 1)
+        input_img[np.isnan(input_img)] = 0
 
-                seed = random.uniform(0, 10000)
+        seed = random.uniform(0, 10000)
 
-                if not self.is_valid:
-                    random.seed(seed)  # make a seed with numpy generation
-                    i = random.randint(0, input_img.shape[0]-512)  # patch size
-                                        # of 512 pixels
-                    j = random.randint(0, input_img.shape[1]-512)
-                    i = i-(i % 2)  # ensure on Bayer pattern boundary
-                    j = j-(j % 2)
-                    input_img = input_img[i:(i+512), j:(j+512)]
-                    output_img = output_img[i:(i+512), j:(j+512), :]
+        if not self.is_valid:
+            random.seed(seed)  # make a seed with numpy generation
+            i = random.randint(0, input_img.shape[0]-512)  # patch size
+                                # of 512 pixels
+            j = random.randint(0, input_img.shape[1]-512)
+            i = i-(i % 2)  # ensure on Bayer pattern boundary
+            j = j-(j % 2)
+            input_img = input_img[i:(i+512), j:(j+512)]
+            output_img = output_img[i:(i+512), j:(j+512), :]
 
-                return {'input_img': input_img, 'output_img': output_img,
-                        'name': self.data_dict[idx]['input_img'].split("/")[-1]}
+        return {'input_img': input_img, 'output_img': output_img,
+                'name': self.data_dict[idx]['input_img'].split("/")[-1]}
 
 class Dataset(torch.utils.data.Dataset):
 
-    def __init__(self, data_dict, transform=None, normaliser=2 ** 8 - 1, is_valid=False, is_inference=False):
+    def __init__(self, data_dict, transform=None, normaliser=2 ** 8 - 1, is_valid=False,
+                 is_inference=False, crop_size=None):
         """Initialisation for the Dataset object
 
         :param data_dict: dictionary of dictionaries containing images
@@ -101,6 +121,9 @@ class Dataset(torch.utils.data.Dataset):
         self.normaliser = normaliser
         self.is_valid = is_valid
         self.is_inference = is_inference
+        # FiveK images vary in size, so a batch larger than one needs every
+        # sample cropped to a common shape.
+        self.crop_size = crop_size
 
     def __len__(self):
         """Returns the number of images in the dataset
@@ -121,83 +144,81 @@ class Dataset(torch.utils.data.Dataset):
         :rtype: dictionary
 
         """
-        while True:
 
-            if (self.is_inference) or (self.is_valid):
+        if (self.is_inference) or (self.is_valid):
 
-                input_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['input_img'], normaliser=self.normaliser)
-                output_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['output_img'], normaliser=self.normaliser)
+            input_img = util.ImageProcessing.load_image(
+                self.data_dict[idx]['input_img'], normaliser=self.normaliser)
+            output_img = util.ImageProcessing.load_image(
+                self.data_dict[idx]['output_img'], normaliser=self.normaliser)
 
-                if self.normaliser==1:
-                    input_img = input_img.astype(np.uint8)
-                    output_img = output_img.astype(np.uint8)
+            if self.normaliser==1:
+                input_img = input_img.astype(np.uint8)
+                output_img = output_img.astype(np.uint8)
 
-                input_img = TF.to_pil_image(input_img)
-                input_img = TF.to_tensor(input_img)
-                output_img = TF.to_pil_image(output_img)
-                output_img = TF.to_tensor(output_img)
+            input_img = TF.to_pil_image(input_img)
+            input_img = TF.to_tensor(input_img)
+            output_img = TF.to_pil_image(output_img)
+            output_img = TF.to_tensor(output_img)
 
-                if input_img.shape[1]==output_img.shape[2]:
-                    output_img=output_img.permute(0,2,1)
+            output_img = match_orientation(input_img, output_img)
 
-                return {'input_img': input_img, 'output_img': output_img,
-                        'name': self.data_dict[idx]['input_img'].split("/")[-1]}
+            return {'input_img': input_img, 'output_img': output_img,
+                    'name': self.data_dict[idx]['input_img'].split("/")[-1]}
 
-            else:
+        else:
 
-                output_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['output_img'], normaliser=self.normaliser)
-                input_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['input_img'], normaliser=self.normaliser)
+            output_img = util.ImageProcessing.load_image(
+                self.data_dict[idx]['output_img'], normaliser=self.normaliser)
+            input_img = util.ImageProcessing.load_image(
+                self.data_dict[idx]['input_img'], normaliser=self.normaliser)
 
-                if self.normaliser==1:
-                    input_img = input_img.astype(np.uint8)
-                    output_img = output_img.astype(np.uint8)
+            if self.normaliser==1:
+                input_img = input_img.astype(np.uint8)
+                output_img = output_img.astype(np.uint8)
 
-                input_img = TF.to_pil_image(input_img)
-                output_img = TF.to_pil_image(output_img)
-      
-                if not self.is_valid:
-                        
-                        # Random horizontal flipping
-                        if random.random() > 0.5:
-                            input_img = TF.hflip(input_img)
-                            output_img = TF.hflip(output_img)
+            input_img = TF.to_pil_image(input_img)
+            output_img = TF.to_pil_image(output_img)
+  
+            if not self.is_valid:
+                    
+                    # Random horizontal flipping
+                    if random.random() > 0.5:
+                        input_img = TF.hflip(input_img)
+                        output_img = TF.hflip(output_img)
 
-                        # Random vertical flipping
-                        if random.random() > 0.5:
-                            input_img = TF.vflip(input_img)
-                            output_img = TF.vflip(output_img)
+                    # Random vertical flipping
+                    if random.random() > 0.5:
+                        input_img = TF.vflip(input_img)
+                        output_img = TF.vflip(output_img)
 
-                        # Random rotation +90
-                        if random.random() > 0.5:
-                            input_img=TF.rotate(input_img,90,expand=True)
-                            output_img=TF.rotate(output_img,90,expand=True)
-                            #input_img.save("./"+self.data_dict[idx]['input_img'].split("/")[-1]+"1.png")
-                            #output_img.save("./"+self.data_dict[idx]['output_img'].split("/")[-1]+"2.png")
-
-                        # Random rotation -90
-                        if random.random() > 0.5:
-                            input_img=TF.rotate(input_img,-90, expand=True)
-                            output_img=TF.rotate(output_img,-90, expand=True)
-
-                        # Random rotation -90
-                        if random.random() > 0.5:
-                            input_img=TF.rotate(input_img, 180, expand=True)
-                            output_img=TF.rotate(output_img, 180, expand=True)
-
+                    # Random rotation +90
+                    if random.random() > 0.5:
+                        input_img=TF.rotate(input_img,90,expand=True)
+                        output_img=TF.rotate(output_img,90,expand=True)
+                        #input_img.save("./"+self.data_dict[idx]['input_img'].split("/")[-1]+"1.png")
                         #output_img.save("./"+self.data_dict[idx]['output_img'].split("/")[-1]+"2.png")
-              
-                # Transform to tensor
-                #print(output_img.shape)
-                #plt.imsave("./"+self.data_dict[idx]['input_img'].split("/")[-1]+".png", output_img,format='png')
-                input_img = TF.to_tensor(input_img)
-                output_img = TF.to_tensor(output_img)
-                
-                return {'input_img': input_img, 'output_img': output_img,
-                        'name': self.data_dict[idx]['input_img'].split("/")[-1]}
+
+                    # Random rotation -90
+                    if random.random() > 0.5:
+                        input_img=TF.rotate(input_img,-90, expand=True)
+                        output_img=TF.rotate(output_img,-90, expand=True)
+
+                    # Random rotation -90
+                    if random.random() > 0.5:
+                        input_img=TF.rotate(input_img, 180, expand=True)
+                        output_img=TF.rotate(output_img, 180, expand=True)
+
+                    #output_img.save("./"+self.data_dict[idx]['output_img'].split("/")[-1]+"2.png")
+          
+            # Transform to tensor
+            #print(output_img.shape)
+            #plt.imsave("./"+self.data_dict[idx]['input_img'].split("/")[-1]+".png", output_img,format='png')
+            input_img = TF.to_tensor(input_img)
+            output_img = TF.to_tensor(output_img)
+            
+            return {'input_img': input_img, 'output_img': output_img,
+                    'name': self.data_dict[idx]['input_img'].split("/")[-1]}
 
 
 class DataLoader():
@@ -397,6 +418,7 @@ class SamsungDataLoader(DataLoader):
 
                             if not os.path.isfile(root+"/"+input_img_filepath.split(".")[0]+".npy"):
 
+                                import rawpy  # optional: only the RAW path needs it
                                 raw_img = rawpy.imread(
                                     root+"/"+input_img_filepath)
                                 np.save(root+"/"+input_img_filepath.split(".")
@@ -416,7 +438,7 @@ class SamsungDataLoader(DataLoader):
 
                             if not os.path.isfile(output_img_filepath+".proc.jpg"):
 
-                                output_img = ImageProcessing.load_image(
+                                output_img = util.ImageProcessing.load_image(
                                      output_img_filepath, normaliser=2**8-1)
                                 plt.imsave(output_img_filepath +
                                            ".proc.jpg", output_img)
