@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
+#This program is free software; you can redistribute it and/or modify it under the terms of the MIT License.
 
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the MIT License for more details.
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
 "Deep Local Parametric Filters for Image Enhancement": https://arxiv.org/abs/2003.13985
@@ -34,17 +34,24 @@ np.set_printoptions(threshold=sys.maxsize)
 
 class Dataset(torch.utils.data.Dataset):
 
-    def __init__(self, data_dict, transform=None, normaliser=2 ** 8 - 1, is_valid=False, is_inference=False):
+    def __init__(self, data_dict, transform=None, normaliser=2 ** 8 - 1, is_valid=False,
+                 is_inference=False, crop_size=None):
         """Initialisation for the Dataset object
 
         :param data_dict: dictionary of dictionaries containing images
         :param transform: PyTorch image transformations to apply to the images
+        :param crop_size: if set, training images are randomly cropped to this
+            square size, the same crop being applied to input and target.
+            Needed for a batch size greater than one, since FiveK images vary
+            in size and the default collation requires a uniform size. Ignored
+            for validation and inference.
         :returns: N/A
         :rtype: N/A
 
         """
         self.transform = transform
         self.data_dict = data_dict
+        self.crop_size = crop_size
         self.normaliser = normaliser
         self.is_valid = is_valid
         self.is_inference = is_inference
@@ -74,20 +81,29 @@ class Dataset(torch.utils.data.Dataset):
 
                 input_img = util.ImageProcessing.load_image(
                     self.data_dict[idx]['input_img'], normaliser=self.normaliser)
-                output_img = util.ImageProcessing.load_image(
-                    self.data_dict[idx]['output_img'], normaliser=self.normaliser)
 
                 if self.normaliser==1:
                     input_img = input_img.astype(np.uint8)
-                    output_img = output_img.astype(np.uint8)
 
                 input_img = TF.to_pil_image(input_img)
                 input_img = TF.to_tensor(input_img)
-                output_img = TF.to_pil_image(output_img)
-                output_img = TF.to_tensor(output_img)
 
-                return {'input_img': input_img, 'output_img': output_img,
-                        'name': self.data_dict[idx]['input_img'].split("/")[-1]}
+                sample = {'input_img': input_img,
+                          'name': self.data_dict[idx]['input_img'].split("/")[-1]}
+
+                # Enhancing your own photographs means there is no retouched
+                # target to compare against, so the target is optional here and
+                # the caller checks for it. It is not optional for training.
+                target_filepath = self.data_dict[idx].get('output_img')
+                if target_filepath is not None:
+                    output_img = util.ImageProcessing.load_image(
+                        target_filepath, normaliser=self.normaliser)
+                    if self.normaliser==1:
+                        output_img = output_img.astype(np.uint8)
+                    output_img = TF.to_pil_image(output_img)
+                    sample['output_img'] = TF.to_tensor(output_img)
+
+                return sample
 
             elif idx in self.data_dict:
 
@@ -116,6 +132,18 @@ class Dataset(torch.utils.data.Dataset):
                         if random.random() > 0.5:
                             input_img = TF.vflip(input_img)
                             output_img = TF.vflip(output_img)
+
+                    # Random square crop, the same crop for input and
+                    # target, so that a batch size > 1 can collate
+                    # variable-size images.
+                    if self.crop_size:
+                        width, height = input_img.size
+                        crop = min(self.crop_size, width, height)
+                        left = random.randint(0, width - crop)
+                        top = random.randint(0, height - crop)
+                        box = (left, top, left + crop, top + crop)
+                        input_img = input_img.crop(box)
+                        output_img = output_img.crop(box)
 
                 # Transform to tensor
                 input_img = TF.to_tensor(input_img)
@@ -175,9 +203,13 @@ class Adobe5kDataLoader(DataLoader):
         super().__init__(data_dirpath, img_ids_filepath)
         self.data_dict = defaultdict(dict)
 
-    def load_data(self):
-        """ Loads the Samsung image data into a Python dictionary
+    def load_data(self, require_output=True):
+        """ Loads the Adobe5k image data into a Python dictionary
 
+        :param require_output: fail if an image has no retouched target. Pass
+                               False for inference over images you only have
+                               inputs for, where there is nothing to compare
+                               against.
         :returns: Python two-level dictionary containing the images
         :rtype: Dictionary of dictionaries
 
@@ -201,7 +233,12 @@ class Adobe5kDataLoader(DataLoader):
 
             for file in files:
 
-                img_id = file.split("-")[0]
+                # The id is the filename up to the first "-", e.g.
+                # "a0001-jmac_DSC1459.png" -> "a0001". Strip any extension too,
+                # so that a file with no "-" in its name -- which is what a
+                # user's own photograph looks like -- matches its listed id
+                # instead of silently matching nothing.
+                img_id = os.path.splitext(file.split("-")[0])[0]
 
                 is_id_in_list = False
                 for img_id_test in image_ids_list:
@@ -241,8 +278,29 @@ class Adobe5kDataLoader(DataLoader):
 
                     logging.debug("Excluding file with id: " + str(img_id))
 
+        if not self.data_dict:
+            raise FileNotFoundError(
+                'none of the %d ids in %s matched an image under %s. An id is '
+                'the filename up to the first "-", without its extension, and '
+                'the images must sit in an "input" directory (with their '
+                'targets, if any, in "output").'
+                % (len(image_ids_list), self.img_ids_filepath, self.data_dirpath))
+
+        # These were `assert 'input_img' in imgs`, which a defaultdict entry
+        # satisfies while holding None, so a missing file surfaced much later
+        # as "'NoneType' object has no attribute 'read'" inside a DataLoader
+        # worker. Check the values, and say which image is short of what.
         for idx, imgs in self.data_dict.items():
-            assert ('input_img' in imgs)
-            assert ('output_img' in imgs)
+            name = imgs.get('input_img') or imgs.get('output_img') or ('index %d' % idx)
+            if imgs.get('input_img') is None:
+                raise FileNotFoundError(
+                    'no input image for %s: expected one under an "input" '
+                    'directory below %s' % (name, self.data_dirpath))
+            if require_output and imgs.get('output_img') is None:
+                raise FileNotFoundError(
+                    'no target image for %s: expected one under an "output" '
+                    'directory below %s. Inference over images you have no '
+                    'target for is supported; training and evaluation are not.'
+                    % (name, self.data_dirpath))
 
         return self.data_dict

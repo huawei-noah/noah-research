@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
+#This program is free software; you can redistribute it and/or modify it under the terms of the MIT License.
 
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the MIT License for more details.
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
 "Deep Local Parametric Filters for Image Enhancement": https://arxiv.org/abs/2003.13985
@@ -24,14 +24,42 @@ import torch
 import sys
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
+import inspect
 
 np.set_printoptions(threshold=sys.maxsize)
+
+# scikit-image >= 0.19 renamed structural_similarity's `multichannel=True`
+# argument to `channel_axis`, and removed the old name in 0.23. Detect which
+# this installation takes so the code works across versions. The images passed
+# to SSIM are HxWx3, so the channel axis is the last one.
+if "channel_axis" in inspect.signature(ssim).parameters:
+    _SSIM_MULTICHANNEL_KWARGS = {"channel_axis": -1}
+else:  # older scikit-image, e.g. the previously pinned 0.18.1
+    _SSIM_MULTICHANNEL_KWARGS = {"multichannel": True}
+
+
+def get_device():
+    """Returns the best available torch device.
+
+    CUDA if present, else Apple Silicon MPS, else CPU. The code previously
+    called .cuda() unconditionally, which made it unrunnable without an
+    NVIDIA GPU even for inference on a single image.
+
+    :returns: torch device to place tensors and modules on
+    :rtype: torch.device
+
+    """
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
 
 
 class ImageProcessing(object):
 
     @staticmethod
-    def rgb_to_lab(img, is_training=True):
+    def rgb_to_lab(img):
         """ PyTorch implementation of RGB to LAB conversion: https://docs.opencv.org/3.3.0/de/d25/imgproc_color_conversions.html
         Based roughly on a similar implementation here: https://github.com/affinelayer/pix2pix-tensorflow/blob/master/pix2pix.py
         :param img: 
@@ -54,11 +82,11 @@ class ImageProcessing(object):
                                                     0.119193],  # G
                                                 [0.180423, 0.072169,
                                                     0.950227],  # B
-                                                ]), requires_grad=False).cuda()
+                                                ]), requires_grad=False).to(img.device)
 
         img = torch.matmul(img, rgb_to_xyz)
         img = torch.mul(img, Variable(torch.FloatTensor(
-            [1/0.950456, 1.0, 1/1.088754]), requires_grad=False).cuda())
+            [1/0.950456, 1.0, 1/1.088754]), requires_grad=False).to(img.device))
 
         epsilon = 6/29
 
@@ -68,10 +96,10 @@ class ImageProcessing(object):
         fxfyfz_to_lab = Variable(torch.FloatTensor([[0.0,  500.0,    0.0],  # fx
                                                     [116.0, -500.0,  200.0],  # fy
                                                     [0.0,    0.0, -200.0],  # fz
-                                                    ]), requires_grad=False).cuda()
+                                                    ]), requires_grad=False).to(img.device)
 
         img = torch.matmul(img, fxfyfz_to_lab) + Variable(
-            torch.FloatTensor([-16.0, 0.0, 0.0]), requires_grad=False).cuda()
+            torch.FloatTensor([-16.0, 0.0, 0.0]), requires_grad=False).to(img.device)
 
         img = img.view(shape)
         img = img.permute(2, 1, 0)
@@ -107,21 +135,6 @@ class ImageProcessing(object):
             return np.swapaxes(np.swapaxes(img, 2, 3), 1, 3)
 
     @staticmethod
-    def swapimdims_HW3_3HW(img):
-        """Move the image channels to the last dimensiion of the numpy
-        multi-dimensional array
-
-        :param img: numpy nd array representing the image
-        :returns: numpy nd array with permuted axes
-        :rtype: numpy nd array
-
-        """
-        if img.ndim == 3:
-            return np.swapaxes(np.swapaxes(img, 0, 2), 1, 2)
-        elif img.ndim == 4:
-            return np.swapaxes(np.swapaxes(img, 1, 3), 2, 3)
-
-    @staticmethod
     def load_image(img_filepath, normaliser):
         """Loads an image from file as a numpy multi-dimensional array
 
@@ -130,7 +143,17 @@ class ImageProcessing(object):
         :rtype: multi-dimensional numpy array
 
         """
-        img = ImageProcessing.normalise_image(np.array(Image.open(img_filepath)), normaliser)  # NB: imread normalises to 0-1
+        img = np.array(Image.open(img_filepath))
+        if img.ndim == 2:
+            # Greyscale: repeat the single channel, since every convolution in
+            # the network expects three. Without this a greyscale photograph
+            # reaches the first conv and fails with a shape mismatch.
+            img = np.stack([img] * 3, axis=2)
+        if img.ndim == 3 and img.shape[2] == 4:
+            # Drop an alpha channel if present (RGBA -> RGB); the network is
+            # trained on 3-channel RGB input.
+            img = img[:, :, :3]
+        img = ImageProcessing.normalise_image(img, normaliser)  # NB: imread normalises to 0-1
 
         return img
 
@@ -201,7 +224,8 @@ class ImageProcessing(object):
                 image_batchA[i, 0:3, :, :])
             imageB = ImageProcessing.swapimdims_3HW_HW3(
                 image_batchB[i, 0:3, :, :])
-            ssim_val += ssim(imageA, imageB, data_range=imageA.max() - imageA.min(), multichannel=True,
-                             gaussian_weights=True, win_size=11)
+            ssim_val += ssim(imageA, imageB, data_range=imageA.max() - imageA.min(),
+                             gaussian_weights=True, win_size=11,
+                             **_SSIM_MULTICHANNEL_KWARGS)
 
         return ssim_val / num_images

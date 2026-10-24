@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deeplpf"
+version = "1.0.0"
+description = "DeepLPF: Deep Local Parametric Filters for Image Enhancement (CVPR 2020)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = ["image-enhancement", "computer-vision", "pytorch", "cvpr2020"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+# Kept in step with requirements.txt; these are the floors the code needs.
+dependencies = [
+    "numpy>=1.21",
+    "torch>=1.13",
+    "torchvision>=0.14",
+    "scikit-image>=0.19",
+    "matplotlib>=3.5",
+    "pillow>=9.0",
+    "tensorboard>=2.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/huawei-noah/noah-research/tree/master/DeepLPF"
+Paper = "https://arxiv.org/abs/2003.13985"
+
+[project.scripts]
+deeplpf = "deeplpf_cli:main"
+
+[tool.setuptools]
+# The modules sit at the top level rather than under a package directory,
+# which is how this code is laid out; listing them keeps that layout
+# installable without moving every file.
+py-modules = [
+    "blocks",
+    "cli",
+    "cubic",
+    "data",
+    "deeplpf_cli",
+    "elliptical",
+    "filtercommon",
+    "filters",
+    "graduated",
+    "inference",
+    "losses",
+    "main",
+    "metric",
+    "model",
+    "train",
+    "trainstep",
+    "unet",
+    "util",
+]

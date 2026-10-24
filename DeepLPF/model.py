@@ -1,945 +1,158 @@
 # -*- coding: utf-8 -*-
 #Copyright (C) 2020. Huawei Technologies Co., Ltd. All rights reserved.
 
-#This program is free software; you can redistribute it and/or modify it under the terms of the BSD 0-Clause License.
+#This program is free software; you can redistribute it and/or modify it under the terms of the MIT License.
 
-#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the BSD 0-Clause License for more details.
+#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the MIT License for more details.
 '''
 This is a PyTorch implementation of the CVPR 2020 paper:
 "Deep Local Parametric Filters for Image Enhancement": https://arxiv.org/abs/2003.13985
 
 Please cite the paper if you use this code
 
-Tested with Pytorch 1.7.1, Python 3.7.9
-
-Authors: Sean Moran (sean.j.moran@gmail.com), 
+Authors: Sean Moran (sean.j.moran@gmail.com),
          Pierre Marza (pierre.marza@gmail.com)
 
+Code-to-paper map (section / equation numbers refer to the arXiv version):
+
+* ``unet.UNetModel``             backbone, Sec. 3.1 (its first three output channels
+                                 are the backbone-enhanced image Y1)
+* ``cubic.CubicFilter``          polynomial ("cubic-20") filter, Sec. 3.2.4, Eq. 6 -> Y2
+* ``graduated.GraduatedFilter``  graduated filter, Sec. 3.2.2, Eqs. 1-3, fused per Eq. 7 -> s_g
+* ``elliptical.EllipticalFilter`` elliptical filter, Sec. 3.2.3, Eq. 4, fused per Eq. 7 -> s_e
+* ``DeepLPFParameterPrediction`` fusion S = 1 + (s_g - 1) + (s_e - 1), Y3 = S * Y2,
+                                 Y = Y3 + Y1, Sec. 3.1
+* ``losses.DeepLPFLoss``         training loss, Sec. 3.4, Eq. 8
+
+The filter heads live in :mod:`cubic`, :mod:`graduated` and :mod:`elliptical`,
+the conv blocks they are built from in :mod:`blocks`, and the loss in
+:mod:`losses`. They are re-exported here so that ``model.CubicFilter`` and
+``model.DeepLPFLoss`` keep resolving, as they did when every class lived in
+this file. The module hierarchy of the network is unchanged, so state dicts
+saved before this split load unchanged.
 '''
-import matplotlib
 import torch
 import torch.nn as nn
+
 import unet
-from math import exp
-import math
-import torch.nn.functional as F
-from util import ImageProcessing
-from torch.autograd import Variable
+# Re-exported so that model.CubicFilter and model.DeepLPFLoss resolve, as
+# they did when every class lived in this file.
+from blocks import Block, ConvBlock, GlobalPoolingBlock, MaxPoolBlock  # noqa: F401
+from filters import (BinaryLayer, CubicFilter, EllipticalFilter,  # noqa: F401
+                     GraduatedFilter, SignSTE)
+from losses import DeepLPFLoss  # noqa: F401
 
-matplotlib.use('agg')
 
+class ColourHead(nn.Module):
+    """Global colour mixer and per-channel tone curve.
 
-class DeepLPFLoss(nn.Module):
+    Every parametric filter is diagonal: CubicFilter's coefficients
+    are reshaped to (B, 3, 1, 1) and every term of Eq. 6 multiplies that same
+    channel, and the graduated and elliptical branches only apply per-channel
+    gains. So no head can express a cross-channel operation - white balance,
+    saturation, a hue shift - although those are most of what the expert
+    retouch consists of. The U-Net can approximate them locally, which is why
+    this is a gap in the filter bank rather than in the model as a whole.
 
-    def __init__(self, ssim_window_size=5, alpha=0.5):
-        """Initialisation of the DeepLPF loss function
+    Two operators, both global and both interpretable:
 
-        :param ssim_window_size: size of averaging window for SSIM
-        :param alpha: interpolation paramater for L1 and SSIM parts of the loss
+    ``M Y1 + b``
+        a 3x3 mixer and offset, the cross-channel term the model lacks. This
+        is the Calibration/white-balance panel of a raw converter.
+    ``i + sum_k w_ck relu(i - t_k)``
+        a piecewise-linear tone curve per channel with fixed knots, so the
+        slope on segment j is ``1 + sum_{k<=j} w_k`` and the learned curve
+        plots directly. Hinges rather than a gather, so the shape is static
+        and the op is safe to capture in a CUDA graph.
+
+    Neither operator clamps. Y1 is not bounded to [0, 1] where this runs - the
+    cubic filter clamps only after adding its residual - so a clamp here would
+    alter the image even with a zero prediction, and the head would no longer
+    start from the identity.
+
+    Both are zero-initialised: at initialisation ``M = I``, ``b = 0``, ``w = 0``
+    and the head is exactly the identity, so turning the feature on does not
+    change the starting model. The layer is constructed after every other
+    module so that the RNG stream the existing parameters draw from is
+    untouched, and a run with this feature enabled starts from the same weights
+    as one without it at the same seed.
+
+    """
+
+    def __init__(self, in_channels=64, knots=16):
+        """Initialise the colour head.
+
+        :param in_channels: channels of the pooled (features, image) input
+        :param knots: tone-curve knots; 0 leaves the mixer alone
         :returns: N/A
         :rtype: N/A
 
         """
-        super(DeepLPFLoss, self).__init__()
-        self.alpha = alpha
-        self.ssim_window_size = ssim_window_size
+        super(ColourHead, self).__init__()
+        self.knots = int(knots)
+        self.fc = torch.nn.Linear(in_channels, 12 + 3 * self.knots)
+        # Identity at initialisation, and still trainable: the gradient with
+        # respect to a zero weight is the input times the upstream gradient,
+        # which is not zero.
+        torch.nn.init.zeros_(self.fc.weight)
+        torch.nn.init.zeros_(self.fc.bias)
+        self.register_buffer('eye', torch.eye(3).unsqueeze(0))
+        if self.knots:
+            self.register_buffer(
+                'thresholds',
+                (torch.arange(self.knots, dtype=torch.float32) / self.knots)
+                .view(1, 1, self.knots, 1, 1))
 
-    def create_window(self, window_size, num_channel):
-        """Window creation function for SSIM metric. Gaussian weights are applied to the window.
-        Code adapted from: https://github.com/Po-Hsun-Su/pytorch-ssim/blob/master/pytorch_ssim/__init__.py
+    def forward(self, context, img):
+        """Apply the mixer and curve to an image.
 
-        :param window_size: size of the window to compute statistics
-        :param num_channel: number of channels
-        :returns: Tensor of shape Cx1xWindow_sizexWindow_size
+        :param context: (B, C, H, W) features concatenated with the image,
+                        global-average-pooled to drive the prediction
+        :param img: (B, 3, H, W) image to transform
+        :returns: transformed image, (B, 3, H, W)
         :rtype: Tensor
 
         """
-        _1D_window = self.gaussian(window_size, 1.5).unsqueeze(1)
-        _2D_window = _1D_window.mm(
-            _1D_window.t()).float().unsqueeze(0).unsqueeze(0)
-        window = Variable(_2D_window.expand(
-            num_channel, 1, window_size, window_size).contiguous())
-        return window
+        params = self.fc(context.mean(dim=(2, 3)))
 
-    def gaussian(self, window_size, sigma):
-        """
-        Code adapted from: https://github.com/Po-Hsun-Su/pytorch-ssim/blob/master/pytorch_ssim/__init__.py
-        :param window_size: size of the SSIM sampling window e.g. 11
-        :param sigma: Gaussian variance
-        :returns: 1xWindow_size Tensor of Gaussian weights
-        :rtype: Tensor
+        # Mixer: M = I + dM, so a zero prediction is the identity.
+        mixer = params[:, 0:9].view(-1, 3, 3) + self.eye
+        offset = params[:, 9:12].view(-1, 3, 1, 1)
+        out = torch.einsum('bij,bjhw->bihw', mixer, img) + offset
 
-        """
-        gauss = torch.Tensor(
-            [exp(-(x - window_size // 2) ** 2 / float(2 * sigma ** 2)) for x in range(window_size)])
-        return gauss / gauss.sum()
+        if self.knots:
+            weights = params[:, 12:].view(-1, 3, self.knots, 1, 1)
+            hinges = torch.clamp(out.unsqueeze(2) - self.thresholds, min=0)
+            out = out + (weights * hinges).sum(dim=2)
 
-    def compute_ssim(self, img1, img2):
-        """Computes the structural similarity index between two images. This function is differentiable.
-        Code adapted from: https://github.com/Po-Hsun-Su/pytorch-ssim/blob/master/pytorch_ssim/__init__.py
-
-        :param img1: image Tensor BxCxHxW
-        :param img2: image Tensor BxCxHxW
-        :returns: mean SSIM
-        :rtype: float
-
-        """
-        (_, num_channel, _, _) = img1.size()
-        window = self.create_window(self.ssim_window_size, num_channel)
-
-        if img1.is_cuda:
-            window = window.cuda(img1.get_device())
-            window = window.type_as(img1)
-
-        mu1 = F.conv2d(
-            img1, window, padding=self.ssim_window_size // 2, groups=num_channel)
-        mu2 = F.conv2d(
-            img2, window, padding=self.ssim_window_size // 2, groups=num_channel)
-
-        mu1_sq = mu1.pow(2)
-        mu2_sq = mu2.pow(2)
-        mu1_mu2 = mu1 * mu2
-
-        sigma1_sq = F.conv2d(
-            img1 * img1, window, padding=self.ssim_window_size // 2, groups=num_channel) - mu1_sq
-        sigma2_sq = F.conv2d(
-            img2 * img2, window, padding=self.ssim_window_size // 2, groups=num_channel) - mu2_sq
-        sigma12 = F.conv2d(
-            img1 * img2, window, padding=self.ssim_window_size // 2, groups=num_channel) - mu1_mu2
-
-        C1 = 0.01 ** 2
-        C2 = 0.03 ** 2
-
-        ssim_map1 = ((2 * mu1_mu2 + C1) * (2 * sigma12 + C2))
-        ssim_map2 = ((mu1_sq.cuda() + mu2_sq.cuda() + C1) *
-                     (sigma1_sq.cuda() + sigma2_sq.cuda() + C2))
-        ssim_map = ssim_map1.cuda() / ssim_map2.cuda()
-
-        v1 = 2.0 * sigma12.cuda() + C2
-        v2 = sigma1_sq.cuda() + sigma2_sq.cuda() + C2
-        cs = torch.mean(v1 / v2)
-
-        return ssim_map.mean(), cs
-
-
-    def compute_msssim(self, img1, img2):
-        """Computes the multi scale structural similarity index between two images. This function is differentiable.
-        Code adapted from: https://github.com/Po-Hsun-Su/pytorch-ssim/blob/master/pytorch_ssim/__init__.py
-
-        :param img1: image Tensor BxCxHxW
-        :param img2: image Tensor BxCxHxW
-        :returns: mean SSIM
-        :rtype: float
-
-        """
-        if img1.shape[2]!=img2.shape[2]:
-                img1=img1.transpose(2,3)
-
-        if img1.shape != img2.shape:
-            raise RuntimeError('Input images must have the same shape (%s vs. %s).',
-                       img1.shape, img2.shape)
-        if img1.ndim != 4:
-            raise RuntimeError('Input images must have four dimensions, not %d',
-                       img1.ndim)
-
-        device = img1.device
-        weights = torch.FloatTensor([0.0448, 0.2856, 0.3001, 0.2363, 0.1333]).to(device)
-        levels = weights.size()[0]
-        ssims = []
-        mcs = []
-        for _ in range(levels):
-            ssim, cs = self.compute_ssim(img1, img2)
-
-            # Relu normalize (not compliant with original definition)
-            ssims.append(ssim)
-            mcs.append(cs)
-
-            img1 = F.avg_pool2d(img1, (2, 2))
-            img2 = F.avg_pool2d(img2, (2, 2))
-
-        ssims = torch.stack(ssims)
-        mcs = torch.stack(mcs)
-
-        # Simple normalize (not compliant with original definition)
-        # TODO: remove support for normalize == True (kept for backward support)
-        ssims = (ssims + 1) / 2
-        mcs = (mcs + 1) / 2
-
-        pow1 = mcs ** weights
-        pow2 = ssims ** weights
-
-        # From Matlab implementation https://ece.uwaterloo.ca/~z70wang/research/iwssim/
-        output = torch.prod(pow1[:-1] * pow2[-1])
-        return output
-
-    def forward(self, predicted_img_batch, target_img_batch):
-        """Forward function for the DeepLPF loss
-
-        :param predicted_img_batch: 
-        :param target_img_batch: Tensor of shape BxCxWxH
-        :returns: value of loss function
-        :rtype: float
-
-        """
-        if predicted_img_batch.shape[2]!=target_img_batch.shape[2]:
-                target_img_batch=target_img_batch.transpose(2,3)
-
-        num_images = target_img_batch.shape[0]
-        target_img_batch = target_img_batch
-
-        ssim_loss_value = Variable(
-            torch.cuda.FloatTensor(torch.zeros(1, 1).cuda()))
-        l1_loss_value = Variable(
-            torch.cuda.FloatTensor(torch.zeros(1, 1).cuda()))
-
-        for i in range(0, num_images):
-
-            target_img = target_img_batch[i, :, :, :].cuda()
-            predicted_img = predicted_img_batch[i, :, :, :].cuda()
-
-            predicted_img_lab = ImageProcessing.rgb_to_lab(
-                predicted_img.squeeze(0))
-            target_img_lab = ImageProcessing.rgb_to_lab(target_img.squeeze(0))
-
-            target_img_L_ssim = target_img_lab[0, :, :].unsqueeze(0)
-            predicted_img_L_ssim = predicted_img_lab[0, :, :].unsqueeze(0)
-            target_img_L_ssim = target_img_L_ssim.unsqueeze(0)
-            predicted_img_L_ssim = predicted_img_L_ssim.unsqueeze(0)
-
-            ssim_value = self.compute_msssim(
-                predicted_img_L_ssim, target_img_L_ssim)
-            ssim_loss_value += (1.0 - ssim_value)
-
-            l1_loss_value += F.l1_loss(predicted_img_lab, target_img_lab)
-
-        l1_loss_value = l1_loss_value/num_images
-        ssim_loss_value = ssim_loss_value/num_images
-        deeplpf_loss = l1_loss_value + 1e-3*ssim_loss_value
-        return deeplpf_loss
-
-
-class BinaryLayer(nn.Module):
-
-    def forward(self, input):
-        """Forward function for binary layer
-
-        :param input: data
-        :returns: sign of data
-        :rtype: Tensor
-
-        """
-        return torch.sign(input)
-
-    def backward(self, grad_output):
-        """Straight through estimator
-
-        :param grad_output: gradient tensor
-        :returns: truncated gradient tensor
-        :rtype: Tensor
-
-        """
-        input = self.saved_tensors
-        grad_output[input > 1] = 0
-        grad_output[input < -1] = 0
-        return grad_output
-
-
-class CubicFilter(nn.Module):
-
-    def __init__(self, num_in_channels=64, num_out_channels=64, batch_size=1):
-        """Initialisation function
-
-        :param block: a block (layer) of the neural network
-        :param num_layers:  number of neural network layers
-        :returns: initialises parameters of the neural networ
-        :rtype: N/A
-
-        """
-        super(CubicFilter, self).__init__()
-
-        self.cubic_layer1 = ConvBlock(num_in_channels, num_out_channels)
-        self.cubic_layer2 = MaxPoolBlock()
-        self.cubic_layer3 = ConvBlock(num_out_channels, num_out_channels)
-        self.cubic_layer4 = MaxPoolBlock()
-        self.cubic_layer5 = ConvBlock(num_out_channels, num_out_channels)
-        self.cubic_layer6 = MaxPoolBlock()
-        self.cubic_layer7 = ConvBlock(num_out_channels, num_out_channels)
-        self.cubic_layer8 = GlobalPoolingBlock(2)
-        self.fc_cubic = torch.nn.Linear(
-            num_out_channels, 60)  # cubic
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
-        self.dropout = nn.Dropout(0.5)
-
-    def get_cubic_mask(self, feat, img):
-        """Cubic filter definition
-
-        :param feat: feature map
-        :param img:  image
-        :returns: cubic scaling map
-        :rtype: Tensor
-
-        """
-        #######################################################
-        ####################### Cubic #########################
-        feat_cubic = torch.cat((feat, img), 1)
-        feat_cubic = self.upsample(feat_cubic)
-
-        x = self.cubic_layer1(feat_cubic)
-        x = self.cubic_layer2(x)
-        x = self.cubic_layer3(x)
-        x = self.cubic_layer4(x)
-        x = self.cubic_layer5(x)
-        x = self.cubic_layer6(x)
-        x = self.cubic_layer7(x)
-        x = self.cubic_layer8(x)
-        x = x.view(x.size()[0], -1)
-        x = self.dropout(x)
-
-        R = self.fc_cubic(x)
-
-        cubic_mask = torch.zeros_like(img)
-
-        x_axis = Variable(torch.arange(
-            img.shape[2]).view(-1, 1).repeat(1, img.shape[3]).cuda()) / img.shape[2]
-        y_axis = Variable(torch.arange(img.shape[3]).repeat(
-            img.shape[2], 1).cuda()) / img.shape[3]
-
-        '''
-        Cubic for R channel
-        '''
-        cubic_mask[0, 0, :, :] = R[0, 0] * (x_axis ** 3) + R[0, 1] * (x_axis ** 2) * y_axis + R[0, 2] * (
-            x_axis ** 2) * img[0, 0, :, :] + R[0, 3] * (x_axis ** 2) + R[0, 4] * x_axis * (y_axis ** 2) + R[
-            0, 5] * x_axis * y_axis * img[0, 0, :, :] \
-            + R[0, 6] * x_axis * y_axis + R[0, 7] * x_axis * (img[0, 0, :, :] ** 2) + R[
-            0, 8] * x_axis * img[0, 0, :, :] + R[0, 9] * x_axis + R[0, 10] * (
-            y_axis ** 3) + R[0, 11] * (y_axis ** 2) * img[0, 0, :, :] \
-            + R[0, 12] * (y_axis ** 2) + R[0, 13] * y_axis * (img[0, 0, :, :] ** 2) + R[
-            0, 14] * y_axis * img[0, 0, :, :] + R[0, 15] * y_axis + R[0, 16] * (
-            img[0, 0, :, :] ** 3) + R[0, 17] * (img[0, 0, :, :] ** 2) \
-            + R[0, 18] * \
-            img[0, 0, :, :] + R[0, 19]
-
-        '''
-        Cubic for G channel
-        '''
-        cubic_mask[0, 1, :, :] = R[0, 20] * (x_axis ** 3) + R[0, 21] * (x_axis ** 2) * y_axis + R[0, 22] * (
-            x_axis ** 2) * img[0, 1, :, :] + R[0, 23] * (x_axis ** 2) + R[0, 24] * x_axis * (y_axis ** 2) + R[
-            0, 25] * x_axis * y_axis * img[0, 1, :, :] \
-            + R[0, 26] * x_axis * y_axis + R[0, 27] * x_axis * (img[0, 1, :, :] ** 2) + R[
-            0, 28] * x_axis * img[0, 1, :, :] + R[0, 29] * x_axis + R[0, 30] * (
-            y_axis ** 3) + R[0, 31] * (y_axis ** 2) * img[0, 1, :, :] \
-            + R[0, 32] * (y_axis ** 2) + R[0, 33] * y_axis * (img[0, 1, :, :] ** 2) + R[
-            0, 34] * y_axis * img[0, 1, :, :] + R[0, 35] * y_axis + R[0, 36] * (
-            img[0, 1, :, :] ** 3) + R[0, 37] * (img[0, 1, :, :] ** 2) \
-            + R[0, 38] * \
-            img[0, 1, :, :] + R[0, 39]
-
-        '''
-        Cubic for B channel
-        '''
-        cubic_mask[0, 2, :, :] = R[0, 40] * (x_axis ** 3) + R[0, 41] * (x_axis ** 2) * y_axis + R[0, 42] * (
-            x_axis ** 2) * img[0, 2, :, :] + R[0, 43] * (x_axis ** 2) + R[0, 44] * x_axis * (y_axis ** 2) + R[
-            0, 45] * x_axis * y_axis * img[0, 2, :, :] \
-            + R[0, 46] * x_axis * y_axis + R[0, 47] * x_axis * (img[0, 2, :, :] ** 2) + R[
-            0, 48] * x_axis * img[0, 2, :, :] + R[0, 49] * x_axis + R[0, 50] * (
-            y_axis ** 3) + R[0, 51] * (y_axis ** 2) * img[0, 2, :, :] \
-            + R[0, 52] * (y_axis ** 2) + R[0, 53] * y_axis * (img[0, 2, :, :] ** 2) + R[
-            0, 54] * y_axis * img[0, 2, :, :] + R[0, 55] * y_axis + R[0, 56] * (
-            img[0, 2, :, :] ** 3) + R[0, 57] * (img[0, 2, :, :] ** 2) \
-            + R[0, 58] * \
-            img[0, 2, :, :] + R[0, 59]
-
-        img_cubic = torch.clamp(img + cubic_mask, 0, 1)
-        return img_cubic
-
-
-class GraduatedFilter(nn.Module):
-
-    def __init__(self, num_in_channels=64, num_out_channels=64):
-        """Initialisation function for the graduated filter
-
-        :param num_in_channels:  input channels
-        :param num_out_channels: output channels
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(GraduatedFilter, self).__init__()
-
-        self.graduated_layer1 = ConvBlock(num_in_channels, num_out_channels)
-        self.graduated_layer2 = MaxPoolBlock()
-        self.graduated_layer3 = ConvBlock(num_out_channels, num_out_channels)
-        self.graduated_layer4 = MaxPoolBlock()
-        self.graduated_layer5 = ConvBlock(num_out_channels, num_out_channels)
-        self.graduated_layer6 = MaxPoolBlock()
-        self.graduated_layer7 = ConvBlock(num_out_channels, num_out_channels)
-        self.graduated_layer8 = GlobalPoolingBlock(2)
-        self.fc_graduated = torch.nn.Linear(
-            num_out_channels, 24)
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
-        self.dropout = nn.Dropout(0.5)
-        self.bin_layer = BinaryLayer()
-
-    def tanh01(self, x):
-        """Adjust Tanh to return values between 0 and 1
-
-        :param x: Tensor arbitrary range
-        :returns: Tensor between 0 and 1
-        :rtype: tensor
-
-        """
-        tanh = nn.Tanh()
-        return 0.5 * (tanh(x) + 1)
-
-    def where(self, cond, x_1, x_2):
-        """Differentiable where function to compare two Tensors
-
-        :param cond: condition e.g. <
-        :param x_1: Tensor 1
-        :param x_2: Tensor 2
-        :returns: Boolean comparison result
-        :rtype: Tensor
-
-        """
-        cond = cond.float()
-        return (cond * x_1) + ((1 - cond) * x_2)
-
-    def get_inverted_mask(self, factor, invert, d1, d2, max_scale, top_line):
-        """ Inverts the graduated filter based on a learnt binary variable 
-
-        :param factor: scale factor
-        :param invert: binary indicator variable
-        :param d1: distance between top and mid line
-        :param d2: distannce between botto and mid line
-        :param max_scale: maximum scaling factor possible
-        :param top_line:  representation of top line
-        :returns: inverted scaling mask
-        :rtype: Tensor
-
-        """
-        if (invert == 1).all():
-
-            if (factor >= 1).all():
-                diff = ((factor-1))/2 + 1
-                grad1 = (diff-factor)/d1
-                grad2 = (1-diff)/d2
-                mask_scale = torch.clamp(
-                    factor+grad1*top_line+grad2*top_line, min=1, max=max_scale)
-            else:
-                diff = ((1-factor))/2 + factor
-                grad1 = (diff-factor)/d1
-                grad2 = (1-diff)/d2
-                mask_scale = torch.clamp(
-                    factor+grad1*top_line+grad2*top_line, min=0, max=1)
-        else:
-
-            if (factor >= 1).all():
-                diff = ((factor-1))/2 + 1
-                grad1 = (diff-factor)/d1
-                grad2 = (factor-diff)/d2
-                mask_scale = torch.clamp(
-                    1+grad1*top_line+grad2*top_line, min=1, max=max_scale)
-            else:
-                diff = ((1-factor))/2 + factor
-                grad1 = (diff-1)/d1
-                grad2 = (factor-diff)/d2
-                mask_scale = torch.clamp(
-                    1+grad1*top_line+grad2*top_line, min=0, max=1)
-
-        mask_scale = torch.clamp(mask_scale.unsqueeze(0), 0, max_scale)
-        return mask_scale
-
-    def get_graduated_mask(self, feat, img):
-        """ Graduated filter definition
-
-        :param feat: features
-        :param img: image
-        :returns: scaling map
-        :rtype: Tensor
-
-        """
-        #######################################################
-        ####################### Graduated #####################
-        eps = 1e-10
-
-        x_axis = Variable(torch.arange(
-            img.shape[2]).view(-1, 1).repeat(1, img.shape[3]).cuda()) / img.shape[2]
-        y_axis = Variable(torch.arange(img.shape[3]).repeat(
-            img.shape[2], 1).cuda()) / img.shape[3]
-
-        feat_graduated = torch.cat((feat, img), 1)
-        feat_graduated = self.upsample(feat_graduated)
-
-        # The following layers calculate the parameters of the graduated filters that we use for image enhancement
-        x = self.graduated_layer1(feat_graduated)
-        x = self.graduated_layer2(x)
-        x = self.graduated_layer3(x)
-        x = self.graduated_layer4(x)
-        x = self.graduated_layer5(x)
-        x = self.graduated_layer6(x)
-        x = self.graduated_layer7(x)
-        x = self.graduated_layer8(x)
-        x = x.view(x.size()[0], -1)
-        x = self.dropout(x)
-        G = self.fc_graduated(x)
-
-        # Classification values (above or below the line)
-        above_or_below_line1 = ((self.bin_layer(G[0, 0]))+1)/2
-        above_or_below_line2 = ((self.bin_layer(G[0, 1]))+1)/2
-        above_or_below_line3 = ((self.bin_layer(G[0, 2]))+1)/2
-
-        slope1 = G[0, 3].clone()
-        slope2 = G[0, 4].clone()
-        slope3 = G[0, 5].clone()
-
-        y_axis_dist1 = self.tanh01(G[0, 6]) + eps
-        y_axis_dist2 = self.tanh01(G[0, 7]) + eps
-        y_axis_dist3 = self.tanh01(G[0, 8]) + eps
-
-        y_axis_dist1 = torch.clamp(self.tanh01(G[0, 9]), y_axis_dist1.data, 1.0)
-        y_axis_dist2 = torch.clamp(self.tanh01(G[0, 10]), y_axis_dist2.data, 1.0)
-        y_axis_dist3 = torch.clamp(self.tanh01(G[0, 11]), y_axis_dist3.data, 1.0)
-
-        y_axis_dist4= torch.clamp(self.tanh01(G[0, 12]), 0, y_axis_dist1.data)
-        y_axis_dist5 = torch.clamp(self.tanh01(G[0, 13]), 0, y_axis_dist2.data)
-        y_axis_dist6 = torch.clamp(self.tanh01(G[0, 14]), 0, y_axis_dist3.data)
-
-        # Scales
-        max_scale = 2
-        min_scale = 0
-
-        scale_factor1 = self.tanh01(G[0, 15]) * max_scale
-        scale_factor2 = self.tanh01(G[0, 16]) * max_scale
-        scale_factor3 = self.tanh01(G[0, 17]) * max_scale
-
-        scale_factor4 = self.tanh01(G[0, 18]) * max_scale
-        scale_factor5 = self.tanh01(G[0, 19]) * max_scale
-        scale_factor6 = self.tanh01(G[0, 20]) * max_scale
-
-        scale_factor7 = self.tanh01(G[0, 21]) * max_scale
-        scale_factor8 = self.tanh01(G[0, 22]) * max_scale
-        scale_factor9= self.tanh01(G[0, 23]) * max_scale
-
-        slope1_angle = torch.atan(slope1)
-        slope2_angle = torch.atan(slope2)
-        slope3_angle = torch.atan(slope3)
-
-        # Distances between central line and two outer lines 
-        d1 = self.tanh01(y_axis_dist1*torch.cos(slope1_angle))
-        d2 = self.tanh01(y_axis_dist4*torch.cos(slope1_angle))
-        d3 = self.tanh01(y_axis_dist2*torch.cos(slope2_angle))
-        d4 = self.tanh01(y_axis_dist5*torch.cos(slope2_angle))
-        d5 = self.tanh01(y_axis_dist3*torch.cos(slope3_angle))
-        d6 = self.tanh01(y_axis_dist6*torch.cos(slope3_angle))
-
-        top_line1 = self.tanh01(y_axis - (slope1 * x_axis + y_axis_dist1 + d1))
-        top_line2 = self.tanh01(y_axis - (slope2 * x_axis + y_axis_dist2 + d3))
-        top_line3 = self.tanh01(y_axis - (slope3 * x_axis + y_axis_dist3 + d5))
-
-        '''
-        The following are the scale factors for each of the 9 graduated filters
-        '''
-        mask_scale1 = self.get_inverted_mask(
-            scale_factor1, above_or_below_line1, d1, d2, max_scale, top_line1)
-        mask_scale2 = self.get_inverted_mask(
-            scale_factor2, above_or_below_line1, d1, d2, max_scale, top_line1)
-        mask_scale3 = self.get_inverted_mask(
-            scale_factor3, above_or_below_line1, d1, d2, max_scale, top_line1)
-
-        mask_scale_1 = torch.cat(
-            (mask_scale1, mask_scale2, mask_scale3), dim=0)
-        mask_scale_1 = torch.clamp(mask_scale_1.unsqueeze(0), 0, max_scale)
-
-        mask_scale4 = self.get_inverted_mask(
-            scale_factor4, above_or_below_line2, d3, d4, max_scale, top_line2)
-        mask_scale5 = self.get_inverted_mask(
-            scale_factor5, above_or_below_line2, d3, d4, max_scale, top_line2)
-        mask_scale6 = self.get_inverted_mask(
-            scale_factor6, above_or_below_line2, d3, d4, max_scale, top_line2)
-
-        mask_scale_4 = torch.cat(
-            (mask_scale4, mask_scale5, mask_scale6), dim=0)
-        mask_scale_4 = torch.clamp(mask_scale_4.unsqueeze(0), 0, max_scale)
-
-        mask_scale7 = self.get_inverted_mask(
-            scale_factor7, above_or_below_line3, d5, d6, max_scale, top_line3)
-        mask_scale8 = self.get_inverted_mask(
-            scale_factor8, above_or_below_line3, d5, d6, max_scale, top_line3)
-        mask_scale9 = self.get_inverted_mask(
-            scale_factor9, above_or_below_line3, d5, d6, max_scale, top_line3)
-
-        mask_scale_7 = torch.cat(
-            (mask_scale7, mask_scale8, mask_scale9), dim=0)
-        mask_scale_7 = torch.clamp(mask_scale_7.unsqueeze(0), 0, max_scale)
-
-        mask_scale = torch.clamp(
-            mask_scale_1*mask_scale_4*mask_scale_7, 0, max_scale)
-
-        return mask_scale
-
-
-class EllipticalFilter(nn.Module):
-
-    def __init__(self, num_in_channels=64, num_out_channels=64):
-        """Initialisation function
-
-        :param block: a block (layer) of the neural network
-        :param num_layers:  number of neural network layers
-        :returns: initialises parameters of the neural networ
-        :rtype: N/A
-
-        """
-        super(EllipticalFilter, self).__init__()
-
-        self.elliptical_layer1 = ConvBlock(num_in_channels, num_out_channels)
-        self.elliptical_layer2 = MaxPoolBlock()
-        self.elliptical_layer3 = ConvBlock(num_out_channels, num_out_channels)
-        self.elliptical_layer4 = MaxPoolBlock()
-        self.elliptical_layer5 = ConvBlock(num_out_channels, num_out_channels)
-        self.elliptical_layer6 = MaxPoolBlock()
-        self.elliptical_layer7 = ConvBlock(num_out_channels, num_out_channels)
-        self.elliptical_layer8 = GlobalPoolingBlock(2)
-        self.fc_elliptical = torch.nn.Linear(
-            num_out_channels, 24)  # elliptical
-        self.upsample = torch.nn.Upsample(size=(300, 300), mode='bilinear',align_corners=False)
-        self.dropout = nn.Dropout(0.5)
-
-    def tanh01(self, x):
-        """Adjust Tanh to return values between 0 and 1
-
-        :param x: Tensor arbitrary range
-        :returns: Tensor between 0 and 1
-        :rtype: tensor
-
-        """
-        tanh = nn.Tanh()
-        return 0.5 * (tanh(x) + 1)
-
-    def where(self, cond, x_1, x_2):
-        """Differentiable where function to compare two Tensors
-
-        :param cond: condition e.g. <
-        :param x_1: Tensor 1
-        :param x_2: Tensor 2
-        :returns: Boolean comparison result
-        :rtype: Tensor
-
-        """
-        cond = cond.float()
-        return (cond * x_1) + ((1 - cond) * x_2)
-
-    def get_mask(self, x_axis, y_axis, shift_x=0, shift_y=0, semi_axis_x=1, semi_axis_y=1, alpha=0,
-                 scale_factor=2, max_scale=2, eps=1e-7, radius=1):
-        """Gets the elliptical scaling mask according to the equation of a
-        rotated ellipse
-
-        :returns: scaling mask
-        :rtype: Tensor
-
-        """
-        # Check whether a point is inside our outside of the ellipse and set the scaling factor accordingly
-        ellipse_equation_part1 = (((x_axis - shift_x)*torch.cos(alpha) + (y_axis - shift_y)*torch.sin(alpha)) ** 2) / ((semi_axis_x)**2)
-        ellipse_equation_part2 = (((x_axis - shift_x)*torch.sin(alpha) - (y_axis - shift_y)*torch.cos(alpha)) ** 2) / ((semi_axis_y)**2)
-
-        # Set the scaling factors to decay with radius inside the ellipse
-        mask_scale = self.where(ellipse_equation_part1+ellipse_equation_part2 < 1,
-                                (torch.sqrt((x_axis - shift_x) ** 2 + (y_axis - shift_y) ** 2 + eps) * (1 - scale_factor)) / radius + scale_factor, 1)
-
-        mask_scale = torch.clamp(mask_scale.unsqueeze(0), 0, max_scale)
-
-        return mask_scale
-
-    def get_elliptical_mask(self, feat, img):
-        """Gets the elliptical scaling mask according to the equation of a
-        rotated ellipse
-
-        :param feat: features from the backbone
-        :param img: image
-        :returns: elliptical adjustment maps for each channel
-        :rtype: Tensor
-
-        """
-
-        # The two eps parameters are used to avoid numerical issues in the learning
-        eps2 = 1e-7
-        eps1 = 1e-10
-
-        # max_scale is the maximum an ellipse can scale the image R,G,B values by
-        max_scale = 2
-        min_scale = 0
-
-        feat_elliptical = torch.cat((feat, img), 1)
-        feat_elliptical = self.upsample(feat_elliptical)
-
-        # The following layers calculate the parameters of the ellipses that we use for image enhancement
-        x = self.elliptical_layer1(feat_elliptical)
-        x = self.elliptical_layer2(x)
-        x = self.elliptical_layer3(x)
-        x = self.elliptical_layer4(x)
-        x = self.elliptical_layer5(x)
-        x = self.elliptical_layer6(x)
-        x = self.elliptical_layer7(x)
-        x = self.elliptical_layer8(x)
-        x = x.view(x.size()[0], -1)
-        x = self.dropout(x)
-        G = self.fc_elliptical(x)
-
-        # The next code implements a rotated ellipse according to:
-        # https://math.stackexchange.com/questions/426150/what-is-the-general-equation-of-the-ellipse-that-is-not-in-the-origin-and-rotate
-        
-        # Normalised coordinates for x and y-axes, we instantiate the ellipses in these coordinates
-        x_axis = Variable(torch.arange(
-            img.shape[2]).view(-1, 1).repeat(1, img.shape[3]).cuda()) / img.shape[2]
-        y_axis = Variable(torch.arange(img.shape[3]).repeat(
-            img.shape[2], 1).cuda()) / img.shape[3]
-
-        # x coordinate - h position
-        right_x = (img.shape[2] - 1) / img.shape[2]
-        left_x = 0
-
-        # Centre of ellipse, x-coordinate
-        x_coord1 = self.tanh01(G[0, 0]) + eps1
-        x_coord2 = self.tanh01(G[0, 1]) + eps1
-        x_coord3 = self.tanh01(G[0, 2]) + eps1
-
-        # y coordinate - k coordinate
-        right_y = (img.shape[3] - 1) // img.shape[3]
-        left_y = 0
-
-        # Centre of ellipse, y-coordinate
-        y_coord1 = self.tanh01(G[0, 3]) + eps1 
-        y_coord2 = self.tanh01(G[0, 4]) + eps1
-        y_coord3 = self.tanh01(G[0, 5]) + eps1
-
-        # a value of ellipse
-        a1 = self.tanh01(G[0, 6]) + eps1
-        a2 = self.tanh01(G[0, 7]) + eps1
-        a3 = self.tanh01(G[0, 8]) + eps1
-
-        # b value
-        b1 = self.tanh01(G[0, 9]) + eps1
-        b2 = self.tanh01(G[0, 10]) + eps1
-        b3 = self.tanh01(G[0, 11]) + eps1
-
-        # A value is angle to the x-axis
-        A1 = self.tanh01(G[0, 12]) * math.pi + eps1
-        A2 = self.tanh01(G[0, 13]) * math.pi + eps1
-        A3 = self.tanh01(G[0, 14]) * math.pi + eps1
-
-        '''
-        The following are the scale factors for each of the 9 ellipses
-        '''
-        scale1 = self.tanh01(G[0, 15]) * max_scale + eps1 
-        scale2 = self.tanh01(G[0, 16]) * max_scale + eps1
-        scale3 = self.tanh01(G[0, 17]) * max_scale + eps1
-
-        scale4  = self.tanh01(G[0, 18]) * max_scale + eps1
-        scale5 = self.tanh01(G[0, 19]) * max_scale + eps1
-        scale6 = self.tanh01(G[0, 20]) * max_scale + eps1
-
-        scale7 = self.tanh01(G[0, 21]) * max_scale + eps1
-        scale8 = self.tanh01(G[0, 22]) * max_scale + eps1
-        scale9 = self.tanh01(G[0, 23]) * max_scale + eps1
-
-        ############ Angle of orientation of the ellipses with respect to the y semi-axis
-        angle_1 = torch.acos(torch.clamp((y_axis-y_coord1) / 
-            (torch.sqrt((x_axis-x_coord1)**2 + (y_axis-y_coord1)**2 + eps1)), -1+eps2, 1-eps2))-A1
-
-        angle_2 = torch.acos(torch.clamp((y_axis-y_coord2) / 
-            (torch.sqrt((x_axis-x_coord2) ** 2 + (y_axis-y_coord2)**2 + eps1)), -1+eps2, 1-eps2))-A2
-        
-        angle_3 = torch.acos(torch.clamp((y_axis-y_coord3) / 
-            (torch.sqrt((x_axis-x_coord3) ** 2 + (y_axis-y_coord3)**2 + eps1)), -1+eps2, 1-eps2))-A3
-
-        ############ Radius of the ellipses
-        # https://math.stackexchange.com/questions/432902/how-to-get-the-radius-of-an-ellipse-at-a-specific-angle-by-knowing-its-semi-majo
-        radius_1 = (a1*b1)/torch.sqrt((a1**2)*(torch.sin(angle_1)**2)+(b1**2)*(torch.cos(angle_1)**2) + eps1)
-
-        radius_2 = (a2*b2)/torch.sqrt((a2**2)*(torch.sin(angle_2)**2)+(b2**2)*(torch.cos(angle_2)**2) + eps1)
-
-        radius_3 = (a3*b3)/torch.sqrt((a3**2)*(torch.sin(angle_3)**2)+(b3**2)*(torch.cos(angle_3)**2) + eps1)
-
-        
-        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
-        mask_scale1 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale1,
-                                    radius=radius_1)
-
-        mask_scale2 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale2,
-                                    radius=radius_1)
-
-        mask_scale3 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord1, shift_y=y_coord1, semi_axis_x=a1, semi_axis_y=b1, alpha=angle_1, scale_factor=scale3,
-                                    radius=radius_1)
-
-        mask_scale_1 = torch.cat(
-            (mask_scale1, mask_scale2, mask_scale3), dim=0)
-        mask_scale_1_rad = torch.clamp(mask_scale_1.unsqueeze(0), 0, max_scale)
-
-        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
-        mask_scale4 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b2, alpha=angle_2, scale_factor=scale4,
-                                    radius=radius_2)
-
-        mask_scale5 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b2, alpha=angle_2, scale_factor=scale5,
-                                    radius=radius_2)
-
-        mask_scale6 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord2, shift_y=y_coord2, semi_axis_x=a2, semi_axis_y=b3, alpha=angle_2, scale_factor=scale6,
-                                    radius=radius_2)
-
-        mask_scale_4 = torch.cat(
-            (mask_scale4, mask_scale5, mask_scale6), dim=0)
-        mask_scale_4_rad = torch.clamp(mask_scale_4.unsqueeze(0), 0, max_scale)
-
-        ############ Scaling factors for the R,G,B channels, here we learn three ellipses
-        mask_scale7 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale7,
-                                    radius=radius_3)
-
-        mask_scale8 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale8,
-                                    radius=radius_3)
-
-        mask_scale9 = self.get_mask(x_axis, y_axis,
-                                    shift_x=x_coord3, shift_y=y_coord3, semi_axis_x=a3, semi_axis_y=b3, alpha=angle_3, scale_factor=scale9,
-                                    radius=radius_3)
-
-        mask_scale_7 = torch.cat(
-            (mask_scale7, mask_scale8, mask_scale9), dim=0)
-        mask_scale_7_rad = torch.clamp(mask_scale_7.unsqueeze(0), 0, max_scale)
-
-        ############ Mix the ellipses together by multiplication
-        mask_scale_elliptical = torch.clamp(
-            mask_scale_1_rad * mask_scale_4_rad * mask_scale_7_rad, 0, max_scale)
-
-        return mask_scale_elliptical
-
-
-class Block(nn.Module):
-
-    def __init__(self):
-        """Initialisation for a lower-level DeepLPF conv block
-
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(Block, self).__init__()
-
-    def conv3x3(self, in_channels, out_channels, stride=1):
-        """Represents a convolution of shape 3x3
-
-        :param in_channels: number of input channels
-        :param out_channels: number of output channels
-        :param stride: the convolution stride
-        :returns: convolution function with the specified parameterisation
-        :rtype: function
-
-        """
-        return nn.Conv2d(in_channels, out_channels, kernel_size=3,
-                         stride=stride, padding=1, bias=True)
-
-
-class ConvBlock(Block, nn.Module):
-
-    def __init__(self, num_in_channels, num_out_channels, stride=1):
-        """Initialise function for the higher level convolution block
-
-        :param in_channels:
-        :param out_channels:
-        :param stride:
-        :param padding:
-        :returns:
-        :rtype:
-
-        """
-        super(Block, self).__init__()
-        self.conv = self.conv3x3(num_in_channels, num_out_channels, stride=2)
-        self.lrelu = nn.LeakyReLU()
-
-    def forward(self, x):
-        """ Forward function for the higher level convolution block
-
-        :param x: Tensor representing the input BxCxWxH, where B is the batch size, C is the number of channels, W and H are the width and image height
-        :returns: Tensor representing the output of the block
-        :rtype: Tensor
-
-        """
-        img_out = self.lrelu(self.conv(x))
-        return img_out
-
-
-class MaxPoolBlock(Block, nn.Module):
-
-    def __init__(self):
-        """Initialise function for the max pooling block
-
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(Block, self).__init__()
-
-        self.max_pool = nn.MaxPool2d(kernel_size=2, stride=2)
-
-    def forward(self, x):
-        """ Forward function for the max pooling block
-
-        :param x: Tensor representing the input BxCxWxH, where B is the batch size, C is the number of channels, W and H are the width and image height
-        :returns: Tensor representing the output of the block
-        :rtype: Tensor
-
-        """
-        img_out = self.max_pool(x)
-        return img_out
-
-
-class GlobalPoolingBlock(Block, nn.Module):
-
-    def __init__(self, receptive_field):
-        """Implementation of the global pooling block. Takes the average over a 2D receptive field.
-        :param receptive_field:
-        :returns: N/A
-        :rtype: N/A
-
-        """
-        super(Block, self).__init__()
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)
-
-    def forward(self, x):
-        """Forward function for the high-level global pooling block
-
-        :param x: Tensor of shape BxCxAxA
-        :returns: Tensor of shape BxCx1x1, where B is the batch size
-        :rtype: Tensor
-
-        """
-        out = self.avg_pool(x)
         return out
 
 
 class DeepLPFParameterPrediction(nn.Module):
     import torch.nn.functional as F
 
-    def __init__(self, num_in_channels=64, num_out_channels=64, batch_size=1):
+    def __init__(self, num_in_channels=64, num_out_channels=64,
+                 learn_filter_count=False, colour_knots=None):
         """Initialisation function
 
         :param num_in_channels:  Number of input feature maps
         :param num_out_channels: Number of output feature maps
-        :param batch_size: Size of image batch
+        :param learn_filter_count: predict a gate per filter instance
+        :param colour_knots: knots in the colour head's tone curve, or None to
+                             leave the colour head out entirely
         :returns: N/A
         :rtype: N/A
 
         """
         super(DeepLPFParameterPrediction, self).__init__()
-        self.num_in_channels = num_in_channels
-        self.num_out_channels = num_out_channels
         self.cubic_filter = CubicFilter()
-        self.graduated_filter = GraduatedFilter()
-        self.elliptical_filter = EllipticalFilter()
+        self.graduated_filter = GraduatedFilter(learn_filter_count=learn_filter_count)
+        self.elliptical_filter = EllipticalFilter(learn_filter_count=learn_filter_count)
+        self.learn_filter_count = learn_filter_count
+        # Constructed after every other module on purpose: see ColourHead.
+        self.use_colour = colour_knots is not None
+        if self.use_colour:
+            self.colour_head = ColourHead(64, colour_knots)
       
 
     def forward(self, x):
@@ -950,24 +163,47 @@ class DeepLPFParameterPrediction(nn.Module):
         :rtype: Tensor
 
         """
-        x.contiguous()  # remove memory holes
-        x.cuda()
+        x = x.contiguous()  # remove memory holes
 
-        feat = x[:, 3:64, :, :]
-        img = x[:, 0:3, :, :]
+        feat = x[:, 3:64, :, :]  # C' = C - 3 backbone features
+        img = x[:, 0:3, :, :]    # Y1: backbone-enhanced image
 
-        torch.cuda.empty_cache()
-        shape = x.shape
+        # `--colour_head`: the cross-channel operation no filter head can
+        # express, applied to Y1 before the cubic filter so every downstream
+        # branch - including the parameter predictors, which read the image -
+        # sees the corrected colour. Identity at initialisation.
+        if self.use_colour:
+            img = self.colour_head(x, img)
 
-        img_cubic = self.cubic_filter.get_cubic_mask(feat, img)
-       
-        mask_scale_graduated = self.graduated_filter.get_graduated_mask(
-            feat, img_cubic)
-        mask_scale_elliptical = self.elliptical_filter.get_elliptical_mask(
-            feat, img_cubic)
-       
+        # Each branch's parameter predictor consumes cat(feat, image) resized
+        # to 300x300. The resize is bilinear and per channel, so
+        # upsample(cat(a, b)) == cat(upsample(a), upsample(b)) exactly; the
+        # feature part is shared by all three branches, and the graduated and
+        # elliptical branches share the whole input. Resize each part once
+        # instead of five times.
+        upsample = self.cubic_filter.upsample
+        feat_up = upsample(feat)
+
+        # Single-stream path: Y2 = polynomial filter applied to Y1
+        img_cubic = self.cubic_filter.mask_from_input(
+            torch.cat((feat_up, upsample(img)), 1), img)
+
+        # Two-stream path: graduated and elliptical scaling maps estimated from Y2
+        feat_img_cubic_up = torch.cat((feat_up, upsample(img_cubic)), 1)
+        mask_scale_graduated = self.graduated_filter.mask_from_input(
+            feat_img_cubic_up, img_cubic)
+        mask_scale_elliptical = self.elliptical_filter.mask_from_input(
+            feat_img_cubic_up, img_cubic)
+
         mask_scale_fuse = torch.clamp(
-            mask_scale_graduated+mask_scale_elliptical, 0, 2)
+            1.0 + (mask_scale_graduated - 1.0) + (mask_scale_elliptical - 1.0), 0, 2)
+
+        # Mean gate over both branches' instances, in [0, 1]. Penalising this
+        # penalises the expected number of active filters; the training step
+        # adds gate_weight * gate_penalty to the loss.
+        if self.learn_filter_count:
+            self.gate_penalty = torch.cat(
+                (self.graduated_filter.gates, self.elliptical_filter.gates), 1).mean()
 
         img_fuse = torch.clamp(img_cubic*mask_scale_fuse, 0, 1)
         
@@ -978,16 +214,24 @@ class DeepLPFParameterPrediction(nn.Module):
 
 class DeepLPFNet(nn.Module):
 
-    def __init__(self):
+    def __init__(self, learn_filter_count=False, colour_knots=None):
         """Initialisation function
 
-        :returns: initialises parameters of the neural networ
+        :param learn_filter_count: predict a gate per filter instance, so the
+                                   network learns how many of the three
+                                   instances per branch an image needs
+        :param colour_knots: knots in the per-channel tone curve of the colour
+                             head; None leaves the colour head out, 0 keeps the
+                             mixer without a curve
+        :returns: initialises parameters of the neural network
         :rtype: N/A
 
         """
         super(DeepLPFNet, self).__init__()
+        self.learn_filter_count = learn_filter_count
         self.backbonenet = unet.UNetModel()
-        self.deeplpfnet = DeepLPFParameterPrediction()
+        self.deeplpfnet = DeepLPFParameterPrediction(
+            learn_filter_count=learn_filter_count, colour_knots=colour_knots)
         
     def forward(self, img):
         """Neural network forward function
@@ -999,5 +243,10 @@ class DeepLPFNet(nn.Module):
         """
         feat = self.backbonenet(img)
         img = self.deeplpfnet(feat)
+
+        # Surface the gate penalty of the last forward pass so the training
+        # step can add it to the loss without changing this signature.
+        if self.learn_filter_count:
+            self.gate_penalty = self.deeplpfnet.gate_penalty
         
         return img

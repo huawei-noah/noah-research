@@ -1,180 +1,244 @@
-# DeepLPF: Deep Local Parametric Filters for Image Enhancement (CVPR 2020)
+<div align="center">
 
-[Sean Moran](http://www.seanjmoran.com), [Pierre Marza](https://scholar.google.com/citations?user=NAI5mi4AAAAJ&hl=en), [Steven McDonagh](https://smcdonagh.github.io/), [Sarah Parisot](https://parisots.github.io/), [Greg Slabaugh](http://gregslabaugh.net/)
+<h1>DeepLPF</h1>
 
-**Huawei Noah's Ark Lab**
+<p><b>Deep Local Parametric Filters for Image Enhancement</b><br>
+<sub>CVPR 2020 · Huawei Noah's Ark Lab</sub></p>
 
-<p>Main repository for the CVPR 2020 paper <b>DeepLPF: Deep Local Parametric Filters for Image Enhancement</b>. Here you will find a link to the code, pre-trained models and information on the datasets. Please raise a Github issue if you need assistance of have any questions on the research. 
-</p>
+[![arXiv](https://img.shields.io/badge/arXiv-2003.13985-b31b1b.svg)](https://arxiv.org/abs/2003.13985)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.6+-ee4c2c.svg)](https://pytorch.org/)
+[![Model](https://img.shields.io/badge/model-1.7M%20params%20·%206.9%20MB-informational.svg)](#pre-trained-model)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-**_Training your own DeepLPF:_** if you have difficulities, please contact the lead author for assistance. We are responsive and will be glad to assist on any queries regarding the model.
+[Sean Moran](https://sjmoran.github.io/) ·
+[Pierre Marza](https://pierremarza.github.io/) ·
+[Steven McDonagh](https://smcdonagh.github.io/) ·
+[Sarah Parisot](https://parisots.github.io/) ·
+Greg Slabaugh
 
-**_BATCH SIZE: Note this code is designed for a batch size of 1. It needs re-engineered to support higher batch sizes. Using higher batch sizes is not supported currently. To replicate our reported results please use a batch size of 1 only._**
+[**Paper**](https://arxiv.org/abs/2003.13985) ·
+[**Poster**](https://github.com/sjmoran/sjmoran.github.io/blob/main/pdfs/DeepLPF_CVPR20_poster.pdf) ·
+[**Video**](https://www.youtube.com/watch?v=Sxach3FM6FY) ·
+[**Supplementary**](https://github.com/sjmoran/sjmoran.github.io/blob/7775d1fc39d14baeb6935f6c750f923e1251f491/pdfs/DeepLPF_supplementary.pdf)
+
+</div>
+
+```bash
+pip install -e .
+deeplpf enhance photo.jpg
+```
+
+Most enhancement networks paint the output pixel by pixel. DeepLPF instead
+predicts the settings of a few filters a photographer would recognise - a tone
+curve, a graduated filter, an elliptical vignette - and applies them to your
+image. The whole model is 1.7M parameters, runs in 46 ms on an Apple GPU, and
+tells you what it did.
 
 <p align="center">
-<img src="./images/teaser.png" width="80%"/>
+<img src="./images/gallery.jpg" width="100%" alt="Four FiveK photographs: the input, the filters DeepLPF predicted drawn over it, the Expert C retouch, and DeepLPF's output"/>
 </p>
 
-### [[Paper]](https://arxiv.org/abs/2003.13985) [[Poster]](https://github.com/sjmoran/sjmoran.github.io/blob/main/pdfs/DeepLPF_CVPR20_poster.pdf) [[Video]](https://www.youtube.com/watch?v=Sxach3FM6FY) [[Supplementary]](https://github.com/sjmoran/sjmoran.github.io/blob/7775d1fc39d14baeb6935f6c750f923e1251f491/pdfs/DeepLPF_supplementary.pdf) 
+<div align="center"><sub>Four photographs from the FiveK test set, none seen
+during training, at 27.6 to 30.8 dB against the Expert C retouch. The second
+column draws the filters the model actually predicted over the photograph:
+cyan for the graduated filter, pink for the elliptical.</sub></div>
+
+## Contents
+
+[Install](#install) ·
+[Enhance your photos](#enhance-your-photos) ·
+[How it works](#how-it-works) ·
+[Results](#results) ·
+[Pre-trained model](#pre-trained-model) ·
+[Train it yourself](#train-it-yourself) ·
+[Which number, which protocol](#which-number-which-protocol) ·
+[Datasets](#datasets) ·
+[Citation](#citation)
+
+## Install
+
+```bash
+git clone https://github.com/huawei-noah/noah-research.git
+cd noah-research/DeepLPF
+pip install -e .
+```
+
+Python 3.11 or newer. Torch comes from your platform's usual wheel; if you
+already have a CUDA or ROCm build installed, keep it - the lower bounds in
+`requirements.txt` would otherwise pull the generic one.
+
+## Enhance your photos
+
+```bash
+deeplpf enhance photo.jpg               # one file
+deeplpf enhance ~/photos --out ~/done   # or a whole directory
+```
+
+Results land in `enhanced/` as PNGs. PNG, JPEG, TIFF, BMP and WebP are read,
+greyscale and RGBA included. The device is picked for you - CUDA, Apple Silicon
+(MPS), or CPU - and `--device` overrides it. A file it cannot use is reported
+and skipped rather than taking the rest of the batch down with it.
+
+| | |
+|---|---|
+| Model size | 1.7M parameters, 6.9 MB |
+| Speed, 512x341 image | 46 ms on an M-series GPU, 0.21 s on CPU |
+| Input | any resolution with both edges >= 32 px |
+
+## How it works
 
 <p align="center">
-<a href="https://www.youtube.com/watch?v=Sxach3FM6FY" span>
-   <img src="./images/youtube-thumbnail.png" width="90%"/>
-</a>
-<a href="https://github.com/sjmoran/sjmoran.github.io/blob/main/pdfs/DeepLPF_CVPR20_poster.pdf" span>
-   <img src="./images/poster-img.png" width="100%"/>
-</a>
+<img src="./images/architecture.png" width="100%" alt="Input to U-Net backbone to three filter heads to the enhanced output"/>
 </p>
 
-<table>
-       <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/e6d160eed2a5f72c89e690bc81f1a59f09873085/adobe5k_dpe/deeplpf_example_test_input/a4576-DSC_0217_input.png" /></td>   
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/6889bd2c39a947ba85d86b6151387dfe56709996/adobe5k_dpe/deeplpf_example_test_output/a4576-DSC_0217_gt.png" /></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/1a76a93d5cb1fffbb8865193ba37ef83771e1f2d/adobe5k_dpe/deeplpf_example_test_inference/a4576-DSC_0217_TEST_425_9_PSNR_34.596_SSIM_0.980.jpg"/></td> 
-  </tr>
-    <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/7b6ffc8d37d26a29742c0487e94c2e00617ab149/adobe5k_dpe/deeplpf_example_test_input/a4582-DSC_0343_input.png"/></td>   
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/ff8c04db5da40e6c58f8ff42417ab57d28605d85/adobe5k_dpe/deeplpf_example_test_output/a4582-DSC_0343_gt.png"/></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/094ae4b23e0586a588960cbc31c95e09eb3f2997/adobe5k_dpe/deeplpf_example_test_inference/a4582-DSC_0343_TEST_425_10_PSNR_18.942_SSIM_0.921.jpg"/></td> 
-  </tr>
-    <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/ff2a4a6ac30a247f10c5ee2ebb96d1982725570b/adobe5k_dpe/deeplpf_example_test_input/a4742-Duggan_090331_6517_input.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/24ae58aaed19e76a59788edd04997d537bc624df/adobe5k_dpe/deeplpf_example_test_output/a4742-Duggan_090331_6517_output.png" /></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/a1f98969249067e89137b06fe82c71d44485cd4f/adobe5k_dpe/deeplpf_example_test_inference/a4742-Duggan_090331_6517_TEST_425_1_PSNR_29.825_SSIM_0.984.jpg"/></td> 
-  </tr>
-    <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/3247d4dedce32aeaad54586d2c0b478189ed8d82/adobe5k_dpe/deeplpf_example_test_input/a4774-_DGW0330.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/28d9bfad7bf3649b25aa6c69dd25226474fd8339/adobe5k_dpe/deeplpf_example_test_output/a4774-_DGW0330_gt.png"/></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/37d2a682f2b0970fc0d3fd0c30d8512d909737b5/adobe5k_dpe/deeplpf_example_test_inference/a4774-_DGW0330_TEST_425_7_PSNR_24.233_SSIM_0.926.jpg"/></td> 
-  </tr>
-    <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/33b02f2a6f1d079e0a2b6b025f576f5b1f3c8ac7/adobe5k_dpe/deeplpf_example_test_input/a4591-Duggan_080411_5940.png" /></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/10c985c9f69cf1bb541517e14624dcdc923e2b78/adobe5k_dpe/deeplpf_example_test_output/a4591-Duggan_080411_5940.tif_GT.png"/></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/c46645adbc897ea6e773fed729b2d99d5bf59dcc/adobe5k_dpe/deeplpf_example_test_inference/a4591-Duggan_080411_5940_TEST_425_20_PSNR_28.000_SSIM_0.951.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-      <td><img src="https://github.com/sjmoran/DeepLPF/blob/b614871bb72a6573cd45fc487f5ad2d5e7e6edda/adobe5k_dpe/deeplpf_example_test_input/a4521-kme_0310.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/9404949f046a53b87a04ecc17583d0fa01951176/adobe5k_dpe/deeplpf_example_test_output/a4521-kme_0310.png"/></td> 
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/7b5e10962cead0b0c20e47f7a0c750562f7bfc74/adobe5k_dpe/deeplpf_example_test_inference/a4521-kme_0310_TEST_800_5_PSNR_28.774_SSIM_0.897.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th>
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/76bbc1d5673cf0c90c7316d93fecefa9b5a62052/adobe5k_dpe/deeplpf_example_test_input/a4869-09-05-19-at-19h05m38s-_MG_9563.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/62d12eff53e30382553f75c32743596a7919deba/adobe5k_dpe/deeplpf_example_test_output/a4869-09-05-19-at-19h05m38s-_MG_9563.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/c75cea3d600136005ea1078db3fc663011c54d8b/adobe5k_dpe/deeplpf_example_test_inference/a4869-09-05-19-at-19h05m38s-_MG_9563_TEST_500_29_PSNR_30.090_SSIM_0.978.jpg"/></td> 
-  </tr>
-  <tr>
-    <th>Input</th> 
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/c50fa517cbeb88ace1970b54da712e7872fbd95f/adobe5k_dpe/deeplpf_example_test_input/a4933-Duggan_090428_8040.png" /></td>   
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/86a9b78ff36d3f71d491a158fd7956b5880cd991/adobe5k_dpe/deeplpf_example_test_output/a4933-Duggan_090428_8040.png"/></td>     <td><img src="https://github.com/sjmoran/DeepLPF/blob/7745ebfb35fc9a6c8e27bbc09c4b82c94a77e632/adobe5k_dpe/deeplpf_example_test_inference/a4933-Duggan_090428_8040_TEST_500_23_PSNR_19.011_SSIM_0.882.jpg"/></td> 
-  </tr>
-     <tr>
-    <th>Input</th> 
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/944e9bfac7ecf7b20b53f1142bf57bf0d2c6bfaf/adobe5k_dpe/deeplpf_example_test_input/a4783-20090321_at_19h16m32__MG_0220.png"/></td>   
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/4b5448fc529f9f5f71d117ad6fb54215ae2164c8/adobe5k_dpe/deeplpf_example_test_output/a4783-20090321_at_19h16m32__MG_0220.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/f8b20f0a102c549f716748a3d5e353c48a24d768/adobe5k_dpe/deeplpf_example_test_inference/a4783-20090321_at_19h16m32__MG_0220_TEST_500_2_PSNR_26.362_SSIM_0.905.jpg"/></td> 
-  </tr>
-        <tr>
-    <th>Input</th> 
-    <th>Label</th>
-    <th>Ours (DeepLPF)</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/sjmoran/DeepLPF/blob/fc339bc7177aad138cdd7b3378056b97e6b5afc9/adobe5k_dpe/deeplpf_example_test_input/a4514-kme_0258.png"/></td>   
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/2e2213fbdf07f890e22c40ef2ee31c7cafe98679/adobe5k_dpe/deeplpf_example_test_output/a4514-kme_0258.png"/></td>     
-     <td><img src="https://github.com/sjmoran/DeepLPF/blob/2e2213fbdf07f890e22c40ef2ee31c7cafe98679/adobe5k_dpe/deeplpf_example_test_inference/a4514-kme_0258_TEST_500_27_PSNR_27.426_SSIM_0.879.jpg"/></td> 
-  </tr>
-</table>
+A U-Net backbone reads the image and produces per-pixel features. Three heads
+turn those features into filter parameters, and the filters are applied in
+sequence. The whole enhancement is a few dozen numbers.
 
-### Dependencies
-
-_requirements.txt_ contains the Python packages used by the code.
-
-### How to train DeepLPF and use the model for inference
-
-#### Training DeepLPF
-
-Instructions:
-
-To get this code working on your system / problem you will need to edit the data loading functions, as follows:
-
-1. data.py, lines 248, 256, change the folder names of the data input and output directories to point to your folder names
-
-To train, run the command:
-
-```
-python3 main.py --training_img_dirpath=../adobe5k/ --train_img_list_path=../adobe5k/images_train.txt --valid_img_list_path=../adobe5k/images_valid.txt --test_img_list_path=../adobe5k/images_test.txt
-```
+### What the filters actually do
 
 <p align="center">
-<img src="./images/deeplpf_training_loss.png" width="80%"/>
+<img src="./images/filters.jpg" width="100%" alt="Input, the cubic filter's output, the graduated and elliptical masks, and the final image"/>
 </p>
 
-#### Inference - Using Pre-trained Models for Prediction
+<div align="center"><sub>The two masks are the ones the trained model predicted
+for this photograph, averaged over the colour channels. Each is scaled to its
+own range: these adjustments are a few per cent, which is what makes them look
+like a retouch rather than a filter preset.</sub></div>
 
-The directory _pretrained_models_ contains a set of four DeepLPF pre-trained models on the _Adobe5K_DPE dataset_, each model output from different epochs. The model with the highest validation dataset PSNR (23.90 dB) is at epoch 424:
+**Cubic** — a tone and colour curve, applied to the whole image. It is a cubic
+polynomial in the pixel's intensity and its position, so it can lift shadows,
+roll off highlights and warm or cool the picture, the way the basic panel of a
+raw converter does. This is where most of the enhancement happens.
 
-* deeplpf_validpsnr_23.378_validloss_0.033_testpsnr_23.904_testloss_0.031_epoch_424_model.pt
+**Graduated** — the graduated neutral-density filter a landscape photographer
+slides over the lens: brighter on one side of a line, darker on the other, with
+a smooth transition between. The network predicts where the line falls and how
+strong the effect is. In the example above it runs diagonally, brightening the
+skyline by about 26% at one edge and 10% at the other.
 
-This model achieves a PSNR of 23.90dB and an SSIM of 0.911 on the Adobe_DPE image dataset. To inference with this model, follow these instructions:
+**Elliptical** — a radial filter, the soft oval used to lift a face out of its
+background or to add a vignette. The network predicts the ellipse's centre, its
+two axes and its rotation. Above, it lifts the middle of the frame by up to 8%
+and leaves the corners alone.
 
-1. Place the images you wish to infer in a directory e.g. ./adobe5k_dpe/deeplpf_example_test_input/. Make sure the directory path has the word "input" somewhere in the path.
-2. Place the images you wish to use as groundtruth in a directory e.g. ./adobe5k_dpe/deeplpf_example_test_output/. Make sure the directory path has the word "output" somewhere in the path.
-3. Place the names of the images (without extension) in a text file in the directory above the directory containing the images i.e. ./adobe5k_dpe/ e.g. ./adobe5k_dpe/images_inference.txt
-4. Run the command and the results will appear in a timestamped directory in the same directory as main.py:
+Each filter predicts three instances per image, and their effects multiply, so
+the model can place three gradients and three ellipses at once. Because these
+are the adjustments a photographer already knows, an enhancement can be read
+and argued with rather than only looked at. The
+[paper](https://arxiv.org/abs/2003.13985) gives the full formulation.
 
+## Results
+
+| Model | Split | PSNR | SSIM |
+|---|---|---|---|
+| the checkpoint in this directory, 1000 epochs | reconstructed | 24.18 dB | 0.917 |
+| the checkpoint in this directory, 774 epochs | DPE | 23.83 dB | 0.916 |
+| DeepLPF as published (NamedCurves Tab. 1) | DPE | 23.93 dB | 0.903 |
+
+FiveK has at least five incompatible protocols; see [Which number, which
+protocol](#which-number-which-protocol) before comparing anything to anything.
+
+## Pre-trained model
+
+`pretrained_models/adobe_dpe/` holds the model trained by this code for 1000
+epochs on the reconstructed split, and it is what `deeplpf enhance` loads by
+default.
+
+`pretrained_models/adobe_dpe_recovered_split/` holds a second checkpoint,
+trained on the original DPE split lists, at the epoch where validation PSNR
+peaked (774). Same architecture and training command, different split.
+
+Two capabilities are off by default. Both change the architecture, so a
+checkpoint trained with either needs the same flag to load it:
+
+```bash
+--learn_filter_count   # learn how many filter instances each image needs
+--colour_head          # add a global colour mixer and per-channel tone curve
 ```
-python3 main.py --inference_img_list_path=./adobe5k_dpe/images_inference.txt --inference_img_dirpath=./adobe5k_dpe/ --checkpoint_filepath=./pretrained_models/adobe_dpe/deeplpf_validpsnr_23.378_validloss_0.033_testpsnr_23.904_testloss_0.031_epoch_424_model.pt
+
+The first predicts a gate per filter instance and penalises the mean gate, so
+the network can switch instances off. The second supplies the cross-channel
+operation the filter bank otherwise lacks: every head is diagonal, so without it
+no filter can express white balance, saturation or a hue shift.
+
+## Train it yourself
+
+Prepare the dataset (see [Datasets](#datasets)) into a directory with `input/`
+and `output/` sub-folders, with one text file per split listing the image ids,
+then:
+
+```bash
+python3 main.py \
+  --training_img_dirpath=./adobe5k_dpe_data/ \
+  --train_img_list_path=./adobe5k_dpe/images_train.txt \
+  --valid_img_list_path=./adobe5k_dpe/images_valid.txt \
+  --test_img_list_path=./adobe5k_dpe/images_test.txt \
+  --batch_size=1
 ```
 
-### Pre-trained models
+`--batch_size=1` is the paper's setup; larger batches need `--crop_size`,
+because FiveK images vary in size. Evaluation always runs at batch size 1 so
+per-image PSNR and SSIM are reported and saved. On an Ampere-or-later GPU,
+`--cuda_graphs` cuts the step time by about 4.7x and `--compile` a little more.
+Checkpoints are written whenever validation PSNR improves, into a timestamped
+`log_*` directory with the metrics in the filename.
 
-* Adobe-DPE: see pretrained_models/adobe_dpe directory. Model trained on the Adobe5K dataset using the splits and image pre-processing outlined in the DeepPhotoEnhancer paper.
-* Adobe-UPE: see pretrained_models/adobe_upe directory. Model trained on the Adobe5K dataset using the splits and image pre-processing outlined in the DeepUPE paper. Thanks to Yucheng Lu (yucheng.l@outlook.com) for this pre-trained model. The model was applied in [this paper](https://arxiv.org/abs/2106.14844).
+A 1000-epoch run takes roughly 19 hours on an A10G. This is the run that
+produced the checkpoint in this directory:
 
-### Bibtex
+<p align="center">
+<img src="./images/training_curve.png" width="92%" alt="Training loss and validation PSNR over 1000 epochs"/>
+</p>
+
+The split lists, the Lightroom export recipe, the dataset organise and verify
+scripts, and the reference manifest that checks an export image by image, live
+in the maintained mirror at
+[sjmoran/deeplpf-image-enhancement](https://github.com/sjmoran/deeplpf-image-enhancement),
+tagged
+[v1.0.0](https://github.com/sjmoran/deeplpf-image-enhancement/releases/tag/v1.0.0),
+which is where the checkpoint above was trained.
+
+## Which number, which protocol
+
+DeepLPF appears in the literature as **23.63**, **23.90**, **23.93**, **24.48**
+and **24.73** dB. All five are correct, and none is comparable with another:
+they are five different protocols, differing in the test set, the input
+rendering and the resolution. Every method on FiveK has this problem, and it is
+the most common way comparisons go wrong.
+
+**[docs/BENCHMARK_TABLE.md](https://github.com/sjmoran/deeplpf-image-enhancement/blob/master/docs/BENCHMARK_TABLE.md)**
+says which number belongs to which protocol, what each protocol is, and which
+split files reproduce it.
+
+## Datasets
+
+DeepLPF is trained on the [MIT-Adobe FiveK](https://data.csail.mit.edu/graphics/fivek/)
+photographs, processed through Lightroom with Expert C retouching as the
+target. For a step-by-step walkthrough — Lightroom export settings, the
+expected folder layout, and the helper and verification scripts — see
+**[docs/ADOBE_DPE_DATASET.md](https://github.com/sjmoran/deeplpf-image-enhancement/blob/master/docs/ADOBE_DPE_DATASET.md)**.
+
+- **Adobe-DPE** (5000 RGB→RGB pairs): download
+  [here](https://data.csail.mit.edu/graphics/fivek/), then pre-process per the
+  DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer),
+  using the `InputAsShotZeroed` Lightroom rendering as input and Expert C as
+  target, both exported in sRGB at long edge 512 px. See the
+  [DPE instructions](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636)
+  and [Train it yourself](#train-it-yourself).
+
+  The original DPE train/valid/test splits (2250 / 2250 / 498) were recovered in
+  September 2026 from a third-party mirror of the DPE release after every
+  official link went dead; they are shipped, with their provenance, in the
+  [mirror repository](https://github.com/sjmoran/deeplpf-image-enhancement/tree/master/adobe5k_dpe).
+- **Adobe-UPE** (5000 RGB→RGB pairs): download
+  [here](https://data.csail.mit.edu/graphics/fivek/), then pre-process per the
+  DeepUPE [paper](https://github.com/wangruixing/DeepUPE).
+
+## Citation
+
+If you use DeepLPF, its pre-trained models, or this code in your research, please cite:
 
 ```
 @InProceedings{Moran_2020_CVPR,
@@ -186,26 +250,28 @@ year = {2020}
 }
 ```
 
-### Datasets
+## Errata for papers referencing DeepLPF
 
-* __Adobe-DPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). After downloading this dataset you will need to use Lightroom to pre-process the images according to the procedure outlined in the DeepPhotoEnhancer (DPE) [paper](https://github.com/nothinglo/Deep-Photo-Enhancer). Please see the issue [here](https://github.com/nothinglo/Deep-Photo-Enhancer/issues/38#issuecomment-449786636) for instructions. Artist C retouching is used as the groundtruth/target. Note, the images must be extracted in sRGB space. Feel free to raise a Gitlab issue if you need assistance with this (or indeed the Adobe-UPE dataset below). You can also find the training, validation and testing dataset splits for Adobe-DPE in the following [file](https://www.cmlab.csie.ntu.edu.tw/project/Deep-Photo-Enhancer/%5BExperimental_Code_Data%5D_Deep-Photo-Enhancer.zip). The splits can also be found the the [adobe5k_dpe](./adobe5k_dpe/) directory in this repository (note these are a best guess at what the orginal splits from the DPE authors might be).
+**[Deep Symmetric Network for Underexposed Image Enhancement with Recurrent Attentional Learning](https://www.shaopinglu.net/publications_files/ICCV21_Image_Enhancement.pdf)**
 
-* __Adobe-UPE__ (5000 images, RGB, RGB pairs): this dataset can be downloaded [here](https://data.csail.mit.edu/graphics/fivek/). As above, you will need to use Lightroom to pre-process the images according to the procedure outlined in the Underexposed Photo Enhancement Using Deep Illumination Estimation (DeepUPE) [paper](https://github.com/wangruixing/DeepUPE) and detailed in the issue [here](https://github.com/wangruixing/DeepUPE/issues/26). Artist C retouching is used as the groundtruth/target. You can find the test images for the Adobe-UPE dataset at this [link](https://drive.google.com/file/d/1HZnNgptNxjKJAhekz2K5yh0mW0yKIws2/view?usp=sharing).
+The results in Fig. 1 for DeepLPF in that paper are incorrect. An example of
+inference for one of the images in Fig. 1 is
+[here](https://github.com/sjmoran/DeepLPF/blob/ecdc6f08cc96ff727a8246874bce06726949068e/images/004668_TEST_25_354_PSNR_21.848_SSIM_0.858.jpg),
+and our DeepLPF model trained on their dataset is
+[here](https://github.com/sjmoran/DeepLPF/blob/7b147dd819b2e4c8e9898c411f23887250cb9afe/pretrained_models/adobe_distort_and_recover/deeplpf_validpsnr_23.629675866286313_validloss_0.030986817553639412_testpsnr_23.629675866286313_testloss_0.030986817553639412_epoch_49_model.pt).
+The quantitative results in Table 1 for DeepLPF should be **23.63 dB, 0.875
+SSIM**. On 29th September 2021 the paper's authors published an
+[errata](https://www.shaopinglu.net/proj-iccv21/ImageEnhancement.html); we
+thank them for re-checking the result.
 
-### License
+## License
 
-BSD-3-Clause License
+Released under the MIT License. See [LICENSE](./LICENSE).
 
-### Contributions
+## Contributions
 
-We appreciate all contributions. If you are planning to contribute back bug-fixes, please do so without any further discussion.
-
-If you plan to contribute new features, utility functions or extensions to the core, please first open an issue and discuss the feature with us. Sending a PR without discussion might end up resulting in a rejected PR, because we might be taking the core in a different direction than you might be aware of.
-
-### Errata for Paper(s) referencing DeepLPF
-
-* **[Deep Symmetric Network for Underexposed Image Enhancement with Recurrent Attentional Learning](https://www.shaopinglu.net/publications_files/ICCV21_Image_Enhancement.pdf)**
-* The results in Fig 1. for DeepLPF in this paper are incorrect. An example of inference for one of the images in Fig 1. is supplied [here](https://github.com/sjmoran/DeepLPF/blob/ecdc6f08cc96ff727a8246874bce06726949068e/images/004668_TEST_25_354_PSNR_21.848_SSIM_0.858.jpg). For replication, we provide our DeepLPF pre-trained model for their dataset [here](https://github.com/sjmoran/DeepLPF/blob/7b147dd819b2e4c8e9898c411f23887250cb9afe/pretrained_models/adobe_distort_and_recover/deeplpf_validpsnr_23.629675866286313_validloss_0.030986817553639412_testpsnr_23.629675866286313_testloss_0.030986817553639412_epoch_49_model.pt). The quantitative results in Table 1 for DeepLPF should be: **23.63dB, 0.875 SSIM**. 
-* **29th September 2021**: The paper authors have graciously noted this issue and have created an errata to their ICCV paper [here](https://www.shaopinglu.net/proj-iccv21/ImageEnhancement.html). We thank the authors and appreciate their time commitment and close collaboration in re-checking the DeepLPF result in their paper.
+Bug fixes are welcome as pull requests. For new features, utility functions or
+extensions to the core, please open an issue first so the shape can be agreed
+before the work is written.
 
 【This open source project is not an official Huawei product, Huawei is not expected to provide support for this project.】
